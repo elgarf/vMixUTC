@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="vMixController.PropertiesControls.ListControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:vMixController.PropertiesControls"
+             xmlns:e="clr-namespace:vMixController.Extensions"
+             mc:Ignorable="d" 
+             x:Name="Me"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Items}"/></TextBlock>
+            <Button ToolTip="{e:Localize Save list}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding SaveItemsListCommand, ElementName=Me}" Content="&#xE105;"/>
+            <Button ToolTip="{e:Localize Load list}" Style="{StaticResource TitleButton}" Command="{Binding LoadItemsListCommand, ElementName=Me}" Content="&#xE0FA;"/>
+            <Button ToolTip="{e:Localize Add list item}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand, ElementName=Me}" Content="&#xE109;"/>
+        </StackPanel>
+        <ListView ItemsSource="{Binding Items, ElementName=Me}" HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding RemoveItemCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE10A;"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding Value}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
+
+</UserControl>

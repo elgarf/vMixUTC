@@ -1,0 +1,228 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:cls="clr-namespace:vMixController.Classes"
+        xmlns:c="clr-namespace:vMixController.Converters"
+        xmlns:ctrls="clr-namespace:vMixController.Controls"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:e="clr-namespace:vMixController.Extensions"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <c:NotConverter x:Key="NotConverter1"/>
+    <c:NotConverter x:Key="NotConverter"/>
+    <c:NonVisibilityConverter x:Key="NonVis"/>
+
+    <c:IntegerToBooleanConverter x:Key="IntToBool"/>
+    <c:ControlIntPairConverter x:Key="ControlInt"/>
+    <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type ctrls:vMixControlMoveThumb}">
+        <Rectangle Fill="Transparent"/>
+    </ControlTemplate>
+    <ControlTemplate x:Key="ResizeThumbTemplate" TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+        <Rectangle Fill="Red"/>
+    </ControlTemplate>
+    <Style TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+        <Style.Triggers>
+            <Trigger Property="HorizontalAlignment" Value="Right">
+                <Setter Property="Margin" Value="4,0,-4,0"/>
+            </Trigger>
+            <Trigger Property="HorizontalAlignment" Value="Left">
+                <Setter Property="Margin" Value="-4,0,4,0"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Inner Controls-->
+
+    <Button x:Shared="false"  x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
+        <TextBlock Text="{Binding Name}"/>
+    </Button>
+
+    <TextBox x:Shared="false"  x:Key="TextFieldWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
+
+    <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+    <Grid x:Shared="false"  x:Key="ScoreWidgetControl" Margin="{StaticResource StdMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#57586;</Button>
+        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">
+            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+1
+                <Button.Tag>
+                    <sys:Int32>1</sys:Int32>
+                </Button.Tag>
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource ControlInt}">
+                        <Binding/>
+                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+2
+                <Button.Tag>
+                    <sys:Int32>2</sys:Int32>
+                </Button.Tag>
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource ControlInt}">
+                        <Binding/>
+                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+3
+                <Button.Tag>
+                    <sys:Int32>3</sys:Int32>
+                </Button.Tag>
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource ControlInt}">
+                        <Binding/>
+                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+    </Grid>
+
+    <StackPanel x:Shared="false" x:Key="ExternalDataWidgetControl">
+        <ContentControl Content="{Binding DataProvider.CustomUI}"/>
+        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{e:Localize Properties}"></Button>
+    </StackPanel>
+
+    <Grid x:Shared="false"  x:Key="TimerWidgetControl" Margin="{StaticResource StdMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="2"/>
+            <RowDefinition/>
+            <RowDefinition Height="2"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Default Time}"/>
+        <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Text="{e:Localize Current Time}"/>
+        <TextBlock Grid.Column="2" Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
+        <toolkit:TimeSpanUpDown Minimum="0" Grid.Row="2" Margin="{StaticResource RightStdMargin}" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}"/>
+        <toolkit:TimeSpanUpDown Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}"/>
+        <CheckBox Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}">
+            <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
+        </CheckBox>
+
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
+            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}" ToolTip="Start">&#57602;</Button>
+            <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#57603;</Button>
+            <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#57869;</Button>
+            <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
+            <Button ToolTip="{e:Localize -1 Hour}" Command="{Binding TimerCommand}" CommandParameter="-1 Hour" Content="{e:Localize -1 H}"></Button>
+            <Button ToolTip="{e:Localize -1 Minute}" Command="{Binding TimerCommand}" CommandParameter="-1 Minute" Content="{e:Localize -1 M}"></Button>
+            <Button ToolTip="{e:Localize -1 Second}" Command="{Binding TimerCommand}" CommandParameter="-1 Second" Content="{e:Localize -1 S}"></Button>
+            <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
+            <Button ToolTip="{e:Localize +1 Hour}" Command="{Binding TimerCommand}" CommandParameter="+1 Hour" Content="{e:Localize +1 H}"></Button>
+            <Button ToolTip="{e:Localize +1 Minute}" Command="{Binding TimerCommand}" CommandParameter="+1 Minute" Content="{e:Localize +1 M}"></Button>
+            <Button ToolTip="{e:Localize +1 Second}" Command="{Binding TimerCommand}" CommandParameter="+1 Second" Content="{e:Localize +1 S}"></Button>
+        </StackPanel>
+    </Grid>
+
+    <!--Inner Controls End-->
+
+    <DataTemplate x:Key="vMixControlButton">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.CaptionContent>
+                <StackPanel Orientation="Horizontal">
+                    <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={StaticResource NotConverter}, Mode=OneWay}">&#57869;</Button>
+                </StackPanel>
+            </ctrls:vMixControlContainer.CaptionContent>
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl Content="{StaticResource ButtonWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlTextField">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl Content="{StaticResource TextFieldWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+
+    <DataTemplate x:Key="vMixControlList">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl Content="{StaticResource ListWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlScore">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl Content="{StaticResource ScoreWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+    <DataTemplate x:Key="vMixControlLabel">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlExternalData">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.CaptionContent>
+                <StackPanel Orientation="Horizontal">
+                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#9995;</Button>
+                </StackPanel>
+            </ctrls:vMixControlContainer.CaptionContent>
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl IsEnabled="{Binding Enabled}" Content="{StaticResource ExternalDataWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlTimer">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.MainContent>
+                <ContentControl Content="{StaticResource TimerWidgetControl}"/>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlContainer">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.MainContent>
+                <ItemsControl ItemsSource="{Binding Controls}" HorizontalContentAlignment="Stretch">
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="/vMixController;component/Skins/ControlTemplates.xaml"/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplateSelector>
+                        <ctrls:TypeTemplateSelector/>
+                    </ItemsControl.ItemTemplateSelector>
+                </ItemsControl>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlMultiState">
+        <ctrls:vMixControlContainer Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainer.CaptionContent>
+                <StackPanel Orientation="Horizontal">
+                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#9995;</Button>
+                </StackPanel>
+            </ctrls:vMixControlContainer.CaptionContent>
+            <ctrls:vMixControlContainer.MainContent>
+                <TextBlock IsEnabled="{Binding Enabled}" HorizontalAlignment="Center" Style="{StaticResource PropertyName}" Text="{e:Localize Multi State}"></TextBlock>
+            </ctrls:vMixControlContainer.MainContent>
+        </ctrls:vMixControlContainer>
+    </DataTemplate>
+</ResourceDictionary>

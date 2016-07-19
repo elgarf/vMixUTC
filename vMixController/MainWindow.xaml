@@ -1,0 +1,363 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+        xmlns:cls="clr-namespace:vMixController.Classes"
+        xmlns:c="clr-namespace:vMixController.Converters"
+        xmlns:ctrls="clr-namespace:vMixController.Controls"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:props="clr-namespace:vMixController.Properties"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:e="clr-namespace:vMixController.Extensions"
+        x:Class="vMixController.MainWindow"
+        
+        mc:Ignorable="d ignore"
+        x:Name="Window"
+        
+        Left="{Binding WindowSettings.Left, Mode=TwoWay}"
+        Top="{Binding WindowSettings.Top, Mode=TwoWay}"
+        Width="{Binding WindowSettings.Width, Mode=TwoWay}"
+        Height="{Binding WindowSettings.Height, Mode=TwoWay}"
+WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
+        ResizeMode="CanResizeWithGrip"
+        >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <c:StatusToColorConverter x:Key="StatusToColorConverter"/>
+            <c:StringToCursor x:Key="StringToCursor"/>
+            <c:IntegerToBooleanConverter x:Key="IntegerToBooleanConverter"/>
+            <c:MarginMultiConverter x:Key="MarginMultiConverter"/>
+            <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
+            <CompositeCollection x:Key="CreateItems" x:Shared="False">
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Button" Header="{e:Localize Button}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.button.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Label" Header="{e:Localize Label}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.tag.label.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <!--<MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Image" Header="Image"/>-->
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="List" Header="{e:Localize List}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.dropdown.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Score" Header="{e:Localize Score}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.leaderboard.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.textbox.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Timer" Header="{e:Localize Timer}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.timer.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.database.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.box.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MultiState" Header="{e:Localize Multi State}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.infinite.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="{e:Localize Templates}" ItemsSource="{Binding ControlTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock><Run Text="["/><InlineUIContainer>
+									<TextBlock FontStyle="Italic" Text="{Binding B.Type}"/>
+								</InlineUIContainer><Run Text="] "/><InlineUIContainer>
+									<TextBlock Text="{Binding A}"/>
+								</InlineUIContainer></TextBlock>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <Rectangle Width="16" Height="16" StrokeThickness="1">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding B.Color}"/>
+                                        </Rectangle.Fill>
+                                        <Rectangle.Stroke>
+                                            <SolidColorBrush Color="{Binding B.BorderColor}"/>
+                                        </Rectangle.Stroke>
+                                    </Rectangle>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ItemsSource">
+                                <Setter.Value>
+                                    <CompositeCollection>
+                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Add Widget}" Command="{Binding Main.CreateControlFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                        <Separator/>
+                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Edit Template}" Command="{Binding Main.EditControlTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Remove Template}" Command="{Binding Main.RemoveControlTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                    </CompositeCollection>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
+            </CompositeCollection>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <Binding Path="Main" Source="{StaticResource Locator}"/>
+    </Window.DataContext>
+    <Window.Title>vMix Universal Title Controller</Window.Title>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="PreviewKeyUp">
+            <cmd:EventToCommand Command="{Binding PreviewKeyUpCommand}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding ClosingCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="{e:Localize File}">
+                <MenuItem Command="{Binding NewControllerCommand}" Header="{e:Localize New}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.page.new.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding LoadControllerCommand}" Header="{e:Localize Open}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.folder.open.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding SaveControllerCommand}"  Header="{e:Localize Save}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.save.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.door.leave.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="{e:Localize Create}" ItemsSource="{DynamicResource CreateItems}">
+                
+            </MenuItem>
+            <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{e:Localize Lock}" IsChecked="{Binding WindowSettings.Locked, Mode=OneWay}" Command="{Binding ToggleLockCommand}" IsCheckable="True"/>
+            <MenuItem ToolTip="{e:Localize Update vMix state}" Header="{e:Localize Update State}" Command="{Binding UpdateStateCommand}">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="Update State">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+        </Menu>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ListView ItemsSource="{Binding Controls}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+            <ListView.ContextMenu>
+                <ContextMenu ItemsSource="{DynamicResource CreateItems}">
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+            </ListView.Resources>
+
+            <ListView.Cursor>
+                <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
+            </ListView.Cursor>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="ContextMenuOpening">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="ContextMenuClosing">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid.LayoutTransform>
+                            <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
+                        </Grid.LayoutTransform>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplateSelector>
+                <ctrls:TypeTemplateSelector/>
+            </ListView.ItemTemplateSelector>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Margin">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource MarginMultiConverter}">
+                                    <Binding Path="Left"/>
+                                    <Binding Path="Top"/>
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                        <!--</Setter> Value="{Binding Left}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Top}"/>-->
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="Cursor" Value="Hand">
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="BorderBrush" Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="Tag">
+                            <Trigger.Value>
+                                <sys:Boolean>True</sys:Boolean>
+                            </Trigger.Value>
+                            <Setter Property="Background" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
+        </ListView>
+        </ScrollViewer>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
+                    <TextBox Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="Port"/></TextBlock>
+                    <TextBox Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}">
+                        <Ellipse.Fill>
+                            <SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Text="{Binding Status}"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="{StaticResource RightStdMargin}" Text="{e:Localize Scaling}"></TextBlock>
+                    <Slider Width="128" Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
+                    <TextBlock Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Right">
+                <Hyperlink ToolTip="{e:Localize Support vMix Universal Title Controller!}" NavigateUri="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=WT9QZ2XH97HMN&amp;lc=US&amp;item_name=vMix%20Universal%20Title%20Controller&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" RequestNavigate="Hyperlink_RequestNavigate">
+                    <Image Source="/vMixControllerSkin;component\btn_donate_SM.gif" Stretch="None" Cursor="Hand"/>
+                </Hyperlink>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

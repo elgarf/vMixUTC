@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="vMixController.Controls.vMixPathSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:vMixController.Controls"
+             xmlns:c="clr-namespace:vMixController.Converters"
+             mc:Ignorable="d" 
+             x:Name="Me"
+             d:DesignHeight="25.368" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <c:IntegerToBooleanConverter x:Key="IntToBool"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource PropertyName}">Input</TextBlock>
+            <ComboBox Grid.Column="2" x:Name="Input" ItemsSource="{Binding Model.Inputs, ElementName=Me}" DisplayMemberPath="Title" SelectedIndex="{Binding InputIndex, Mode=TwoWay, ElementName=Me}"></ComboBox>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource PropertyName}">Title</TextBlock>
+            <ComboBox Grid.Column="2" IsEnabled="{Binding Items.Count, Converter={StaticResource IntToBool}, Mode=OneWay, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding SelectedItem.Elements, ElementName=Input}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding TitleName, Mode=TwoWay, ElementName=Me}"></ComboBox>
+        </Grid>
+    </Grid>
+</UserControl>

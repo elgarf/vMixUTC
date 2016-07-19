@@ -1,0 +1,85 @@
+﻿<UserControl
+            x:Class="vMixController.Controls.vMixControlContainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:e="clr-namespace:vMixController.Extensions"
+             xmlns:local="clr-namespace:vMixController.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="CC" SizeChanged="CC_SizeChanged">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:LockToVisibilityConverter x:Key="LockToVisibilityConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <local:LockButtonConverter x:Key="LockButtonConverter"/>
+            <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:vMixControlMoveThumb}">
+                <Rectangle Fill="Transparent"/>
+            </ControlTemplate>
+            <ControlTemplate x:Key="ResizeThumbTemplate" TargetType="{x:Type local:vMixControlResizeThumb}">
+                <Rectangle Fill="Transparent"/>
+            </ControlTemplate>
+            <Style TargetType="{x:Type local:vMixControlResizeThumb}">
+                <Style.Triggers>
+                    <Trigger Property="HorizontalAlignment" Value="Right">
+                        <Setter Property="Margin" Value="4,0,-4,0"/>
+                    </Trigger>
+                    <Trigger Property="HorizontalAlignment" Value="Left">
+                        <Setter Property="Margin" Value="-4,0,4,0"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#1E2328" Margin="0" Padding="0">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush">
+                    <Setter.Value>
+                        <SolidColorBrush Color="{Binding Control.BorderColor, ElementName=CC}"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Control.State, ElementName=CC}" Value="{x:Null}">
+                        <Setter Property="BorderBrush" Value="Red"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid>
+            <StackPanel Width="{Binding Control.Width, ElementName=CC}">
+                <Grid x:Name="Caption" Style="{StaticResource Caption}">
+                    <Grid.Background>
+                        <SolidColorBrush Color="{Binding Control.Color, ElementName=CC}"/>
+                    </Grid.Background>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Visibility="{Binding Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" ToolTip="{e:Localize Lock widget}" VerticalAlignment="Center" Style="{StaticResource TitleButton}" Margin="2,0,2,0" HorizontalAlignment="Left" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding Control, ElementName=CC}" Content="{Binding Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}"/>
+
+
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding Control.Name, ElementName=CC}"></TextBlock>
+                    <local:vMixControlMoveThumb Visibility="{Binding Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding Control, ElementName=CC}" Cursor="SizeAll"/>
+                    <StackPanel Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
+                        <ContentControl Content="{Binding CaptionContent, ElementName=CC}"/>
+                        <Button ToolTip="{e:Localize Copy widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding CopyCommand, ElementName=CC}" CommandParameter="{Binding Control, ElementName=CC}">&#57688;</Button>
+                        <Button ToolTip="{e:Localize Widget properties}" Style="{StaticResource TitleButton}" Margin="0,0,1,0" HorizontalAlignment="Left" Command="{Binding SettingsCommand, ElementName=CC}" CommandParameter="{Binding Control, ElementName=CC}">&#57621;</Button>
+                        <Button ToolTip="{e:Localize Close widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding CloseCommand, ElementName=CC}" CommandParameter="{Binding Control, ElementName=CC}">&#57610;</Button>
+                    </StackPanel>
+                </Grid>
+                <ContentControl x:Name="ContentControl" Content="{Binding MainContent, ElementName=CC}"/>
+            </StackPanel>
+            <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+            <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+        </Grid>
+    </Border>
+
+</UserControl>

@@ -1,0 +1,36 @@
+﻿<Window x:Class="vMixGenericXmlDataProvider.PropertiesWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:vMixGenericXmlDataProvider"
+             mc:Ignorable="d" 
+            Background="Black"
+             d:DesignHeight="300" d:DesignWidth="300"
+        
+        Width="320"
+        Height="256"
+         WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="Generic Xml Data Provider Settings" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="{StaticResource StdMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource PropertyName}">Additional Namespaces</TextBlock>
+        <TextBox Grid.Row="1" AcceptsReturn="True" Text="{Binding NameSpaces}" />
+        <StackPanel Grid.Row="2" Margin="0,2,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Margin="2,0" IsCancel="True">Cancel</Button>
+            <Button IsDefault="True" Click="Button_Click">Ok</Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Keys>
+  <Key Value="File">Файл</Key>
+  
+  <Key Value="New">Новый</Key>
+  <Key Value="Open">Загрузить</Key>
+  <Key Value="Save">Сохранить</Key>
+  <Key Value="Exit">Выйти</Key>
+  <Key Value="Scaling">Масштаб</Key>
+
+  <Key Value="Create">Создать</Key>
+  <Key Value="Button">Кнопка</Key>
+  <Key Value="Label">Пояснение</Key>
+  <Key Value="List">Список</Key>
+  <Key Value="Text Field">Текстовое поле</Key>
+  <Key Value="Timer">Таймер</Key>
+  <Key Value="Score">Счёт</Key>
+  <Key Value="External Data">Внешние данные</Key>
+  <Key Value="Container">Контейнер</Key>
+  <Key Value="Multi State">Ведомое состояние</Key>
+
+  <Key Value="Templates">Шаблоны</Key>
+  <Key Value="Edit Template">Редактировать шаблон</Key>
+  <Key Value="Remove Template">Удалить шаблон</Key>
+  <Key Value="Add Widget">Создать виджет</Key>
+
+  <Key Value="Lock">Закрепить</Key>
+  <Key Value="Lock widgets">Закрепить виджеты</Key>
+
+  <Key Value="Update State">Обновить состояние</Key>
+  <Key Value="Update vMix state">Обновить состояние vMix</Key>
+
+
+  <Key Value="Widget Properties">Свойства виджета</Key>
+  <Key Value="Widget">Виджет</Key>
+
+  <Key Value="Lock widget">Закрепить виджет</Key>
+  <Key Value="Widget properties">Свойства виджета</Key>
+  <Key Value="Close widget">Закрыть виджет</Key>
+  <Key Value="Copy widget">Скопировать виджет</Key>
+
+  <Key Value="Name">Наименование</Key>
+  <Key Value="Color">Цвет</Key>
+  <Key Value="Hotkeys">Горячие клавиши</Key>
+  <Key Value="Active">Активна</Key>
+  <Key Value="Key">Клавиша</Key>
+  <Key Value="Link">Связь</Key>
+  <Key Value="No hotkeys available for this widget">Для данного виджета не доступны горячие клавиши</Key>
+
+
+  <Key Value="Save Template">Сохранить шаблон</Key>
+  <Key Value="Cancel">Отменить</Key>
+  <Key Value="Ok">Сохранить</Key>
+
+  <Key Value="Update Period">Частота обновления</Key>
+  <Key Value="Table">Таблица</Key>
+  <Key Value="File Path">Путь к файлу</Key>
+
+  <Key Value="Items">Варианты</Key>
+  <Key Value="Save list">Сохранить список</Key>
+  <Key Value="Load list">Загрузить список</Key>
+  <Key Value="Add list item">Добавить вариант</Key>
+
+  <Key Value="Add script command">Добавить команду</Key>
+  <Key Value="Script">Сценарий</Key>
+  <Key Value="Command">Команда</Key>
+  <Key Value="Int Value">Число</Key>
+  <Key Value="String Value">Строка</Key>
+
+  <Key Value="Title Mapping">Связывание титров</Key>
+  <Key Value="Add title mapping">Добавить связь</Key>
+
+  <Key Value="Stop script">Остановить выполнение сценария</Key>
+  <Key Value="Toggle enabled">Переключить</Key>
+  <Key Value="Reset">Сбросить</Key>
+  <Key Value="Properties">Свойства</Key>
+
+  <Key Value="Default Time">Время</Key>
+  <Key Value="Current Time">Текущее время</Key>
+  <Key Value="Reverse">Обратить</Key>
+
+  <Key Value="-1 Hour">-1 час</Key>
+  <Key Value="-1 Minute">-1 минута</Key>
+  <Key Value="-1 Second">-1 секунда</Key>
+
+  <Key Value="+1 Hour">+1 час</Key>
+  <Key Value="+1 Minute">+1 минута</Key>
+  <Key Value="+1 Second">+1 секунда</Key>
+
+  <Key Value="-1 H">-1 Ч</Key>
+  <Key Value="-1 M">-1 М</Key>
+  <Key Value="-1 S">-1 С</Key>
+
+  <Key Value="+1 H">+1 Ч</Key>
+  <Key Value="+1 M">+1 М</Key>
+  <Key Value="+1 S">+1 С</Key>
+
+  <Key Value="Support vMix Universal Title Controller!">Поддержать vMix Universal Title Controller!</Key>
+</Keys>

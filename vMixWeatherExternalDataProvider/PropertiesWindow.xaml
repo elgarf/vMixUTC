@@ -1,0 +1,27 @@
+﻿<Window x:Class="vMixWeatherExternalDataProvider.PropertiesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+        mc:Ignorable="d ignore" Background="Black" SizeToContent="Height" Width="256" ResizeMode="NoResize"
+        Title="Weather Settings" x:Name="Me" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <XmlDataProvider IsInitialLoadEnabled="True" Source="https://pogoda.yandex.ru/static/cities.xml" x:Key="Cities" XPath=".//country"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Margin="2">
+        <TextBlock Style="{StaticResource PropertyName}">Country</TextBlock>
+        <ComboBox x:Name="country" ItemsSource="{Binding Source={StaticResource Cities}}" DisplayMemberPath="@name" SelectedValuePath="@name" SelectedValue="{Binding Provider.Country, Mode=TwoWay, ElementName=Me}"/>
+        <TextBlock Style="{StaticResource PropertyName}">City</TextBlock>
+        <ComboBox ItemsSource="{Binding SelectedItem, ElementName=country}" SelectedValuePath="@id" SelectedValue="{Binding Provider.City, Mode=TwoWay, ElementName=Me}"/>
+        <StackPanel Margin="0,2,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Margin="2,0" IsCancel="True">Cancel</Button>
+            <Button IsDefault="True" Click="Button_Click">Ok</Button>
+        </StackPanel>
+    </StackPanel>
+</Window>
