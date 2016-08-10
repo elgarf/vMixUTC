@@ -59,6 +59,7 @@ namespace vMixController.Widgets
             }
         }
 
+        [XmlIgnore]
         public override State State
         {
             get
