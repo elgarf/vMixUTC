@@ -10,6 +10,14 @@ namespace vMixAPI
     [Serializable]
     public class InputPosition: InputBase
     {
+        [XmlIgnore]
+        public override string Type
+        {
+            get
+            {
+                return "POS";
+            }
+        }
 
         [XmlAttribute("panY")]
         public float PanY { get; set; }

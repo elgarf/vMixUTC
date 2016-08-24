@@ -12,6 +12,14 @@ namespace vMixAPI
     [Serializable]
     public class InputText: InputBase
     {
+        [XmlIgnore]
+        public override string Type
+        {
+            get
+            {
+                return "TXT";
+            }
+        }
         [XmlAttribute("index")]
         public int Index { get; set; }
 

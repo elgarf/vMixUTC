@@ -38,7 +38,13 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource PropertyName}">Title</TextBlock>
-            <ComboBox Grid.Column="2" IsEnabled="{Binding Items.Count, Converter={StaticResource IntToBool}, Mode=OneWay, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding SelectedItem.Elements, ElementName=Input}" DisplayMemberPath="Name" SelectedValuePath="Name" SelectedValue="{Binding TitleName, Mode=TwoWay, ElementName=Me}"></ComboBox>
+            <ComboBox Grid.Column="2" IsEnabled="{Binding Items.Count, Converter={StaticResource IntToBool}, Mode=OneWay, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding SelectedItem.Elements, ElementName=Input}" SelectedValuePath="Name" SelectedValue="{Binding TitleName, Mode=TwoWay, ElementName=Me}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>[<Run Text="{Binding Type, Mode=OneWay}"></Run>] <Run Text="{Binding Name, Mode=OneWay}"></Run></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </Grid>
     </Grid>
 </UserControl>

@@ -12,7 +12,14 @@ namespace vMixAPI
     [Serializable]
     public class InputImage: InputBase
     {
-
+        [XmlIgnore]
+        public override string Type
+        {
+            get
+            {
+                return "IMG";
+            }
+        }
 
         [XmlAttribute("index")]
         public int Index { get; set; }

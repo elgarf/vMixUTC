@@ -48,11 +48,13 @@ namespace vMixController.Widgets
                     UpdateText((sender as IList).OfType<Pair<int, string>>().ToList());*/
         }
 
-        internal virtual string MappedProperty { get { return "Text"; } }
+        internal virtual string MappedTextProperty { get { return "Text"; } }
+
+        internal virtual string MappedImageProperty { get { return "Image"; } }
 
         /// <summary>
-            /// The <see cref="IsTable" /> property's name.
-            /// </summary>
+        /// The <see cref="IsTable" /> property's name.
+        /// </summary>
         public const string IsTablePropertyName = "IsTable";
 
         private bool _isTable = false;
@@ -149,17 +151,17 @@ namespace vMixController.Widgets
                                     text = (val as InputBase);
                                 else
                                 {
-                                    var prop = val.GetType().GetProperty(MappedProperty);
+                                    var prop = val.GetType().GetProperty(val is InputImage ? MappedImageProperty : MappedTextProperty);
                                     if (prop != null)
                                     {
-                                        var iprop = text.GetType().GetProperty(MappedProperty);
+                                        var iprop = text.GetType().GetProperty(val is InputImage ? MappedImageProperty : MappedTextProperty);
                                         if (iprop != null)
                                             prop.SetValue(val, iprop.GetValue(text));
                                     }
                                 }
                             }
 
-                            Binding b = new Binding(MappedProperty);
+                            Binding b = new Binding(val is InputImage ? MappedImageProperty : MappedTextProperty);
                             b.Source = val;
                             b.Mode = BindingMode.TwoWay;
                             b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
@@ -171,7 +173,7 @@ namespace vMixController.Widgets
 
                 if (text != null && !_isTable)
                 {
-                    var iprop = text.GetType().GetProperty(MappedProperty);
+                    var iprop = text.GetType().GetProperty(text is InputImage ? MappedImageProperty : MappedTextProperty);
                     if (iprop != null)
                         Text = (string)iprop.GetValue(text);
                 }

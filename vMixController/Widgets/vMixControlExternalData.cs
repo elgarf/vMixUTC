@@ -211,7 +211,7 @@ namespace vMixController.Widgets
                 }
                 catch (Exception ex)
                 {
-                   
+
                 }
                 _dataProviderContent = value;
                 RaisePropertyChanged(DataProviderContentPropertyName);
@@ -302,8 +302,11 @@ namespace vMixController.Widgets
                         if (input != null)
                         {
                             var obj = input.Elements.Where(y => (y is InputText) && (y as InputText).Name == item.B).FirstOrDefault();
-                            if (obj != null && obj is vMixAPI.InputText)
-                                (obj as vMixAPI.InputText).Text = value;
+                            if (obj != null)
+                                if (obj is vMixAPI.InputText)
+                                    (obj as vMixAPI.InputText).Text = value;
+                                else if (obj is vMixAPI.InputImage)
+                                    (obj as vMixAPI.InputImage).Image = value;
                         }
                     }
                 });
@@ -329,7 +332,7 @@ namespace vMixController.Widgets
         public override void SetProperties(vMixControlSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
-            
+
         }
 
         public override void SetProperties(UserControl[] _controls)

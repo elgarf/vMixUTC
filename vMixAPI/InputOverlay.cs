@@ -9,6 +9,14 @@ namespace vMixAPI
     [Serializable]
     public class InputOverlay: InputBase
     {
+        [XmlIgnore]
+        public override string Type
+        {
+            get
+            {
+                return "OVR";
+            }
+        }
 
         public override State ControlledState
         {

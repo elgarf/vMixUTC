@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace vMixAPI
 {
     [Serializable]
-    public class InputBase: DependencyObject, INotifyPropertyChanged
+    public class InputBase : DependencyObject, INotifyPropertyChanged
     {
         public InputBase()
         {
@@ -20,7 +20,8 @@ namespace vMixAPI
         public virtual int ID { get { return Name.GetHashCode() % GetType().GetHashCode(); } }
         [XmlIgnore]
         public virtual State ControlledState { get; set; }
-
+        [XmlIgnore]
+        public virtual string Type { get { return "BAS"; } }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChanged(string property)
         {

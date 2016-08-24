@@ -9,7 +9,7 @@ using System.Windows;
 namespace vMixController.Classes
 {
     [Serializable]
-    public class Triple<T1, T2, T3>: DependencyObject
+    public class Triple<T1, T2, T3>: Pair<T1, T2>
     {
         public Triple()
         {
@@ -23,7 +23,7 @@ namespace vMixController.Classes
             C = c;
         }
 
-        public T1 A
+        /*public T1 A
         {
             get { return (T1)GetValue(AProperty); }
             set { SetValue(AProperty, value); }
@@ -43,7 +43,7 @@ namespace vMixController.Classes
 
         // Using a DependencyProperty as the backing store for B.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BProperty =
-            DependencyProperty.Register("B", typeof(T2), typeof(Triple<T1, T2, T3>), new PropertyMetadata(default(T2)));
+            DependencyProperty.Register("B", typeof(T2), typeof(Triple<T1, T2, T3>), new PropertyMetadata(default(T2)));*/
 
 
 
