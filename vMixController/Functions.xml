@@ -119,6 +119,12 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
+    <Description>KeyPress</Description>
+    <Function>KeyPress</Function>
+    <FormatString>Function=KeyPress&amp;Value={2}</FormatString>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description>Set title text</Description>
     <Function>SetText</Function>
     <FormatString>Function=SetText&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>

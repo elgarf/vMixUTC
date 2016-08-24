@@ -301,7 +301,7 @@ namespace vMixController.Widgets
                         var input = (Input)GetValueByPath(State, string.Format("Inputs[{0}]", item.A));
                         if (input != null)
                         {
-                            var obj = input.Elements.Where(y => (y is InputText) && (y as InputText).Name == item.B).FirstOrDefault();
+                            var obj = input.Elements.Where(y => (y is InputText || y is InputImage) && (y as InputBase).Name == item.B).FirstOrDefault();
                             if (obj != null)
                                 if (obj is vMixAPI.InputText)
                                     (obj as vMixAPI.InputText).Text = value;
