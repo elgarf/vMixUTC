@@ -224,9 +224,6 @@ namespace vMixController.Widgets
             control1.Value = IsTable;
             control1.Title = LocalizationManager.Get("Table");
 
-
-
-
             return base.GetPropertiesControls().Concat(new UserControl[] { control1, control }).ToArray();
         }
 

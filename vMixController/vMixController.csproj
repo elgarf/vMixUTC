@@ -165,6 +165,8 @@
     <Compile Include="Classes\Hotkey.cs" />
     <Compile Include="Classes\NCrashLocalSender.cs" />
     <Compile Include="Classes\Pair.cs" />
+    <Compile Include="Classes\SharedData.cs" />
+    <Compile Include="Classes\Singleton.cs" />
     <Compile Include="Classes\Triple.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />
@@ -179,6 +181,7 @@
     </Compile>
     <Compile Include="Converters\ControlIntPairConverter.cs" />
     <Compile Include="Converters\MarginMultiConverter.cs" />
+    <Compile Include="Converters\StringToCollectionConverter.cs" />
     <Compile Include="Converters\TableConverter.cs" />
     <Compile Include="Converters\FirstValueConverter.cs" />
     <Compile Include="Converters\IntegerToVisibilityConverter.cs" />
@@ -189,6 +192,9 @@
     <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Extensions\LocalizationManager.cs" />
     <Compile Include="Extensions\Localize.cs" />
+    <Compile Include="PropertiesControls\DataSourceControl.xaml.cs">
+      <DependentUpon>DataSourceControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertiesControls\LabelControl.xaml.cs">
       <DependentUpon>LabelControl.xaml</DependentUpon>
     </Compile>
@@ -253,6 +259,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PropertiesControls\DataSourceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertiesControls\LabelControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

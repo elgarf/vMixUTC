@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Serialization;
@@ -25,6 +26,19 @@ namespace vMixController.Widgets
     {
         [NonSerialized]
         DispatcherTimer _timer = new DispatcherTimer();
+
+        [XmlIgnore]
+        public ObservableCollection<string> Data
+        {
+            get { return (ObservableCollection<string>)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DataProperty =
+            DependencyProperty.Register("Data", typeof(ObservableCollection<string>), typeof(vMixControlExternalData), new PropertyMetadata(null));
+
+
 
         /// <summary>
         /// The <see cref="Enabled" /> property's name.
@@ -58,6 +72,7 @@ namespace vMixController.Widgets
 
         public vMixControlExternalData()
         {
+            Data = new ObservableCollection<string>();
             _timer.Tick += _timer_Tick;
             _timer.Interval = TimeSpan.FromMilliseconds(_period);
             _timer.Start();
@@ -291,6 +306,12 @@ namespace vMixController.Widgets
 
                 Dispatcher.Invoke(() =>
                 {
+                    Data = new ObservableCollection<string>(values);
+                });
+
+
+                Dispatcher.Invoke(() =>
+                {
                     for (int i = 0; i < paths.Count; i++)
                     {
                         var item = paths[i];
@@ -311,6 +332,11 @@ namespace vMixController.Widgets
                     }
                 });
             });
+        }
+
+        public override void Update()
+        {
+            UpdateText(Paths);
         }
 
         public override UserControl[] GetPropertiesControls()

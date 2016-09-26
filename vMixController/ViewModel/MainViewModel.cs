@@ -624,6 +624,9 @@ namespace vMixController.ViewModel
                             foreach (var item in Utils.LoadController(opendlg.FileName, out _windowSettings))
                                 _controls.Add(item);
 
+                            foreach (var item in _controls)
+                                item.Update();
+
                             RaisePropertyChanged("WindowSettings");
                             _logger.Info("Configuring API.");
 
@@ -977,6 +980,43 @@ namespace vMixController.ViewModel
                 }*/
                 ProcessHotkey(hk);
             });
+
+
+            Singleton<SharedData>.Instance.GetData = (name, property) =>
+            {
+                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                var result = new List<string>();
+                if (ds == null)
+                    return result;
+                var prop = ds.GetType().GetProperty(property);
+                if (prop.PropertyType == typeof(string))
+                    result.Add((string)prop.GetValue(ds));
+                if (typeof(IList<string>).IsAssignableFrom(prop.PropertyType))
+                    return (IList<string>)prop.GetValue(ds);
+                return result;
+            };
+
+            Singleton<SharedData>.Instance.GetDataSources = () =>
+            {
+                return Controls.Select(x => x.Name).ToList();
+            };
+
+            Singleton<SharedData>.Instance.GetDataSourceProps = (name) =>
+            {
+                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                if (ds == null) return new List<string>();
+                return ds.GetType().GetProperties().Where(x =>
+                {
+                    var val = x.GetValue(ds);
+                    return x.PropertyType == typeof(string) || typeof(IList<string>).IsAssignableFrom(x.PropertyType);
+                }).Select(x => x.Name).ToList();
+            };
+
+            Singleton<SharedData>.Instance.GetDataSource = (name) =>
+            {
+                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                return ds;
+            };
 
             /*
             uhttpsharp.HttpServer _server;

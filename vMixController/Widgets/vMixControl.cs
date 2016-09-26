@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using vMixController.Classes;
 using vMixController.ViewModel;
@@ -39,10 +40,26 @@ namespace vMixController.Widgets
         internal static Dictionary<Type, UserControl> ControlsStore = new Dictionary<Type, UserControl>();
         internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();
 
+        DispatcherTimer _shadowUpdate;
+
         public vMixControl()
         {
+            _shadowUpdate = new DispatcherTimer();
+            _shadowUpdate.Interval = TimeSpan.FromSeconds(5);
+            _shadowUpdate.Tick += _shadowUpdate_Tick;
+            _shadowUpdate.Start();
+
             _hotkey = GetHotkeys();
         }
+
+        private void _shadowUpdate_Tick(object sender, EventArgs e)
+        {
+            ShadowUpdate();
+        }
+
+
+        public virtual void ShadowUpdate() { }
+
 
         public virtual string Type { get; }
 
@@ -571,6 +588,7 @@ namespace vMixController.Widgets
 
         public virtual void Dispose()
         {
+            _shadowUpdate.Stop();
             Dispose(true);
             GC.SuppressFinalize(this);
         }

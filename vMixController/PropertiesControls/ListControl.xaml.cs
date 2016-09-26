@@ -149,7 +149,7 @@ namespace vMixController.PropertiesControls
                         if (result.HasValue && result.Value)
                         {
                             Items.Clear();
-                            foreach (var item in File.ReadAllLines(opendlg.FileName).OrderBy(x => x))
+                            foreach (var item in File.ReadAllLines(opendlg.FileName)/*.OrderBy(x => x)*/)
                             {
                                 Items.Add(new DummyStringProperty() { Value = item });
                             }
