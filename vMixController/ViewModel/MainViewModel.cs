@@ -621,6 +621,10 @@ namespace vMixController.ViewModel
                             var top = WindowSettings.Top;
                             var width = WindowSettings.Width;
                             var height = WindowSettings.Height;
+                            foreach (var item in _controls)
+                                item.Dispose();
+                            _controls.Clear();
+
                             foreach (var item in Utils.LoadController(opendlg.FileName, out _windowSettings))
                                 _controls.Add(item);
 
@@ -700,6 +704,24 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         UpdatevMixState();
+                    }));
+            }
+        }
+
+        private RelayCommand _exitCommand;
+
+        /// <summary>
+        /// Gets the ExitCommand.
+        /// </summary>
+        public RelayCommand ExitCommand
+        {
+            get
+            {
+                return _exitCommand
+                    ?? (_exitCommand = new RelayCommand(
+                    () =>
+                    {
+                        App.Current.MainWindow.Close();
                     }));
             }
         }

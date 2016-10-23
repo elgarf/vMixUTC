@@ -12,6 +12,11 @@
     <c:NotConverter x:Key="NotConverter1"/>
     <c:NotConverter x:Key="NotConverter"/>
     <c:NonVisibilityConverter x:Key="NonVis"/>
+    <c:BoolToBrushConverter x:Key="BoolToBrush"/>
+    <c:TagConverter x:Key="TagConverter"/>
+    <c:StringToVisibilityConverter x:Key="StringToVis"/>
+    <c:StringToThicknessConverter x:Key="StringToThickness"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
     <c:ControlIntPairConverter x:Key="ControlInt"/>
@@ -34,13 +39,33 @@
 
     <!--Inner Controls-->
 
-    <Button x:Shared="false"  x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
-        <TextBlock Text="{Binding Name}"/>
+    <Button HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Background="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <TextBlock HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}"/>
+        </Grid>
     </Button>
 
     <TextBox x:Shared="false"  x:Key="TextFieldWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
 
-    <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+    <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox.ItemTemplate>
+            <DataTemplate>
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Visibility="{Binding Converter={StaticResource StringToVis}}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Foreground="DarkGreen" Text="{Binding Converter={StaticResource TagConverter}, ConverterParameter=tag}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Margin="{Binding Converter={StaticResource StringToThickness}}" Grid.Row="1" Text="{Binding Converter={StaticResource TagConverter}}" TextTrimming="CharacterEllipsis"/>
+                </Grid>
+            </DataTemplate>
+        </ComboBox.ItemTemplate>
+    </ComboBox>
 
     <Grid x:Shared="false"  x:Key="ScoreWidgetControl" Margin="{StaticResource StdMargin}">
         <Grid.ColumnDefinitions>

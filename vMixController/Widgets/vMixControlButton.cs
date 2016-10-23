@@ -5,23 +5,98 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using vMixAPI;
 using vMixController.Classes;
+using vMixController.Extensions;
 using vMixController.PropertiesControls;
 using vMixController.ViewModel;
 
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlButton: vMixControl
+    public class vMixControlButton : vMixControl
     {
         [NonSerialized]
         DispatcherTimer _timer;
         int _pointer;
+        int _waitBeforeUpdate = -1;
+        DateTime _lastShadowUpdate = DateTime.Now;
+
+        [XmlIgnore]
+        public override State State
+        {
+            get
+            {
+                return base.State;
+            }
+
+            set
+            {
+                if (_internalState != null)
+                {
+                    _internalState.OnStateUpdated -= State_OnStateUpdated;
+                    //_internalState.OnFunctionSend += State_OnFunctionSend;
+                }
+
+                base.State = value;
+
+                if (_internalState != null)
+                {
+                    _internalState.OnStateUpdated += State_OnStateUpdated;
+                    //_internalState.OnFunctionSend += State_OnFunctionSend;
+                }
+            }
+        }
+
+        public override void ShadowUpdate()
+        {
+
+            if (IsStateDependent && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 5)
+            {
+                _internalState.UpdateAsync();
+                _lastShadowUpdate = DateTime.Now;
+            }
+            base.ShadowUpdate();
+        }
+
+        /*private void State_OnFunctionSend(object sender, FunctionSendArgs e)
+        {
+            if (e.Function != "") ;
+                //UpdateActiveProperty();
+            //throw new NotImplementedException();
+        }*/
+
+        private void State_OnStateUpdated(object sender, StateUpdatedEventArgs e)
+        {
+            if (e.Successfully)
+                RealUpdateActiveProperty();
+        }
+
+        private void RealUpdateActiveProperty()
+        {
+            if (!IsStateDependent) return;
+            var result = true;
+            foreach (var item in _commands)
+            {
+                if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
+                var path = string.Format(item.Action.ActiveStatePath, item.Input, item.Parameter, item.StringParameter, item.Parameter - 1);
+                var val = GetValueByPath(_internalState, path);
+                var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.Input), item.Parameter, item.StringParameter, item.Parameter - 1);
+                result = result && (
+                    (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) || (val is bool && (bool)val == false))) ||
+                    (aval == "*") ||
+                    (val != null && !(val is string) && val.GetType().GetMethod("Parse", System.Reflection.BindingFlags.Static).Invoke(null, new object[] { aval }) == val) ||
+                    (val is string && (string)val == aval)
+                    );
+
+            }
+            Active = result;
+        }
 
         public override string Type
         {
@@ -91,6 +166,68 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="Active" /> property's name.
+        /// </summary>
+        public const string ActivePropertyName = "Active";
+
+        private bool _active = false;
+
+        /// <summary>
+        /// Sets and gets the Active property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Active
+        {
+            get
+            {
+                return _active;
+            }
+
+            set
+            {
+                if (_active == value)
+                {
+                    return;
+                }
+
+                _active = value;
+                RaisePropertyChanged(ActivePropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="IsStateDependent" /> property's name.
+        /// </summary>
+        public const string IsStateDependentPropertyName = "IsStateDependent";
+
+        private bool _isStateDependent = false;
+
+        /// <summary>
+        /// Sets and gets the IsStateDependent property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsStateDependent
+        {
+            get
+            {
+                return _isStateDependent;
+            }
+
+            set
+            {
+                if (_isStateDependent == value)
+                {
+                    return;
+                }
+
+                _isStateDependent = value;
+                RaisePropertyChanged(IsStateDependentPropertyName);
+            }
+        }
+
+
         [NonSerialized]
         private RelayCommand _executeScriptCommand;
 
@@ -135,12 +272,21 @@ namespace vMixController.Widgets
             }
         }
 
+
+        private void UpdateActiveProperty()
+        {
+            if (!IsStateDependent) return;
+            State.UpdateAsync();
+
+        }
+
         public vMixControlButton()
         {
             _timer = new DispatcherTimer();
             _timer.Tick += _timer_Tick;
             _pointer = 0;
             Enabled = true;
+            RealUpdateActiveProperty();
         }
 
         public override Hotkey[] GetHotkeys()
@@ -166,6 +312,15 @@ namespace vMixController.Widgets
             {
                 _timer.Stop();
                 Enabled = true;
+                //_waitBeforeUpdate++;
+                //Active = !Active;
+                ThreadPool.QueueUserWorkItem((x) =>
+                {
+                    Thread.Sleep(_waitBeforeUpdate);
+                    _waitBeforeUpdate = -1;
+                    Dispatcher.Invoke(() => _internalState.UpdateAsync());
+
+                });
                 return;
             }
             _timer.Interval = TimeSpan.FromMilliseconds(0);
@@ -188,10 +343,12 @@ namespace vMixController.Widgets
                         break;
                 }
             else
+            {
                 State.SendFunction(string.Format(cmd.Action.FormatString, GetInputNumber(cmd.Input), cmd.Parameter, cmd.StringParameter));
-            
+                _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
+            }
             _pointer++;
-            
+
         }
 
         public override void ExecuteHotkey(int index)
@@ -199,22 +356,26 @@ namespace vMixController.Widgets
             base.ExecuteHotkey(index);
             switch (index)
             {
-                case 0: ExecuteScriptCommand.Execute(null);
+                case 0:
+                    ExecuteScriptCommand.Execute(null);
                     break;
-                case 1: StopScriptCommand.Execute(null);
+                case 1:
+                    StopScriptCommand.Execute(null);
                     break;
             }
         }
 
         public override UserControl[] GetPropertiesControls()
         {
+            //!!!!!
+            BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.Commands.Clear();
             foreach (var item in Commands)
             {
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, Parameter = item.Parameter, StringParameter = item.StringParameter });
             }
-            return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { boolctrl, control }).ToArray();
         }
 
         public override void SetProperties(vMixControlSettingsViewModel viewModel)
@@ -228,6 +389,8 @@ namespace vMixController.Widgets
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, Parameter = item.Parameter, StringParameter = item.StringParameter });
 
+            IsStateDependent = _controls.OfType<BoolControl>().First().Value;
+            RealUpdateActiveProperty();
             base.SetProperties(_controls);
         }
 

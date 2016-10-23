@@ -28,6 +28,11 @@ namespace vMixController.Classes
         public bool HasStringProperty { get; set; }
         public bool HasIntProperty { get; set; }
 
+        public string ActiveStatePath { get; set; }
+        public string ActiveStateValue { get; set; }
+
+        public int TransitionNumber { get; set; }
+
         public override bool Equals(object obj)
         {
             return (obj is vMixFunctionReference) && Function == (obj as vMixFunctionReference).Function;
@@ -37,5 +42,6 @@ namespace vMixController.Classes
         {
             return Function.GetHashCode();
         }
+
     }
 }

@@ -11,12 +11,15 @@ using System.Windows.Controls;
 using vMixController.PropertiesControls;
 using vMixController.ViewModel;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace vMixController.Widgets
 {
     [Serializable]
     public class vMixControlTimer : vMixControlTextField
     {
+        [NonSerialized]
+        Stopwatch _stopwatch = new Stopwatch();
         [NonSerialized]
         DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Send);
 
@@ -64,7 +67,8 @@ namespace vMixController.Widgets
         {
             if (!Reverse)
             {
-                var t = Time.Add(_timer.Interval);
+                var t = Time.Add(_stopwatch.Elapsed);
+                _stopwatch.Restart();
                 if (t <= DefaultTime)
                     Time = t;
                 else
@@ -77,7 +81,8 @@ namespace vMixController.Widgets
             }
             else
             {
-                var t = Time.Subtract(_timer.Interval);
+                var t = Time.Subtract(_stopwatch.Elapsed);
+                _stopwatch.Restart();
                 if (t > TimeSpan.FromSeconds(0))
                     Time = t;
                 else
@@ -394,6 +399,7 @@ namespace vMixController.Widgets
                             case "Start":
                                 Paused = false;
                                 Active = true;
+                                _stopwatch.Start();
                                 _timer.Start();
                                 break;
                             case "Pause":
@@ -401,18 +407,26 @@ namespace vMixController.Widgets
                                 {
                                     Paused = true;
                                     Active = false;
+                                    if (!Reverse)
+                                        Time.Add(_stopwatch.Elapsed);
+                                    else
+                                        Time.Subtract(_stopwatch.Elapsed);
+                                    _stopwatch.Stop();
                                     _timer.Stop();
+                                    
                                 }
                                 else
                                 {
                                     Paused = false;
                                     Active = true;
+                                    _stopwatch.Start();
                                     _timer.Start();
                                 }
                                 break;
                             case "Stop":
                                 Active = false;
                                 Paused = false;
+                                _stopwatch.Stop();
                                 _timer.Stop();
                                 UpdateTimer();
                                 break;
@@ -456,6 +470,7 @@ namespace vMixController.Widgets
         {
             
             _timer.Stop();
+            _stopwatch.Stop();
             base.Dispose();
         }
 

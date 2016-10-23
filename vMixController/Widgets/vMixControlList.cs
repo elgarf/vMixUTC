@@ -155,24 +155,30 @@ namespace vMixController.Widgets
 
         public override void SetProperties(UserControl[] _controls)
         {
-            base.SetProperties(_controls);
+            var tb = BindingOperations.GetBindingBase(this, TextProperty);
+            BindingOperations.ClearBinding(this, TextProperty);
 
             if (Items == null) Items = new ObservableCollection<string>();
             Items.Clear();
             foreach (var item in (_controls.OfType<ListControl>().First()).Items)
                 Items.Add(item.Value);
-            //UpdateBinding();
+            UpdateBinding();
 
             DataSource = new Triple<string, string, bool>();
             DataSource.A = _controls.OfType<DataSourceControl>().First().DataSource;
             DataSource.B = _controls.OfType<DataSourceControl>().First().DataProperty;
             DataSource.C = _controls.OfType<DataSourceControl>().First().Active;
             UpdateBinding();
+
+            if (tb != null)
+                BindingOperations.SetBinding(this, TextProperty, tb);
+
+            base.SetProperties(_controls);
         }
 
         private void UpdateBinding()
         {
-            BindingOperations.ClearAllBindings(this);
+            BindingOperations.ClearBinding(this, ItemsProperty);
             if (DataSource == null || !DataSource.C) return;
             Binding b = new Binding(DataSource.B);
             b.Converter = new StringToCollectionConverter();

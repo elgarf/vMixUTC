@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using vMixAPI;
 using vMixController.Classes;
 using vMixController.ViewModel;
 
@@ -39,13 +40,14 @@ namespace vMixController.Widgets
 
         internal static Dictionary<Type, UserControl> ControlsStore = new Dictionary<Type, UserControl>();
         internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();
+        internal static State _internalState;
 
-        DispatcherTimer _shadowUpdate;
+        static DispatcherTimer _shadowUpdate;
 
         public vMixControl()
         {
             _shadowUpdate = new DispatcherTimer();
-            _shadowUpdate.Interval = TimeSpan.FromSeconds(5);
+            _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
             _shadowUpdate.Start();
 
@@ -440,7 +442,16 @@ namespace vMixController.Widgets
         public virtual vMixAPI.State State
         {
             get { return (vMixAPI.State)GetValue(StateProperty); }
-            set { SetValue(StateProperty, value); }
+            set { SetValue(StateProperty, value);
+                if (_internalState == null && value != null)
+                {
+                    _internalState = value.Create();
+                }
+                else if (value == null)
+                    _internalState = null;
+                else
+                    _internalState.Configure(value.Ip, value.Port);
+            }
         }
 
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...

@@ -13,7 +13,7 @@ namespace vMixController.Converters
             if (parameter != null)
                 separator = (string)parameter;
             if (values.OfType<string>().Count() > 0)
-                return values.OfType<string>().Aggregate((x, y) => x + separator + y);
+                return values.OfType<string>().Aggregate((x, y) => x.Split('@')[0] + separator + y.Split('@')[0]);
             else
                 return "";
         }
@@ -27,7 +27,7 @@ namespace vMixController.Converters
             var separated = ((string)value).Split(new string[] { separator }, StringSplitOptions.None);
             for (int i = 0; i < targetTypes.Length; i++)
                 if (i < separated.Length)
-                    values[i] = separated[i];
+                    values[i] = separated[i].Split('@')[0];
                 else
                     values[i] = "";
             return values;

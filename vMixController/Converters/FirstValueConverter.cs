@@ -23,15 +23,23 @@ namespace vMixController.Converters
                 val = values.Distinct().Except(_previousValues.Distinct()).FirstOrDefault();
             if (val == null)
                 val = values.Distinct().FirstOrDefault();
+            /*_previousValues = new object[values.Length];
+            for (int i = 0; i < values.Length; i++)
+            {
+                _previousValues[i] = val;
+            }*/
             values.CopyTo(_previousValues, 0);
-            return val;
+            if (!(val is string))
+                return null;
+            else
+                return ((string)val).Split('@')[0];
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             object[] values = new object[targetTypes.Length];
             for (int i = 0; i < targetTypes.Length; i++)
-                values[i] = value;
+                values[i] = ((string)value).Split('@')[0];
             return values;
         }
     }

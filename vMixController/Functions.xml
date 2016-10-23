@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <ArrayOfVMixFunctionReference xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <!-- Many non-native functions can be mapped to existing vMix functions -->
+  <!-- Many non-native functions can be mapped to existing vMix functions
+  {0} - input
+  {1} - Parameter
+  {2} - StringParameter
+  {3} - Parameter - 1-->
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Dummy function</Description>
@@ -48,21 +52,33 @@
     <Description>StartStreaming</Description>
     <Function>StartStreaming</Function>
     <FormatString>Function=StartStreaming</FormatString>
+    
+    <ActiveStatePath>Streaming</ActiveStatePath>
+    <ActiveStateValue>false</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>StopStreaming</Description>
     <Function>StopStreaming</Function>
     <FormatString>Function=StopStreaming</FormatString>
+    
+    <ActiveStatePath>Streaming</ActiveStatePath>
+    <ActiveStateValue>true</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>StartRecording</Description>
     <Function>StartRecording</Function>
     <FormatString>Function=StartRecording</FormatString>
+    
+    <ActiveStatePath>Recording</ActiveStatePath>
+    <ActiveStateValue>false</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>StopRecording</Description>
     <Function>StopRecording</Function>
     <FormatString>Function=StopRecording</FormatString>
+    
+    <ActiveStatePath>Recording</ActiveStatePath>
+    <ActiveStateValue>true</ActiveStateValue>
   </vMixFunctionReference>
   
   <vMixFunctionReference>
@@ -80,21 +96,39 @@
     <Description>Fade in input as overlay</Description>
     <Function>OverlayInputIn</Function>
     <FormatString>Function=OverlayInput{1}In&amp;Input={0}</FormatString>
+    
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>-</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Switch overlay off</Description>
     <Function>OverlayInputOff</Function>
     <FormatString>Function=OverlayInput{1}Off</FormatString>
+    
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>*</ActiveStateValue>
+
+    <TransitionIndex>0</TransitionIndex>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Fade out overlay</Description>
     <Function>OverlayInputOut</Function>
     <FormatString>Function=OverlayInput{1}Out</FormatString>
+    
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>*</ActiveStateValue>
+
+    <TransitionIndex>0</TransitionIndex>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Toggle overlay</Description>
     <Function>OverlayInputToggle</Function>
     <FormatString>Function=OverlayInput{1}&amp;Input={0}</FormatString>
+    
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
+
+    <TransitionIndex>0</TransitionIndex>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -128,6 +162,9 @@
     <Description>Set title text</Description>
     <Function>SetText</Function>
     <FormatString>Function=SetText&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
+
+    <ActiveStatePath>Inputs[{0}].Elements[{1}].Text</ActiveStatePath>
+    <ActiveStateValue>{2}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

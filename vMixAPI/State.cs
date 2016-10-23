@@ -18,7 +18,7 @@ namespace vMixAPI
     {
 
     }
-    public class StateUpdatedEventArgs: EventArgs
+    public class StateUpdatedEventArgs : EventArgs
     {
         public bool Successfully { get; set; }
         public int[] OldInputs { get; set; }
@@ -76,7 +76,7 @@ namespace vMixAPI
     {
         private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Stack<Action<EventArgs>> _downloadHandlers = new Stack<Action<EventArgs>>();
+        private Stack<Func<EventArgs, bool>> _downloadHandlers = new Stack<Func<EventArgs, bool>>();
 
         //private static bool _configured = false;
         private string _ip = "127.0.0.1";
@@ -152,11 +152,13 @@ namespace vMixAPI
             {
                 var e = (DownloadStringCompletedEventArgs)x;
 
-                if (e.Error != null) return;
+                if (e.Error != null) return true;
 
                 var state = Create(e.Result);
                 if (OnStateCreated != null)
                     OnStateCreated(state, null);
+
+                return true;
             });
         }
 
@@ -205,7 +207,7 @@ namespace vMixAPI
             _logger.Info("Firing \"updated\" event.");
 
             if (OnStateUpdated != null)
-                OnStateUpdated(this, new StateUpdatedEventArgs() {  Successfully = true, OldInputs = oldInputs, NewInputs = newInputs });
+                OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = oldInputs, NewInputs = newInputs });
             IsInitializing = false;
             return true;
         }
@@ -221,10 +223,10 @@ namespace vMixAPI
                 {
                     if (OnStateUpdated != null)
                         OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
-                    return;
+                    return true;
                 }
                 if (e.UserState == null)
-                    return;
+                    return false;
                 IsInitializing = true;
                 _logger.Info("Updating vMix state.");
                 var _temp = Create(e.Result);
@@ -257,7 +259,7 @@ namespace vMixAPI
                 IsInitializing = false;
                 if (OnStateUpdated != null)
                     OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = oldInputs, NewInputs = newInputs });
-
+                return true;
             });
         }
 
@@ -278,9 +280,17 @@ namespace vMixAPI
 
             if (async)
             {
-                WebClient _webClient = new vMixWebClient();
-                _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
-                _webClient.DownloadStringAsync(new Uri(url), "state");
+                try
+                {
+                    WebClient _webClient = new vMixWebClient();
+                    _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
+                    var s = string.IsNullOrEmpty(textParameters) ? "state" : null;
+                    _webClient.DownloadStringAsync(new Uri(url), s);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Error while sending async function");
+                }
             }
             else
             {
@@ -305,8 +315,14 @@ namespace vMixAPI
             else
                 _logger.Info("Async function sended, result is \"{0}\".", e.Result);
 
+            Stack<Func<EventArgs, bool>> notCompleted = new Stack<Func<EventArgs, bool>>();
+            Func<EventArgs, bool> func = null;
             while (_downloadHandlers.Count > 0)
-                _downloadHandlers.Pop()(e);
+                if (!(func = _downloadHandlers.Pop())(e))
+                    notCompleted.Push(func);
+
+            _downloadHandlers = notCompleted;
+            //_downloadHandlers.Pop()(e);
             (sender as WebClient).Dispose();
         }
 
@@ -455,7 +471,7 @@ namespace vMixAPI
         }
     }
 
-    public class FunctionSendArgs: EventArgs
+    public class FunctionSendArgs : EventArgs
     {
         public string Function { get; set; }
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using vMixAPI;
 using vMixController.Classes;
 using vMixController.Converters;
@@ -20,6 +21,33 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlTextField : vMixControl
     {
+
+        private static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
+        private static DispatcherTimer DelayedUpdateTimer = new DispatcherTimer();
+
+
+        static vMixControlTextField()
+        {
+            //Отложенное обновление биндинга
+            DelayedUpdateTimer.Interval = TimeSpan.FromSeconds(0.1);
+            DelayedUpdateTimer.Tick += DelayedUpdateTimer_Tick;
+            DelayedUpdateTimer.Start();
+        }
+
+        private static void DelayedUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            while (DelayedUpdate.Count > 0 && DelayedUpdate.Peek().C.AddSeconds(0.1) < DateTime.Now)
+            {
+                var t = DelayedUpdate.Dequeue();
+                try
+                {
+                    var exp = BindingOperations.GetMultiBindingExpression(t.A, t.B);
+                    if (exp != null && exp.Status == BindingStatus.Active)
+                        exp.UpdateSource();
+                }
+                catch (Exception ex) { }
+            }
+        }
 
         internal bool _updating = false;
 
@@ -97,7 +125,28 @@ namespace vMixController.Widgets
         {
             if (e.Property.Name == "Text")
             {
-
+                try
+                {
+                    var exp = BindingOperations.GetMultiBindingExpression(d, TextProperty);
+                    if (exp != null && exp.Status == BindingStatus.Active)
+                    {
+                        DelayedUpdate.Enqueue(new Triple<DependencyObject, DependencyProperty, DateTime>() { A = d, B = e.Property, C = DateTime.Now });
+                        //DelayedUpdateTimer.Start();
+                        //exp.UpdateTarget();
+                        //exp.UpdateSource();
+                        /*foreach (var item in exp.BindingExpressions.OfType<BindingExpression>())
+                        {
+                            if (item.DataItem is InputBase && (item.DataItem as InputBase).Type == "TXT" && (item.DataItem as InputText).Text == (string)e.OldValue)
+                                (item.DataItem as InputText).Text = (string)e.NewValue;
+                            if (item.DataItem is InputBase && (item.DataItem as InputBase).Type == "IMG" && (item.DataItem as InputImage).Image == (string)e.OldValue)
+                                (item.DataItem as InputImage).Image = (string)e.NewValue;
+                            
+                        }*/
+                    }
+                    //BindingOperations.SetBinding(d, TextProperty, bnd);
+                }
+                catch (Exception ex) { }
+                //(d as vMixControlTextField).Update();
                 ///TODO: Non defined behavior, rewrite
                 /*var obj = (vMixControlTextField)d;
                 if (obj._updating) return;
@@ -133,6 +182,11 @@ namespace vMixController.Widgets
                 else
                     binding.Converter = new TableConverter();
                 binding.Mode = BindingMode.TwoWay;
+                binding.UpdateSourceTrigger = UpdateSourceTrigger.Default;
+                binding.NotifyOnSourceUpdated = true;
+                binding.NotifyOnTargetUpdated = true;
+                //binding.Delay = 10;
+                
 
                 InputBase text = null;
 
@@ -164,7 +218,7 @@ namespace vMixController.Widgets
                             Binding b = new Binding(val is InputImage ? MappedImageProperty : MappedTextProperty);
                             b.Source = val;
                             b.Mode = BindingMode.TwoWay;
-                            b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                            b.UpdateSourceTrigger = UpdateSourceTrigger.Default;
                             binding.Bindings.Add(b);
                         }
                     }

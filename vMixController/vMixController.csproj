@@ -179,7 +179,10 @@
     <Compile Include="Controls\vMixPathSelector.xaml.cs">
       <DependentUpon>vMixPathSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
+    <Compile Include="Converters\StringToThicknessConverter.cs" />
+    <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Converters\MarginMultiConverter.cs" />
     <Compile Include="Converters\StringToCollectionConverter.cs" />
     <Compile Include="Converters\TableConverter.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="Converters\StringToCursor.cs" />
     <Compile Include="Converters\NonVisibilityConverter.cs" />
     <Compile Include="Converters\NotConverter.cs" />
+    <Compile Include="Converters\TagConverter.cs" />
     <Compile Include="Extensions\LocalizationManager.cs" />
     <Compile Include="Extensions\Localize.cs" />
     <Compile Include="PropertiesControls\DataSourceControl.xaml.cs">
