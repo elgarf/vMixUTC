@@ -84,9 +84,9 @@ namespace vMixController.Widgets
             foreach (var item in _commands)
             {
                 if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                var path = string.Format(item.Action.ActiveStatePath, item.Input, item.Parameter, item.StringParameter, item.Parameter - 1);
+                var path = string.Format(item.Action.ActiveStatePath, item.InputKey, item.Parameter, item.StringParameter, item.Parameter - 1);
                 var val = GetValueByPath(_internalState, path).ToString();
-                var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.Input), item.Parameter, item.StringParameter, item.Parameter - 1);
+                var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey), item.Parameter, item.StringParameter, item.Parameter - 1);
                 var realval = aval;
                 aval = aval.TrimStart('!');
                 bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) /*|| (val is bool && (bool)val == false)*/)) ||
@@ -309,6 +309,18 @@ namespace vMixController.Widgets
             }
         }
 
+        private string GetInputNumber(string key)
+        {
+            try
+            {
+                return State.Inputs.Where(x=>x.Key == key).FirstOrDefault().Number.ToString();
+            }
+            catch (Exception)
+            {
+                return "-1";
+            }
+        }
+
         private void _timer_Tick(object sender, EventArgs e)
         {
             if (_pointer >= _commands.Count)
@@ -348,11 +360,11 @@ namespace vMixController.Widgets
             else if (State != null)
             {
                 if (!cmd.Action.StateDirect)
-                    State.SendFunction(string.Format(cmd.Action.FormatString, GetInputNumber(cmd.Input), cmd.Parameter, cmd.StringParameter));
+                    State.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, cmd.Parameter, cmd.StringParameter));
                 else
                 {
-                    var path = string.Format(cmd.Action.ActiveStatePath, cmd.Input, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1);
-                    SetValueByPath(State, path, cmd.Action.StateValue == "Input" ? (object)cmd.Input : (cmd.Action.StateValue == "String" ? (object)cmd.StringParameter : (object)cmd.Parameter));
+                    var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1);
+                    SetValueByPath(State, path, cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? (object)cmd.StringParameter : (object)cmd.Parameter));
                 }
                 _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
             }
@@ -382,7 +394,7 @@ namespace vMixController.Widgets
             control.Commands.Clear();
             foreach (var item in Commands)
             {
-                control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, Parameter = item.Parameter, StringParameter = item.StringParameter });
+                control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter });
             }
             return base.GetPropertiesControls().Concat(new UserControl[] { boolctrl, control }).ToArray();
         }
@@ -396,7 +408,7 @@ namespace vMixController.Widgets
         {
             Commands.Clear();
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
-                Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, Parameter = item.Parameter, StringParameter = item.StringParameter });
+                Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
             RealUpdateActiveProperty();

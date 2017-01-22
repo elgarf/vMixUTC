@@ -50,7 +50,7 @@ namespace vMixAPI
             {
                 case "Text":
                     //StateExtensions.InputSelectIndex((d as InputText).InputNumber, );
-                   (d as InputText).ControlledState.TitleSetText((d as InputText).InputNumber, (string)e.NewValue, (d as InputText).Index);
+                   (d as InputText).ControlledState.TitleSetText((d as InputText).InputKey, (string)e.NewValue, (d as InputText).Index);
                     break;
             }
         }

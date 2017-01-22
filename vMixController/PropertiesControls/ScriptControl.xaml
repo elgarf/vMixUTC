@@ -43,7 +43,7 @@
                         <TextBlock Grid.Column="3" Style="{StaticResource PropertyName}" Margin="4,0,0,0"><Run Text="{e:Localize String Value}"/></TextBlock>
 
                         <ComboBox x:Name="Func" Grid.Row="1" SelectedItem="{Binding Action, Mode=TwoWay}" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}" DisplayMemberPath="Function"/>
-                        <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" Margin="4,0" SelectedIndex="{Binding Input, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"/>
+                        <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" Margin="4,0" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"/>
                         <TextBox IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}" Grid.Row="1" Grid.Column="2"/>
                         <TextBox IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" Text="{Binding StringParameter, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Margin="4,0,0,0"/>
 

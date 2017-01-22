@@ -507,7 +507,7 @@ namespace vMixAPI
                 "Function", "FadeToBlack");
         }
 
-        public static void TitleSetText(this State state, int input, string value, int index)
+        public static void TitleSetText(this State state, string input, string value, int index)
         {
             state.SendFunction("Function", "SetText",
                 "Value", value,
@@ -515,7 +515,7 @@ namespace vMixAPI
                 "SelectedIndex", index.ToString());
         }
 
-        public static void TitleSetImage(this State state, int input, string value, int index)
+        public static void TitleSetImage(this State state, string input, string value, int index)
         {
             state.SendFunction("Function", "SetImage",
                 "Value", value,

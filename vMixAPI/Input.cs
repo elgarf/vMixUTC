@@ -158,6 +158,7 @@ namespace vMixAPI
             foreach (var item in e.NewItems.OfType<InputBase>())
             {
                 item.InputNumber = this.Number;
+                item.InputKey = this.Key;
                 item.ControlledState = this.ControlledState;
             }
         }

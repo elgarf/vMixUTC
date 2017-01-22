@@ -117,6 +117,36 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
+        /// The <see cref="InputKey" /> property's name.
+        /// </summary>
+        public const string InputKeyPropertyName = "InputKey";
+
+        private string _inputKey = null;
+
+        /// <summary>
+        /// Sets and gets the InputKey property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string InputKey
+        {
+            get
+            {
+                return _inputKey;
+            }
+
+            set
+            {
+                if (_inputKey == value)
+                {
+                    return;
+                }
+
+                _inputKey = value;
+                RaisePropertyChanged(InputKeyPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="StringParameter" /> property's name.
         /// </summary>
         public const string StringParameterPropertyName = "StringParameter";

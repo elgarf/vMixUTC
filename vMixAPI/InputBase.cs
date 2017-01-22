@@ -14,8 +14,7 @@ namespace vMixAPI
         }
 
         public int InputNumber { get; set; }
-        [XmlAttribute("key")]
-        public string Key { get; set; }
+        public string InputKey { get; set; }
         [XmlAttribute("name")]
         public string Name { get; set; }
         [XmlIgnore]
