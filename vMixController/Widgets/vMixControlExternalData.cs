@@ -70,6 +70,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="RestartData" /> property's name.
+        /// </summary>
+        public const string RestartDataPropertyName = "RestartData";
+
+        private bool _restartData = true;
+
+        /// <summary>
+        /// Sets and gets the RestartData property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool RestartData
+        {
+            get
+            {
+                return _restartData;
+            }
+
+            set
+            {
+                if (_restartData == value)
+                {
+                    return;
+                }
+
+                _restartData = value;
+                RaisePropertyChanged(RestartDataPropertyName);
+            }
+        }
+
         public vMixControlExternalData()
         {
             Data = new ObservableCollection<string>();
@@ -316,7 +346,8 @@ namespace vMixController.Widgets
                     {
                         var item = paths[i];
                         var value = values[i % values.Length];
-
+                        if (!_restartData && i >= values.Length)
+                            value = "";
                         //var obj = GetValueByPath(State, string.Format("Inputs[{0}].Elements[{1}]", item.A, item.B));
 
                         var input = (Input)GetValueByPath(State, string.Format("Inputs[{0}]", item.A));
@@ -350,9 +381,14 @@ namespace vMixController.Widgets
             control1.Value = DataProviderPath;
             control.Value = Period;
 
+            BoolControl control2 = GetPropertyControl<BoolControl>();
+            control2.Value = RestartData;
+            control2.Title = LocalizationManager.Get("Loop Data");
+            control2.Tag = "RD";
+
             var props = base.GetPropertiesControls();
             props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
-            return (new UserControl[] { control, control1 }).Concat(props).ToArray();
+            return (new UserControl[] { control, control1, control2 }).Concat(props).ToArray();
         }
 
         public override void SetProperties(vMixControlSettingsViewModel viewModel)
@@ -369,6 +405,7 @@ namespace vMixController.Widgets
                 DataProviderProperties.Clear();
             Period = _controls.OfType<IntControl>().First().Value;
             DataProviderPath = _controls.OfType<FilePathControl>().First().Value;
+            RestartData = _controls.OfType<BoolControl>().Where(x=>(string)x.Tag == "RD").First().Value;
         }
 
         public override Hotkey[] GetHotkeys()

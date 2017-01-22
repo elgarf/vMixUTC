@@ -10,6 +10,13 @@ namespace vMixController.Converters
 {
     public class FirstValueConverter : IMultiValueConverter
     {
+        private bool _isList = false;
+
+        public FirstValueConverter(bool isList = false)
+        {
+            _isList = isList;
+        }
+
         private object[] _previousValues;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -32,14 +39,23 @@ namespace vMixController.Converters
             if (!(val is string))
                 return null;
             else
-                return ((string)val).Split('@')[0];
+            {
+                if (_isList)
+                    return Helpers.UnescapeAt((Helpers.EscapeAt((string)val)).Split(Helpers.EscapeSymbol[0])[0]);
+                else
+                    return val;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
+            
             object[] values = new object[targetTypes.Length];
             for (int i = 0; i < targetTypes.Length; i++)
-                values[i] = ((string)value).Split('@')[0];
+                if (_isList)
+                    values[i] = Helpers.UnescapeAt((Helpers.EscapeAt((string)value)).Split(Helpers.EscapeSymbol[0])[0]);
+                else
+                    values[i] = value;
             return values;
         }
     }

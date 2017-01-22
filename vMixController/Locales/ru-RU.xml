@@ -47,6 +47,7 @@
   <Key Value="Link">Связь</Key>
   <Key Value="No hotkeys available for this widget">Для данного виджета не доступны горячие клавиши</Key>
   <Key Value="State Dependent">Зависит от состояния</Key>
+  <Key Value="Loop Data">Зациклить данные</Key>
 
 
   <Key Value="Save Template">Сохранить шаблон</Key>

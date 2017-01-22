@@ -31,6 +31,10 @@ namespace vMixController.Classes
         public string ActiveStatePath { get; set; }
         public string ActiveStateValue { get; set; }
 
+        public bool StateDirect { get; set; }
+        public string StatePath { get; set; }
+        public string StateValue { get; set; } 
+
         public int TransitionNumber { get; set; }
 
         public override bool Equals(object obj)

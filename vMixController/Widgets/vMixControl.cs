@@ -519,6 +519,47 @@ namespace vMixController.Widgets
             return found;
         }
 
+        protected void SetValueByPath(object obj, string path, object value)
+        {
+            if (obj == null)
+                return;
+            var type = obj.GetType();
+            object found = null;
+            System.Reflection.PropertyInfo found_prop;
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+            var items = path.Split('.');
+            if (items.Length < 1)
+                return;
+
+            if (items[0].Contains('['))
+            {
+                var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
+                var array = type.GetProperty(propindex[0]).GetValue(obj);
+                found_prop = type.GetProperty(propindex[0]);
+                try
+                {
+                    found = (array as IList)[int.Parse(propindex[1])];
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+
+            }
+            else
+            {
+                var propindex = items[0];
+                found = type.GetProperty(propindex).GetValue(obj);
+                found_prop = type.GetProperty(propindex);
+
+            }
+            if (items.Length > 1 && found != null)
+                SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
+            else
+                found_prop.SetValue(obj, value);
+        }
+
         protected T GetValueByPath<T>(object obj, string path)
         {
             return (T)GetValueByPath(obj, path);
@@ -528,12 +569,14 @@ namespace vMixController.Widgets
         {
             if (ControlsStore.ContainsKey(typeof(T)) && !ControlsStoreUsage.Contains(ControlsStore[typeof(T)]))
             {
+                ControlsStore[typeof(T)].Tag = null;
                 ControlsStoreUsage.Add(ControlsStore[typeof(T)]);
                 return (T)ControlsStore[typeof(T)];
             }
             else
             {
                 var c = (T)typeof(T).GetConstructor(new Type[0]).Invoke(new object[0]);
+                c.Tag = null;
                 if (!ControlsStore.ContainsKey(typeof(T)))
                 {
                     ControlsStore.Add(typeof(T), c);

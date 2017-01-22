@@ -153,6 +153,14 @@ namespace vMixController.Widgets
 
         }
 
+        internal override IMultiValueConverter ConverterSelector()
+        {
+            if (!IsTable)
+                return new FirstValueConverter(true);
+            else
+                return new TableConverter(true);
+        }
+
         public override void SetProperties(UserControl[] _controls)
         {
             var tb = BindingOperations.GetBindingBase(this, TextProperty);

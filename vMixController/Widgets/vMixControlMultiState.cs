@@ -91,9 +91,11 @@ namespace vMixController.Widgets
             List<UserControl> _temp = new List<UserControl>();
             var uc = GetPropertyControl<PropertiesControls.StringControl>();
             uc.Title = "IP";
+            uc.Value = IP;
             _temp.Add(uc);
             uc = GetPropertyControl<PropertiesControls.StringControl>();
             uc.Title = "Port";
+            uc.Value = Port;
             _temp.Add(uc);
             return base.GetPropertiesControls().Concat(_temp).ToArray();
         }

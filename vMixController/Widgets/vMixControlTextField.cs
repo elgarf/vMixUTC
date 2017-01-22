@@ -169,6 +169,14 @@ namespace vMixController.Widgets
             }
         }
 
+        internal virtual IMultiValueConverter ConverterSelector()
+        {
+            if (!IsTable)
+                return new FirstValueConverter();
+            else
+                return new TableConverter();
+        }
+
         internal virtual void UpdateText(IList<Pair<int, string>> _paths)
         {
             if (!_updating)
@@ -177,10 +185,9 @@ namespace vMixController.Widgets
 
                 BindingOperations.ClearBinding(this, TextProperty);
                 MultiBinding binding = new MultiBinding();
-                if (!IsTable)
-                    binding.Converter = new FirstValueConverter();
-                else
-                    binding.Converter = new TableConverter();
+
+                binding.Converter = ConverterSelector();
+
                 binding.Mode = BindingMode.TwoWay;
                 binding.UpdateSourceTrigger = UpdateSourceTrigger.Default;
                 binding.NotifyOnSourceUpdated = true;

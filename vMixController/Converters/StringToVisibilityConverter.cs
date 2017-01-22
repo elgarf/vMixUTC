@@ -14,7 +14,7 @@ namespace vMixController.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var val = (string)value;
-            var ts = val.Split('@');
+            var ts = val.Split(Helpers.EscapeSymbol[0]);
 
             if (ts.Length >= 2)
                 val = ts[1];

@@ -33,6 +33,7 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             <c:StringToCursor x:Key="StringToCursor"/>
             <c:IntegerToBooleanConverter x:Key="IntegerToBooleanConverter"/>
             <c:MarginMultiConverter x:Key="MarginMultiConverter"/>
+            <c:NotConverter x:Key="NotConverter"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Button" Header="{e:Localize Button}">
@@ -326,13 +327,13 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
-                    <TextBox Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="Port"/></TextBlock>
-                    <TextBox Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem>

@@ -56,7 +56,7 @@ namespace vMixController.Widgets
         public override void ShadowUpdate()
         {
 
-            if (IsStateDependent && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 5)
+            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 5)
             {
                 _internalState.UpdateAsync();
                 _lastShadowUpdate = DateTime.Now;
@@ -79,20 +79,23 @@ namespace vMixController.Widgets
 
         private void RealUpdateActiveProperty()
         {
-            if (!IsStateDependent) return;
+            if (!IsStateDependent || _internalState == null) return;
             var result = true;
             foreach (var item in _commands)
             {
                 if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
                 var path = string.Format(item.Action.ActiveStatePath, item.Input, item.Parameter, item.StringParameter, item.Parameter - 1);
-                var val = GetValueByPath(_internalState, path);
+                var val = GetValueByPath(_internalState, path).ToString();
                 var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.Input), item.Parameter, item.StringParameter, item.Parameter - 1);
-                result = result && (
-                    (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) || (val is bool && (bool)val == false))) ||
+                var realval = aval;
+                aval = aval.TrimStart('!');
+                bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) /*|| (val is bool && (bool)val == false)*/)) ||
                     (aval == "*") ||
-                    (val != null && !(val is string) && val.GetType().GetMethod("Parse", System.Reflection.BindingFlags.Static).Invoke(null, new object[] { aval }) == val) ||
-                    (val is string && (string)val == aval)
-                    );
+                    (val != null && !(val is string) && aval == val.ToString()) ||
+                    (val is string && (string)val == aval);
+                if (!string.IsNullOrWhiteSpace(aval) && aval[0] == '!')
+                    mult = !mult;
+                result = result && mult;
 
             }
             Active = result;
@@ -342,9 +345,15 @@ namespace vMixController.Widgets
                         Messenger.Default.Send<string>(cmd.StringParameter);
                         break;
                 }
-            else
+            else if (State != null)
             {
-                State.SendFunction(string.Format(cmd.Action.FormatString, GetInputNumber(cmd.Input), cmd.Parameter, cmd.StringParameter));
+                if (!cmd.Action.StateDirect)
+                    State.SendFunction(string.Format(cmd.Action.FormatString, GetInputNumber(cmd.Input), cmd.Parameter, cmd.StringParameter));
+                else
+                {
+                    var path = string.Format(cmd.Action.ActiveStatePath, cmd.Input, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1);
+                    SetValueByPath(State, path, cmd.Action.StateValue == "Input" ? (object)cmd.Input : (cmd.Action.StateValue == "String" ? (object)cmd.StringParameter : (object)cmd.Parameter));
+                }
                 _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
             }
             _pointer++;

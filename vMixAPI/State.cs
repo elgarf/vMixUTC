@@ -84,8 +84,8 @@ namespace vMixAPI
 
         public void Configure(string ip = "127.0.0.1", string port = "8088")
         {
-            _ip = ip;
-            _port = port;
+            _ip = ip.Trim();
+            _port = port.Trim();
             //_configured = true;
             _logger.Info("Configuring to {0}:{1}.", ip, port);
         }
@@ -270,13 +270,15 @@ namespace vMixAPI
 
         public string SendFunction(string textParameters, bool async = true)
         {
-            _logger.Info("Trying to send function {0} in {1} mode.", textParameters, async ? "async" : "sync");
+            _logger.Info("Trying to send function <{0}> in {1} mode.", textParameters, async ? "async" : "sync");
 
 
             OnFunctionSend?.Invoke(this, new FunctionSendArgs() { Function = textParameters });
 
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
             var url = address + textParameters;
+
+            _logger.Info("Function URL is <{0}>.", url);
 
             if (async)
             {

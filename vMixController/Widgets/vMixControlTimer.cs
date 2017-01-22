@@ -259,7 +259,7 @@ namespace vMixController.Widgets
                 _time = value;
 
                 try
-                {   
+                {
                     var _text = _time.ToString(Format);
                     if (_time.Hours > 0 && Format.StartsWith("mm"))
                     {
@@ -269,7 +269,7 @@ namespace vMixController.Widgets
                     }
                     Text = _text;
                 }
-                catch (Exception )
+                catch (Exception)
                 {
                     Text = "Wrong Format";
                 }
@@ -403,17 +403,21 @@ namespace vMixController.Widgets
                                 _timer.Start();
                                 break;
                             case "Pause":
+
                                 if (!Paused)
                                 {
-                                    Paused = true;
-                                    Active = false;
-                                    if (!Reverse)
-                                        Time.Add(_stopwatch.Elapsed);
-                                    else
-                                        Time.Subtract(_stopwatch.Elapsed);
-                                    _stopwatch.Stop();
-                                    _timer.Stop();
-                                    
+                                    if (_timer.IsEnabled && _stopwatch.IsRunning)
+                                    {
+                                        Paused = true;
+                                        Active = false;
+                                        if (!Reverse)
+                                            Time.Add(_stopwatch.Elapsed);
+                                        else
+                                            Time.Subtract(_stopwatch.Elapsed);
+                                        _stopwatch.Stop();
+                                        _timer.Stop();
+                                    }
+
                                 }
                                 else
                                 {
@@ -457,7 +461,7 @@ namespace vMixController.Widgets
         public override void SetProperties(vMixControlSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
-            
+
         }
 
         public override void SetProperties(UserControl[] _controls)
@@ -468,7 +472,7 @@ namespace vMixController.Widgets
 
         public override sealed void Dispose()
         {
-            
+
             _timer.Stop();
             _stopwatch.Stop();
             base.Dispose();
