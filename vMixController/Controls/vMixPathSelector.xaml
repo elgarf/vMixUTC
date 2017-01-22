@@ -29,7 +29,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource PropertyName}">Input</TextBlock>
-            <ComboBox Grid.Column="2" x:Name="Input" ItemsSource="{Binding Model.Inputs, ElementName=Me}" DisplayMemberPath="Title" SelectedIndex="{Binding InputIndex, Mode=TwoWay, ElementName=Me}"></ComboBox>
+            <ComboBox Grid.Column="2" x:Name="Input" ItemsSource="{Binding Model.Inputs, ElementName=Me}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay, ElementName=Me}"></ComboBox>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>

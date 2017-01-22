@@ -177,7 +177,7 @@ namespace vMixController.Widgets
                 return new TableConverter();
         }
 
-        internal virtual void UpdateText(IList<Pair<int, string>> _paths)
+        internal virtual void UpdateText(IList<Pair<string, string>> _paths)
         {
             if (!_updating)
             {
@@ -248,13 +248,13 @@ namespace vMixController.Widgets
         /// </summary>
         public const string PathsPropertyName = "Paths";
 
-        private ObservableCollection<Pair<int, string>> _paths = new ObservableCollection<Pair<int, string>>();
+        private ObservableCollection<Pair<string, string>> _paths = new ObservableCollection<Pair<string, string>>();
 
         /// <summary>
         /// Sets and gets the Paths property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<Pair<int, string>> Paths
+        public ObservableCollection<Pair<string, string>> Paths
         {
             get
             {
@@ -278,7 +278,7 @@ namespace vMixController.Widgets
             var control = GetPropertyControl<TitleMappingControl>();
             control.Titles.Clear();
             foreach (var item in _paths)
-                control.Titles.Add(new Pair<int, string>(item.A, item.B));
+                control.Titles.Add(new Pair<string, string>(item.A, item.B));
 
             var control1 = GetPropertyControl<BoolControl>();
             control1.Visibility = Visibility.Visible;
@@ -301,7 +301,7 @@ namespace vMixController.Widgets
 
             _paths.Clear();
             foreach (var item in (_controls.OfType<TitleMappingControl>().First()).Titles)
-                _paths.Add(new Pair<int, string>(item.A, item.B));
+                _paths.Add(new Pair<string, string>(item.A, item.B));
 
             _isTable = _controls.OfType<BoolControl>().First().Value;
 

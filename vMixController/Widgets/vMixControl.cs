@@ -502,7 +502,11 @@ namespace vMixController.Widgets
                 var array = type.GetProperty(propindex[0]).GetValue(obj);
                 try
                 {
-                    found = (array as IList)[int.Parse(propindex[1])];
+                    if (array is List<Input>)
+                        found = (array as List<Input>).Where(x=>x.Key == propindex[1]).First();
+                    else
+                        found = (array as IList)[int.Parse(propindex[1])];
+
                 }
                 catch (Exception)
                 {

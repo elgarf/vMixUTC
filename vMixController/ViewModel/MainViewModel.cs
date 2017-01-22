@@ -773,7 +773,7 @@ namespace vMixController.ViewModel
                 foreach (var item in _controls)
                     item.State = (vMixAPI.State)sender;
 
-                _logger.Info("Remapping inputs.");
+                /*_logger.Info("Remapping inputs.");
                 Dictionary<int, int> map = new Dictionary<int, int>();
                 if (e.OldInputs != null && e.NewInputs != null)
                 {
@@ -797,7 +797,7 @@ namespace vMixController.ViewModel
                                 cmd.Input = map[cmd.Input];
                     foreach (var item in _controls)
                         item.Update();
-                }
+                }*/
             }
         }
 

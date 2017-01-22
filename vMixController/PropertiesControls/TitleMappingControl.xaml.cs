@@ -30,13 +30,13 @@ namespace vMixController.PropertiesControls
         /// </summary>
         public const string TitlesPropertyName = "Titles";
 
-        private ObservableCollection<Pair<int, string>> _myProperty = new ObservableCollection<Pair<int, string>>();
+        private ObservableCollection<Pair<string, string>> _myProperty = new ObservableCollection<Pair<string, string>>();
 
         /// <summary>
         /// Sets and gets the Titles property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<Pair<int, string>> Titles
+        public ObservableCollection<Pair<string, string>> Titles
         {
             get
             {
@@ -54,17 +54,17 @@ namespace vMixController.PropertiesControls
                 RaisePropertyChanged(TitlesPropertyName);
             }
         }
-        private RelayCommand<Pair<int, string>> _removePathCommand;
+        private RelayCommand<Pair<string, string>> _removePathCommand;
 
         /// <summary>
         /// Gets the RemoveControlCommand.
         /// </summary>
-        public RelayCommand<Pair<int, string>> RemovePathCommand
+        public RelayCommand<Pair<string, string>> RemovePathCommand
         {
             get
             {
                 return _removePathCommand
-                    ?? (_removePathCommand = new RelayCommand<Pair<int, string>>(
+                    ?? (_removePathCommand = new RelayCommand<Pair<string, string>>(
                     p =>
                     {
                         Titles.Remove(p);
@@ -92,7 +92,7 @@ namespace vMixController.PropertiesControls
                     ?? (_addPathCommand = new RelayCommand(
                     () =>
                     {
-                        Titles.Add(new Pair<int, string>() { A = -1, B = "" });
+                        Titles.Add(new Pair<string, string>() { A = null, B = "" });
                     }));
             }
         }

@@ -323,7 +323,7 @@ namespace vMixController.Widgets
             UpdateText(Paths);
         }
 
-        internal override void UpdateText(IList<Pair<int, string>> paths)
+        internal override void UpdateText(IList<Pair<string, string>> paths)
         {
 
 

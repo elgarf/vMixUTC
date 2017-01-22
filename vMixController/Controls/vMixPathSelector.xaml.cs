@@ -45,7 +45,15 @@ namespace vMixController.Controls
             DependencyProperty.Register("InputIndex", typeof(int), typeof(vMixPathSelector), new PropertyMetadata(0, InternalPropertyChanged));
 
 
+        public string InputKey
+        {
+            get { return (string)GetValue(InputKeyProperty); }
+            set { SetValue(InputKeyProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for InputIndex.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputKeyProperty =
+            DependencyProperty.Register("InputKey", typeof(string), typeof(vMixPathSelector), new PropertyMetadata(null, InternalPropertyChanged));
 
 
         public string TitleName
@@ -62,6 +70,18 @@ namespace vMixController.Controls
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            try
+            {
+                var self = (vMixPathSelector)d;
+                /*if (e.Property.Name == "InputIndex")
+                    self.InputKey = self.Model.Inputs[(int)e.NewValue].Key;*/
+                if (e.Property.Name == "InputKey")
+                    self.InputIndex = self.Model.Inputs.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.Key == (string)e.NewValue).First().idx;
+            }
+            catch (Exception)
+            {
+
+            }
             //if (e.Property.Name == "0") ;
             /*if (e.Property != SelectedPathProperty)
                 d.SetValue(SelectedPathProperty, string.Format("Inputs[{0}].Elements[{1}]", (int)d.GetValue(InputIndexProperty), (int)d.GetValue(TitleIndexProperty)));
