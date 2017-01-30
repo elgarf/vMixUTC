@@ -354,7 +354,11 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                     <TextBlock Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
                 </StackPanel>
             </StatusBarItem>
-            <StatusBarItem HorizontalContentAlignment="Right">
+            <Separator/>
+            <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+                <CheckBox IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}">Enable Log</CheckBox>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <Hyperlink ToolTip="{e:Localize Support vMix Universal Title Controller!}" NavigateUri="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=WT9QZ2XH97HMN&amp;lc=US&amp;item_name=vMix%20Universal%20Title%20Controller&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" RequestNavigate="Hyperlink_RequestNavigate">
                     <Image Source="/vMixControllerSkin;component\btn_donate_SM.gif" Stretch="None" Cursor="Hand"/>
                 </Hyperlink>

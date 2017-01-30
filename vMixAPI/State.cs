@@ -112,6 +112,7 @@ namespace vMixAPI
                         Replace(">True<", ">true<").
                         Replace("\"False\"", "\"false\"").
                         Replace("\"True\"", "\"true\""));
+                    
                     doc.Save(ms);
                     ms.Seek(0, SeekOrigin.Begin);
                     var state = (State)s.Deserialize(ms);
@@ -282,29 +283,29 @@ namespace vMixAPI
 
             if (async)
             {
-                try
-                {
+                /*try
+                {*/
                     WebClient _webClient = new vMixWebClient();
                     _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
                     var s = string.IsNullOrEmpty(textParameters) ? "state" : null;
                     _webClient.DownloadStringAsync(new Uri(url), s);
-                }
+                /*}
                 catch (Exception e)
                 {
                     _logger.Error(e, "Error while sending async function");
-                }
+                }*/
             }
             else
             {
-                try
-                {
+                /*try
+                {*/
                     WebClient _webClient = new vMixWebClient();
                     _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
                     return _webClient.DownloadString(url);
-                }
+                /*}
                 catch (WebException)
                 {
-                }
+                }*/
             }
             return null;
         }

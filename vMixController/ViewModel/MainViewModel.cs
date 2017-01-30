@@ -99,6 +99,19 @@ namespace vMixController.ViewModel
                 if (_windowSettings != null)
                     _windowSettings.PropertyChanged -= _windowSettings_PropertyChanged;
                 _windowSettings = value;
+
+
+                if (_windowSettings.EnableLog)
+                {
+                    if (!NLog.LogManager.IsLoggingEnabled())
+                        NLog.LogManager.EnableLogging();
+                }
+                else
+                {
+                    if (NLog.LogManager.IsLoggingEnabled())
+                        NLog.LogManager.DisableLogging();
+                }
+
                 _windowSettings.PropertyChanged += _windowSettings_PropertyChanged;
                 RaisePropertyChanged(WindowSettingsPropertyName);
             }
@@ -639,6 +652,7 @@ namespace vMixController.ViewModel
                             vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
                             UpdatevMixState();
                             UpdateWithLicense();
+
                         }
                     }));
             }
@@ -1056,14 +1070,15 @@ namespace vMixController.ViewModel
 
             _client.DownloadStringCompleted += _client_DownloadStringCompleted;
             _client.CancelAsync();
-            try
-            {
+            while (_client.IsBusy) Thread.Sleep(10);
+            /*try
+            {*/
                 _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
-            }
+            /*}
             catch (Exception)
             {
 
-            }
+            }*/
         }
 
         private void _client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)

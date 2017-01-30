@@ -12,6 +12,7 @@ using vMixController.PropertiesControls;
 using vMixController.ViewModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace vMixController.Widgets
 {
@@ -33,7 +34,7 @@ namespace vMixController.Widgets
         public vMixControlTimer()
         {
             //Text = "00:00:00";
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromSeconds(0.5);
             _timer.Tick += _timer_Tick;
 
             Width = 256;
@@ -60,11 +61,30 @@ namespace vMixController.Widgets
             control.Value = Format;
             var props = base.GetPropertiesControls();
             props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
-            return props.Concat(new UserControl[] { control }).ToArray();
+
+
+            StringControl[] links = new StringControl[] {
+                GetPropertyControl<StringControl>(),
+                GetPropertyControl<StringControl>(),
+                GetPropertyControl<StringControl>()
+            };
+
+            links[0].Title = "On Start";
+            links[0].Value = Links[0];
+            links[0].Tag = 0;
+            links[1].Title = "On Pause";
+            links[1].Value = Links[1];
+            links[1].Tag = 1;
+            links[2].Title = "On Stop";
+            links[2].Value = Links[2];
+            links[2].Tag = 2;
+
+            return props.Concat(new UserControl[] { control }.Union(links)).ToArray();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
         {
+            
             if (!Reverse)
             {
                 var t = Time.Add(_stopwatch.Elapsed);
@@ -74,9 +94,10 @@ namespace vMixController.Widgets
                 else
                 {
                     Time = DefaultTime;
-                    Paused = true;
+                    Paused = false;
                     Active = false;
                     _timer.Stop();
+                    Messenger.Default.Send<string>(Links[2]);
                 }
             }
             else
@@ -88,9 +109,10 @@ namespace vMixController.Widgets
                 else
                 {
                     Time = TimeSpan.Zero;
-                    Paused = true;
+                    Paused = false;
                     Active = false;
                     _timer.Stop();
+                    Messenger.Default.Send<string>(Links[2]);
                 }
             }
         }
@@ -132,6 +154,37 @@ namespace vMixController.Widgets
 
                 _format = value;
                 RaisePropertyChanged(FormatPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="Links" /> property's name.
+        /// </summary>
+        public const string LinksPropertyName = "Links";
+
+        private string[] _links = new string[] { "", "", "" };
+
+        /// <summary>
+        /// Sets and gets the Links property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string[] Links
+        {
+            get
+            {
+                return _links;
+            }
+
+            set
+            {
+                if (_links == value)
+                {
+                    return;
+                }
+
+                _links = value;
+                RaisePropertyChanged(LinksPropertyName);
             }
         }
 
@@ -397,10 +450,19 @@ namespace vMixController.Widgets
                         switch (p)
                         {
                             case "Start":
+                                if (!Paused)
+                                {
+                                    UpdateTimer();
+                                    _stopwatch.Restart();
+                                }
+                                else
+                                    _stopwatch.Start();
                                 Paused = false;
                                 Active = true;
-                                _stopwatch.Start();
+                                
                                 _timer.Start();
+
+                                Messenger.Default.Send<string>(Links[0]);
                                 break;
                             case "Pause":
 
@@ -416,6 +478,7 @@ namespace vMixController.Widgets
                                             Time.Subtract(_stopwatch.Elapsed);
                                         _stopwatch.Stop();
                                         _timer.Stop();
+                                        Messenger.Default.Send<string>(Links[1]);
                                     }
 
                                 }
@@ -425,7 +488,9 @@ namespace vMixController.Widgets
                                     Active = true;
                                     _stopwatch.Start();
                                     _timer.Start();
+                                    Messenger.Default.Send<string>(Links[0]);
                                 }
+                                
                                 break;
                             case "Stop":
                                 Active = false;
@@ -433,6 +498,7 @@ namespace vMixController.Widgets
                                 _stopwatch.Stop();
                                 _timer.Stop();
                                 UpdateTimer();
+                                Messenger.Default.Send<string>(Links[2]);
                                 break;
                             case "+1 Hour":
                                 Time = Time.Add(TimeSpan.FromHours(1));
@@ -468,6 +534,10 @@ namespace vMixController.Widgets
         {
             base.SetProperties(_controls);
             Format = _controls.OfType<StringControl>().First().Value;
+
+            Links[0] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 0).First().Value;
+            Links[1] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 1).First().Value;
+            Links[2] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 2).First().Value;
         }
 
         public override sealed void Dispose()

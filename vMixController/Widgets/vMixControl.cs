@@ -503,9 +503,15 @@ namespace vMixController.Widgets
                 try
                 {
                     if (array is List<Input>)
-                        found = (array as List<Input>).Where(x=>x.Key == propindex[1]).First();
+                        found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
                     else
-                        found = (array as IList)[int.Parse(propindex[1])];
+                    {
+                        var idx = int.Parse(propindex[1]);
+                        if (idx >= 0 && idx < (array as IList).Count)
+                            found = (array as IList)[idx];
+                        else
+                            return null;
+                    }
 
                 }
                 catch (Exception)
@@ -529,7 +535,7 @@ namespace vMixController.Widgets
                 return;
             var type = obj.GetType();
             object found = null;
-            System.Reflection.PropertyInfo found_prop;
+            System.Reflection.PropertyInfo found_prop = null;
             if (string.IsNullOrWhiteSpace(path))
                 return;
             var items = path.Split('.');
@@ -539,28 +545,46 @@ namespace vMixController.Widgets
             if (items[0].Contains('['))
             {
                 var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
-                var array = type.GetProperty(propindex[0]).GetValue(obj);
-                found_prop = type.GetProperty(propindex[0]);
-                try
+                found_prop = type.GetProperties().Where(x => x.Name == propindex[0]).FirstOrDefault();
+                if (found_prop != null)
                 {
-                    found = (array as IList)[int.Parse(propindex[1])];
+                    var array = found_prop.GetValue(obj);
+                    //try
+                    {
+                        if (array is List<Input>)
+                            found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
+                        else
+                        {
+                            var idx = int.Parse(propindex[1]);
+                            if (idx >= 0 && idx < (array as IList).Count)
+                                found = (array as IList)[idx];
+                            else
+                                found = null;
+                        }
+
+                    }
+                    /*catch (Exception)
+                    {
+                        found = null;
+                    }*/
                 }
-                catch (Exception)
-                {
-                    return;
-                }
+                else
+                    found = null;
 
             }
             else
             {
                 var propindex = items[0];
-                found = type.GetProperty(propindex).GetValue(obj);
-                found_prop = type.GetProperty(propindex);
+                found_prop = type.GetProperties().Where(x => x.Name == propindex).FirstOrDefault();
+                if (found_prop != null)
+                    found = found_prop.GetValue(obj);
+                else
+                    found = null;
 
             }
             if (items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
-            else
+            else if (found_prop != null)
                 found_prop.SetValue(obj, value);
         }
 

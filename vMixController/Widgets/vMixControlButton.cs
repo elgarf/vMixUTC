@@ -85,7 +85,8 @@ namespace vMixController.Widgets
             {
                 if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
                 var path = string.Format(item.Action.ActiveStatePath, item.InputKey, item.Parameter, item.StringParameter, item.Parameter - 1);
-                var val = GetValueByPath(_internalState, path).ToString();
+                var nval = GetValueByPath(_internalState, path);
+                var val = nval == null ? "" : nval.ToString();
                 var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey), item.Parameter, item.StringParameter, item.Parameter - 1);
                 var realval = aval;
                 aval = aval.TrimStart('!');

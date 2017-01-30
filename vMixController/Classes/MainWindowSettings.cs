@@ -9,7 +9,7 @@ using System.Windows;
 namespace vMixController.Classes
 {
     [Serializable]
-    public class MainWindowSettings: ObservableObject
+    public class MainWindowSettings : ObservableObject
     {
         /// <summary>
         /// The <see cref="State" /> property's name.
@@ -279,6 +279,46 @@ namespace vMixController.Classes
 
                 _uiScale = value;
                 RaisePropertyChanged(UIScalePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="EnableLog" /> property's name.
+        /// </summary>
+        public const string EnableLogPropertyName = "EnableLog";
+
+        private bool _enableLog = false;
+
+        /// <summary>
+        /// Sets and gets the EnableLog property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool EnableLog
+        {
+            get
+            {
+                return _enableLog;
+            }
+
+            set
+            {
+                if (_enableLog == value)
+                {
+                    return;
+                }
+
+                _enableLog = value;
+                if (value)
+                {
+                    if (!NLog.LogManager.IsLoggingEnabled())
+                        NLog.LogManager.EnableLogging();
+                }
+                else
+                {
+                    if (NLog.LogManager.IsLoggingEnabled())
+                        NLog.LogManager.DisableLogging();
+                }
+                RaisePropertyChanged(EnableLogPropertyName);
             }
         }
 
