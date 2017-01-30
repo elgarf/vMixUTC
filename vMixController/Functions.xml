@@ -188,6 +188,24 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
+    <Description>DataSourceSelectRow</Description>
+    <Function>DataSourceSelectRow</Function>
+    <FormatString>Function=DataSourceSelectRow&amp;Value={2}</FormatString>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>DataSourceNextRow</Description>
+    <Function>DataSourceNextRow</Function>
+    <FormatString>Function=DataSourceNextRow&amp;Value={2}</FormatString>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>DataSourcePreviousRow</Description>
+    <Function>DataSourcePreviousRow</Function>
+    <FormatString>Function=DataSourcePreviousRow&amp;Value={2}</FormatString>
+  </vMixFunctionReference>
+  
+  <vMixFunctionReference>
     <Native>true</Native>
     <Description>Execute link</Description>
     <Function>ExecLink</Function>
