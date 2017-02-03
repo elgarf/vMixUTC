@@ -134,7 +134,7 @@ namespace vMixController.Widgets
             if (!string.IsNullOrWhiteSpace(fp))
             {
                 _controls.Clear();
-                foreach (var item in Utils.LoadController(fp, out _tmp).OrderBy(x=>x.Top))
+                foreach (var item in Utils.LoadController(fp, null, out _tmp).OrderBy(x=>x.Top))
                 {
                     item.Width = Width - 2;
                     item.State = State;

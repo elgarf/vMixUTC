@@ -638,7 +638,7 @@ namespace vMixController.ViewModel
                                 item.Dispose();
                             _controls.Clear();
 
-                            foreach (var item in Utils.LoadController(opendlg.FileName, out _windowSettings))
+                            foreach (var item in Utils.LoadController(opendlg.FileName, Functions, out _windowSettings))
                                 _controls.Add(item);
 
                             foreach (var item in _controls)

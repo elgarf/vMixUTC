@@ -15,7 +15,7 @@ namespace vMixController.Classes
     public static class Utils
     {
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public static ObservableCollection<vMixControl> LoadController(string fileName, out MainWindowSettings windowSettings)
+        public static ObservableCollection<vMixControl> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
         {
             var _controls = new ObservableCollection<vMixControl>();
             using (var stream = File.OpenRead(fileName))
@@ -29,7 +29,19 @@ namespace vMixController.Classes
                     XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControl>));
                     var collection = (ObservableCollection<vMixControl>)s.Deserialize(reader);
                     foreach (var item in collection)
+                    {
                         _controls.Add(item);
+                        if (functions != null && item is vMixControlButton)
+                        {
+                            var btn = item as vMixControlButton;
+                            foreach (var command in btn.Commands)
+                            {
+                                var newFunction = functions.Where(x => x.Function == command.Action.Function).FirstOrDefault();
+                                if (newFunction != null)
+                                    command.Action = newFunction;
+                            }
+                        }
+                    }
                     reader.ReadEndElement();
                     reader.ReadStartElement();
 
