@@ -184,6 +184,7 @@
     <Compile Include="Controls\vMixControlContainer.xaml.cs">
       <DependentUpon>vMixControlContainer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\vMixControlContainerDummy.cs" />
     <Compile Include="Controls\vMixControlMoveThumb.cs" />
     <Compile Include="Controls\vMixControlResizeThumb.cs" />
     <Compile Include="Controls\vMixPathSelector.xaml.cs">

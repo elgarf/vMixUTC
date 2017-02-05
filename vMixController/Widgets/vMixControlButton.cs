@@ -27,6 +27,37 @@ namespace vMixController.Widgets
         int _waitBeforeUpdate = -1;
         DateTime _lastShadowUpdate = DateTime.Now;
 
+        /// <summary>
+            /// The <see cref="HasScriptErrors" /> property's name.
+            /// </summary>
+        public const string HasScriptErrorsPropertyName = "HasScriptErrors";
+
+        private bool _hasScriptErrors = false;
+
+        /// <summary>
+        /// Sets and gets the HasScriptErrors property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        [XmlIgnore]
+        public bool HasScriptErrors
+        {
+            get
+            {
+                return _hasScriptErrors;
+            }
+
+            set
+            {
+                if (_hasScriptErrors == value)
+                {
+                    return;
+                }
+
+                _hasScriptErrors = value;
+                RaisePropertyChanged(HasScriptErrorsPropertyName);
+            }
+        }
+
         [XmlIgnore]
         public override State State
         {
@@ -77,16 +108,19 @@ namespace vMixController.Widgets
                 RealUpdateActiveProperty();
         }
 
-        private void RealUpdateActiveProperty()
+        private void RealUpdateActiveProperty(bool skipStateDependency = false, vMixAPI.State stateToCheck = null)
         {
-            if (!IsStateDependent || _internalState == null) return;
+            if (stateToCheck == null) stateToCheck = _internalState;
+            if ((!IsStateDependent && skipStateDependency) || stateToCheck == null) return;
             var result = true;
+            HasScriptErrors = false;
             foreach (var item in _commands)
             {
                 if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
                 var path = string.Format(item.Action.ActiveStatePath, item.InputKey, item.Parameter, item.StringParameter, item.Parameter - 1);
-                var nval = GetValueByPath(_internalState, path);
+                var nval = GetValueByPath(stateToCheck, path);
                 var val = nval == null ? "" : nval.ToString();
+                HasScriptErrors = HasScriptErrors || nval == null;
                 var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey), item.Parameter, item.StringParameter, item.Parameter - 1);
                 var realval = aval;
                 aval = aval.TrimStart('!');
@@ -418,7 +452,8 @@ namespace vMixController.Widgets
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
-            RealUpdateActiveProperty();
+            
+            RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);
         }
 

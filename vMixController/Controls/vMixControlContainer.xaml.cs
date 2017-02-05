@@ -14,120 +14,63 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace vMixController.Controls
 {
     /// <summary>
     /// Логика взаимодействия для vMixControlContainer.xaml
     /// </summary>
-    public partial class vMixControlContainer : UserControl
+    public partial class vMixControlContainer : UserControl, INotifyPropertyChanged
     {
+        public Action<object, SizeChangedEventArgs> OnSizeChanged { get; set; }
+
+        /// <summary>
+        /// The <see cref="ParentContainer" /> property's name.
+        /// </summary>
+        public const string ParentContainerPropertyName = "ParentContainer";
+
+        private vMixControlContainerDummy _parentContainer = null;
+
+        /// <summary>
+        /// Sets and gets the ParentContainer property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public vMixControlContainerDummy ParentContainer
+        {
+            get
+            {
+                return _parentContainer;
+            }
+
+            set
+            {
+                if (_parentContainer == value)
+                {
+                    return;
+                }
+
+                _parentContainer = value;
+                RaisePropertyChanged(ParentContainerPropertyName);
+            }
+        }
+
+        private void RaisePropertyChanged(string parentContainerPropertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(parentContainerPropertyName));
+        }
+
         public vMixControlContainer()
         {
             InitializeComponent();
         }
 
-        public vMixController.Widgets.vMixControl Control
-        {
-            get { return (vMixController.Widgets.vMixControl)GetValue(ControlProperty); }
-            set { SetValue(ControlProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Control.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ControlProperty =
-            DependencyProperty.Register("Control", typeof(vMixController.Widgets.vMixControl), typeof(vMixControlContainer), new PropertyMetadata(null));
-
-        public RelayCommand<Widgets.vMixControl> CloseCommand
-        {
-            get { return (RelayCommand<Widgets.vMixControl>)GetValue(CloseCommandProperty); }
-            set { SetValue(CloseCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CloseCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CloseCommandProperty =
-            DependencyProperty.Register("CloseCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainer), new PropertyMetadata(null));
-
-
-
-        public RelayCommand<Widgets.vMixControl> SettingsCommand
-        {
-            get { return (RelayCommand<Widgets.vMixControl>)GetValue(SettingsCommandProperty); }
-            set { SetValue(SettingsCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SettingsCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SettingsCommandProperty =
-            DependencyProperty.Register("SettingsCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainer), new PropertyMetadata(null));
-
-
-
-
-        public RelayCommand<Widgets.vMixControl> CopyCommand
-        {
-            get { return (RelayCommand<Widgets.vMixControl>)GetValue(CopyCommandProperty); }
-            set { SetValue(CopyCommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CopyCommandProperty =
-            DependencyProperty.Register("CopyCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainer), new PropertyMetadata(null));
-
-
-
-        public object MainContent
-        {
-            get { return (object)GetValue(MainContentProperty); }
-            set { SetValue(MainContentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MainContent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MainContentProperty =
-            DependencyProperty.Register("MainContent", typeof(object), typeof(vMixControlContainer), new PropertyMetadata(null));
-
-
-
-        public object CaptionContent
-        {
-            get { return (object)GetValue(CaptionContentProperty); }
-            set { SetValue(CaptionContentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CaptionContent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CaptionContentProperty =
-            DependencyProperty.Register("CaptionContent", typeof(object), typeof(vMixControlContainer), new PropertyMetadata(null));
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void CC_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (!double.IsNaN(ContentControl.ActualHeight) && ContentControl.ActualHeight != 0)
-                Control.Height = ContentControl.ActualHeight;
-            if (!double.IsNaN(Caption.ActualHeight) && Caption.ActualHeight != 0)
-                Control.CaptionHeight = Caption.ActualHeight;
+            OnSizeChanged?.Invoke(sender, e);
         }
     }
 
-    public class LockButtonConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return ((bool)value) ? (char)0xE1F6 : (char)0xE1F7;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class LockToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return ((bool)value) ? Visibility.Hidden : Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

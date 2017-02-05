@@ -60,6 +60,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid Margin="2" Background="Black">
+
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
