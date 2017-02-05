@@ -16,7 +16,7 @@
         mc:Ignorable="d ignore"
         Title="{e:Localize Widget Properties}"
         Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="169.154"
-        Width="512" Height="512" WindowStartupLocation="CenterScreen">
+        Width="512" Height="512" WindowStartupLocation="CenterScreen" Background="Black">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -105,7 +105,7 @@
                     <Grid>
                         <TextBlock Style="{StaticResource PropertyName}" HorizontalAlignment="Center" Text="{e:Localize No hotkeys available for this widget}"></TextBlock>
                         <StackPanel Visibility="{Binding Hotkey.Count, Converter={StaticResource IntegerToVisibilityConverter}, Mode=OneWay}">
-                            <Grid Background="Black">
+                            <!--<Grid Background="Black">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
@@ -120,9 +120,82 @@
                                 <TextBlock Grid.Column="3" Style="{StaticResource PropertyName}">Shift</TextBlock>
                                 <TextBlock Grid.Column="4" Style="{StaticResource PropertyName}" Text="{e:Localize Key}"></TextBlock>
                                 <TextBlock Grid.Column="5" Style="{StaticResource PropertyName}" Text="{e:Localize Link}"></TextBlock>
-                            </Grid>
+                            </Grid>-->
                             <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding Hotkey}">
                                 <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <GridViewRowPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="{e:Localize Active}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsChecked="{Binding Active, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="{e:Localize Name}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Label Content="{Binding Name}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Alt">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>                                            
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Ctrl">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Ctrl, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Shift">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Shift, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="{e:Localize Key}" Width="100">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox IsEnabled="{Binding Active}" SelectedItem="{Binding Key, Mode=TwoWay}" ItemsSource="{Binding Source={StaticResource KeyValues}}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="{e:Localize Link}" Width="100">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox IsEnabled="{Binding Active}" Text="{Binding Link}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="50">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button IsEnabled="{Binding Active}" Content="{e:Localize Learn}" Command="{Binding ControlSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                                <!--<ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Template">
                                             <Setter.Value>
@@ -134,8 +207,8 @@
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate>
+                                </ListView.ItemContainerStyle>-->
+                                <!--<ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -146,9 +219,7 @@
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition/>
                                             </Grid.ColumnDefinitions>
-                                            <CheckBox IsChecked="{Binding Active, Mode=TwoWay}">
-                                                <TextBlock Style="{StaticResource PropertyName}" Text="{Binding Name}"/>
-                                            </CheckBox>
+                                            
 
                                             <CheckBox Grid.Column="1" IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}">
                                                 <TextBlock Style="{StaticResource PropertyName}"><Run Text="Alt"/></TextBlock>
@@ -167,7 +238,7 @@
                                             <TextBox Grid.Column="5" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=cb}" IsEnabled="{Binding Active}" Margin="{StaticResource LeftStdMargin}" Text="{Binding Link}"/>
                                         </Grid>
                                     </DataTemplate>
-                                </ListView.ItemTemplate>
+                                </ListView.ItemTemplate>-->
                             </ListView>
                         </StackPanel>
                     </Grid>
@@ -197,7 +268,7 @@
                     </ListView>
                 </StackPanel>-->
 
-                <ItemsControl ItemsSource="{Binding WidgetPropertiesControls}">
+                <ItemsControl VerticalContentAlignment="Stretch" ItemsSource="{Binding WidgetPropertiesControls}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <ContentControl Content="{Binding}"/>

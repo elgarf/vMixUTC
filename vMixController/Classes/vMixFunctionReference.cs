@@ -21,6 +21,12 @@ namespace vMixController.Classes
                     HasInputProperty = _formatString.Contains("{0}");
                     HasIntProperty = _formatString.Contains("{1}");
                     HasStringProperty = _formatString.Contains("{2}");
+                    if (!HasInputProperty)
+                        InputDescription = "N/A";
+                    if (!HasIntProperty)
+                        IntDescription = "N/A";
+                    if (!HasStringProperty)
+                        StringDescription = "N/A";
                 }
             } }
 
@@ -37,6 +43,11 @@ namespace vMixController.Classes
 
         public int TransitionNumber { get; set; }
 
+
+        public string IntDescription { get; set; }
+        public string StringDescription { get; set; }
+        public string InputDescription { get; set; }
+
         public override bool Equals(object obj)
         {
             return (obj is vMixFunctionReference) && Function == (obj as vMixFunctionReference).Function;
@@ -45,6 +56,13 @@ namespace vMixController.Classes
         public override int GetHashCode()
         {
             return Function.GetHashCode();
+        }
+
+        public vMixFunctionReference()
+        {
+            InputDescription = "Input";
+            IntDescription = "Integer";
+            StringDescription = "String";
         }
 
     }

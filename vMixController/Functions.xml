@@ -4,7 +4,8 @@
   {0} - Input
   {1} - Parameter
   {2} - StringParameter
-  {3} - Parameter - 1-->
+  {3} - Parameter - 1
+  {4} - Number of Input-->
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Dummy function</Description>
@@ -25,11 +26,13 @@
     <Description>Transition using stinger</Description>
     <Function>Stinger</Function>
     <FormatString>Function=Stinger{1}</FormatString>
+    <IntDescription>Number</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Use transition</Description>
     <Function>Transition</Function>
     <FormatString>Function=Transition{1}</FormatString>
+    <IntDescription>Number</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>FadeToBlack</Description>
@@ -96,6 +99,7 @@
     <Description>ReplayMarkInOutLive</Description>
     <Function>ReplayMarkInOutLive</Function>
     <FormatString>Function=ReplayMarkInOutLive&amp;Value={1}</FormatString>
+    <IntDescription>Time</IntDescription>
   </vMixFunctionReference>
   
   <vMixFunctionReference>
@@ -105,6 +109,7 @@
     
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
     <ActiveStateValue>!{0}</ActiveStateValue>
+    <IntDescription>Overlay</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Switch overlay off</Description>
@@ -115,6 +120,7 @@
     <ActiveStateValue>*</ActiveStateValue>
 
     <TransitionIndex>0</TransitionIndex>
+    <IntDescription>Overlay</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Fade out overlay</Description>
@@ -125,6 +131,7 @@
     <ActiveStateValue>*</ActiveStateValue>
 
     <TransitionIndex>0</TransitionIndex>
+    <IntDescription>Overlay</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Toggle overlay</Description>
@@ -135,33 +142,40 @@
     <ActiveStateValue>{0}</ActiveStateValue>
 
     <TransitionIndex>0</TransitionIndex>
+    <IntDescription>Overlay</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>Set countdown format hh:mm:ss</Description>
     <Function>SetCountdown</Function>
     <FormatString>Function=SetCountdown&amp;Input={0}&amp;Value={2}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Title</IntDescription>
+    <StringDescription>Time</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Start countdown</Description>
     <Function>StartCountdown</Function>
     <FormatString>Function=StartCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Title</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Stop countdown</Description>
     <Function>StopCountdown</Function>
     <FormatString>Function=StopCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Title</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Pause countdown</Description>
     <Function>PauseCountdown</Function>
     <FormatString>Function=PauseCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Title</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>KeyPress</Description>
     <Function>KeyPress</Function>
     <FormatString>Function=KeyPress&amp;Value={2}</FormatString>
+    <StringDescription>Key</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -174,6 +188,9 @@
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Elements[{1}].Text</StatePath>
     <StateValue>String</StateValue>
+
+    <IntDescription>Title</IntDescription>
+    <StringDescription>Value</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -185,24 +202,29 @@
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Elements[{1}].Image</StatePath>
     <StateValue>String</StateValue>
+    <IntDescription>Title</IntDescription>
+    <StringDescription>Path</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>DataSourceSelectRow</Description>
     <Function>DataSourceSelectRow</Function>
     <FormatString>Function=DataSourceSelectRow&amp;Value={2}</FormatString>
+    <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>DataSourceNextRow</Description>
     <Function>DataSourceNextRow</Function>
     <FormatString>Function=DataSourceNextRow&amp;Value={2}</FormatString>
+    <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>DataSourcePreviousRow</Description>
     <Function>DataSourcePreviousRow</Function>
     <FormatString>Function=DataSourcePreviousRow&amp;Value={2}</FormatString>
+    <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
   
   <vMixFunctionReference>
@@ -212,6 +234,9 @@
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
     <HasStringProperty>true</HasStringProperty>
+    <StringDescription>Link</StringDescription>
+    <InputDescription>N/A</InputDescription>
+    <IntDescription>N/A</IntDescription>
   </vMixFunctionReference>
   
   <vMixFunctionReference>
@@ -221,6 +246,9 @@
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>
+    <IntDescription>Interval</IntDescription>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -230,6 +258,9 @@
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
+    <IntDescription>N/A</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -239,6 +270,9 @@
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>
+    <IntDescription>Command Index</IntDescription>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
   </vMixFunctionReference>
 
 </ArrayOfVMixFunctionReference>

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -484,6 +485,11 @@ namespace vMixController.Widgets
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        protected PropertyInfo GetPropertyOrNull(Type type, string name)
+        {
+            return type.GetProperties().Where(x => x.Name == name).FirstOrDefault();
+        }
+
         protected object GetValueByPath(object obj, string path)
         {
             if (obj == null)
@@ -499,8 +505,8 @@ namespace vMixController.Widgets
             if (items[0].Contains('['))
             {
                 var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
-                var array = type.GetProperty(propindex[0]).GetValue(obj);
-                try
+                var array = GetPropertyOrNull(type, propindex[0])?.GetValue(obj);
+                if (array != null)
                 {
                     if (array is List<Input>)
                         found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
@@ -514,7 +520,7 @@ namespace vMixController.Widgets
                     }
 
                 }
-                catch (Exception)
+                else
                 {
                     return null;
                 }
@@ -522,7 +528,8 @@ namespace vMixController.Widgets
             else
             {
                 var propindex = items[0];
-                found = type.GetProperty(propindex).GetValue(obj);
+                
+                found = GetPropertyOrNull(type, propindex)?.GetValue(obj);
             }
             if (items.Length > 1 && found != null)
                 return GetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y));
@@ -545,7 +552,7 @@ namespace vMixController.Widgets
             if (items[0].Contains('['))
             {
                 var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
-                found_prop = type.GetProperties().Where(x => x.Name == propindex[0]).FirstOrDefault();
+                found_prop = GetPropertyOrNull(type, propindex[0]);
                 if (found_prop != null)
                 {
                     var array = found_prop.GetValue(obj);
@@ -575,7 +582,7 @@ namespace vMixController.Widgets
             else
             {
                 var propindex = items[0];
-                found_prop = type.GetProperties().Where(x => x.Name == propindex).FirstOrDefault();
+                found_prop = GetPropertyOrNull(type, propindex);
                 if (found_prop != null)
                     found = found_prop.GetValue(obj);
                 else
@@ -584,7 +591,7 @@ namespace vMixController.Widgets
             }
             if (items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
-            else if (found_prop != null)
+            else if (found_prop != null && found_prop.PropertyType == value.GetType())
                 found_prop.SetValue(obj, value);
         }
 

@@ -314,7 +314,7 @@ namespace vMixController.Widgets
         {
             try
             {
-                return State.Inputs.Where(x=>x.Key == key).FirstOrDefault().Number.ToString();
+                return State.Inputs.Where(x => x.Key == key).FirstOrDefault().Number.ToString();
             }
             catch (Exception)
             {
@@ -360,11 +360,16 @@ namespace vMixController.Widgets
                 }
             else if (State != null)
             {
+                var input = State.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
+
                 if (!cmd.Action.StateDirect)
-                    State.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, cmd.Parameter, cmd.StringParameter));
+                {
+
+                    State.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1, input.HasValue ? input.Value : 0));
+                }
                 else
                 {
-                    var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1);
+                    var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, cmd.Parameter, cmd.StringParameter, cmd.Parameter - 1, input.HasValue ? input.Value : 0);
                     SetValueByPath(State, path, cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? (object)cmd.StringParameter : (object)cmd.Parameter));
                 }
                 _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
@@ -392,6 +397,7 @@ namespace vMixController.Widgets
             //!!!!!
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
+            control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             control.Commands.Clear();
             foreach (var item in Commands)
             {

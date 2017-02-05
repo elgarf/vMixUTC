@@ -93,7 +93,7 @@ namespace vMixController.PropertiesControls
                     ?? (_addCommandCommand = new RelayCommand(
                     () =>
                     {
-                        Commands.Add(new vMixControlButtonCommand());
+                        Commands.Add(new vMixControlButtonCommand() { Action = new Classes.vMixFunctionReference() });
                     }));
             }
         }

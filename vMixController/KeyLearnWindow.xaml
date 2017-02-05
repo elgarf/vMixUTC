@@ -1,0 +1,21 @@
+﻿<Window x:Class="vMixController.KeyLearnWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:vMixController"
+        mc:Ignorable="d"
+        Title="KeyLearnWindow" Height="300" Width="300" KeyUp="Window_KeyUp" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border BorderBrush="Red" BorderThickness="5">
+        <Grid Background="Black">
+            <Label FontSize="32" Padding="16" VerticalAlignment="Center" HorizontalAlignment="Center">Press Key</Label>
+        </Grid>
+    </Border>
+</Window>

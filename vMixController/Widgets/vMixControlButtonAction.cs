@@ -176,5 +176,10 @@ namespace vMixController.Widgets
             }
         }
 
+        public vMixControlButtonCommand()
+        {
+            Action = new vMixFunctionReference();
+        }
+
     }
 }

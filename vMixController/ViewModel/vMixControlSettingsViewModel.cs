@@ -499,6 +499,31 @@ namespace vMixController.ViewModel
             }
         }
 
+
+        private RelayCommand<Hotkey> _learnKeyCommand;
+
+        /// <summary>
+        /// Gets the LearnKeyCommand.
+        /// </summary>
+        public RelayCommand<Hotkey> LearnKeyCommand
+        {
+            get
+            {
+                return _learnKeyCommand
+                    ?? (_learnKeyCommand = new RelayCommand<Hotkey>(
+                    p =>
+                    {
+                        var wnd = new KeyLearnWindow();
+                        var result = wnd.ShowDialog();
+                        if (result ?? true)
+                        {
+                            p.Key = wnd.PressedKey;
+                            wnd.Close();
+                        }
+                    }));
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the vMixControlSettingsViewModel class.
         /// </summary>

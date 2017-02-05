@@ -179,6 +179,7 @@
     <Compile Include="Classes\Triple.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />
+    <Compile Include="Controls\TwoColumnGrid.cs" />
     <Compile Include="Controls\TypeTemplateSelector.cs" />
     <Compile Include="Controls\vMixControlContainer.xaml.cs">
       <DependentUpon>vMixControlContainer.xaml</DependentUpon>
@@ -206,6 +207,9 @@
     <Compile Include="Converters\TagConverter.cs" />
     <Compile Include="Extensions\LocalizationManager.cs" />
     <Compile Include="Extensions\Localize.cs" />
+    <Compile Include="KeyLearnWindow.xaml.cs">
+      <DependentUpon>KeyLearnWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertiesControls\DataSourceControl.xaml.cs">
       <DependentUpon>DataSourceControl.xaml</DependentUpon>
     </Compile>
@@ -258,6 +262,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\vMixPathSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeyLearnWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixController.PropertiesControls"
+             xmlns:ctrls="clr-namespace:vMixController.Controls"
              xmlns:e="clr-namespace:vMixController.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -20,12 +21,32 @@
             <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Script}"/></TextBlock>
             <Button ToolTip="{e:Localize Add script command}" Style="{StaticResource TitleButton}" Command="{Binding AddCommandCommand, ElementName=Me}" Content="&#xE109;"/>
         </StackPanel>
-        <ListView ItemsSource="{Binding Commands, ElementName=Me}" HorizontalContentAlignment="Stretch">
+
+        <ListView AlternationCount="100500" ItemsSource="{Binding Commands, ElementName=Me}" SelectedIndex="0" HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <!--<Label Content="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}}"></Label>-->
+                            <ctrls:TwoColumnGrid Grid.Column="1" RowSpacing="4" ColumnSpacing="4">
+                                <Label Content="{e:Localize Command}"/>
+                                <ComboBox x:Name="Func" Grid.Row="1" SelectedItem="{Binding Action, Mode=TwoWay}" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}" DisplayMemberPath="Function"/>
+                                <Label Content="{Binding SelectedValue.InputDescription, ElementName=Func, FallbackValue=N/A}"/>
+                                <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}"/>
+                                <Label Content="{Binding SelectedValue.IntDescription, ElementName=Func, FallbackValue=N/A}"/>
+                                <TextBox IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}"/>
+                                <Label Content="{Binding SelectedValue.StringDescription, ElementName=Func, FallbackValue=N/A}"/>
+                                <TextBox IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" Text="{Binding StringParameter, Mode=TwoWay}"/>
 
-                    <Grid Width="Auto" HorizontalAlignment="Stretch">
-                        <Grid.RowDefinitions>
+                                <!--<Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -52,8 +73,15 @@
                             <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding MoveCommandDownCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE0A1;"/>
 
                             <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding RemoveCommandCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE10A;"/>
+                        </StackPanel>-->
+                            </ctrls:TwoColumnGrid>
+                        </Grid>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="2,0,0,0" Orientation="Vertical" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding MoveCommandUpCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE0A0;"/>
+                            <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding MoveCommandDownCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE0A1;"/>
+
+                            <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding RemoveCommandCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xE10A;"/>
                         </StackPanel>
-                        <!--<TextBlock Style="{StaticResource PropertyName}" Grid.Row="2" Text="{Binding SelectedValue.Description, ElementName=Func, FallbackValue=No description}"/>-->
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
