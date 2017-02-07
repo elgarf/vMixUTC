@@ -195,10 +195,10 @@ namespace vMixAPI
                 return false;
             }
 
-            _logger.Info("Calculating difference.");
+            /*_logger.Info("Calculating difference.");
             Diff(this, _temp);
 
-            _logger.Info("Updating inputs.");
+            _logger.Info("Updating inputs.");*/
 
             Inputs.Clear();
             foreach (var item in _temp.Inputs)
@@ -245,8 +245,8 @@ namespace vMixAPI
                         OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
                 }
 
-                _logger.Info("Calculating difference.");
-                Diff(this, _temp);
+                /*_logger.Info("Calculating difference.");
+                Diff(this, _temp);*/
 
                 _logger.Info("Updating inputs.");
 

@@ -92,6 +92,16 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                         </Rectangle>
                     </MenuItem.Icon>
                 </MenuItem>
+                <Separator/>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
+                    <MenuItem.Icon>
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.box.png" Viewbox="{StaticResource IconViewbox}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
                     <MenuItem.Icon>
                         <Rectangle>
@@ -101,11 +111,11 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                         </Rectangle>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
                     <MenuItem.Icon>
                         <Rectangle>
                             <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.box.png" Viewbox="{StaticResource IconViewbox}"/>
+                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.camera.flash.png" Viewbox="{StaticResource IconViewbox}"/>
                             </Rectangle.Fill>
                         </Rectangle>
                     </MenuItem.Icon>

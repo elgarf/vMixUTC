@@ -45,7 +45,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Border Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Background="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <Ellipse Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
             <TextBlock HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}"/>
         </Grid>
     </Button>
@@ -207,6 +207,14 @@
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 
+    <DataTemplate x:Key="vMixControlMidiInterface">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <Label HorizontalAlignment="Center" Content="{Binding DeviceCaps}"/>
+            </ctrls:vMixControlContainerDummy.MainContent>
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+    
     <DataTemplate x:Key="vMixControlExternalData">
         <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>

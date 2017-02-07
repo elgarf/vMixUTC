@@ -34,7 +34,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlExternalData)),
         XmlInclude(typeof(vMixControlTimer)),
         XmlInclude(typeof(vMixControlContainer)),
-        XmlInclude(typeof(vMixControlMultiState))]
+        XmlInclude(typeof(vMixControlMultiState)),
+        XmlInclude(typeof(vMixControlMidiInterface))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
@@ -490,33 +491,68 @@ namespace vMixController.Widgets
             return type.GetProperties().Where(x => x.Name == name).FirstOrDefault();
         }
 
-        protected object GetValueByPath(object obj, string path)
+        private string[] GetValueAndPropertyInfo(object obj, string path, out PropertyInfo found_prop, out object found)
         {
+            found_prop = null;
+            found = null;
             if (obj == null)
                 return null;
             var type = obj.GetType();
-            object found = null;
             if (string.IsNullOrWhiteSpace(path))
                 return null;
             var items = path.Split('.');
             if (items.Length < 1)
                 return null;
 
+            //If path goes to array
             if (items[0].Contains('['))
             {
+                //Split path to array and index
                 var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
-                var array = GetPropertyOrNull(type, propindex[0])?.GetValue(obj);
+                found_prop = GetPropertyOrNull(type, propindex[0]);
+                var array = found_prop?.GetValue(obj);
                 if (array != null)
                 {
+                    //If it's array of Inputs just look to the right key
                     if (array is List<Input>)
                         found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
                     else
                     {
-                        var idx = int.Parse(propindex[1]);
-                        if (idx >= 0 && idx < (array as IList).Count)
-                            found = (array as IList)[idx];
+                        //If it's just index
+                        if (!propindex[1].Contains("/"))
+                        {
+                            var idx = int.Parse(propindex[1]);
+                            if (idx >= 0 && idx < (array as IList).Count)
+                                found = (array as IList)[idx];
+                            else
+                                return null;
+                        }
+                        //If it has Type/Property/Value descriptor
                         else
-                            return null;
+                        {
+                            var parts = propindex[1].Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (parts.Length < 3) return null;
+                            var tpof = Assembly.GetAssembly(typeof(Input)).DefinedTypes.Where(x => x.Name.Contains(parts[0])).First().UnderlyingSystemType;
+                            var idx = int.Parse(parts[2]);
+                            if (idx >= 0 && idx < (array as IList).Count)
+                            {
+                                foreach (var item in array as IList)
+                                {
+                                    if (tpof.IsInstanceOfType(item))
+                                    {
+                                        var p = GetPropertyOrNull(tpof, parts[1]);
+                                        if (p != null && p.PropertyType == typeof(int))
+                                            if ((int)p.GetValue(item) == idx)
+                                            {
+                                                found = item;
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+                            else
+                                return null;
+                        }
                     }
 
                 }
@@ -528,68 +564,31 @@ namespace vMixController.Widgets
             else
             {
                 var propindex = items[0];
-                
-                found = GetPropertyOrNull(type, propindex)?.GetValue(obj);
+
+                found_prop = GetPropertyOrNull(type, propindex);
+                found = found_prop?.GetValue(obj);
             }
-            if (items.Length > 1 && found != null)
+
+            return items;
+        }
+
+        protected object GetValueByPath(object obj, string path)
+        {
+            System.Reflection.PropertyInfo found_prop = null;
+            object found;
+            var items = GetValueAndPropertyInfo(obj, path, out found_prop, out found);
+            if (items != null && items.Length > 1 && found != null)
                 return GetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y));
             return found;
         }
 
         protected void SetValueByPath(object obj, string path, object value)
         {
-            if (obj == null)
-                return;
-            var type = obj.GetType();
             object found = null;
             System.Reflection.PropertyInfo found_prop = null;
-            if (string.IsNullOrWhiteSpace(path))
-                return;
-            var items = path.Split('.');
-            if (items.Length < 1)
-                return;
+            var items = GetValueAndPropertyInfo(obj, path, out found_prop, out found);
 
-            if (items[0].Contains('['))
-            {
-                var propindex = items[0].Replace("[", ":").Replace("]", "").Split(':');
-                found_prop = GetPropertyOrNull(type, propindex[0]);
-                if (found_prop != null)
-                {
-                    var array = found_prop.GetValue(obj);
-                    //try
-                    {
-                        if (array is List<Input>)
-                            found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
-                        else
-                        {
-                            var idx = int.Parse(propindex[1]);
-                            if (idx >= 0 && idx < (array as IList).Count)
-                                found = (array as IList)[idx];
-                            else
-                                found = null;
-                        }
-
-                    }
-                    /*catch (Exception)
-                    {
-                        found = null;
-                    }*/
-                }
-                else
-                    found = null;
-
-            }
-            else
-            {
-                var propindex = items[0];
-                found_prop = GetPropertyOrNull(type, propindex);
-                if (found_prop != null)
-                    found = found_prop.GetValue(obj);
-                else
-                    found = null;
-
-            }
-            if (items.Length > 1 && found != null)
+            if (items!= null && items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
             else if (found_prop != null && found_prop.PropertyType == value.GetType())
                 found_prop.SetValue(obj, value);

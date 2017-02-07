@@ -459,6 +459,8 @@ namespace vMixController.Widgets
 
         public override void Dispose()
         {
+            if (_internalState != null)
+                _internalState.OnStateUpdated -= State_OnStateUpdated;
             _timer.Stop();
             base.Dispose();
         }

@@ -194,14 +194,46 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
+    <Description>Set title text with native indexes</Description>
+    <Function>SetTextNative</Function>
+    <FormatString>Function=SetText&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
+
+    <ActiveStatePath>Inputs[{0}].Elements[InputText/Index/{1}].Text</ActiveStatePath>
+    <ActiveStateValue>{2}</ActiveStateValue>
+    <StateDirect>true</StateDirect>
+    <StatePath>Inputs[{0}].Elements[InputText/Index/{1}].Text</StatePath>
+    <StateValue>String</StateValue>
+
+    <IntDescription>Title</IntDescription>
+    <StringDescription>Value</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description>Set Image path</Description>
     <Function>SetImage</Function>
     <FormatString>Function=SetImage&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
+    
     <ActiveStatePath>Inputs[{0}].Elements[{1}].Image</ActiveStatePath>
     <ActiveStateValue>{2}</ActiveStateValue>
+    
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Elements[{1}].Image</StatePath>
     <StateValue>String</StateValue>
+    <IntDescription>Title</IntDescription>
+    <StringDescription>Path</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Set image path with native indexes</Description>
+    <Function>SetImageNative</Function>
+    <FormatString>Function=SetImage&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
+
+    <ActiveStatePath>Inputs[{0}].Elements[InputImage/Index/{1}].Image</ActiveStatePath>
+    <ActiveStateValue>{2}</ActiveStateValue>
+    <StateDirect>true</StateDirect>
+    <StatePath>Inputs[{0}].Elements[InputImage/Index/{1}].Image</StatePath>
+    <StateValue>String</StateValue>
+
     <IntDescription>Title</IntDescription>
     <StringDescription>Path</StringDescription>
   </vMixFunctionReference>
@@ -226,7 +258,18 @@
     <FormatString>Function=DataSourcePreviousRow&amp;Value={2}</FormatString>
     <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
-  
+
+  <vMixFunctionReference>
+    <Description>Set MultiView Overlay</Description>
+    <Function>SetMultiViewOverlay</Function>
+    <FormatString>Function=SetMultiViewOverlay&amp;Input={0}&amp;Value={1},{2}</FormatString>
+    <IntDescription>Overlay Number</IntDescription>
+    <StringDescription>New Input Key</StringDescription>
+    <!-- Type Property Value -->
+    <ActiveStatePath>Inputs[{0}].Elements[InputOverlay/Index/{3}].Key</ActiveStatePath>
+    <ActiveStateValue>{2}</ActiveStateValue>
+  </vMixFunctionReference>
+
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Execute link</Description>
