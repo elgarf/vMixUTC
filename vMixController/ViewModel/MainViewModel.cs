@@ -933,6 +933,10 @@ namespace vMixController.ViewModel
                 if (File.Exists("Functions.xml"))
                     using (var fs = new FileStream("Functions.xml", FileMode.Open))
                         Functions = (ObservableCollection<vMixFunctionReference>)s.Deserialize(fs);
+
+                /*Functions[0].IntValues = new List<int> { 1, 2, 3, 4 };
+                using (var fs = new FileStream("Functions1.xml", FileMode.Create))
+                    s.Serialize(fs, Functions);*/
             }
             catch (Exception ex)
             {

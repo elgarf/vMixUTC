@@ -27,13 +27,25 @@
     <Function>Stinger</Function>
     <FormatString>Function=Stinger{1}</FormatString>
     <IntDescription>Number</IntDescription>
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+    </IntValues>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Use transition</Description>
     <Function>Transition</Function>
     <FormatString>Function=Transition{1}</FormatString>
     <IntDescription>Number</IntDescription>
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>FadeToBlack</Description>
     <Function>FadeToBlack</Function>
@@ -44,15 +56,14 @@
     <Description>Set active input</Description>
     <Function>ActiveInput</Function>
     <FormatString>Function=ActiveInput&amp;Input={0}</FormatString>
-
     <ActiveStatePath>Active</ActiveStatePath>
     <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Set preview input</Description>
     <Function>PreviewInput</Function>
     <FormatString>Function=PreviewInput&amp;Input={0}</FormatString>
-
     <ActiveStatePath>Preview</ActiveStatePath>
     <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
@@ -106,22 +117,33 @@
     <Description>Fade in input as overlay</Description>
     <Function>OverlayInputIn</Function>
     <FormatString>Function=OverlayInput{1}In&amp;Input={0}</FormatString>
-    
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
     <ActiveStateValue>!{0}</ActiveStateValue>
     <IntDescription>Overlay</IntDescription>
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Switch overlay off</Description>
     <Function>OverlayInputOff</Function>
     <FormatString>Function=OverlayInput{1}Off</FormatString>
-    
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
     <ActiveStateValue>*</ActiveStateValue>
-
     <TransitionIndex>0</TransitionIndex>
     <IntDescription>Overlay</IntDescription>
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Fade out overlay</Description>
     <Function>OverlayInputOut</Function>
@@ -132,7 +154,15 @@
 
     <TransitionIndex>0</TransitionIndex>
     <IntDescription>Overlay</IntDescription>
+
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Toggle overlay</Description>
     <Function>OverlayInputToggle</Function>
@@ -143,6 +173,13 @@
 
     <TransitionIndex>0</TransitionIndex>
     <IntDescription>Overlay</IntDescription>
+
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -268,8 +305,29 @@
     <!-- Type Property Value -->
     <ActiveStatePath>Inputs[{0}].Elements[InputOverlay/Index/{3}].Key</ActiveStatePath>
     <ActiveStateValue>{2}</ActiveStateValue>
+
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
   </vMixFunctionReference>
 
+  <vMixFunctionReference>
+    <Description>Set Output External2</Description>
+    <Function>SetOutputExternal2</Function>
+    <FormatString>Function=SetOutputExternal2&amp;Value={2}&amp;Input={0}</FormatString>
+    <StringDescription>Type</StringDescription>
+    <!--<IntDescription>Input Number</IntDescription>-->
+    <StringValues>
+      <string>Input</string>
+      <string>Preview</string>
+      <string>Output</string>
+      <string>MultiView</string>
+    </StringValues>
+  </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Execute link</Description>

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:vMixController.PropertiesControls"
              xmlns:ctrls="clr-namespace:vMixController.Controls"
              xmlns:e="clr-namespace:vMixController.Extensions"
+             xmlns:conv="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="Me">
@@ -14,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <conv:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
@@ -22,7 +24,7 @@
             <Button ToolTip="{e:Localize Add script command}" Style="{StaticResource TitleButton}" Command="{Binding AddCommandCommand, ElementName=Me}" Content="&#xE109;"/>
         </StackPanel>
 
-        <ListView AlternationCount="100500" ItemsSource="{Binding Commands, ElementName=Me}" SelectedIndex="0" HorizontalContentAlignment="Stretch">
+        <ListView ItemsSource="{Binding Commands, ElementName=Me}" SelectedIndex="0" HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -42,9 +44,15 @@
                                 <Label Content="{Binding SelectedValue.InputDescription, ElementName=Func, FallbackValue=N/A}"/>
                                 <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}"/>
                                 <Label Content="{Binding SelectedValue.IntDescription, ElementName=Func, FallbackValue=N/A}"/>
-                                <TextBox IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}"/>
+                                    <ComboBox Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}}" IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding SelectedValue.IntValues, ElementName=Func}" Text="{Binding Parameter, Mode=TwoWay}"/>
+                                </Grid>
                                 <Label Content="{Binding SelectedValue.StringDescription, ElementName=Func, FallbackValue=N/A}"/>
-                                <TextBox IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" Text="{Binding StringParameter, Mode=TwoWay}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding SelectedValue.StringValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" Text="{Binding StringParameter, Mode=TwoWay}"/>
+                                    <ComboBox Visibility="{Binding SelectedValue.StringValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}}" IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding SelectedValue.StringValues, ElementName=Func}" Text="{Binding StringParameter, Mode=TwoWay}"/>
+                                </Grid>
 
                                 <!--<Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

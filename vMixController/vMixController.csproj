@@ -198,6 +198,7 @@
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
     <Compile Include="Converters\EscapeAt.cs" />
+    <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToThicknessConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Converters\MarginMultiConverter.cs" />
@@ -381,6 +382,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="ClassDiagram.cd" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

@@ -116,6 +116,10 @@ namespace vMixAPI
                     doc.Save(ms);
                     ms.Seek(0, SeekOrigin.Begin);
                     var state = (State)s.Deserialize(ms);
+
+                    state.Inputs.Insert(0, new Input() { Key = "0", Title = "[Preview]" });
+                    state.Inputs.Insert(0, new Input() { Key = "-1", Title = "[Active]" });
+
                     IsInitializing = false;
                     if (state != null)
                         _logger.Info("vMix state created.");

@@ -48,6 +48,9 @@ namespace vMixController.Classes
         public string StringDescription { get; set; }
         public string InputDescription { get; set; }
 
+        public int[] IntValues { get; set; }
+        public string[] StringValues { get; set; }
+
         public override bool Equals(object obj)
         {
             return (obj is vMixFunctionReference) && Function == (obj as vMixFunctionReference).Function;
