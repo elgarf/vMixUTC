@@ -28,8 +28,8 @@ namespace vMixController.Widgets
         DateTime _lastShadowUpdate = DateTime.Now;
 
         /// <summary>
-            /// The <see cref="HasScriptErrors" /> property's name.
-            /// </summary>
+        /// The <see cref="HasScriptErrors" /> property's name.
+        /// </summary>
         public const string HasScriptErrorsPropertyName = "HasScriptErrors";
 
         private bool _hasScriptErrors = false;
@@ -116,12 +116,13 @@ namespace vMixController.Widgets
             HasScriptErrors = false;
             foreach (var item in _commands)
             {
+                var input = State.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
                 if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                var path = string.Format(item.Action.ActiveStatePath, item.InputKey, item.Parameter, item.StringParameter, item.Parameter - 1);
+                var path = string.Format(item.Action.ActiveStatePath, item.InputKey, item.Parameter, item.StringParameter, item.Parameter - 1, input.HasValue ? input.Value : -1);
                 var nval = GetValueByPath(stateToCheck, path);
                 var val = nval == null ? "" : nval.ToString();
                 HasScriptErrors = HasScriptErrors || nval == null;
-                var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey), item.Parameter, item.StringParameter, item.Parameter - 1);
+                var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey), item.Parameter, item.StringParameter, item.Parameter - 1, input.HasValue ? input.Value : -1);
                 var realval = aval;
                 aval = aval.TrimStart('!');
                 bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) /*|| (val is bool && (bool)val == false)*/)) ||
@@ -452,7 +453,7 @@ namespace vMixController.Widgets
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
-            
+
             RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);
         }

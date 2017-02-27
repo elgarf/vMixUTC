@@ -185,9 +185,6 @@ namespace vMixAPI
             _logger.Info("Updating vMix state.");
             var _temp = Create();
 
-            int[] oldInputs = Inputs.Select(y => y.ID).ToArray();
-            int[] newInputs = _temp.Inputs.Select(y => y.ID).ToArray();
-
             if (_temp == null)
             {
                 _logger.Info("vMix is offline");
@@ -199,20 +196,23 @@ namespace vMixAPI
                 return false;
             }
 
-            /*_logger.Info("Calculating difference.");
+            _logger.Info("Calculating difference.");
             Diff(this, _temp);
 
-            _logger.Info("Updating inputs.");*/
+            _logger.Info("Updating inputs.");
 
             Inputs.Clear();
             foreach (var item in _temp.Inputs)
                 Inputs.Add(item);
+            Overlays.Clear();
+            foreach (var item in _temp.Overlays)
+                Overlays.Add(item);
 
 
             _logger.Info("Firing \"updated\" event.");
 
             if (OnStateUpdated != null)
-                OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = oldInputs, NewInputs = newInputs });
+                OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
             IsInitializing = false;
             return true;
         }
@@ -236,9 +236,6 @@ namespace vMixAPI
                 _logger.Info("Updating vMix state.");
                 var _temp = Create(e.Result);
 
-                int[] oldInputs = Inputs.Select(y => y.ID).ToArray();
-                int[] newInputs = _temp != null ? _temp.Inputs.Select(y => y.ID).ToArray() : new int[0];
-
                 if (_temp == null)
                 {
                     _logger.Info("vMix is offline");
@@ -249,21 +246,24 @@ namespace vMixAPI
                         OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
                 }
 
-                /*_logger.Info("Calculating difference.");
-                Diff(this, _temp);*/
+                _logger.Info("Calculating difference.");
+                Diff(this, _temp);
 
                 _logger.Info("Updating inputs.");
 
                 Inputs.Clear();
                 foreach (var item in _temp.Inputs)
                     Inputs.Add(item);
+                Overlays.Clear();
+                foreach (var item in _temp.Overlays)
+                    Overlays.Add(item);
 
 
                 _logger.Info("Firing \"updated\" event.");
 
                 IsInitializing = false;
                 if (OnStateUpdated != null)
-                    OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = oldInputs, NewInputs = newInputs });
+                    OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
                 return true;
             });
         }
