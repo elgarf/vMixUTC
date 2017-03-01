@@ -2,24 +2,19 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Practices.ServiceLocation;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml;
 using System.Xml.Serialization;
 using vMixController.Classes;
-using vMixController.Extensions;
 using vMixController.Widgets;
 
 namespace vMixController.ViewModel
@@ -585,50 +580,6 @@ namespace vMixController.ViewModel
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
                         {
-                            /*using (var stream = File.OpenRead(opendlg.FileName))
-                            {
-                                _logger.Info("Controller loading.");
-                                var reader = XmlReader.Create(stream);
-                                {
-                                    reader.ReadStartElement();
-                                    reader.ReadStartElement();
-                                    _logger.Info("Loading widgets.");
-                                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControl>));
-                                    var collection = (ObservableCollection<vMixControl>)s.Deserialize(reader);
-                                    foreach (var item in collection)
-                                        _controls.Add(item);
-                                    reader.ReadEndElement();
-                                    reader.ReadStartElement();
-
-                                    _logger.Info("Loading window settings.");
-                                    s = new XmlSerializer(typeof(MainWindowSettings));
-
-                                    var state = WindowSettings.State;
-                                    var left = WindowSettings.Left;
-                                    var top = WindowSettings.Top;
-                                    var width = WindowSettings.Width;
-                                    var height = WindowSettings.Height;
-
-                                    WindowSettings = (MainWindowSettings)s.Deserialize(reader);
-
-                                    reader.ReadEndElement();
-                                    reader.ReadEndElement();
-
-                                    WindowSettings.Height = height;
-                                    WindowSettings.Width = width;
-                                    WindowSettings.Left = left;
-                                    WindowSettings.Top = top;
-                                    WindowSettings.State = state;
-
-                                    _logger.Info("Configuring API.");
-
-                                    _connectTimer_Tick(null, new EventArgs());
-
-                                    vMixAPI.State.Configure(WindowSettings.IP, WindowSettings.Port);
-                                    UpdatevMixState();
-                                }
-
-                            }*/
                             var state = WindowSettings.State;
                             var left = WindowSettings.Left;
                             var top = WindowSettings.Top;
@@ -743,8 +694,6 @@ namespace vMixController.ViewModel
         private void UpdatevMixState()
         {
             _logger.Info("Updating state.");
-            //vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
-            //if (Status != "Offline")
             {
                 if (Model == null || (Model.Ip != WindowSettings.IP || Model.Port != WindowSettings.Port))
                 {
@@ -753,12 +702,6 @@ namespace vMixController.ViewModel
                 }
                 else
                     Model.UpdateAsync();
-                /*if (!Model.Update())
-                {
-                    Model = null;
-                    State_OnStateCreated(null, null);
-                    Status = "Offline";
-                }*/
             }
         }
 
@@ -786,32 +729,6 @@ namespace vMixController.ViewModel
             {
                 foreach (var item in _controls)
                     item.State = (vMixAPI.State)sender;
-
-                /*_logger.Info("Remapping inputs.");
-                Dictionary<int, int> map = new Dictionary<int, int>();
-                if (e.OldInputs != null && e.NewInputs != null)
-                {
-                    for (int i = 0; i < e.OldInputs.Length; i++)
-                    {
-                        var element = e.NewInputs.Select((x, j) => new { obj = x, idx = j }).Where(x => x.obj == e.OldInputs[i]).FirstOrDefault();
-                        if (element != null)
-                            map.Add(i, element.idx);
-                    }
-                    foreach (var item in _controls.OfType<vMixControlTextField>())
-                        foreach (var path in item.Paths)
-                            if (map.ContainsKey(path.A))
-                            {
-                                var b = path.B;
-                                path.A = map[path.A];
-                                path.B = b;
-                            }
-                    foreach (var item in _controls.OfType<vMixControlButton>())
-                        foreach (var cmd in item.Commands)
-                            if (map.ContainsKey(cmd.Input))
-                                cmd.Input = map[cmd.Input];
-                    foreach (var item in _controls)
-                        item.Update();
-                }*/
             }
         }
 
@@ -858,23 +775,7 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
-                        /*foreach (var ctrl in _controls)
-                        {
-                            foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
-                            {
-                                ModifierKeys mod = ModifierKeys.None;
-                                if (item.obj.Alt)
-                                    mod |= ModifierKeys.Alt;
-                                if (item.obj.Ctrl)
-                                    mod |= ModifierKeys.Control;
-                                if (item.obj.Shift)
-                                    mod |= ModifierKeys.Shift;
-
-                                if (item.obj.Active && ((item.obj.Key == p.Key) || (p.Key == Key.System && item.obj.Key == p.SystemKey)) && p.KeyboardDevice.Modifiers == mod)
-                                    ctrl.ExecuteHotkey(item.idx);
-                            }
-
-                        }*/
+                       
                     }));
             }
         }
@@ -914,13 +815,7 @@ namespace vMixController.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            //Default config
-            //vMixAPI.State.Configure();
-
             vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
-
-            //for test only
-            //Model = vMixAPI.State.Create(File.ReadAllText("testState.txt"));
 
             _connectTimer.Interval = TimeSpan.FromSeconds(20);
             _connectTimer.Tick += _connectTimer_Tick;
@@ -933,10 +828,6 @@ namespace vMixController.ViewModel
                 if (File.Exists("Functions.xml"))
                     using (var fs = new FileStream("Functions.xml", FileMode.Open))
                         Functions = (ObservableCollection<vMixFunctionReference>)s.Deserialize(fs);
-
-                /*Functions[0].IntValues = new List<int> { 1, 2, 3, 4 };
-                using (var fs = new FileStream("Functions1.xml", FileMode.Create))
-                    s.Serialize(fs, Functions);*/
             }
             catch (Exception ex)
             {
@@ -995,29 +886,6 @@ namespace vMixController.ViewModel
 
             MessengerInstance.Register<string>(this, (hk) =>
             {
-                /*var modkeys = hk.Split('+');
-                ModifierKeys modifiers = ModifierKeys.None;
-                Key key = Key.None;
-                Key systemKey = Key.None;
-                foreach (var item in modkeys)
-                {
-                    switch (item.ToUpper())
-                    {
-                        case "SHIFT":
-                            modifiers |= ModifierKeys.Shift;
-                            break;
-                        case "CTRL":
-                            modifiers |= ModifierKeys.Control;
-                            break;
-                        case "ALT":
-                            modifiers |= ModifierKeys.Alt;
-                            break;
-                        default:
-                            key = (Key)Enum.Parse(typeof(Key), item.ToUpper());
-                            systemKey = key;
-                            break;
-                    }
-                }*/
                 ProcessHotkey(hk);
             });
 
@@ -1058,13 +926,6 @@ namespace vMixController.ViewModel
                 return ds;
             };
 
-            /*
-            uhttpsharp.HttpServer _server;
-            _server = new uhttpsharp.HttpServer(new HttpRequestProvider());
-            _server.Use(new TcpListenerAdapter(new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), 11001)));
-            _server.Use(new FileHandler());
-            _server.Start();*/
-
         }
 
         WebClient _client = new vMixAPI.vMixWebClient();
@@ -1075,14 +936,7 @@ namespace vMixController.ViewModel
             _client.DownloadStringCompleted += _client_DownloadStringCompleted;
             _client.CancelAsync();
             while (_client.IsBusy) Thread.Sleep(10);
-            /*try
-            {*/
-                _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
-            /*}
-            catch (Exception)
-            {
-
-            }*/
+            _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
         }
 
         private void _client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -1094,13 +948,10 @@ namespace vMixController.ViewModel
                 Status = "Offline";
                 return;
             }
-            //Model = null;
             if (Model != null && (Model.Ip == WindowSettings.IP && Model.Port == WindowSettings.Port))
                 Status = "Online";
             else
                 Status = "Update State";
-            //if (Model == null)
-            //Model = vMixAPI.State.Create();
         }
 
 

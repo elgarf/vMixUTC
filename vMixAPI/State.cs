@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -76,8 +77,6 @@ namespace vMixAPI
     {
         private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Stack<Func<EventArgs, bool>> _downloadHandlers = new Stack<Func<EventArgs, bool>>();
-
         //private static bool _configured = false;
         private string _ip = "127.0.0.1";
         private string _port = "8088";
@@ -97,6 +96,12 @@ namespace vMixAPI
         /// <returns></returns>
         public State Create(string textstate)
         {
+            if (!textstate.StartsWith("<vmix>"))
+            {
+                _logger.Error("vMix state was not created, got not xml value.");
+                return null;
+            }
+
             IsInitializing = true;
             _logger.Info("Creating vMix state form {0}.", textstate);
             try
@@ -112,7 +117,7 @@ namespace vMixAPI
                         Replace(">True<", ">true<").
                         Replace("\"False\"", "\"false\"").
                         Replace("\"True\"", "\"true\""));
-                    
+
                     doc.Save(ms);
                     ms.Seek(0, SeekOrigin.Begin);
                     var state = (State)s.Deserialize(ms);
@@ -139,7 +144,7 @@ namespace vMixAPI
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "vMix state not created.");
+                _logger.Error(ex, "vMix state was not created.");
                 return null;
             }
 
@@ -152,18 +157,15 @@ namespace vMixAPI
 
         public void CreateAsync()
         {
-            SendFunction("", true);
-            _downloadHandlers.Push(x =>
+            SendFunction("", true, e =>
             {
-                var e = (DownloadStringCompletedEventArgs)x;
-
-                if (e.Error != null) return true;
+                if (e.Error != null) return;
 
                 var state = Create(e.Result);
-                if (OnStateCreated != null)
-                    OnStateCreated(state, null);
+                if (state != null)
+                    OnStateCreated?.Invoke(state, null);
 
-                return true;
+                return;
             });
         }
 
@@ -173,7 +175,7 @@ namespace vMixAPI
 
         private void Diff(object a, object b, bool lists = false)
         {
-            var properties = a.GetType().GetProperties().Where(x => lists || (x.PropertyType != typeof(List<Input>) && x.PropertyType != typeof(ObservableCollection<InputBase>)));
+            var properties = a.GetType().GetProperties().Where(x => lists || (!x.PropertyType.GetInterfaces().Contains(typeof(IList))));
             foreach (var item in properties)
                 if (item.CanWrite)
                     item.GetSetMethod().Invoke(a, new object[] { item.GetValue(b) });
@@ -211,16 +213,14 @@ namespace vMixAPI
 
             _logger.Info("Firing \"updated\" event.");
 
-            if (OnStateUpdated != null)
-                OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
+            OnStateUpdated?.Invoke(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
             IsInitializing = false;
             return true;
         }
 
         public void UpdateAsync()
         {
-            SendFunction("", true);
-            _downloadHandlers.Push(x =>
+            SendFunction("", true, x =>
             {
                 var e = (DownloadStringCompletedEventArgs)x;
 
@@ -228,10 +228,10 @@ namespace vMixAPI
                 {
                     if (OnStateUpdated != null)
                         OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
-                    return true;
+                    return;
                 }
                 if (e.UserState == null)
-                    return false;
+                    return;
                 IsInitializing = true;
                 _logger.Info("Updating vMix state.");
                 var _temp = Create(e.Result);
@@ -264,16 +264,11 @@ namespace vMixAPI
                 IsInitializing = false;
                 if (OnStateUpdated != null)
                     OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
-                return true;
+                return;
             });
         }
 
-        private void State_OnStateCreated(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        public string SendFunction(string textParameters, bool async = true)
+        public string SendFunction(string textParameters, bool async = true, Action<DownloadStringCompletedEventArgs> handler = null)
         {
             _logger.Info("Trying to send function <{0}> in {1} mode.", textParameters, async ? "async" : "sync");
 
@@ -287,29 +282,25 @@ namespace vMixAPI
 
             if (async)
             {
-                /*try
-                {*/
-                    WebClient _webClient = new vMixWebClient();
-                    _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
-                    var s = string.IsNullOrEmpty(textParameters) ? "state" : null;
-                    _webClient.DownloadStringAsync(new Uri(url), s);
-                /*}
-                catch (Exception e)
-                {
-                    _logger.Error(e, "Error while sending async function");
-                }*/
+                WebClient _webClient = new vMixWebClient();
+                _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
+                _webClient.DownloadStringAsync(new Uri(url), handler);
             }
             else
             {
-                /*try
-                {*/
-                    WebClient _webClient = new vMixWebClient();
-                    _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
-                    return _webClient.DownloadString(url);
-                /*}
-                catch (WebException)
+                WebClient _webClient = new vMixWebClient();
+                _webClient.DownloadStringCompleted += (sender, e) =>
                 {
-                }*/
+                    if (e.Error != null)
+                        _logger.Error(e.Error, "Error while sending async function.");
+                    else
+                        _logger.Info("Async function sended, result is \"{0}\".", e.Result);
+
+                    handler?.Invoke(e);
+
+                    (sender as WebClient).Dispose();
+                };
+                return _webClient.DownloadString(url);
             }
             return null;
         }
@@ -322,14 +313,8 @@ namespace vMixAPI
             else
                 _logger.Info("Async function sended, result is \"{0}\".", e.Result);
 
-            Stack<Func<EventArgs, bool>> notCompleted = new Stack<Func<EventArgs, bool>>();
-            Func<EventArgs, bool> func = null;
-            while (_downloadHandlers.Count > 0)
-                if (!(func = _downloadHandlers.Pop())(e))
-                    notCompleted.Push(func);
+            ((Action<DownloadStringCompletedEventArgs>)e.UserState)?.Invoke(e);
 
-            _downloadHandlers = notCompleted;
-            //_downloadHandlers.Pop()(e);
             (sender as WebClient).Dispose();
         }
 
@@ -358,7 +343,6 @@ namespace vMixAPI
 
         public State()
         {
-            OnStateCreated += State_OnStateCreated;
         }
 
         [XmlElement(ElementName = "version")]

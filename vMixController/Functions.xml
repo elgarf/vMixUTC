@@ -51,7 +51,31 @@
     <Function>FadeToBlack</Function>
     <FormatString>Function=FadeToBlack</FormatString>
   </vMixFunctionReference>
-  
+
+  <vMixFunctionReference>
+    <Description>Play</Description>
+    <Function>Play</Function>
+    <FormatString>Function=Play&amp;Input={0}</FormatString>
+    <IntDescription>N/A</IntDescription>
+    <StringDescription>N/A</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Pause</Description>
+    <Function>Pause</Function>
+    <FormatString>Function=Pause&amp;Input={0}</FormatString>
+    <IntDescription>N/A</IntDescription>
+    <StringDescription>N/A</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Restart</Description>
+    <Function>Restart</Function>
+    <FormatString>Function=Restart&amp;Input={0}</FormatString>
+    <IntDescription>N/A</IntDescription>
+    <StringDescription>N/A</StringDescription>
+  </vMixFunctionReference>
+
   <vMixFunctionReference>
     <Description>Set active input</Description>
     <Function>ActiveInput</Function>
@@ -112,11 +136,11 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopMultiCoder</Description>
-    <Function>StartStopMultiCoder</Function>
-    <FormatString>Function=StartStopMultiCoder</FormatString>
+    <Description>StartStopMultiCorder</Description>
+    <Function>StartStopMultiCorder</Function>
+    <FormatString>Function=StartStopMultiCorder</FormatString>
     
-    <ActiveStatePath>MultiCoder</ActiveStatePath>
+    <ActiveStatePath>MultiCorder</ActiveStatePath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
     
@@ -158,7 +182,6 @@
     <ActiveStateValue>!{0}</ActiveStateValue>
     <IntDescription>Overlay</IntDescription>
     <IntValues>
-      <int>0</int>
       <int>1</int>
       <int>2</int>
       <int>3</int>
@@ -175,7 +198,6 @@
     <TransitionIndex>0</TransitionIndex>
     <IntDescription>Overlay</IntDescription>
     <IntValues>
-      <int>0</int>
       <int>1</int>
       <int>2</int>
       <int>3</int>
@@ -195,7 +217,6 @@
     <IntDescription>Overlay</IntDescription>
 
     <IntValues>
-      <int>0</int>
       <int>1</int>
       <int>2</int>
       <int>3</int>
@@ -215,7 +236,6 @@
     <IntDescription>Overlay</IntDescription>
 
     <IntValues>
-      <int>0</int>
       <int>1</int>
       <int>2</int>
       <int>3</int>

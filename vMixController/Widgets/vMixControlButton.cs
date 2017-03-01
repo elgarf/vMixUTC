@@ -25,7 +25,7 @@ namespace vMixController.Widgets
         DispatcherTimer _timer;
         int _pointer;
         int _waitBeforeUpdate = -1;
-        DateTime _lastShadowUpdate = DateTime.Now;
+        static DateTime _lastShadowUpdate = DateTime.Now;
 
         /// <summary>
         /// The <see cref="HasScriptErrors" /> property's name.

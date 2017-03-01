@@ -66,6 +66,7 @@ namespace vMixController.Widgets
             StringControl[] links = new StringControl[] {
                 GetPropertyControl<StringControl>(),
                 GetPropertyControl<StringControl>(),
+                GetPropertyControl<StringControl>(),
                 GetPropertyControl<StringControl>()
             };
 
@@ -78,6 +79,9 @@ namespace vMixController.Widgets
             links[2].Title = "On Stop";
             links[2].Value = Links[2];
             links[2].Tag = 2;
+            links[3].Title = "On Completion";
+            links[3].Value = Links[3];
+            links[3].Tag = 3;
 
             return props.Concat(new UserControl[] { control }.Union(links)).ToArray();
         }
@@ -98,6 +102,7 @@ namespace vMixController.Widgets
                     Active = false;
                     _timer.Stop();
                     Messenger.Default.Send<string>(Links[2]);
+                    Messenger.Default.Send<string>(Links[3]);
                 }
             }
             else
@@ -113,6 +118,7 @@ namespace vMixController.Widgets
                     Active = false;
                     _timer.Stop();
                     Messenger.Default.Send<string>(Links[2]);
+                    Messenger.Default.Send<string>(Links[3]);
                 }
             }
         }
@@ -163,7 +169,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string LinksPropertyName = "Links";
 
-        private string[] _links = new string[] { "", "", "" };
+        private string[] _links = new string[] { "", "", "", "" };
 
         /// <summary>
         /// Sets and gets the Links property.
@@ -538,6 +544,7 @@ namespace vMixController.Widgets
             Links[0] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 0).First().Value;
             Links[1] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 1).First().Value;
             Links[2] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 2).First().Value;
+            Links[3] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 3).First().Value;
         }
 
         public override sealed void Dispose()

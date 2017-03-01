@@ -36,5 +36,6 @@ namespace vMixAPI
         ReplayOverlay = 3002,
         NDI = 4000,
         Browser = 5000,
+        VideoCall = 6000,
     }
 }
