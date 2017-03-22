@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using vMixAPI;
 using vMixController.Classes;
+using vMixController.Extensions;
 using vMixController.ViewModel;
 
 namespace vMixController.Widgets
@@ -35,7 +36,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlTimer)),
         XmlInclude(typeof(vMixControlContainer)),
         XmlInclude(typeof(vMixControlMultiState)),
-        XmlInclude(typeof(vMixControlMidiInterface))]
+        XmlInclude(typeof(vMixControlMidiInterface)),
+        XmlInclude(typeof(vMixControlClock))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
@@ -67,8 +69,10 @@ namespace vMixController.Widgets
 
         public virtual string Type { get; }
 
+        public virtual int MaxCount => -1;
 
-        
+
+
 
         /// <summary>
         /// The <see cref="Locked" /> property's name.
@@ -444,7 +448,9 @@ namespace vMixController.Widgets
         public virtual vMixAPI.State State
         {
             get { return (vMixAPI.State)GetValue(StateProperty); }
-            set { SetValue(StateProperty, value);
+            set
+            {
+                SetValue(StateProperty, value);
                 if (_internalState == null && value != null)
                 {
                     _internalState = value.Create();
@@ -453,6 +459,23 @@ namespace vMixController.Widgets
                     _internalState = null;
                 else
                     _internalState.Configure(value.Ip, value.Port);
+            }
+        }
+
+
+        ObservableCollection<Triple<string, string, string>> _info = new ObservableCollection<Triple<string, string, string>>();
+
+        [XmlIgnore]
+        public ObservableCollection<Triple<string, string, string>> Info
+        {
+            get
+            {
+                return _info;
+            }
+            set
+            {
+                _info = value;
+                RaisePropertyChanged("Info");
             }
         }
 
@@ -588,7 +611,7 @@ namespace vMixController.Widgets
             System.Reflection.PropertyInfo found_prop = null;
             var items = GetValueAndPropertyInfo(obj, path, out found_prop, out found);
 
-            if (items!= null && items.Length > 1 && found != null)
+            if (items != null && items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
             else if (found_prop != null && found_prop.PropertyType == value.GetType())
                 found_prop.SetValue(obj, value);
@@ -599,7 +622,7 @@ namespace vMixController.Widgets
             return (T)GetValueByPath(obj, path);
         }
 
-        protected T GetPropertyControl<T> () where T: UserControl
+        protected T GetPropertyControl<T>() where T : UserControl
         {
             if (ControlsStore.ContainsKey(typeof(T)) && !ControlsStoreUsage.Contains(ControlsStore[typeof(T)]))
             {
@@ -636,7 +659,7 @@ namespace vMixController.Widgets
 
         public virtual void Update()
         {
-
+            UpdateHotkeys();
         }
 
         public virtual Hotkey[] GetHotkeys()
@@ -660,6 +683,33 @@ namespace vMixController.Widgets
 
             if (this is IvMixAutoUpdateWidget)
                 (this as IvMixAutoUpdateWidget).Period = viewModel.Period;
+            UpdateHotkeys();
+        }
+
+        private void UpdateHotkeys()
+        {
+            Info.Clear();
+            if (Hotkey.Length != 0)
+            {
+                var active = Hotkey.Where(x => x.Active).ToArray();
+                if (active.Length != 0)
+                {
+                    foreach (var item in active.Select(x => new Triple<string, string, string>()
+                    {
+                        A = x.Name,
+                        B = x.Link,
+                        C = (x.Alt ? "Alt + " : "") +
+                        (x.Ctrl ? "Ctrl + " : "") +
+                        (x.Shift ? "Shift + " : "") +
+                        x.Key.ToString()
+                    }))
+                        Info.Add(item);
+                }
+                else
+                    Info.Add(new Triple<string, string, string>("N/A", "N/A", "N/A"));
+            }
+            else
+                Info.Add(new Triple<string, string, string>("N/A", "N/A", "N/A"));
         }
 
         public virtual void SetProperties(UserControl[] _controls)

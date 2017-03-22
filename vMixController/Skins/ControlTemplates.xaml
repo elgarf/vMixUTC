@@ -73,7 +73,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#57586;</Button>
+        <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
         <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">
             <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+1
@@ -140,9 +140,9 @@
         </CheckBox>
 
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
-            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}" ToolTip="Start">&#57602;</Button>
-            <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#57603;</Button>
-            <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#57869;</Button>
+            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}" ToolTip="Start">&#xF40A;</Button>
+            <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#xF3E4;</Button>
+            <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#xF4DB;</Button>
             <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
             <Button ToolTip="{e:Localize -1 Hour}" Command="{Binding TimerCommand}" CommandParameter="-1 Hour" Content="{e:Localize -1 H}"></Button>
             <Button ToolTip="{e:Localize -1 Minute}" Command="{Binding TimerCommand}" CommandParameter="-1 Minute" Content="{e:Localize -1 M}"></Button>
@@ -161,7 +161,7 @@
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
                     <Ellipse x:Name="hasErrors" Width="4" Height="4" Margin="{StaticResource RightStdMargin}"/>
-                    <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={StaticResource NotConverter}, Mode=OneWay}">&#57869;</Button>
+                    <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={StaticResource NotConverter}, Mode=OneWay}">&#xF4DB;</Button>
                 </StackPanel>
             </ctrls:vMixControlContainerDummy.CaptionContent>
             <ctrls:vMixControlContainerDummy.MainContent>
@@ -219,7 +219,7 @@
         <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
-                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#9995;</Button>
+                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#xF2D1;</Button>
                 </StackPanel>
             </ctrls:vMixControlContainerDummy.CaptionContent>
             <ctrls:vMixControlContainerDummy.MainContent>
@@ -259,11 +259,19 @@
         <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
-                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#9995;</Button>
+                    <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#xF2D1;</Button>
                 </StackPanel>
             </ctrls:vMixControlContainerDummy.CaptionContent>
             <ctrls:vMixControlContainerDummy.MainContent>
                 <TextBlock IsEnabled="{Binding Enabled}" HorizontalAlignment="Center" Style="{StaticResource PropertyName}" Text="{e:Localize Multi State}"></TextBlock>
+            </ctrls:vMixControlContainerDummy.MainContent>
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlClock">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding NextEventAt}"/></TextBlock>
             </ctrls:vMixControlContainerDummy.MainContent>
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>

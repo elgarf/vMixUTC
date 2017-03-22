@@ -67,12 +67,28 @@
 
 
                     <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Control.Name, ElementName=CC}"></TextBlock>
-                    <local:vMixControlMoveThumb Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
+                    <local:vMixControlMoveThumb Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
+                        <local:vMixControlMoveThumb.ToolTip>
+                            <ToolTip DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
+                                <StackPanel>
+                                    <TextBlock Text="{e:Localize Active Exec Links:}" FontWeight="Bold"/>
+                                    <ItemsControl ItemsSource="{Binding Tag}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock><Run Text="{Binding A}" FontWeight="Bold"/>: <Run Text="{Binding B}"/>, <Run FontWeight="Bold" Text="{e:Localize Hotkey:}"/> <Run Text="{Binding C}"/></TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ToolTip>
+                        </local:vMixControlMoveThumb.ToolTip>
+                    </local:vMixControlMoveThumb>
+
                     <StackPanel Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
                         <ContentControl Content="{Binding ParentContainer.CaptionContent, ElementName=CC}"/>
-                        <Button ToolTip="{e:Localize Copy widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.CopyCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#57688;</Button>
-                        <Button ToolTip="{e:Localize Widget properties}" Style="{StaticResource TitleButton}" Margin="0,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.SettingsCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#57621;</Button>
-                        <Button ToolTip="{e:Localize Close widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ParentContainer.CloseCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#57610;</Button>
+                        <Button ToolTip="{e:Localize Copy widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.CopyCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61839;</Button>
+                        <Button ToolTip="{e:Localize Widget properties}" Style="{StaticResource TitleButton}" Margin="0,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.SettingsCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#62611;</Button>
+                        <Button ToolTip="{e:Localize Close widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ParentContainer.CloseCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61782;</Button>
                     </StackPanel>
                 </Grid>
                 <ContentControl x:Name="ContentControl" Content="{Binding ParentContainer.MainContent, ElementName=CC}"/>

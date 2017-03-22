@@ -322,5 +322,24 @@ namespace vMixController.Classes
             }
         }
 
+        private bool _isTopmost = false;
+
+        public bool IsTopmost
+        {
+            get
+            {
+                return _isTopmost;
+            }
+
+            set
+            {
+                _isTopmost = value;
+
+                App.Current.MainWindow.Topmost = value;
+
+                RaisePropertyChanged("IsTopmost");
+            }
+        }
+
     }
 }

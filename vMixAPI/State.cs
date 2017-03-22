@@ -34,7 +34,7 @@ namespace vMixAPI
         private static State _base = new State();
 
         public static event EventHandler OnStateCreated;
-        public static event EventHandler<StateUpdatedEventArgs> OnStateUpdated;
+        //public static event EventHandler<StateUpdatedEventArgs> OnStateUpdated;
 
         static StateFabrique()
         {

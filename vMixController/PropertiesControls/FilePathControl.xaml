@@ -33,7 +33,7 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            <Button ToolTip="Select File" Style="{StaticResource TitleButton}"  Grid.Column="1" Margin="2,0,0,0" Command="{Binding SelectFilePathCommand, ElementName=Me}">&#xE0FA;</Button>
+            <Button ToolTip="Select File" Style="{StaticResource TitleButton}"  Grid.Column="1" Margin="2,0,0,0" Command="{Binding SelectFilePathCommand, ElementName=Me}">&#xF259;</Button>
         </Grid>
     </StackPanel>
 </UserControl>

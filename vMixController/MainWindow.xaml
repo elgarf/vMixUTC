@@ -36,97 +36,62 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             <c:NotConverter x:Key="NotConverter"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Button" Header="{e:Localize Button}">
+                <MenuItem x:Name="Button" Command="{Binding CreateControlCommand}" CommandParameter="Button" Header="{e:Localize Button}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.button.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF131;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Label" Header="{e:Localize Label}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.tag.label.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!--<MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Image" Header="Image"/>-->
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="List" Header="{e:Localize List}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.dropdown.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF03A;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Score" Header="{e:Localize Score}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.leaderboard.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF005;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.interface.textbox.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF60E;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Timer" Header="{e:Localize Timer}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.timer.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF51B;</TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.box.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1B2;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.database.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1C0;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.camera.flash.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0E7;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MultiState" Header="{e:Localize Multi State}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.infinite.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF233;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
@@ -142,6 +107,8 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                     </MenuItem.ItemTemplate>
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <Rectangle Width="16" Height="16" StrokeThickness="1">
@@ -168,6 +135,10 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
             </CompositeCollection>
+            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}" x:Key="{x:Type MenuItem}">
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -190,48 +161,32 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Menu>
+        <Menu VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
             <MenuItem Header="{e:Localize File}">
                 <MenuItem Command="{Binding NewControllerCommand}" Header="{e:Localize New}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.page.new.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF016;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding LoadControllerCommand}" Header="{e:Localize Open}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.folder.open.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF07C;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding SaveControllerCommand}"  Header="{e:Localize Save}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.save.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0C7;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
                     <MenuItem.Icon>
-                        <Rectangle>
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="/vMixControllerSkin;component/icons/light/appbar.door.leave.png" Viewbox="{StaticResource IconViewbox}"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF08B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="{e:Localize Create}" ItemsSource="{DynamicResource CreateItems}">
-                
+
             </MenuItem>
             <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{e:Localize Lock}" IsChecked="{Binding WindowSettings.Locked, Mode=OneWay}" Command="{Binding ToggleLockCommand}" IsCheckable="True"/>
             <MenuItem ToolTip="{e:Localize Update vMix state}" Header="{e:Localize Update State}" Command="{Binding UpdateStateCommand}">
@@ -247,48 +202,58 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             </MenuItem>
         </Menu>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
-        <ListView ItemsSource="{Binding Controls}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
-            <ListView.ContextMenu>
-                <ContextMenu ItemsSource="{DynamicResource CreateItems}">
-                </ContextMenu>
-            </ListView.ContextMenu>
-            <ListView.Resources>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
-            </ListView.Resources>
+            <ListView ItemsSource="{Binding Controls}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+                <ListView.ContextMenu>
+                    <ContextMenu VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
+                        <ContextMenu.ItemContainerStyleSelector>
+                            <cls:MenuStyleSelector>
+                                <cls:MenuStyleSelector.MenuItem>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </cls:MenuStyleSelector.MenuItem>
+                            </cls:MenuStyleSelector>
+                        </ContextMenu.ItemContainerStyleSelector>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </ListView.Resources>
 
-            <ListView.Cursor>
-                <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
-            </ListView.Cursor>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="ContextMenuOpening">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="ContextMenuClosing">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+                <ListView.Cursor>
+                    <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
+                </ListView.Cursor>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="ContextMenuOpening">
+                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="ContextMenuClosing">
+                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <Grid.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
-                        </Grid.LayoutTransform>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplateSelector>
-                <ctrls:TypeTemplateSelector/>
-            </ListView.ItemTemplateSelector>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
+                            </Grid.LayoutTransform>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplateSelector>
+                    <ctrls:TypeTemplateSelector/>
+                </ListView.ItemTemplateSelector>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Margin">
                             <Setter.Value>
                                 <MultiBinding Converter="{StaticResource MarginMultiConverter}">
@@ -301,37 +266,37 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                         <Setter Property="VerticalAlignment" Value="Top"/>
                         <!--</Setter> Value="{Binding Left}"/>
                     <Setter Property="Canvas.Top" Value="{Binding Top}"/>-->
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.Style>
-                <Style TargetType="{x:Type ListView}">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="Cursor" Value="Hand">
-                            <Setter Property="BorderThickness" Value="2"/>
-                            <Setter Property="BorderBrush" Value="Red"/>
-                        </Trigger>
-                        <Trigger Property="Tag">
-                            <Trigger.Value>
-                                <sys:Boolean>True</sys:Boolean>
-                            </Trigger.Value>
-                            <Setter Property="Background" Value="Black"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
-        </ListView>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Style>
+                    <Style TargetType="{x:Type ListView}">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="Cursor" Value="Hand">
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="BorderBrush" Value="Red"/>
+                            </Trigger>
+                            <Trigger Property="Tag">
+                                <Trigger.Value>
+                                    <sys:Boolean>True</sys:Boolean>
+                                </Trigger.Value>
+                                <Setter Property="Background" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Style>
+            </ListView>
         </ScrollViewer>
         <StatusBar Grid.Row="2">
             <StatusBarItem>
@@ -365,6 +330,9 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                 </StackPanel>
             </StatusBarItem>
             <Separator/>
+            <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+                <CheckBox IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}">Is Topmost</CheckBox>
+            </StatusBarItem>
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}">Enable Log</CheckBox>
             </StatusBarItem>

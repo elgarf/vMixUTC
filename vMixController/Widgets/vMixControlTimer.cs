@@ -80,7 +80,7 @@ namespace vMixController.Widgets
             links[2].Value = Links[2];
             links[2].Tag = 2;
             links[3].Title = "On Completion";
-            links[3].Value = Links[3];
+            links[3].Value = Links.Length > 3 ? Links[3] : "";
             links[3].Tag = 3;
 
             return props.Concat(new UserControl[] { control }.Union(links)).ToArray();
@@ -88,7 +88,7 @@ namespace vMixController.Widgets
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            
+
             if (!Reverse)
             {
                 var t = Time.Add(_stopwatch.Elapsed);
@@ -465,7 +465,7 @@ namespace vMixController.Widgets
                                     _stopwatch.Start();
                                 Paused = false;
                                 Active = true;
-                                
+
                                 _timer.Start();
 
                                 Messenger.Default.Send<string>(Links[0]);
@@ -496,7 +496,7 @@ namespace vMixController.Widgets
                                     _timer.Start();
                                     Messenger.Default.Send<string>(Links[0]);
                                 }
-                                
+
                                 break;
                             case "Stop":
                                 Active = false;
@@ -540,6 +540,9 @@ namespace vMixController.Widgets
         {
             base.SetProperties(_controls);
             Format = _controls.OfType<StringControl>().First().Value;
+
+            if (Links.Length < 4)
+                Links = new string[] { "", "", "", "" };
 
             Links[0] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 0).First().Value;
             Links[1] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 1).First().Value;

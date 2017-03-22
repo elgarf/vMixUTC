@@ -108,7 +108,7 @@ namespace vMixController.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value) ? (char)0xE1F6 : (char)0xE1F7;
+            return ((bool)value) ? (char)0xF33E : (char)0xF340;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

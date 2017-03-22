@@ -387,14 +387,21 @@ namespace vMixController.ViewModel
                         _createControl = new Action<Point>(x =>
                         {
                             var control = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
-                            control.State = Model;
-                            control.Top = x.Y;
-                            control.Left = x.X;
-                            control.AlignByGrid();
-                            _controls.Add(control);
-                            _logger.Info("New {0} widget added.", control.Type.ToLower());
-                            if (!UpdateWithLicense(control))
-                                OpenPropertiesCommand.Execute(control);
+                            var count = _controls.Where(y => y.GetType() == control.GetType()).Count();
+
+                            if (control.MaxCount == -1 || control.MaxCount > count)
+                            {
+                                control.State = Model;
+                                control.Top = x.Y;
+                                control.Left = x.X;
+                                control.AlignByGrid();
+                                _controls.Add(control);
+                                _logger.Info("New {0} widget added.", control.Type.ToLower());
+                                if (!UpdateWithLicense(control))
+                                    OpenPropertiesCommand.Execute(control);
+                            }
+                            else
+                                control.Dispose();
                         });
 
                     }));

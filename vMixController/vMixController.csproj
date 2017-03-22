@@ -176,6 +176,7 @@
     <Compile Include="Classes\ColorNamePair.cs" />
     <Compile Include="Classes\DummyStringProperty.cs" />
     <Compile Include="Classes\Hotkey.cs" />
+    <Compile Include="Classes\MenuStyleSelector.cs" />
     <Compile Include="Classes\NCrashLocalSender.cs" />
     <Compile Include="Classes\Pair.cs" />
     <Compile Include="Classes\Quadriple.cs" />
@@ -232,6 +233,9 @@
     <Compile Include="PropertiesControls\BoolControl.xaml.cs">
       <DependentUpon>BoolControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertiesControls\SchedulerControl.xaml.cs">
+      <DependentUpon>SchedulerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertiesControls\StringControl.xaml.cs">
       <DependentUpon>StringControl.xaml</DependentUpon>
     </Compile>
@@ -254,6 +258,7 @@
     <Compile Include="Widgets\IvMixAutoUpdateWidget.cs" />
     <Compile Include="Classes\MainWindowSettings.cs" />
     <Compile Include="Widgets\vMixControl.cs" />
+    <Compile Include="Widgets\vMixControlClock.cs" />
     <Compile Include="Widgets\vMixControlContainer.cs" />
     <Compile Include="Widgets\vMixControlButton.cs" />
     <Compile Include="Widgets\vMixControlButtonAction.cs" />
@@ -312,6 +317,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PropertiesControls\BoolControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertiesControls\SchedulerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
