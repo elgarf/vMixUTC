@@ -134,6 +134,45 @@ namespace vMixAPI
 
 
 
+        [XmlAttribute("meterF1")]
+        public float MeterF1
+        {
+            get { return (float)GetValue(MeterF1Property); }
+            set { SetValue(MeterF1Property, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MeterF1.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MeterF1Property =
+            DependencyProperty.Register("MeterF1", typeof(float), typeof(Input), new PropertyMetadata(default(float)));
+
+        [XmlAttribute("meterF2")]
+        public float MeterF2
+        {
+            get { return (float)GetValue(MeterF2Property); }
+            set { SetValue(MeterF2Property, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MeterF1.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MeterF2Property =
+            DependencyProperty.Register("MeterF2", typeof(float), typeof(Input), new PropertyMetadata(default(float)));
+
+
+
+        [XmlAttribute("audiobusses")]
+        public string Audiobusses
+        {
+            get { return (string)GetValue(AudiobussesProperty); }
+            set { SetValue(AudiobussesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Audiobusses.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AudiobussesProperty =
+            DependencyProperty.Register("Audiobusses", typeof(string), typeof(Input), new PropertyMetadata("M"));
+
+
+
+
+
         [XmlElement(typeof(InputText), ElementName = "text"),
             XmlElement(typeof(InputOverlay), ElementName = "overlay"),
             XmlElement(typeof(InputPosition), ElementName = "position"),

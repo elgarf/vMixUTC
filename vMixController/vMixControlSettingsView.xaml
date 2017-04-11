@@ -15,8 +15,13 @@
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         mc:Ignorable="d ignore"
         Title="{e:Localize Widget Properties}"
-        Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="169.154"
-        Width="512" Height="512" WindowStartupLocation="CenterScreen" Background="Black">
+        Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="364.71"
+        Width="{Binding ControlSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay}"
+        Height="{Binding ControlSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay}"
+        Top="{Binding ControlSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay}"
+        Left="{Binding ControlSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay}"
+        WindowStartupLocation="CenterScreen" Background="Black" ResizeMode="CanResize"
+        e:ControlBox.HasMaximizeButton="False">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,11 +30,6 @@
             <Converters:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
             <Converters:NotConverter x:Key="NotConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <ObjectDataProvider x:Key="ActionValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="mdl:vMixControlButtonAction"/>
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
             <ObjectDataProvider x:Key="KeyValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="Key"/>
@@ -123,6 +123,9 @@
                                 <TextBlock Grid.Column="5" Style="{StaticResource PropertyName}" Text="{e:Localize Link}"></TextBlock>
                             </Grid>-->
                             <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding Hotkey}">
+                                <i:Interaction.Behaviors>
+                                    <e:IgnoreMouseWheelBehavior/>
+                                </i:Interaction.Behaviors>
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

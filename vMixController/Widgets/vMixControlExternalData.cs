@@ -254,7 +254,7 @@ namespace vMixController.Widgets
                 {
                     InitializeDataProvider(Convert.FromBase64String(value));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -368,6 +368,7 @@ namespace vMixController.Widgets
         public override void Update()
         {
             UpdateText(Paths);
+            base.Update();
         }
 
         public override UserControl[] GetPropertiesControls()
@@ -419,13 +420,18 @@ namespace vMixController.Widgets
                 Enabled = !Enabled;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool managed)
         {
-            _timer.Stop();
-            if (DataProvider != null && DataProvider is IDisposable)
-                ((IDisposable)DataProvider).Dispose();
+            if (_disposed) return;
 
-            base.Dispose();
+            if (managed)
+            {
+                _timer.Stop();
+                if (DataProvider != null && DataProvider is IDisposable)
+                    ((IDisposable)DataProvider).Dispose();
+                base.Dispose(managed);
+                GC.SuppressFinalize(this);
+            }
         }
 
         [NonSerialized]
@@ -451,7 +457,7 @@ namespace vMixController.Widgets
             }
         }
 
-
+        [NonSerialized]
         private RelayCommand _toggleEnabledCommand;
 
         /// <summary>

@@ -9,6 +9,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:wdgts="clr-namespace:vMixController.Widgets"
              xmlns:sanford="clr-namespace:Sanford.Multimedia.Midi;assembly=Sanford.Multimedia.Midi"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="496"
              x:Name="Me">
@@ -24,12 +25,15 @@
             </ObjectDataProvider>
         </ResourceDictionary>
     </UserControl.Resources>
+    <i:Interaction.Behaviors>
+        <e:IgnoreMouseWheelBehavior/>
+    </i:Interaction.Behaviors>
     <StackPanel Visibility="{Binding PathMappingVisibility}" Margin="0,0,0,2">
         <StackPanel Orientation="Horizontal">
             <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Midi Mapping}"/></TextBlock>
             <Button ToolTip="{e:Localize Add midi mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
         </StackPanel>
-        <ListView ItemsSource="{Binding Midis, ElementName=Me}" HorizontalContentAlignment="Stretch">
+        <ListView BorderThickness="0,0,0,1" ItemsSource="{Binding Midis, ElementName=Me}" HorizontalContentAlignment="Stretch">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

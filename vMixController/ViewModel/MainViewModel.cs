@@ -25,7 +25,7 @@ namespace vMixController.ViewModel
     /// See http://www.mvvmlight.net
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IDisposable
     {
         vMixControlSettingsView _settings = null;// new vMixControlSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -327,13 +327,21 @@ namespace vMixController.ViewModel
                     ?? (_copyControlCommand = new RelayCommand<vMixControl>(
                     p =>
                     {
-                        var copy = p.Copy();
-                        copy.Name += " copy";
-                        copy.State = Model;
-                        copy.Left += 8;
-                        copy.Top += 8;
-                        _controls.Add(copy);
-                        UpdateWithLicense();
+                        try
+                        {
+                            var copy = p.Copy();
+                            copy.Name += " copy";
+                            copy.State = Model;
+                            copy.Left += 8;
+                            copy.Top += 8;
+                            copy.Update();
+                            _controls.Add(copy);
+                            UpdateWithLicense();
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Error(e, "Error while copying widget.");
+                        }
                     }));
             }
         }
@@ -387,6 +395,7 @@ namespace vMixController.ViewModel
                         _createControl = new Action<Point>(x =>
                         {
                             var control = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
+
                             var count = _controls.Where(y => y.GetType() == control.GetType()).Count();
 
                             if (control.MaxCount == -1 || control.MaxCount > count)
@@ -395,10 +404,12 @@ namespace vMixController.ViewModel
                                 control.Top = x.Y;
                                 control.Left = x.X;
                                 control.AlignByGrid();
+                                control.Update();
                                 _controls.Add(control);
                                 _logger.Info("New {0} widget added.", control.Type.ToLower());
                                 if (!UpdateWithLicense(control))
                                     OpenPropertiesCommand.Execute(control);
+
                             }
                             else
                                 control.Dispose();
@@ -503,6 +514,7 @@ namespace vMixController.ViewModel
                             ctrl.IsTemplate = false;
                             ctrl.State = Model;
                             ctrl.AlignByGrid();
+                            ctrl.Update();
                             _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
                             _controls.Add(ctrl);
                             UpdateWithLicense();
@@ -782,7 +794,7 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
-                       
+
                     }));
             }
         }
@@ -822,6 +834,11 @@ namespace vMixController.ViewModel
         /// </summary>
         public MainViewModel()
         {
+
+            /*XmlSerializer clr = new XmlSerializer(typeof(System.Windows.Media.Color));
+            using (var fss = new FileStream("tt.xml", FileMode.Create))
+                clr.Serialize(fss, System.Windows.Media.Colors.Red);*/
+
             vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
 
             _connectTimer.Interval = TimeSpan.FromSeconds(20);
@@ -834,7 +851,7 @@ namespace vMixController.ViewModel
             {
                 if (File.Exists("Functions.xml"))
                     using (var fs = new FileStream("Functions.xml", FileMode.Open))
-                        Functions = (ObservableCollection<vMixFunctionReference>)s.Deserialize(fs);
+                        _functions = (ObservableCollection<vMixFunctionReference>)s.Deserialize(fs);
             }
             catch (Exception ex)
             {
@@ -851,7 +868,7 @@ namespace vMixController.ViewModel
                 s = new XmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
                 if (File.Exists(Path.Combine(_documentsPath, "Templates.xml")))
                     using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Open))
-                        ControlTemplates = (ObservableCollection<Pair<string, vMixControl>>)s.Deserialize(fs);
+                        _controlTemplates = (ObservableCollection<Pair<string, vMixControl>>)s.Deserialize(fs);
             }
             catch (Exception)
             {
@@ -864,28 +881,28 @@ namespace vMixController.ViewModel
                 s = new XmlSerializer(typeof(MainWindowSettings));
                 if (File.Exists(Path.Combine(_documentsPath, "WindowSettings.xml")))
                     using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Open))
-                        WindowSettings = (MainWindowSettings)s.Deserialize(fs);
+                        _windowSettings = (MainWindowSettings)s.Deserialize(fs);
                 else
-                    WindowSettings = new MainWindowSettings();
+                    _windowSettings = new MainWindowSettings();
 
 
 
                 var totalwidth = WpfScreenHelper.Screen.AllScreens.Select(x => x.Bounds.Width).Aggregate((x, y) => x + y);
                 var totalheight = WpfScreenHelper.Screen.AllScreens.Select(x => x.Bounds.Height).Max();
 
-                if (WindowSettings.Left > totalwidth)
-                    WindowSettings.Left = 128;
-                if (WindowSettings.Top > totalheight)
-                    WindowSettings.Top = 128;
-                if (WindowSettings.Width > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width)
-                    WindowSettings.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width - 32;
-                if (WindowSettings.Height > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
-                    WindowSettings.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height - 32;
+                if (_windowSettings.Left > totalwidth)
+                    _windowSettings.Left = 128;
+                if (_windowSettings.Top > totalheight)
+                    _windowSettings.Top = 128;
+                if (_windowSettings.Width > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width)
+                    _windowSettings.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width - 32;
+                if (_windowSettings.Height > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
+                    _windowSettings.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height - 32;
 
             }
             catch (Exception)
             {
-                WindowSettings = new MainWindowSettings();
+                _windowSettings = new MainWindowSettings();
             }
 
             if (Model == null)
@@ -1025,6 +1042,18 @@ namespace vMixController.ViewModel
                 item.Dispose();
             }
             base.Cleanup();
+        }
+
+        protected virtual void Dispose(bool managed)
+        {
+            if (_client != null)
+                _client.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            //throw new NotImplementedException();
         }
     }
 }

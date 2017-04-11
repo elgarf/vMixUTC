@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +10,7 @@ using vMixController.Classes;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public enum vMixControlButtonAction
-    {
-        None,
-        InputSelectIndex,
-        OverlayIn,
-        OverlayOff,
-        OverlayOut,
-        OverlayToggle,
-        SetCountdownDuration,
-        StartCountdown,
-        PauseCountdown,
-        StopCountdown,
-        Timer
-    }
-    [Serializable]
-    public class vMixControlButtonCommand: ObservableObject
+    public class vMixControlButtonCommand : ObservableObject
     {
         /// <summary>
         /// The <see cref="Action" /> property's name.
@@ -176,9 +162,74 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="AdditionalParameters" /> property's name.
+        /// </summary>
+        public const string AdditionalParametersPropertyName = "AdditionalParameters";
+
+        private ObservableCollection<One<string>> _additionalParameters = new ObservableCollection<One<string>>();
+
+        /// <summary>
+        /// Sets and gets the AdditionalParameters property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<One<string>> AdditionalParameters
+        {
+            get
+            {
+                return _additionalParameters;
+            }
+
+            set
+            {
+                if (_additionalParameters == value)
+                {
+                    return;
+                }
+
+                _additionalParameters = value;
+                RaisePropertyChanged(AdditionalParametersPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Collapsed" /> property's name.
+        /// </summary>
+        public const string CollapsedPropertyName = "Collapsed";
+
+        private bool _collapsed = false;
+
+        /// <summary>
+        /// Sets and gets the Collapsed property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Collapsed
+        {
+            get
+            {
+                return _collapsed;
+            }
+
+            set
+            {
+                if (_collapsed == value)
+                {
+                    return;
+                }
+
+                _collapsed = value;
+                RaisePropertyChanged(CollapsedPropertyName);
+                RaisePropertyChanged(AdditionalParametersPropertyName);
+            }
+        }
+
         public vMixControlButtonCommand()
         {
-            Action = new vMixFunctionReference();
+            _action = new vMixFunctionReference();
+            /*if (_additionalParameters.Count < 10)
+                for (int i = 0; i < 10; i++)
+                    _additionalParameters.Add("");*/
         }
 
     }

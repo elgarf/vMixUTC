@@ -214,15 +214,20 @@ namespace vMixController.Widgets
             base.SetProperties(_controls);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool managed)
         {
-            if (Device != null)
+            if (_disposed) return;
+
+            if (managed)
             {
-                Device.Reset();
-                Device.Dispose();
+                if (Device != null)
+                {
+                    Device.Reset();
+                    Device.Dispose();
+                }
+                base.Dispose(managed);
+                GC.SuppressFinalize(this);
             }
-            
-            base.Dispose();
         }
     }
 

@@ -46,16 +46,14 @@ namespace vMixController.Widgets
         internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();
         internal static State _internalState;
 
-        static DispatcherTimer _shadowUpdate;
+        protected static DispatcherTimer _shadowUpdate;
 
         public vMixControl()
         {
             _shadowUpdate = new DispatcherTimer();
             _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
-            _shadowUpdate.Start();
-
-            _hotkey = GetHotkeys();
+            _shadowUpdate.Start();            
         }
 
         private void _shadowUpdate_Tick(object sender, EventArgs e)
@@ -72,7 +70,35 @@ namespace vMixController.Widgets
         public virtual int MaxCount => -1;
 
 
+        /// <summary>
+        /// The <see cref="WindowProperties" /> property's name.
+        /// </summary>
+        public const string WindowPropertiesPropertyName = "WindowProperties";
 
+        private Quadriple<double?, double?, double?, double?> _windowProperties = new Quadriple<double?, double?, double?, double?>();
+
+        /// <summary>
+        /// Sets and gets the WindowProperties property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Quadriple<double?, double?, double?, double?> WindowProperties
+        {
+            get
+            {
+                return _windowProperties;
+            }
+
+            set
+            {
+                if (_windowProperties == value)
+                {
+                    return;
+                }
+
+                _windowProperties = value;
+                RaisePropertyChanged(WindowPropertiesPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="Locked" /> property's name.
@@ -296,7 +322,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string WidthPropertyName = "Width";
 
-        private double _width = 128;
+        protected double _width = 128;
 
         /// <summary>
         /// Sets and gets the Width property.
@@ -653,12 +679,30 @@ namespace vMixController.Widgets
                 XmlSerializer s = new XmlSerializer(typeof(vMixControl));
                 s.Serialize(ms, this);
                 ms.Seek(0, SeekOrigin.Begin);
-                return (vMixControl)s.Deserialize(ms);
+                var ctrl = (vMixControl)s.Deserialize(ms);
+                //ctrl.Update();
+                return ctrl;
             }
         }
 
         public virtual void Update()
         {
+            if (_hotkey == null)
+                _hotkey = GetHotkeys();
+            else 
+            {
+                //UpdateHotkeys
+                var hk = _hotkey;
+                var hotkeys = GetHotkeys();
+                if (hk.Length != hotkeys.Length)
+                {
+                    _hotkey = hotkeys;
+                    for (int i = 0; i < _hotkey.Length; i++)
+                        for (int j = 0; j < hk.Length; j++)
+                            if (_hotkey[i].Name == hk[j].Name)
+                                _hotkey[i] = hk[j];
+                }
+            }
             UpdateHotkeys();
         }
 
@@ -679,6 +723,8 @@ namespace vMixController.Widgets
             BorderColor = vMixController.ViewModel.vMixControlSettingsViewModel.Colors.Where(x => x.A == viewModel.Color).FirstOrDefault().B;
             Hotkey = viewModel.Hotkey.ToArray();
 
+            WindowProperties = viewModel.WindowProperties;
+
             SetProperties(viewModel.WidgetPropertiesControls);
 
             if (this is IvMixAutoUpdateWidget)
@@ -688,6 +734,8 @@ namespace vMixController.Widgets
 
         private void UpdateHotkeys()
         {
+            if (_info == null)
+                Info = new ObservableCollection<Triple<string, string, string>>();
             Info.Clear();
             if (Hotkey.Length != 0)
             {
@@ -696,7 +744,7 @@ namespace vMixController.Widgets
                 {
                     foreach (var item in active.Select(x => new Triple<string, string, string>()
                     {
-                        A = x.Name,
+                        A = string.IsNullOrWhiteSpace(x.Name) ? "N/A" : x.Name,
                         B = x.Link,
                         C = (x.Alt ? "Alt + " : "") +
                         (x.Ctrl ? "Ctrl + " : "") +
@@ -719,16 +767,24 @@ namespace vMixController.Widgets
                     ControlsStoreUsage.Remove(item);
         }
 
+        protected bool _disposed = false;
+
         protected virtual void Dispose(bool managed)
         {
+            if (_disposed) return;
 
+            if (managed)
+            {
+                _shadowUpdate.Stop();
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
-            _shadowUpdate.Stop();
             Dispose(true);
-            GC.SuppressFinalize(this);
+            //throw new NotImplementedException();
         }
     }
 }

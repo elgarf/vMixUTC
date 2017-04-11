@@ -19,6 +19,7 @@ namespace vMixController.Widgets
         public override string Type => "Clock";
         public override int MaxCount => 1;
 
+        [NonSerialized]
         private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Background);
 
         /// <summary>
@@ -132,10 +133,16 @@ namespace vMixController.Widgets
             _timer.Start();
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool managed)
         {
-            _timer.Stop();
-            base.Dispose();
+            if (_disposed) return;
+
+            if (managed)
+            {
+                _timer.Stop();
+                base.Dispose(managed);
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

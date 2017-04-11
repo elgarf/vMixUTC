@@ -126,6 +126,7 @@ namespace vMixController.Widgets
             Port = "8088";
         }
 
+        [NonSerialized]
         private RelayCommand _toggleEnabledCommand;
 
         /// <summary>

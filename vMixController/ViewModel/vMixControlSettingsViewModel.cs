@@ -38,6 +38,36 @@ namespace vMixController.ViewModel
         };
 
         /// <summary>
+        /// The <see cref="WindowProperties" /> property's name.
+        /// </summary>
+        public const string WindowPropertiesPropertyName = "WindowProperties";
+
+        private Quadriple<double?, double?, double?, double?> _windowProperties = new Quadriple<double?, double?, double?, double?>();
+
+        /// <summary>
+        /// Sets and gets the WindowProperties property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Quadriple<double?, double?, double?, double?> WindowProperties
+        {
+            get
+            {
+                return _windowProperties;
+            }
+
+            set
+            {
+                if (_windowProperties == value)
+                {
+                    return;
+                }
+
+                _windowProperties = value;
+                RaisePropertyChanged(WindowPropertiesPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="PeriodVisibility" /> property's name.
         /// </summary>
         public const string PeriodVisibilityPropertyName = "PeriodVisibility";
@@ -67,7 +97,7 @@ namespace vMixController.ViewModel
             }
         }
 
-        /// <summary>
+        /*/// <summary>
         /// The <see cref="PathMappingVisibility" /> property's name.
         /// </summary>
         public const string PathMappingVisibilityPropertyName = "PathMappingVisibility";
@@ -155,7 +185,7 @@ namespace vMixController.ViewModel
                 _itemsVisibility = value;
                 RaisePropertyChanged(ItemsVisibilityPropertyName);
             }
-        }
+        }*/
 
         /// <summary>
         /// The <see cref="Model" /> property's name.
@@ -471,6 +501,18 @@ namespace vMixController.ViewModel
             Color = p.Color;
             Hotkey = new ObservableCollection<Classes.Hotkey>(p.Hotkey);
             Type = p.Type;
+
+            WindowProperties = p.WindowProperties;
+            if (!WindowProperties.A.HasValue ||
+                !WindowProperties.B.HasValue ||
+                !WindowProperties.C.HasValue ||
+                !WindowProperties.D.HasValue)
+            {
+                WindowProperties.A = 512;
+                WindowProperties.B = 512;
+                WindowProperties.C = 0;
+                WindowProperties.D = 0;
+            }
 
 
             if (p is IvMixAutoUpdateWidget)

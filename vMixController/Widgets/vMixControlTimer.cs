@@ -37,7 +37,7 @@ namespace vMixController.Widgets
             _timer.Interval = TimeSpan.FromSeconds(0.5);
             _timer.Tick += _timer_Tick;
 
-            Width = 256;
+            _width = 256;
         }
 
         public override Hotkey[] GetHotkeys()
@@ -550,12 +550,17 @@ namespace vMixController.Widgets
             Links[3] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 3).First().Value;
         }
 
-        public override sealed void Dispose()
+        protected override void Dispose(bool managed)
         {
+            if (_disposed) return;
 
-            _timer.Stop();
-            _stopwatch.Stop();
-            base.Dispose();
+            if (managed)
+            {
+                _timer.Stop();
+                _stopwatch.Stop();
+                base.Dispose(managed);
+                GC.SuppressFinalize(this);
+            }
         }
 
     }

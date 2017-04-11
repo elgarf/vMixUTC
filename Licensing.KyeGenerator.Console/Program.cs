@@ -54,7 +54,7 @@ namespace Licensing.KyeGenerator.Console
                     }
                     
                 }
-                catch (Exception ex) { System.Console.WriteLine("Bad feature!"); }
+                catch (Exception) { System.Console.WriteLine("Bad feature!"); }
             }
 
             RSACryptoServiceProvider _csp = new RSACryptoServiceProvider();

@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using vMixController.Classes;
 using vMixController.Widgets;
 
 namespace vMixController.PropertiesControls
@@ -76,6 +77,7 @@ namespace vMixController.PropertiesControls
                     p =>
                     {
                         Commands.Remove(p);
+                        //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                     }));
             }
         }
@@ -93,7 +95,11 @@ namespace vMixController.PropertiesControls
                     ?? (_addCommandCommand = new RelayCommand(
                     () =>
                     {
-                        Commands.Add(new vMixControlButtonCommand() { Action = new Classes.vMixFunctionReference() });
+                        var cmd = new vMixControlButtonCommand() { Action = new Classes.vMixFunctionReference() };
+                        for (int i = 0; i < 10; i++)
+                            cmd.AdditionalParameters.Add(new One<string>() { A = "" });
+                        Commands.Add(cmd);
+                        //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                     }));
             }
         }
@@ -113,6 +119,7 @@ namespace vMixController.PropertiesControls
                     {
                         var idx = Commands.IndexOf(p);
                         Commands.Move(idx, idx - 1 >= 0 ? idx - 1 : idx);
+                        CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                     }));
             }
         }

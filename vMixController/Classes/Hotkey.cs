@@ -53,8 +53,8 @@ namespace vMixController.Classes
         public bool Shift { get; set; }
 
         /// <summary>
-            /// The <see cref="Active" /> property's name.
-            /// </summary>
+        /// The <see cref="Active" /> property's name.
+        /// </summary>
         public const string ActivePropertyName = "Active";
 
         private bool _active = false;

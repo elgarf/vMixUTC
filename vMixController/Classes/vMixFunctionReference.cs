@@ -33,6 +33,7 @@ namespace vMixController.Classes
         public bool HasInputProperty { get; set; }
         public bool HasStringProperty { get; set; }
         public bool HasIntProperty { get; set; }
+        public bool IsGroup { get; set; }
 
         public string ActiveStatePath { get; set; }
         public string ActiveStateValue { get; set; }
@@ -51,6 +52,11 @@ namespace vMixController.Classes
         public int[] IntValues { get; set; }
         public string[] StringValues { get; set; }
 
+        public string CommandType { get; set; }
+        public int HideParameters { get; set; }
+
+        public System.Windows.Media.Color Color { get; set; }
+
         public override bool Equals(object obj)
         {
             return (obj is vMixFunctionReference) && Function == (obj as vMixFunctionReference).Function;
@@ -58,7 +64,10 @@ namespace vMixController.Classes
 
         public override int GetHashCode()
         {
-            return Function.GetHashCode();
+            if (Function != null)
+                return Function.GetHashCode();
+            else
+                return 0;
         }
 
         public vMixFunctionReference()
@@ -66,6 +75,7 @@ namespace vMixController.Classes
             InputDescription = "Input";
             IntDescription = "Integer";
             StringDescription = "String";
+            Color = System.Windows.Media.Colors.Black;
         }
 
     }

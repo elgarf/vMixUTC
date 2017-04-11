@@ -94,6 +94,7 @@ namespace vMixController.Widgets
             //return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray(); ;
         }
 
+        [NonSerialized]
         BackgroundWorker _bgWorker = new BackgroundWorker();
         //string _previousText;
         public override void ShadowUpdate()

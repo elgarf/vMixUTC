@@ -45,7 +45,7 @@ namespace vMixController.Widgets
                     if (exp != null && exp.Status == BindingStatus.Active)
                         exp.UpdateSource();
                 }
-                catch (Exception ex) { }
+                catch (Exception) { }
             }
         }
 
@@ -145,7 +145,7 @@ namespace vMixController.Widgets
                     }
                     //BindingOperations.SetBinding(d, TextProperty, bnd);
                 }
-                catch (Exception ex) { }
+                catch (Exception) { }
                 //(d as vMixControlTextField).Update();
                 ///TODO: Non defined behavior, rewrite
                 /*var obj = (vMixControlTextField)d;

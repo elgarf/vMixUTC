@@ -121,7 +121,7 @@ namespace vMixGenericXmlDataProvider
                     var nsn = item.Split(' ');
                     ns.AddNamespace(nsn[0], nsn[1]);
                 }
-                catch (Exception ex) { }
+                catch (Exception) { }
             }
             //Selecting nodes
             var nodes = doc.SelectNodes(_xpath, ns);

@@ -383,6 +383,18 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="GridViewColumnHeader">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridViewColumnHeader">
+                    <Border BorderThickness="0,0,1,1" BorderBrush="{StaticResource ComboBox.Static.Border}">
+                        <TextBlock HorizontalAlignment="Center" Margin="2" Style="{StaticResource CaptionText}" Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!-- Extended WPF Toolkit Styling -->
 
     <Style TargetType="{x:Type RepeatButton}">

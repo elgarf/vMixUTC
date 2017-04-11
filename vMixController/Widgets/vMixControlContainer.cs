@@ -156,9 +156,9 @@ namespace vMixController.Widgets
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool managed)
         {
-            base.Dispose();
+            base.Dispose(managed);
         }
     }
 }
