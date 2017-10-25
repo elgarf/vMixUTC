@@ -37,5 +37,6 @@ namespace vMixAPI
         NDI = 4000,
         Browser = 5000,
         VideoCall = 6000,
+        VLC = 7000,
     }
 }

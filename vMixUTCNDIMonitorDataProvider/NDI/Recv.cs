@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +11,18 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
     // thr current options for receive quality
     public enum NDIlib_recv_bandwidth_e : uint
     {
-        NDIlib_recv_bandwidth_lowest = 0,
-        NDIlib_recv_bandwidth_highest = 100			// Default
-    };
+        NDIlib_recv_bandwidth_audio_only = 10, // Receive only audio.
+        NDIlib_recv_bandwidth_lowest = 0,  // Receive video at a lower bandwidth and resolution.
+        NDIlib_recv_bandwidth_highest = 100 // Default.
+    }
+
+    public enum NDIlib_recv_color_format_e
+    {
+        NDIlib_recv_color_format_e_BGRX_BGRA = 0,	// No alpha channel: BGRX, Alpha channel: BGRA
+        NDIlib_recv_color_format_e_UYVY_BGRA = 1,	// No alpha channel: UYVY, Alpha channel: BGRA
+        NDIlib_recv_color_format_e_RGBX_RGBA = 2,	// No alpha channel: RGBX, Alpha channel: RGBA
+        NDIlib_recv_color_format_e_UYVY_RGBA = 3	// No alpha channel: UYVY, Alpha channel: RGBA
+    }
 
     // The creation structure that is used when you are creating a receiver
     [StructLayoutAttribute(LayoutKind.Sequential)]
@@ -21,22 +31,21 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         // The source that you wish to connect to.
         public NDIlib_source_t source_to_connect_to;
 
-        // What color space is your preference ?
-        //
-        //	prefer_UYVY == true
-        //		No Alpha channel   : UYVY
-        //		With Alpha channel : BGRA
-        //
-        //	prefer_UYVY == false 
-        //		No Alpha channel   : BGRA
-        //		With Alpha channel : BGRA
-        [MarshalAsAttribute(UnmanagedType.Bool)]
-        public bool prefer_UYVY;
+        // Your preference of color space. See above.
+        public NDIlib_recv_color_format_e color_format;
 
         // The bandwidth setting that you wish to use for this video source. Bandwidth
         // controlled by changing both the compression level and the resolution of the source.
         // A good use for low bandwidth is working on WIFI connections or small previews.
         public NDIlib_recv_bandwidth_e bandwidth;
+
+        // When this flag is FALSE, all video that you receive will be progressive. For sources
+        // that provide fields, this is de-interlaced on the receiving side (because we cannot change
+        // what the up-stream source was actually rendering. This is provided as a convenience to
+        // down-stream sources that do not wish to understand fielded video. There is almost no 
+        // performance impact of using this function.
+        [MarshalAsAttribute(UnmanagedType.U1)]
+        public bool allow_video_fields;
     }
 
     // This allows you determine the current performance levels of the receiving to be able to detect whether frames have been dropped
@@ -66,6 +75,7 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         public long m_metadata_frames;
     };
 
+    [SuppressUnmanagedCodeSecurity]
     public static class Receive
     {
         // Create a new receiver instance. This will return null if it fails.
@@ -89,8 +99,8 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         // This will allow you to receive video, audio and meta-data frames.
         // Any of the buffers can be NULL, in which case data of that type
         // will not be captured in this call. This call can be called simultaneouslt
-        // on seperate threads, so it is entirely possible to receive audio, video, metadata
-        // all on seperate threads. This function will return NDIlib_frame_type_none if no
+        // on separate threads, so it is entirely possible to receive audio, video, metadata
+        // all on separate threads. This function will return NDIlib_frame_type_none if no
         // data is received within the specified timeout. Buffers captured with this must
         // be freed with the appropriate free function below.
         public static NDIlib_frame_type_e NDIlib_recv_capture(
@@ -233,24 +243,24 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         const string NDILib64Name = "Processing.NDI.Lib.x64.dll";
         const string NDILib32Name = "Processing.NDI.Lib.x86.dll";
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_create2", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_create2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr NDIlib32_recv_create(ref NDIlib_recv_create_t p_create_settings);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_create2", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_create2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr NDIlib64_recv_create(ref NDIlib_recv_create_t p_create_settings);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_destroy", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_destroy(IntPtr p_instance);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_destroy", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_destroy(IntPtr p_instance);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib32_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         ref NDIlib_video_frame_t p_video_data,      // The video data received (can be null)
                         ref NDIlib_audio_frame_t p_audio_data,		// The audio data received (can be null)
                         ref NDIlib_metadata_frame_t p_meta_data,    // The meta data data received (can be null)
                         uint timeout_in_ms);				        // The ammount of time in milliseconds to wait for data.
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib64_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         ref NDIlib_video_frame_t p_video_data,      // The video data received (can be null)
@@ -258,14 +268,14 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
                         ref NDIlib_metadata_frame_t p_meta_data,    // The meta data data received (can be null)
                         uint timeout_in_ms);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib32_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         ref NDIlib_video_frame_t p_video_data,      // The video data received (can be null)
                         IntPtr p_audio_data,		                // The audio data received (can be null)
                         IntPtr p_meta_data,                         // The meta data data received (can be null)
                         uint timeout_in_ms);				        // The ammount of time in milliseconds to wait for data.
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib64_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         ref NDIlib_video_frame_t p_video_data,      // The video data received (can be null)
@@ -273,14 +283,14 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
                         IntPtr p_meta_data,                         // The meta data data received (can be null)
                         uint timeout_in_ms);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib32_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         IntPtr p_video_data,                        // The video data received (can be null)
                         ref NDIlib_audio_frame_t p_audio_data,      // The audio data received (can be null)
                         IntPtr p_meta_data,                         // The meta data data received (can be null)
                         uint timeout_in_ms);				        // The ammount of time in milliseconds to wait for data.
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib64_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         IntPtr p_video_data,                        // The video data received (can be null)
@@ -288,14 +298,14 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
                         IntPtr p_meta_data,                         // The meta data data received (can be null)
                         uint timeout_in_ms);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib32_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         IntPtr p_video_data,                        // The video data received (can be null)
                         IntPtr p_audio_data,		                // The audio data received (can be null)
                         ref NDIlib_metadata_frame_t p_meta_data,    // The meta data data received (can be null)
                         uint timeout_in_ms);				        // The ammount of time in milliseconds to wait for data.
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_capture", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern NDIlib_frame_type_e NDIlib64_recv_capture(
                         IntPtr p_instance,                          // The library instance
                         IntPtr p_video_data,                        // The video data received (can be null)
@@ -303,53 +313,53 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
                         ref NDIlib_metadata_frame_t p_meta_data,    // The meta data data received (can be null)
                         uint timeout_in_ms);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_video", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_video", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_free_video(IntPtr p_instance, ref NDIlib_video_frame_t p_video_data);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_video", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_video", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_free_video(IntPtr p_instance, ref NDIlib_video_frame_t p_video_data);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_audio", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_audio", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_free_audio(IntPtr p_instance, ref NDIlib_audio_frame_t p_audio_data);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_audio", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_audio", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_free_audio(IntPtr p_instance, ref NDIlib_audio_frame_t p_audio_data);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_free_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_free_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_meta_data);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_free_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_free_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_meta_data);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_send_metadata", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_send_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAsAttribute(UnmanagedType.U1)]
         private static extern bool NDIlib32_recv_send_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_meta_data);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_send_metadata", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_send_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAsAttribute(UnmanagedType.U1)]
         private static extern bool NDIlib64_recv_send_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_meta_data);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_set_tally", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_set_tally", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAsAttribute(UnmanagedType.U1)]
         private static extern bool NDIlib32_recv_set_tally(IntPtr p_instance, ref NDIlib_tally_t p_tally);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_set_tally", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_set_tally", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAsAttribute(UnmanagedType.U1)]
         private static extern bool NDIlib64_recv_set_tally(IntPtr p_instance, ref NDIlib_tally_t p_tally);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_get_performance", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_get_performance", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_get_performance(IntPtr p_instance, ref NDIlib_recv_performance_t p_total, ref NDIlib_recv_performance_t p_dropped);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_get_performance", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_get_performance", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_get_performance(IntPtr p_instance, ref NDIlib_recv_performance_t p_total, ref NDIlib_recv_performance_t p_dropped);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_get_queue", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_get_queue", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_get_queue(IntPtr p_instance, ref NDIlib_recv_queue_t p_total);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_get_queue", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_get_queue", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_get_queue(IntPtr p_instance, ref NDIlib_recv_queue_t p_total);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_clear_connection_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_clear_connection_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_clear_connection_metadata(IntPtr p_instance);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_clear_connection_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_clear_connection_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_clear_connection_metadata(IntPtr p_instance);
 
-        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_add_connection_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib32Name, EntryPoint = "NDIlib_recv_add_connection_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_recv_add_connection_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_metadata);
-        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_add_connection_metadata", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NDILib64Name, EntryPoint = "NDIlib_recv_add_connection_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_recv_add_connection_metadata(IntPtr p_instance, ref NDIlib_metadata_frame_t p_metadata);
 
         #endregion

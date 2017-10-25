@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace vMixUTCNDIMonitorDataProvider.NDI
 {
+    [SuppressUnmanagedCodeSecurity]
     public static class Common
     {
         // This is not actually required, but will start and end the libraries which might get
@@ -101,23 +103,26 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
             return Encoding.UTF8.GetString(buffer);
         }
 
+        // C# doesn't allow #define as in C/C++, so we do this instead
+        public static long NDIlib_send_timecode_synthesize = Int64.MaxValue;
+
         #region pInvoke
         const string NDILib64Name = "Processing.NDI.Lib.x64.dll";
         const string NDILib32Name = "Processing.NDI.Lib.x86.dll";
 
-        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_initialize", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_initialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool NDIlib32_initialize();
-        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_initialize", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_initialize", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool NDIlib64_initialize();
 
-        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_destroy", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib32_destroy();
-        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_destroy", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void NDIlib64_destroy();
 
-        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_is_supported_CPU", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib32Name, EntryPoint = "NDIlib_is_supported_CPU", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool NDIlib32_is_supported_CPU();
-        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_is_supported_CPU", CallingConvention = CallingConvention.Cdecl)]
+        [DllImportAttribute(NDILib64Name, EntryPoint = "NDIlib_is_supported_CPU", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool NDIlib64_is_supported_CPU();
 
         #endregion
@@ -130,13 +135,37 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         NDIlib_frame_type_video = 1,
         NDIlib_frame_type_audio = 2,
         NDIlib_frame_type_metadata = 3,
+        NDIlib_frame_type_error = 4
     }
 
+    public enum NDIlib_frame_format_type_e
+    {   // A progressive frame
+        NDIlib_frame_format_type_progressive = 1,
+
+        // A fielded frame with the field 0 being on the even lines and field 1 being
+        // on the odd lines/
+        NDIlib_frame_format_type_interleaved = 0,
+
+        // Individual fields
+        NDIlib_frame_format_type_field_0 = 2,
+        NDIlib_frame_format_type_field_1 = 3
+
+    }
 
     public enum NDIlib_FourCC_type_e : uint
     {
         NDIlib_FourCC_type_UYVY = 0x59565955U,
-        NDIlib_FourCC_type_BGRA = 0x41524742U
+
+        // This is a UYVY buffer followed immediately by an alpha channel buffer.
+        // If the stride of the YCbCr component is "stride", then the alpha channel
+        // starts at image_ptr + yres*stride. The alpha channel stride is stride/2.
+        NDIlib_FourCC_type_UYVA = 0x41565955U,
+
+        NDIlib_FourCC_type_BGRA = 0x41524742U,
+        NDIlib_FourCC_type_BGRX = 0x58524742U,
+
+        NDIlib_FourCC_type_RGBA = 0x41424752U,
+        NDIlib_FourCC_type_RGBX = 0x58424752U
     }
 
 
@@ -175,8 +204,7 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
         public float picture_aspect_ratio;
 
         // Is this a fielded frame, or is it progressive
-        [MarshalAsAttribute(UnmanagedType.Bool)]
-        public bool is_progressive;
+        public NDIlib_frame_format_type_e frame_format_type;
 
         // The timecode of this frame in 10ns intervals
         public long timecode;
@@ -233,11 +261,11 @@ namespace vMixUTCNDIMonitorDataProvider.NDI
     public struct NDIlib_tally_t
     {
         // Is this currently on program output
-        [MarshalAsAttribute(UnmanagedType.Bool)]
+        [MarshalAsAttribute(UnmanagedType.U1)]
         public bool on_program;
 
         // Is this currently on preview output
-        [MarshalAsAttribute(UnmanagedType.Bool)]
+        [MarshalAsAttribute(UnmanagedType.U1)]
         public bool on_preview;
     }
 

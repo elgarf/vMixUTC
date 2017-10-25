@@ -471,34 +471,34 @@ namespace vMixAPI
     {
         public static void Audio(this State state, int input)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "Audio",
                 "Input", input.ToString());
         }
 
         public static void PreviewInput(this State state, int input)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "PreviewInput",
                 "Input", input.ToString());
         }
 
         public static void ActiveInput(this State state, int input)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "ActiveInput",
                 "Input", input.ToString());
         }
 
         public static void FadeToBlack(this State state)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "FadeToBlack");
         }
 
         public static void TitleSetText(this State state, string input, string value, int index)
         {
-            state.SendFunction("Function", "SetText",
+            state?.SendFunction("Function", "SetText",
                 "Value", value,
                 "Input", input.ToString(),
                 "SelectedIndex", index.ToString());
@@ -506,7 +506,7 @@ namespace vMixAPI
 
         public static void TitleSetImage(this State state, string input, string value, int index)
         {
-            state.SendFunction("Function", "SetImage",
+            state?.SendFunction("Function", "SetImage",
                 "Value", value,
                 "Input", input.ToString(),
                 "SelectedIndex", index.ToString());
@@ -514,28 +514,28 @@ namespace vMixAPI
 
         public static void InputSelectIndex(this State state, string input, int index)
         {
-            state.SendFunction("Function", "SelectIndex",
+            state?.SendFunction("Function", "SelectIndex",
                 "Input", input,
                 "Value", index.ToString());
         }
 
         public static void InputSetPosition(this State state, int input, int milliseconds)
         {
-            state.SendFunction("Function", "SetPosition",
+            state?.SendFunction("Function", "SetPosition",
                 "Input", input.ToString(),
                 "Value", milliseconds.ToString());
         }
 
         public static void InputLoopOn(this State state, int input)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "LoopOn",
                 "Input", input.ToString());
         }
 
         public static void InputLoopOff(this State state, int input)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "LoopOff",
                 "Input", input.ToString());
         }
@@ -543,34 +543,34 @@ namespace vMixAPI
 
         public static void OverlayInputIn(this State state, string input, int overlay)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", string.Format("OverlayInput{0}In", overlay),
                 "Input", input);
         }
 
         public static void OverlayInputToggle(this State state, string input, int overlay)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", string.Format("OverlayInput{0}", overlay),
                 "Input", input);
         }
 
         public static void OverlayInputOff(this State state, int overlay)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", string.Format("OverlayInput{0}Off", overlay));
         }
 
         public static void OverlayInputOut(this State state, int overlay)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", string.Format("OverlayInput{0}Out", overlay));
         }
 
 
         public static void SetCountdown(this State state, string input, int index, string duration)
         {
-            state.SendFunction("Function", "SetCountdown",
+            state?.SendFunction("Function", "SetCountdown",
                 "Input", input,
                 "Value", duration,
                 "SelectedIndex", index.ToString());
@@ -578,7 +578,7 @@ namespace vMixAPI
 
         public static void StartCountdown(this State state, string input, int index)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "StartCountdown",
                 "Input", input,
                 "SelectedIndex", index.ToString());
@@ -586,7 +586,7 @@ namespace vMixAPI
 
         public static void PauseCountdown(this State state, string input, int index)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "PauseCountdown",
                 "Input", input,
                 "SelectedIndex", index.ToString());
@@ -594,7 +594,7 @@ namespace vMixAPI
 
         public static void StopCountdown(this State state, string input, int index)
         {
-            state.SendFunction(
+            state?.SendFunction(
                 "Function", "StopCountdown",
                 "Input", input,
                 "SelectedIndex", index.ToString());

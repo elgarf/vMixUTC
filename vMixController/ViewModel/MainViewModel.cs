@@ -347,6 +347,45 @@ namespace vMixController.ViewModel
         }
 
 
+        private RelayCommand<vMixControl> _scaleUpCommand;
+
+        /// <summary>
+        /// Gets the ScaleUpCommand.
+        /// </summary>
+        public RelayCommand<vMixControl> ScaleUpCommand
+        {
+            get
+            {
+                return _scaleUpCommand
+                    ?? (_scaleUpCommand = new RelayCommand<vMixControl>(
+                    p =>
+                    {
+                        p.Scale += 0.25f;
+                    }));
+            }
+        }
+
+
+        private RelayCommand<vMixControl> _scaleDownCommand;
+
+        /// <summary>
+        /// Gets the ScaleDownCommand.
+        /// </summary>
+        public RelayCommand<vMixControl> ScaleDownCommand
+        {
+            get
+            {
+                return _scaleDownCommand
+                    ?? (_scaleDownCommand = new RelayCommand<vMixControl>(
+                    p =>
+                    {
+                        if (p.Scale - 0.25f >= 1.0f)
+                            p.Scale -= 0.25f;
+
+                    }));
+            }
+        }
+
         private RelayCommand<vMixController.Widgets.vMixControl> _openPropertiesCommand;
 
         /// <summary>
@@ -717,10 +756,14 @@ namespace vMixController.ViewModel
                 if (Model == null || (Model.Ip != WindowSettings.IP || Model.Port != WindowSettings.Port))
                 {
                     Model = null;
+                    vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
                     vMixAPI.StateFabrique.CreateAsync();
                 }
                 else
+                {
+                    Model.Configure(WindowSettings.IP, WindowSettings.Port);
                     Model.UpdateAsync();
+                }
             }
         }
 

@@ -157,7 +157,7 @@
     <!--Inner Controls End-->
 
     <DataTemplate x:Key="vMixControlButton">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
                     <Ellipse x:Name="hasErrors" Width="4" Height="4" Margin="{StaticResource RightStdMargin}"/>
@@ -179,7 +179,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlTextField">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ContentControl Content="{StaticResource TextFieldWidgetControl}"/>
             </ctrls:vMixControlContainerDummy.MainContent>
@@ -188,7 +188,7 @@
 
 
     <DataTemplate x:Key="vMixControlList">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ContentControl Content="{StaticResource ListWidgetControl}"/>
             </ctrls:vMixControlContainerDummy.MainContent>
@@ -196,19 +196,19 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlScore">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ContentControl Content="{StaticResource ScoreWidgetControl}"/>
             </ctrls:vMixControlContainerDummy.MainContent>
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
     <DataTemplate x:Key="vMixControlLabel">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlMidiInterface">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <Label HorizontalAlignment="Center" Content="{Binding DeviceCaps}"/>
             </ctrls:vMixControlContainerDummy.MainContent>
@@ -216,7 +216,7 @@
     </DataTemplate>
     
     <DataTemplate x:Key="vMixControlExternalData">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
                     <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#xF2D1;</Button>
@@ -229,7 +229,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlTimer">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ContentControl Content="{StaticResource TimerWidgetControl}"/>
             </ctrls:vMixControlContainerDummy.MainContent>
@@ -237,7 +237,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlContainer">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ItemsControl ItemsSource="{Binding Controls}" HorizontalContentAlignment="Stretch">
                     <ItemsControl.Resources>
@@ -256,7 +256,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlMultiState">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
                     <Button ToolTip="{e:Localize Toggle enabled}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ToggleEnabledCommand}" IsEnabled="True">&#xF2D1;</Button>
@@ -269,7 +269,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="vMixControlClock">
-        <ctrls:vMixControlContainerDummy Control="{Binding}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
+        <ctrls:vMixControlContainerDummy Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyControlCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveControlCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding NextEventAt}"/></TextBlock>
             </ctrls:vMixControlContainerDummy.MainContent>

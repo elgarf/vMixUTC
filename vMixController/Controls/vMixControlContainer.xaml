@@ -86,12 +86,19 @@
 
                     <StackPanel Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
                         <ContentControl Content="{Binding ParentContainer.CaptionContent, ElementName=CC}"/>
+                        <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale up}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleUpCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf062;</Button>
+                        <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale down}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleDownCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf063;</Button>
+                        
                         <Button ToolTip="{e:Localize Copy widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.CopyCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61839;</Button>
                         <Button ToolTip="{e:Localize Widget properties}" Style="{StaticResource TitleButton}" Margin="0,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.SettingsCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#62611;</Button>
                         <Button ToolTip="{e:Localize Close widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ParentContainer.CloseCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61782;</Button>
                     </StackPanel>
                 </Grid>
-                <ContentControl x:Name="ContentControl" Content="{Binding ParentContainer.MainContent, ElementName=CC}"/>
+                <ContentControl x:Name="ContentControl" Content="{Binding ParentContainer.MainContent, ElementName=CC}">
+                    <ContentControl.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding ParentContainer.Control.Scale, ElementName=CC}" ScaleY="{Binding ParentContainer.Control.Scale, ElementName=CC}"/>
+                    </ContentControl.LayoutTransform>
+                </ContentControl>
             </StackPanel>
             <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
             <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>

@@ -14,7 +14,7 @@ namespace vMixController.Classes
         public const string GOTO = "GoTo";
         public const string HASVARIABLE = "HasVariable";
         public const string SETVARIABLE = "SetVariable";
-        public const string TIMER = "TIMER";
+        public const string TIMER = "Timer";
         public const string UPDATEINTERNALBUTTONSTATE = "UpdateInternalButtonState";
         public const string UPDATESTATE = "UpdateState";
         

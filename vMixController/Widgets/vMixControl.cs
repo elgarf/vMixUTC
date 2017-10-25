@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,12 +49,14 @@ namespace vMixController.Widgets
 
         protected static DispatcherTimer _shadowUpdate;
 
+
         public vMixControl()
         {
+
             _shadowUpdate = new DispatcherTimer();
             _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
-            _shadowUpdate.Start();            
+            _shadowUpdate.Start();          
         }
 
         private void _shadowUpdate_Tick(object sender, EventArgs e)
@@ -470,6 +473,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="Scale" /> property's name.
+        /// </summary>
+        public const string ScalePropertyName = "Scale";
+
+        private float _scale = 1.0f;
+
+        /// <summary>
+        /// Sets and gets the Scale property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public float Scale
+        {
+            get
+            {
+                return _scale;
+            }
+
+            set
+            {
+                if (_scale == value)
+                {
+                    return;
+                }
+
+                _scale = value;
+                RaisePropertyChanged(ScalePropertyName);
+            }
+        }
+
         [XmlIgnore]
         public virtual vMixAPI.State State
         {
@@ -480,6 +513,7 @@ namespace vMixController.Widgets
                 if (_internalState == null && value != null)
                 {
                     _internalState = value.Create();
+                    _internalState.Configure(value.Ip, value.Port);
                 }
                 else if (value == null)
                     _internalState = null;
@@ -570,9 +604,15 @@ namespace vMixController.Widgets
                         //If it's just index
                         if (!propindex[1].Contains("/"))
                         {
-                            var idx = int.Parse(propindex[1]);
-                            if (idx >= 0 && idx < (array as IList).Count)
-                                found = (array as IList)[idx];
+
+                            var idx = -1;
+                            if (int.TryParse(propindex[1], out idx))
+                            {
+                                if (idx >= 0 && idx < (array as IList).Count)
+                                    found = (array as IList)[idx];
+                                else
+                                    return null;
+                            }
                             else
                                 return null;
                         }
@@ -615,7 +655,16 @@ namespace vMixController.Widgets
                 var propindex = items[0];
 
                 found_prop = GetPropertyOrNull(type, propindex);
-                found = found_prop?.GetValue(obj);
+                var propinfo = found_prop;
+
+                if (Thread.CurrentThread.ThreadState != ThreadState.Stopped)
+                    found = Dispatcher.Invoke<object>(() =>
+                    {
+                        //TODO: CHECK
+                        if (Thread.CurrentThread.ThreadState != ThreadState.Stopped) return propinfo?.GetValue(obj); else return null;
+                    });
+                else
+                    found = null;
             }
 
             return items;
@@ -640,7 +689,7 @@ namespace vMixController.Widgets
             if (items != null && items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
             else if (found_prop != null && found_prop.PropertyType == value.GetType())
-                found_prop.SetValue(obj, value);
+                Dispatcher.Invoke(()=>found_prop.SetValue(obj, value));
         }
 
         protected T GetValueByPath<T>(object obj, string path)

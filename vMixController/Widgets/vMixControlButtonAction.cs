@@ -47,13 +47,13 @@ namespace vMixController.Widgets
         /// </summary>
         public const string ParameterPropertyName = "Parameter";
 
-        private int _parameter = -1;
+        private string _parameter = "-1";
 
         /// <summary>
         /// Sets and gets the Parameter property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public int Parameter
+        public string Parameter
         {
             get
             {

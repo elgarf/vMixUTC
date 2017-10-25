@@ -152,6 +152,8 @@
                                     <ComboBox SelectedValue="{Binding AdditionalParameters[2].A, Mode=TwoWay}" Grid.Column="1">
                                         <c:String>&gt;</c:String>
                                         <c:String>&lt;</c:String>
+                                        <c:String>&lt;=</c:String>
+                                        <c:String>&gt;=</c:String>
                                         <c:String>==</c:String>
                                         <c:String>!=</c:String>
                                         <!--<c:String>contains</c:String>-->

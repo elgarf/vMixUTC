@@ -68,6 +68,26 @@ namespace vMixController.Controls
             DependencyProperty.Register("CopyCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
+        public RelayCommand<Widgets.vMixControl> ScaleUpCommand
+        {
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(ScaleUpCommandProperty); }
+            set { SetValue(ScaleUpCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ScaleUpCommandProperty =
+            DependencyProperty.Register("ScaleUpCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+
+
+        public RelayCommand<Widgets.vMixControl> ScaleDownCommand
+        {
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(ScaleDownCommandProperty); }
+            set { SetValue(ScaleDownCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ScaleDownCommandProperty =
+            DependencyProperty.Register("ScaleDownCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
         public object MainContent
         {
