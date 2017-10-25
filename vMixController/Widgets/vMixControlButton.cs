@@ -18,6 +18,7 @@ using vMixController.PropertiesControls;
 using vMixController.ViewModel;
 using System.Globalization;
 using System.ComponentModel;
+using System.Xml;
 
 namespace vMixController.Widgets
 {
@@ -32,9 +33,7 @@ namespace vMixController.Widgets
         CultureInfo _culture;
         BackgroundWorker _activeStateUpdateWorker, _executionWorker;
 
-
         [NonSerialized]
-        Thread _executionThread;
         bool _stopThread = false;
 
         /// <summary>
@@ -79,18 +78,12 @@ namespace vMixController.Widgets
             set
             {
                 if (_internalState != null)
-                {
                     _internalState.OnStateUpdated -= State_OnStateUpdated;
-                    //_internalState.OnFunctionSend += State_OnFunctionSend;
-                }
 
                 base.State = value;
 
                 if (_internalState != null)
-                {
                     _internalState.OnStateUpdated += State_OnStateUpdated;
-                    //_internalState.OnFunctionSend += State_OnFunctionSend;
-                }
             }
         }
 
@@ -105,20 +98,10 @@ namespace vMixController.Widgets
             base.ShadowUpdate();
         }
 
-        /*private void State_OnFunctionSend(object sender, FunctionSendArgs e)
-        {
-            if (e.Function != "") ;
-                //UpdateActiveProperty();
-            //throw new NotImplementedException();
-        }*/
-
         private void State_OnStateUpdated(object sender, StateUpdatedEventArgs e)
         {
             if (e.Successfully)
-                ThreadPool.QueueUserWorkItem((x) =>
-                {
-                    RealUpdateActiveProperty(false, null, (vMixAPI.State)x);
-                }, State);
+                RealUpdateActiveProperty(false, null, State);
 
         }
 
@@ -126,45 +109,9 @@ namespace vMixController.Widgets
         {
             stateToCheck = stateToCheck ?? _internalState;
             currentState = currentState ?? State;
+
             if ((!IsStateDependent && skipStateDependency) || stateToCheck == null || _activeStateUpdateWorker.IsBusy) return;
             _activeStateUpdateWorker.RunWorkerAsync(new State[] { stateToCheck, currentState });
-            /*lock (_locker)
-            {
-                stateToCheck = stateToCheck ?? _internalState;
-                currentState = currentState ?? State;
-                if ((!IsStateDependent && skipStateDependency) || stateToCheck == null) return;
-                var result = true;
-                HasScriptErrors = false;
-                Stack<bool> conds = new Stack<bool>();
-                for (int i = 0; i < _commands.Count; i++)
-                {
-                    var item = _commands[i];
-                    if (conds.Count == 0 || conds.Peek())
-                    {
-
-                        if (currentState == null) return;
-
-                        var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
-                        if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input.HasValue ? input.Value : -1);
-                        var nval = GetValueByPath(stateToCheck, path);
-                        var val = nval == null ? "" : nval.ToString();
-                        HasScriptErrors = HasScriptErrors || nval == null;
-                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input.HasValue ? input.Value : -1);
-                        var realval = aval;
-                        aval = aval.TrimStart('!');
-                        bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
-                            (aval == "*") ||
-                            (val != null && !(val is string) && aval == val.ToString()) ||
-                            (val is string && (string)val == aval);
-                        if (!string.IsNullOrWhiteSpace(aval) && aval[0] == '!')
-                            mult = !mult;
-                        result = result && mult;
-                    }
-
-                }
-                Active = result;
-            }*/
         }
 
         public override string Type
@@ -345,16 +292,16 @@ namespace vMixController.Widgets
                     () =>
                     {
                         Enabled = false;
-                        if (_executionThread != null && _executionThread.ThreadState == ThreadState.Running)
+                        if (_executionWorker != null && _executionWorker.IsBusy)
                         {
                             _stopThread = true;
-                            _executionThread.Abort();
-                            _executionThread.Join();
-                            _executionThread = null;
+                            _executionWorker.CancelAsync();
                         }
                         _stopThread = false;
-                        _executionThread = new Thread(new ParameterizedThreadStart(ExecutionThread));
-                        _executionThread.Start(State);
+
+                        if (!_executionWorker.IsBusy)
+                            _executionWorker.RunWorkerAsync(State);
+
                     }));
             }
         }
@@ -374,14 +321,10 @@ namespace vMixController.Widgets
                     ?? (_stopScriptCommand = new RelayCommand(
                     () =>
                     {
-                        //_timer.Stop();
                         _stopThread = true;
-                        if (_executionThread != null && _executionThread.ThreadState == ThreadState.Running)
-                        {
-                            _executionThread.Abort();
-                            _executionThread.Join();
-                            _executionThread = null;
-                        }
+                        if (_executionWorker != null && _executionWorker.IsBusy)
+                            _executionWorker.CancelAsync();
+
                         _conditions.Clear();
                         Enabled = true;
                     }));
@@ -397,33 +340,55 @@ namespace vMixController.Widgets
 
         public vMixControlButton()
         {
-            /*_timer = new DispatcherTimer();
-            _timer.Tick += _timer_Tick;*/
             _activeStateUpdateWorker = new BackgroundWorker();
             _activeStateUpdateWorker.RunWorkerCompleted += _worker_RunWorkerCompleted;
-            _activeStateUpdateWorker.DoWork += _worker_DoWork;
+            _activeStateUpdateWorker.DoWork += _activeStateUpdateWorker_DoWork;
+
+            _executionWorker = new BackgroundWorker();
+            _executionWorker.DoWork += _executionWorker_DoWork;
+            _executionWorker.WorkerSupportsCancellation = true;
 
             _enabled = true;
             _culture = new CultureInfo(CultureInfo.InvariantCulture.Name);
             _culture.NumberFormat.NumberDecimalDigits = 5;
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
-            _executionThread = null;
 
         }
 
-        private void _worker_DoWork(object sender, DoWorkEventArgs e)
+        private void _executionWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ExecutionThread((State)e.Argument);
+        }
+
+        private void _activeStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             lock (_locker)
             {
+
                 var stateToCheck = ((State[])e.Argument)[0];
                 var currentState = ((State[])e.Argument)[1];
                 var result = true;
+
+                var cnt = 0;
+                for (int i = 0; i < _commands.Count; i++)
+                {
+                    var item = _commands[i];
+                    if (stateToCheck.ChangedInputs.Contains(item.InputKey))
+                        cnt++;
+                }
+                if (cnt == 0)
+                {
+                    e.Result = Active;
+                    return;
+                }
+
+
                 HasScriptErrors = false;
                 Stack<bool> conds = new Stack<bool>();
                 for (int i = 0; i < _commands.Count; i++)
                 {
                     var item = _commands[i];
-                    
+
                     if (conds.Count == 0 || conds.Peek())
                     {
                         if (currentState == null) return;
@@ -437,7 +402,7 @@ namespace vMixController.Widgets
                         var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input.HasValue ? input.Value : -1);
                         var realval = aval;
                         aval = aval.TrimStart('!');
-                        bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null) /*|| (val is bool && (bool)val == false)*/)) ||
+                        bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
                             (aval == "*") ||
                             (val != null && !(val is string) && aval == val.ToString()) ||
                             (val is string && (string)val == aval);
@@ -454,7 +419,7 @@ namespace vMixController.Widgets
         private void _worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
-            Active = (bool)e.Result;
+            Active = (bool)(e.Result ?? false);
 
         }
 
@@ -553,15 +518,6 @@ namespace vMixController.Widgets
             return o;
         }
 
-        private object GetPathOrValue(object target, string s)
-        {
-            /*if (s.StartsWith("@@"))
-                return s.Substring(1, s.Length - 1);
-            else if (s.StartsWith("@"))
-                return EscapeString(GetValueByPath(target, s.TrimStart('@')));*/
-            return s;
-        }
-
         private bool TestCondition(vMixControlButtonCommand cmd)
         {
             if (cmd.AdditionalParameters == null || cmd.AdditionalParameters.Count == 0)
@@ -569,12 +525,12 @@ namespace vMixController.Widgets
             object part1 = null;
             object part2 = null;
 
-            part1 = /*GetPathOrValue(_isStateDependent ? _internalState ?? State : State, */string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A)/*)*/;
-            part2 = /*GetPathOrValue(_isStateDependent ? _internalState ?? State : State, */string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A)/*)*/;
+            part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
+            part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
 
             Thread.CurrentThread.CurrentCulture = _culture;
             Thread.CurrentThread.CurrentUICulture = _culture;
-            return Calculate(string.Format("{0}{1}{2}", part1?.ToString() ?? "", cmd.AdditionalParameters[2].A, part2?.ToString() ?? ""));//(CompareObjects(part1, part2, cmd.AdditionalParameters[2].A));
+            return Calculate(string.Format("{0}{1}{2}", part1?.ToString() ?? "", cmd.AdditionalParameters[2].A, part2?.ToString() ?? ""));
         }
 
         private int GetVariableIndex(int number)
@@ -646,7 +602,7 @@ namespace vMixController.Widgets
                         var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
 
                         if (!cmd.Action.StateDirect)
-                            state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0));
+                            state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0), false);
                         else
                         {
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0);
@@ -662,100 +618,12 @@ namespace vMixController.Widgets
                 Thread.Sleep(_waitBeforeUpdate);
                 _waitBeforeUpdate = -1;
                 Dispatcher.Invoke(() => _internalState.UpdateAsync());
-
             });
         }
 
-        /*private void _timer_Tick(object sender, EventArgs e)
-        {
-            if (_pointer >= _commands.Count)
-            {
-                _conditions.Clear();
-                _timer.Stop();
-                Enabled = true;
-                //_waitBeforeUpdate++;
-                //Active = !Active;
-                ThreadPool.QueueUserWorkItem((x) =>
-                {
-                    Thread.Sleep(_waitBeforeUpdate);
-                    _waitBeforeUpdate = -1;
-                    Dispatcher.Invoke(() => _internalState.UpdateAsync());
-
-                });
-                return;
-            }
-            _timer.Interval = TimeSpan.FromMilliseconds(0);
-            var cmd = _commands[_pointer];
-            var cond = new bool?(true);
-            if (_conditions.Count > 0)
-                cond = _conditions.Peek();
-            if ((cond.HasValue && cond.Value) ||
-                (cmd.Action.Function == NativeFunctions.CONDITIONEND ||
-                 cmd.Action.Function == NativeFunctions.CONDITION ||
-                 cmd.Action.Function == NativeFunctions.HASVARIABLE))
-                if (cmd.Action.Native)
-                    switch (cmd.Action.Function)
-                    {
-                        case NativeFunctions.TIMER:
-                            _timer.Interval = TimeSpan.FromMilliseconds(CalculateExpression<int>(cmd.Parameter));
-                            break;
-                        case NativeFunctions.UPDATESTATE:
-                            if (State != null)
-                                State.Update();
-                            break;
-                        case NativeFunctions.UPDATEINTERNALBUTTONSTATE:
-                            _internalState?.Update();
-                            break;
-                        case NativeFunctions.GOTO:
-                            _pointer = CalculateExpression<int>(cmd.Parameter) - 1;
-                            break;
-                        case NativeFunctions.EXECLINK:
-                            Messenger.Default.Send<string>(cmd.StringParameter);
-                            break;
-                        case NativeFunctions.CONDITION:
-                            //0 - input 2
-                            //1 - left part
-                            //2 - middle part
-                            //3 - right part
-                            _conditions.Push(cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null);
-                            break;
-                        case NativeFunctions.HASVARIABLE:
-                            _conditions.Push(cond.HasValue && cond.Value ? new bool?(GetVariableIndex(CalculateExpression<int>(cmd.Parameter)) != -1) : null);
-                            break;
-                        case NativeFunctions.CONDITIONEND:
-                            _conditions.Pop();
-                            break;
-                        case NativeFunctions.SETVARIABLE:
-                            var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
-                            if (idx == -1)
-                                _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = CalculateObjectParameter(cmd) });
-                            else
-                                _variables[idx].B = CalculateObjectParameter(cmd);
-                            break;
-                    }
-                else if (State != null)
-                {
-                    var input = State.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
-
-                    if (!cmd.Action.StateDirect)
-                    {
-
-                        State.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), CalculateObjectParameter(cmd), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0));
-                    }
-                    else
-                    {
-                        var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), CalculateObjectParameter(cmd), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0);
-                        SetValueByPath(State, path, cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? CalculateObjectParameter(cmd).ToString() : (object)CalculateExpression<int>(cmd.Parameter)));
-                    }
-                    _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
-                }
-            _pointer++;
-
-        }*/
-
         private object CalculateObjectParameter(vMixControlButtonCommand cmd)
         {
-            return CalculateExpression(GetPathOrValue(_isStateDependent ? _internalState ?? State : State, string.Format(cmd.StringParameter, cmd.InputKey))?.ToString() ?? "");
+            return CalculateExpression(string.Format(cmd.StringParameter, cmd.InputKey)?.ToString() ?? "");
         }
 
         public override void ExecuteHotkey(int index)
@@ -777,7 +645,6 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            //!!!!!
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
@@ -825,12 +692,17 @@ namespace vMixController.Widgets
                 if (_internalState != null)
                     _internalState.OnStateUpdated -= State_OnStateUpdated;
                 _stopThread = true;
-                if (_executionThread != null && _executionThread.ThreadState != ThreadState.Aborted)
+                
+                if (_executionWorker != null && _executionWorker.IsBusy)
                 {
-                    _executionThread.Abort();
-                    _executionThread.Join();
-                    _executionThread = null;
+                    _executionWorker.CancelAsync();
+                    while (_executionWorker.CancellationPending)
+                        Thread.Sleep(100);
+                    _executionWorker.Dispose();
                 }
+
+                _activeStateUpdateWorker.Dispose();
+
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);
             }

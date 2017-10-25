@@ -513,12 +513,12 @@ namespace vMixController.Widgets
                 if (_internalState == null && value != null)
                 {
                     _internalState = value.Create();
-                    _internalState.Configure(value.Ip, value.Port);
+                    _internalState?.Configure(value.Ip, value.Port);
                 }
                 else if (value == null)
                     _internalState = null;
                 else
-                    _internalState.Configure(value.Ip, value.Port);
+                    _internalState?.Configure(value.Ip, value.Port);
             }
         }
 
@@ -657,7 +657,10 @@ namespace vMixController.Widgets
                 found_prop = GetPropertyOrNull(type, propindex);
                 var propinfo = found_prop;
 
-                if (Thread.CurrentThread.ThreadState != ThreadState.Stopped)
+                if (Thread.CurrentThread.ThreadState != ThreadState.Stopped &&
+                    Thread.CurrentThread.ThreadState != ThreadState.AbortRequested &&
+                    Thread.CurrentThread.ThreadState != ThreadState.StopRequested &&
+                    Thread.CurrentThread.ThreadState != ThreadState.SuspendRequested)
                     found = Dispatcher.Invoke<object>(() =>
                     {
                         //TODO: CHECK
