@@ -82,9 +82,8 @@ namespace vMixAPI
         private string _port = "8088";
 
         private string _currentStateText;
-        private string _previousStateText;
         private List<string> _changedinputs = new List<string>();
-        private const int _changedCounterConst = 5; //keep changed inputs for X state updates
+        private const int _changedCounterConst = 0; //keep changed inputs for X state updates
         private int _changedCounter;
 
         public void Configure(string ip = "127.0.0.1", string port = "8088")
@@ -132,11 +131,11 @@ namespace vMixAPI
                     doc.Save(ms);
                     ms.Seek(0, SeekOrigin.Begin);
                     var state = (State)s.Deserialize(ms);
-                    state.CurrentStateText = textstate;
+                    state._currentStateText = textstate;
 
-                    _changedinputs.Clear();
+                    state._changedinputs.Clear();
                     foreach (var item in state.Inputs)
-                        _changedinputs.Add(item.Key);
+                        state._changedinputs.Add(item.Key);
 
                     state.Inputs.Insert(0, new Input() { Key = "0", Title = "[Preview]" });
                     state.Inputs.Insert(0, new Input() { Key = "-1", Title = "[Active]" });
@@ -191,7 +190,7 @@ namespace vMixAPI
         public event EventHandler<FunctionSendArgs> OnFunctionSend;
         public event EventHandler<StateUpdatedEventArgs> OnStateUpdated;
 
-        private void UpdateChangedInputs()
+        private void UpdateChangedInputs(string _a, string _b)
         {
             if (_changedCounter++ > _changedCounterConst)
             {
@@ -203,9 +202,9 @@ namespace vMixAPI
             try
             {
                 XmlDocument curr = new XmlDocument();
-                curr.LoadXml(_currentStateText);
+                curr.LoadXml(_b);
                 XmlDocument prev = new XmlDocument();
-                prev.LoadXml(_previousStateText);
+                prev.LoadXml(_a);
                 var nodes = prev.SelectNodes(".//inputs/input").OfType<XmlNode>();
                 foreach (XmlNode item in nodes)
                 {
@@ -267,9 +266,10 @@ namespace vMixAPI
             foreach (var item in _temp.Overlays)
                 Overlays.Add(item);
 
-            _previousStateText = _currentStateText;
-            _currentStateText = _temp.CurrentStateText;
-            UpdateChangedInputs();
+            
+            UpdateChangedInputs(_currentStateText, _temp._currentStateText);
+            if (_currentStateText != _temp._currentStateText)
+                _currentStateText = _temp._currentStateText;
 
             _logger.Info("Firing \"updated\" event.");
 
@@ -318,9 +318,11 @@ namespace vMixAPI
                 foreach (var item in _temp.Overlays)
                     Overlays.Add(item);
 
-                _previousStateText = _currentStateText;
-                _currentStateText = _temp.CurrentStateText;
-                UpdateChangedInputs();
+                /*_previousStateText = _currentStateText;
+                _currentStateText = _temp.CurrentStateText;*/
+                UpdateChangedInputs(_currentStateText, _temp._currentStateText);
+                if (_currentStateText != _temp._currentStateText)
+                    _currentStateText = _temp._currentStateText;
 
                 _logger.Info("Firing \"updated\" event.");
 
@@ -519,32 +521,6 @@ namespace vMixAPI
             set
             {
                 _port = value;
-            }
-        }
-
-        public string CurrentStateText
-        {
-            get
-            {
-                return _currentStateText;
-            }
-
-            set
-            {
-                _currentStateText = value;
-            }
-        }
-
-        public string PreviousStateText
-        {
-            get
-            {
-                return _previousStateText;
-            }
-
-            set
-            {
-                _previousStateText = value;
             }
         }
 

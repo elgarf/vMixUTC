@@ -455,7 +455,10 @@ namespace vMixController.Widgets
         private void PopulateVariables(NCalc.Expression exp)
         {
             foreach (var item in _variables)
-                exp.Parameters.Add(string.Format("{0}{1}", VARIABLEPREFIX, Dispatcher.Invoke(() => item.A)), Dispatcher.Invoke(() => item.B));
+            {
+                var x = Dispatcher.Invoke(() => new { A = item.A, B = item.B });
+                exp.Parameters.Add(string.Format("{0}{1}", VARIABLEPREFIX, x.A), x.B);
+            }
             exp.EvaluateFunction += Exp_EvaluateFunction;
         }
 
