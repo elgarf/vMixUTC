@@ -56,13 +56,14 @@
             <StackPanel Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
                 <Grid x:Name="Caption" Style="{StaticResource Caption}">
                     <Grid.Background>
-                        <SolidColorBrush Color="{Binding ParentContainer.Control.Color, ElementName=CC}"/>
+                        <SolidColorBrush x:Name="caption" Color="{Binding ParentContainer.Control.Color, ElementName=CC}"/>
                     </Grid.Background>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
                     <Button Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" ToolTip="{e:Localize Lock widget}" VerticalAlignment="Center" Style="{StaticResource TitleButton}" Margin="2,0,2,0" HorizontalAlignment="Left" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}"/>
 
 

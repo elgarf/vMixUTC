@@ -117,7 +117,17 @@
         </Style.Triggers>
     </Style>
 
-
+    <Style x:Key="CheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Margin" Value="4,0,0,0"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="Silver"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <SolidColorBrush x:Key="ComboBox.Static.Background" Color="#404856"/>
     <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#607081"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#404856"/>

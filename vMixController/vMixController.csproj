@@ -209,6 +209,7 @@
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
+    <Compile Include="Converters\DateTimeToDayOfWeek.cs" />
     <Compile Include="Converters\EscapeAt.cs" />
     <Compile Include="Converters\ListToStringConverter.cs" />
     <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
