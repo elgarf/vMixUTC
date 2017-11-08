@@ -19,6 +19,7 @@ using vMixController.ViewModel;
 using System.Globalization;
 using System.ComponentModel;
 using System.Xml;
+using System.Windows.Media;
 
 namespace vMixController.Widgets
 {
@@ -32,6 +33,8 @@ namespace vMixController.Widgets
         Stack<bool?> _conditions = new Stack<bool?>();
         CultureInfo _culture;
         BackgroundWorker _activeStateUpdateWorker, _executionWorker;
+        DispatcherTimer _blinker;
+        Color _defaultBorderColor;
 
         [NonSerialized]
         bool _stopThread = false;
@@ -353,6 +356,24 @@ namespace vMixController.Widgets
             _culture.NumberFormat.NumberDecimalDigits = 5;
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
 
+
+            _blinker = new DispatcherTimer();
+            _blinker.Tick += _blinker_Tick;
+            _blinker.Interval = TimeSpan.FromSeconds(1);
+            _blinker.Start();
+        }
+
+        private void _blinker_Tick(object sender, EventArgs e)
+        {
+            if (!Enabled)
+            {
+                if (BorderColor != _defaultBorderColor)
+                    BorderColor = _defaultBorderColor;
+                else
+                    BorderColor = Colors.Lime;
+            }
+            else
+                BorderColor = _defaultBorderColor;
         }
 
         private void _executionWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -472,7 +493,10 @@ namespace vMixController.Widgets
                     if (p.Length > 0)
                     {
                         args.HasResult = true;
-                        args.Result = GetValueByPath(_isStateDependent ? _internalState ?? State : State, p[0].ToString());
+                        if (_isStateDependent && _internalState != null)
+                            args.Result = GetValueByPath(_internalState, p[0].ToString());
+                        else
+                            args.Result = Dispatcher.Invoke<object>(() => GetValueByPath(State, p[0].ToString()));
                     }
                     break;
             }
@@ -497,7 +521,14 @@ namespace vMixController.Widgets
             if (exp.HasErrors())
                 return s;
             else
-                return exp.Evaluate();
+                try
+                {
+                    return exp.Evaluate();
+                }
+                catch (Exception)
+                {
+                    return s;
+                }
         }
 
         private T CalculateExpression<T>(string s)
@@ -609,7 +640,10 @@ namespace vMixController.Widgets
                         else
                         {
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0);
-                            SetValueByPath(state, path, cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter)));
+                            var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
+                            SetValueByPath(state, path, value);
+                            while (GetValueByPath(state, path) != value)
+                                Thread.Sleep(50);
                         }
                         _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
                     }
@@ -664,7 +698,10 @@ namespace vMixController.Widgets
 
         public override void SetProperties(vMixControlSettingsViewModel viewModel)
         {
+            _blinker.Stop();
             base.SetProperties(viewModel);
+            _defaultBorderColor = BorderColor;
+            _blinker.Start();
         }
 
         public override void SetProperties(UserControl[] _controls)
@@ -692,6 +729,7 @@ namespace vMixController.Widgets
 
             if (managed)
             {
+                _blinker.Stop();
                 if (_internalState != null)
                     _internalState.OnStateUpdated -= State_OnStateUpdated;
                 _stopThread = true;
