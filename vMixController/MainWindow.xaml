@@ -154,7 +154,9 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
             <cmd:EventToCommand Command="{Binding ClosingCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
+    <i:Interaction.Behaviors>
+        <e:HideCloseButtonOnWindow IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
+    </i:Interaction.Behaviors>
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

@@ -45,7 +45,7 @@ namespace vMixAPI
         [XmlAttribute("number")]
         public int Number { get; set; }
         [XmlAttribute("type")]
-        public InputType Type { get; set; }
+        public string Type { get; set; }
         [XmlAttribute("title")]
         public string Title { get; set; }
 

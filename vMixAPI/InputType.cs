@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace vMixAPI
 {
+    /*DEPRECATED*/
     public enum InputType
     {
         Video = 0,

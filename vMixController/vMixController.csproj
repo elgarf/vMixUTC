@@ -227,6 +227,7 @@
     <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\TagConverter.cs" />
     <Compile Include="Extensions\ControlBox.cs" />
+    <Compile Include="Extensions\HideCloseButtonOnWindow.cs" />
     <Compile Include="Extensions\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="Extensions\LocalizationManager.cs" />
     <Compile Include="Extensions\Localize.cs" />

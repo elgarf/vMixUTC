@@ -17,8 +17,21 @@ namespace vMixController
             InitializeComponent();
             Closing += (s, e) =>
             {
-                vMixController.Properties.Settings.Default.Save();
-                ViewModelLocator.Cleanup();
+                Ookii.Dialogs.Wpf.TaskDialog dialog = new Ookii.Dialogs.Wpf.TaskDialog();
+                dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Yes));
+                dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.No));
+                dialog.WindowTitle = Extensions.LocalizationManager.Get("Exit confirmation");
+                dialog.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Warning;
+                dialog.MainInstruction = Extensions.LocalizationManager.Get("Do you really want to quit?");
+                if (dialog.ShowDialog(this).ButtonType == Ookii.Dialogs.Wpf.ButtonType.No)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    vMixController.Properties.Settings.Default.Save();
+                    ViewModelLocator.Cleanup();
+                }
             };
         }
 
