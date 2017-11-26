@@ -43,6 +43,45 @@ namespace vMixController.Extensions
 
         #endregion
 
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [DllImport("user32.dll")]
+        private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+        [DllImport("user32.dll")]
+        private static extern IntPtr DestroyMenu(IntPtr hWnd);
+
+        private const uint MF_BYCOMMAND = 0x00000000;
+        private const uint MF_GRAYED = 0x00000001;
+        private const uint SC_CLOSE = 0xF060;
+
+        IntPtr menuHandle;
+        protected void DisableCloseButton(IntPtr _windowHandle)
+        {
+            if (_windowHandle == null)
+                throw new InvalidOperationException("The window has not yet been completely initialized");
+
+            menuHandle = GetSystemMenu(_windowHandle, false);
+            if (menuHandle != IntPtr.Zero)
+            {
+                EnableMenuItem(menuHandle, SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+            }
+        }
+
+
+        private const uint MF_ENABLED = 0x00000000;
+
+        protected void EnableCloseButton(IntPtr _windowHandle)
+        {
+            if (_windowHandle == null)
+                throw new InvalidOperationException("The window has not yet been completely initialized");
+
+            if (menuHandle != IntPtr.Zero)
+            {
+                EnableMenuItem(menuHandle, SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+            }
+        }
+
         protected void Update()
         {
             if (AssociatedObject==null)
@@ -50,9 +89,9 @@ namespace vMixController.Extensions
             var hwnd = new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle;
             var windowStyle = GetWindowLong(hwnd, GWL_STYLE);
             if (IsEnabled)
-                SetWindowLong(hwnd, GWL_STYLE, windowStyle | WS_SYSMENU);
+                EnableCloseButton(hwnd);
             else
-                SetWindowLong(hwnd, GWL_STYLE, windowStyle & ~WS_SYSMENU);
+                DisableCloseButton(hwnd);
         }
 
         protected override void OnAttached()
