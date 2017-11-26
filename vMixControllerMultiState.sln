@@ -18,16 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixControllerSkin", "vMixC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixGenericXmlDataProvider", "vMixGenericXmlDataProvider\vMixGenericXmlDataProvider.csproj", "{59D90D89-D046-495D-9131-6CB78DF4B4C3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Licensing", "Licensing", "{D30EDF05-E25C-401D-9203-AB15F3C106D6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Licensing", "Licensing\Licensing\Licensing.csproj", "{9714FB41-8E26-4FAA-8BB1-265053BE4C56}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Licensing.WPF", "Licensing\Licensing.WPF\Licensing.WPF.csproj", "{DFBA617F-9ABE-44AF-B5FA-678E2C147088}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Licensing.KeyGenerator", "Licensing\Licensing.KeyGenerator\Licensing.KeyGenerator.csproj", "{07CDC462-E829-4D4C-BA45-93C5AC2F7513}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Licensing.KyeGenerator.Console", "Licensing.KyeGenerator.Console\Licensing.KyeGenerator.Console.csproj", "{89AF2EDB-8A6A-4582-ADB4-3014A767A65D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixUTCNDIMonitorDataProvider", "vMixUTCNDIMonitorDataProvider\vMixUTCNDIMonitorDataProvider.csproj", "{E08E6704-10BF-4CF2-89EC-7AEB063C9219}"
 EndProject
 Global
@@ -60,22 +50,6 @@ Global
 		{59D90D89-D046-495D-9131-6CB78DF4B4C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D90D89-D046-495D-9131-6CB78DF4B4C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D90D89-D046-495D-9131-6CB78DF4B4C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9714FB41-8E26-4FAA-8BB1-265053BE4C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9714FB41-8E26-4FAA-8BB1-265053BE4C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9714FB41-8E26-4FAA-8BB1-265053BE4C56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9714FB41-8E26-4FAA-8BB1-265053BE4C56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFBA617F-9ABE-44AF-B5FA-678E2C147088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFBA617F-9ABE-44AF-B5FA-678E2C147088}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFBA617F-9ABE-44AF-B5FA-678E2C147088}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFBA617F-9ABE-44AF-B5FA-678E2C147088}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07CDC462-E829-4D4C-BA45-93C5AC2F7513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07CDC462-E829-4D4C-BA45-93C5AC2F7513}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07CDC462-E829-4D4C-BA45-93C5AC2F7513}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07CDC462-E829-4D4C-BA45-93C5AC2F7513}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89AF2EDB-8A6A-4582-ADB4-3014A767A65D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89AF2EDB-8A6A-4582-ADB4-3014A767A65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89AF2EDB-8A6A-4582-ADB4-3014A767A65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89AF2EDB-8A6A-4582-ADB4-3014A767A65D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E08E6704-10BF-4CF2-89EC-7AEB063C9219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E08E6704-10BF-4CF2-89EC-7AEB063C9219}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E08E6704-10BF-4CF2-89EC-7AEB063C9219}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,11 +57,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{9714FB41-8E26-4FAA-8BB1-265053BE4C56} = {D30EDF05-E25C-401D-9203-AB15F3C106D6}
-		{DFBA617F-9ABE-44AF-B5FA-678E2C147088} = {D30EDF05-E25C-401D-9203-AB15F3C106D6}
-		{07CDC462-E829-4D4C-BA45-93C5AC2F7513} = {D30EDF05-E25C-401D-9203-AB15F3C106D6}
-		{89AF2EDB-8A6A-4582-ADB4-3014A767A65D} = {D30EDF05-E25C-401D-9203-AB15F3C106D6}
 	EndGlobalSection
 EndGlobal
