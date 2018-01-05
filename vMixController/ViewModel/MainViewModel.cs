@@ -608,7 +608,7 @@ namespace vMixController.ViewModel
                             var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
                             foreach (var item in _controls)
                             {
-                                var ir = new Rect(item.Left, item.Top, item.Width, item.Height);
+                                var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
                                 item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
                             }
                             SelectorWidth = 0;
@@ -1197,7 +1197,7 @@ namespace vMixController.ViewModel
 
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
             {
-                foreach (var item in _controls.Where(x=>x.Selected && x!= t.A))
+                foreach (var item in _controls.Where(x => x.Selected && x != t.A))
                 {
                     item.Left = Math.Round(item.Left + t.B);
                     item.Top = Math.Round(item.Top + t.C);
