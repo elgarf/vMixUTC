@@ -17,33 +17,10 @@ namespace vMixController
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         static DateTime _compile = new DateTime(2016, 6, 30);
-        /*public static Licensing.License License = null;
-
-        static Licensing.License DummyLicense()
-        {
-            var license = new Licensing.License();
-            license.AddFeature("WidgetCount", 5);
-            license.AddFeature("ExternalData", false);
-            license.AddFeature("Container", false);
-            return license;
-        }*/
 
         static App()
         {
             DispatcherHelper.Initialize();
-
-            /*if (DateTime.Now > _compile)
-            {
-                Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
-                td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
-                td.WindowTitle = "Trial";
-                td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information;
-                td.Content = "Trial period is end!\nContact elgarf@outlook.com to buy full version or renew trial.";
-                td.ShowDialog();
-                Environment.Exit(0);
-            }*/
-
-            //License = DummyLicense();
 
         }
 

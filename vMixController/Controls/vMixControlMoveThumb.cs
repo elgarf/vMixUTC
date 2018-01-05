@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using vMixController.Classes;
+using vMixController.Widgets;
 
 namespace vMixController.Controls
 {
@@ -64,7 +66,11 @@ namespace vMixController.Controls
                 item.Left = Math.Round(item.Left + e.HorizontalChange);
                 item.Top = Math.Round(item.Top + e.VerticalChange);
                 item.AlignByGrid();
+
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<Triple<vMixControl, double, double>>(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
             }
+
+            
         }
 
     }

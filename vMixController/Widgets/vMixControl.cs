@@ -56,7 +56,8 @@ namespace vMixController.Widgets
             _shadowUpdate = new DispatcherTimer();
             _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
-            _shadowUpdate.Start();          
+            _shadowUpdate.Start();         
+            
         }
 
         private void _shadowUpdate_Tick(object sender, EventArgs e)
@@ -378,6 +379,37 @@ namespace vMixController.Widgets
 
                 _height = value;
                 RaisePropertyChanged(HeightPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="Selected" /> property's name.
+        /// </summary>
+        public const string SelectedPropertyName = "Selected";
+
+        private bool _selected = false;
+
+        /// <summary>
+        /// Sets and gets the Selected property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Selected
+        {
+            get
+            {
+                return _selected;
+            }
+
+            set
+            {
+                if (_selected == value)
+                {
+                    return;
+                }
+
+                _selected = value;
+                RaisePropertyChanged(SelectedPropertyName);
             }
         }
 

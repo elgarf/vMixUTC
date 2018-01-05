@@ -240,6 +240,12 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                     <i:EventTrigger EventName="ContextMenuClosing">
                         <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
                     </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseMove">
+                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
+                    </i:EventTrigger>
                 </i:Interaction.Triggers>
 
                 <ListView.ItemsPanel>
@@ -300,6 +306,7 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
                 </ListView.Style>
             </ListView>
         </ScrollViewer>
+        <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SelectorPosition}" Width="{Binding SelectorWidth}" Height="{Binding SelectorHeight}" Visibility="{Binding SelectorEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" Background="#7F00FFFF"/>
         <StatusBar Grid.Row="2">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">

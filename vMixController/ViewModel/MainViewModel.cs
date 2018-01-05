@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,135 @@ namespace vMixController.ViewModel
         /// The <see cref="Model" /> property's name.
         /// </summary>
         public const string ModelPropertyName = "Model";
+
+
+
+
+        Thickness _rawSelectorPosition = new Thickness();
+
+        /*Selector*/
+        /// <summary>
+        /// The <see cref="SelectorPosition" /> property's name.
+        /// </summary>
+        public const string SelectorPositionPropertyName = "SelectorPosition";
+
+        private Thickness _selectorPosition = new Thickness(0);
+
+        /// <summary>
+        /// Sets and gets the SelectorPosition property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Thickness SelectorPosition
+        {
+            get
+            {
+                return _selectorPosition;
+            }
+
+            set
+            {
+                if (_selectorPosition == value)
+                {
+                    return;
+                }
+
+                _selectorPosition = value;
+                RaisePropertyChanged(SelectorPositionPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="SelectorWidth" /> property's name.
+        /// </summary>
+        public const string SelectorWidthPropertyName = "SelectorWidth";
+
+        private double _selectorWidth = 0;
+
+        /// <summary>
+        /// Sets and gets the SelectorWidth property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double SelectorWidth
+        {
+            get
+            {
+                return _selectorWidth;
+            }
+
+            set
+            {
+                if (_selectorWidth == value)
+                {
+                    return;
+                }
+
+                _selectorWidth = value;
+                RaisePropertyChanged(SelectorWidthPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="SelectorHeight" /> property's name.
+        /// </summary>
+        public const string SelectorHeightPropertyName = "SelectorHeight";
+
+        private double _selectorHeight = 0;
+
+        /// <summary>
+        /// Sets and gets the SelectorHeight property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public double SelectorHeight
+        {
+            get
+            {
+                return _selectorHeight;
+            }
+
+            set
+            {
+                if (_selectorHeight == value)
+                {
+                    return;
+                }
+
+                _selectorHeight = value;
+                RaisePropertyChanged(SelectorHeightPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="SelectorEnabled" /> property's name.
+        /// </summary>
+        public const string SelectorEnabledPropertyName = "SelectorEnabled";
+
+        private bool _selectorEnabled = false;
+
+        /// <summary>
+        /// Sets and gets the SelectorEnabled property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool SelectorEnabled
+        {
+            get
+            {
+                return _selectorEnabled;
+            }
+
+            set
+            {
+                if (_selectorEnabled == value)
+                {
+                    return;
+                }
+
+                _selectorEnabled = value;
+                RaisePropertyChanged(SelectorEnabledPropertyName);
+            }
+        }
+
 
         private vMixAPI.State _model = null;
 
@@ -472,6 +602,21 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
+                        if (SelectorWidth != 0 && SelectorHeight != 0)
+                        {
+
+                            var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
+                            foreach (var item in _controls)
+                            {
+                                var ir = new Rect(item.Left, item.Top, item.Width, item.Height);
+                                item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
+                            }
+                            SelectorWidth = 0;
+                            SelectorHeight = 0;
+                            SelectorEnabled = false;
+                            return;
+                        }
+                        SelectorEnabled = false;
                         if (_createControl != null)
                         {
                             EditorCursor = "Arrow";
@@ -480,6 +625,63 @@ namespace vMixController.ViewModel
                             _createControl = null;
                             UpdateWithLicense();
                         }
+                        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                            foreach (var item in _controls)
+                            {
+                                item.Selected = false;
+                            }
+
+                    }));
+            }
+        }
+
+        private RelayCommand<MouseButtonEventArgs> _mouseButtonDown;
+
+        /// <summary>
+        /// Gets the MouseButtonDown.
+        /// </summary>
+        public RelayCommand<MouseButtonEventArgs> MouseButtonDown
+        {
+            get
+            {
+                return _mouseButtonDown
+                    ?? (_mouseButtonDown = new RelayCommand<MouseButtonEventArgs>(
+                    p =>
+                    {
+                        if (WindowSettings.Locked)
+                            return;
+                        var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
+                        SelectorEnabled = true;
+                        _rawSelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
+                        SelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
+                        SelectorWidth = 0;
+                        SelectorHeight = 0;
+                    }));
+            }
+        }
+
+
+        private RelayCommand<MouseEventArgs> _mouseMove;
+
+        /// <summary>
+        /// Gets the MouseButtonDown.
+        /// </summary>
+        public RelayCommand<MouseEventArgs> MouseMove
+        {
+            get
+            {
+                return _mouseMove
+                    ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
+                    p =>
+                    {
+                        var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
+                        var w = -(_rawSelectorPosition.Left - pos.X);
+                        var h = -(_rawSelectorPosition.Top - pos.Y);
+
+                        SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
+                        SelectorWidth = Math.Abs(w);
+                        SelectorHeight = Math.Abs(h);
+
                     }));
             }
         }
@@ -992,6 +1194,16 @@ namespace vMixController.ViewModel
                 var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
                 return ds;
             };
+
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
+            {
+                foreach (var item in _controls.Where(x=>x.Selected && x!= t.A))
+                {
+                    item.Left = Math.Round(item.Left + t.B);
+                    item.Top = Math.Round(item.Top + t.C);
+                    item.AlignByGrid();
+                }
+            });
 
         }
 

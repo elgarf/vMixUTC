@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace vMixController.Controls
 {
@@ -15,13 +16,25 @@ namespace vMixController.Controls
     {
         protected override void OnInitialized(EventArgs e)
         {
+            
             base.OnInitialized(e);
             var CC = new vMixControlContainer();
             CC.ParentContainer = this;
             Content = CC;
+            PreviewMouseDown += VMixControlContainerDummy_PreviewMouseDown;
             //CC.OnSizeChanged = CC_SizeChanged;
             this.SizeChanged += CC_SizeChanged;
         }
+
+        private void VMixControlContainerDummy_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                Control.Selected = !Control.Selected && !Control.Locked;
+                e.Handled = true;
+            }
+        }
+
         public vMixController.Widgets.vMixControl Control
         {
             get { return (vMixController.Widgets.vMixControl)GetValue(ControlProperty); }

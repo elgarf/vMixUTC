@@ -71,6 +71,11 @@ namespace vMixController.Controls
         {
             OnSizeChanged?.Invoke(sender, e);
         }
+
+        private void Caption_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 
 }
