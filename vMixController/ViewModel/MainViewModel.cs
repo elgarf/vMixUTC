@@ -674,6 +674,8 @@ namespace vMixController.ViewModel
                     ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
                     p =>
                     {
+                        if (!SelectorEnabled)
+                            return;
                         var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
                         var w = -(_rawSelectorPosition.Left - pos.X);
                         var h = -(_rawSelectorPosition.Top - pos.Y);
