@@ -21,7 +21,8 @@
         Top="{Binding WindowSettings.Top, Mode=TwoWay}"
         Width="{Binding WindowSettings.Width, Mode=TwoWay}"
         Height="{Binding WindowSettings.Height, Mode=TwoWay}"
-WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
+        WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
+        Title="{Binding Title}"
         ResizeMode="CanResizeWithGrip"
         >
     <Window.Resources>
@@ -145,7 +146,6 @@ WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
     <Window.DataContext>
         <Binding Path="Main" Source="{StaticResource Locator}"/>
     </Window.DataContext>
-    <Window.Title>vMix Universal Title Controller</Window.Title>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="PreviewKeyUp">
             <cmd:EventToCommand Command="{Binding PreviewKeyUpCommand}" PassEventArgsToCommand="True"/>

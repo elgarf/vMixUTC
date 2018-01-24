@@ -9,9 +9,9 @@ using System.IO;
 using vMixController;
 using System.Windows.Media;
 using System.Collections.Generic;
-using Microsoft.Practices.ServiceLocation;
 using System.Windows.Controls;
 using vMixController.Extensions;
+using Microsoft.Practices.ServiceLocation;
 
 namespace vMixController.ViewModel
 {

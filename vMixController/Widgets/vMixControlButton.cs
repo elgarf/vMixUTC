@@ -27,7 +27,6 @@ namespace vMixController.Widgets
     public class vMixControlButton : vMixControl
     {
         const string VARIABLEPREFIX = "_var";
-        int _waitBeforeUpdate = -1;
         static DateTime _lastShadowUpdate = DateTime.Now;
         static object _locker = new object();
         Stack<bool?> _conditions = new Stack<bool?>();

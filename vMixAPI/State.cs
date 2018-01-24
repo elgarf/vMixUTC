@@ -83,7 +83,7 @@ namespace vMixAPI
 
         private string _currentStateText;
         private List<string> _changedinputs = new List<string>();
-        private const int _changedCounterConst = 0; //keep changed inputs for X state updates
+        private const int _changedCounterConst = 1; //keep changed inputs for X state updates
         private int _changedCounter;
 
         public void Configure(string ip = "127.0.0.1", string port = "8088")
