@@ -89,6 +89,37 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="BlinkBorderColor" /> property's name.
+        /// </summary>
+        public const string BlinkBorderColorPropertyName = "BlinkBorderColor";
+        [NonSerialized]
+        private Color _blinkBorderColor = ViewModel.vMixControlSettingsViewModel.Colors[0].B;
+
+        /// <summary>
+        /// Sets and gets the BorderColor property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Color BlinkBorderColor
+        {
+            get
+            {
+                return _blinkBorderColor;
+            }
+
+            set
+            {
+                if (_blinkBorderColor == value)
+                {
+                    return;
+                }
+
+                _blinkBorderColor = value;
+                RaisePropertyChanged(BlinkBorderColorPropertyName);
+            }
+        }
+
         public override void ShadowUpdate()
         {
 
@@ -364,15 +395,17 @@ namespace vMixController.Widgets
 
         private void _blinker_Tick(object sender, EventArgs e)
         {
+            if (_defaultBorderColor.A == 0)
+                _defaultBorderColor = BorderColor;
             if (!Enabled)
             {
-                if (BorderColor != _defaultBorderColor)
-                    BorderColor = _defaultBorderColor;
+                if (BlinkBorderColor != BorderColor)
+                    BlinkBorderColor = BorderColor;
                 else
-                    BorderColor = Colors.Lime;
+                    BlinkBorderColor = Colors.Lime;
             }
             else
-                BorderColor = _defaultBorderColor;
+                BlinkBorderColor = BorderColor;
         }
 
         private void _executionWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -699,7 +732,7 @@ namespace vMixController.Widgets
         {
             _blinker.Stop();
             base.SetProperties(viewModel);
-            _defaultBorderColor = BorderColor;
+            //_defaultBorderColor = BorderColor;
             _blinker.Start();
         }
 
@@ -718,7 +751,7 @@ namespace vMixController.Widgets
         public override void Update()
         {
             base.Update();
-
+            
             RealUpdateActiveProperty();
         }
 

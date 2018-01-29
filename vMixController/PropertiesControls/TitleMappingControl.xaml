@@ -20,7 +20,7 @@
     <i:Interaction.Behaviors>
         <e:IgnoreMouseWheelBehavior/>
     </i:Interaction.Behaviors>
-    <StackPanel Visibility="{Binding PathMappingVisibility}" Margin="0,0,0,2">
+    <StackPanel Margin="0,0,0,2">
         <StackPanel Orientation="Horizontal">
             <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Title Mapping}"/></TextBlock>
             <Button ToolTip="{e:Localize Add title mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>

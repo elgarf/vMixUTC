@@ -12,6 +12,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:e="clr-namespace:vMixController.Extensions"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Class="vMixController.MainWindow"
         
         mc:Ignorable="d ignore"
@@ -42,61 +43,60 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF131;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Label" Header="{e:Localize Label}">
+                <MenuItem x:Name="Label" Command="{Binding CreateControlCommand}" CommandParameter="Label" Header="{e:Localize Label}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!--<MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Image" Header="Image"/>-->
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="List" Header="{e:Localize List}">
+                <MenuItem x:Name="List" Command="{Binding CreateControlCommand}" CommandParameter="List" Header="{e:Localize List}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF03A;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Score" Header="{e:Localize Score}">
+                <MenuItem x:Name="Score" Command="{Binding CreateControlCommand}" CommandParameter="Score" Header="{e:Localize Score}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF005;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
+                <MenuItem x:Name="TextField" Command="{Binding CreateControlCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF60E;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Timer" Header="{e:Localize Timer}">
+                <MenuItem x:Name="Timer" Command="{Binding CreateControlCommand}" CommandParameter="Timer" Header="{e:Localize Timer}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF51B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
+                <MenuItem x:Name="Clock" Command="{Binding CreateControlCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
+                <MenuItem x:Name="Container" Command="{Binding CreateControlCommand}" CommandParameter="Container" Header="{e:Localize Container}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1B2;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
+                <MenuItem x:Name="ExternalData" Command="{Binding CreateControlCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1C0;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
+                <MenuItem x:Name="MidiInterface" Command="{Binding CreateControlCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0E7;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding CreateControlCommand}" CommandParameter="MultiState" Header="{e:Localize Multi State}">
+                <MenuItem x:Name="MultiState" Command="{Binding CreateControlCommand}" CommandParameter="MultiState" Header="{e:Localize Multi State}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF233;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{e:Localize Templates}" ItemsSource="{Binding ControlTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                <MenuItem x:Name="Templates" Header="{e:Localize Templates}" ItemsSource="{Binding ControlTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <TextBlock><Run Text="["/><InlineUIContainer>
@@ -136,10 +136,6 @@
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
             </CompositeCollection>
-            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}" x:Key="{x:Type MenuItem}">
-                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -188,6 +184,12 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="{e:Localize Create}" ItemsSource="{DynamicResource CreateItems}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
 
             </MenuItem>
             <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{e:Localize Lock}" IsChecked="{Binding WindowSettings.Locked, Mode=OneWay}" Command="{Binding ToggleLockCommand}" IsCheckable="True"/>
@@ -206,7 +208,10 @@
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
             <ListView ItemsSource="{Binding Controls}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
                 <ListView.ContextMenu>
-                    <ContextMenu VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
+                    <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
+                        <ContextMenu.Resources>
+                            <cls:BindingProxy x:Key="proxy" Data="{Binding}" />
+                        </ContextMenu.Resources>
                         <ContextMenu.ItemContainerStyleSelector>
                             <cls:MenuStyleSelector>
                                 <cls:MenuStyleSelector.MenuItem>
@@ -299,7 +304,7 @@
                                 <Trigger.Value>
                                     <sys:Boolean>True</sys:Boolean>
                                 </Trigger.Value>
-                                <Setter Property="Background" Value="Black"/>
+                                <Setter Property="Background" Value="#FF1E2328"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>

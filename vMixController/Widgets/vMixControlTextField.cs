@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 using vMixAPI;
 using vMixController.Classes;
@@ -42,7 +44,7 @@ namespace vMixController.Widgets
                 try
                 {
                     var exp = BindingOperations.GetMultiBindingExpression(t.A, t.B);
-                    if (exp != null && exp.Status == BindingStatus.Active)
+                    if (exp != null && exp.Status == BindingStatus.Active && exp.BindingExpressions.Count > 0)
                         exp.UpdateSource();
                 }
                 catch (Exception) { }

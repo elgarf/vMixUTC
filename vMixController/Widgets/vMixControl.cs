@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Serialization;
@@ -56,8 +58,8 @@ namespace vMixController.Widgets
             _shadowUpdate = new DispatcherTimer();
             _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
-            _shadowUpdate.Start();         
-            
+            _shadowUpdate.Start();
+            WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).ControlSettings.WindowProperties;
         }
 
         private void _shadowUpdate_Tick(object sender, EventArgs e)
@@ -849,6 +851,106 @@ namespace vMixController.Widgets
             foreach (var item in _controls)
                 if (ControlsStoreUsage.Contains(item))
                     ControlsStoreUsage.Remove(item);
+        }
+
+
+        private RelayCommand<System.Windows.Input.KeyEventArgs> _previewKeyUp;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<System.Windows.Input.KeyEventArgs> PreviewKeyUp
+        {
+            get
+            {
+                return _previewKeyUp
+                    ?? (_previewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
+                    p =>
+                    {
+                        if (p.Key == System.Windows.Input.Key.Return)
+                        {
+
+                            DependencyObject parent = ((FrameworkElement)p.Source).Parent;
+                            while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                                parent = ((FrameworkElement)parent).Parent;
+                            while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                                parent = VisualTreeHelper.GetParent(parent);
+                            Keyboard.ClearFocus();
+                            FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                            //MoveFocus
+                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            
+
+
+                            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                        }
+                    }));
+            }
+        }
+
+
+        /*private RelayCommand<RoutedEventArgs> _enableHotkeys;
+
+        /// <summary>
+        /// Gets the EnableHotkeys.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> EnableHotkeys
+        {
+            get
+            {
+                return _enableHotkeys
+                    ?? (_enableHotkeys = new RelayCommand<EventArgs>(
+                    (p) =>
+                    {
+                        DependencyObject parent = ((FrameworkElement)p.Source).Parent;
+                        while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                            parent = ((FrameworkElement)parent).Parent;
+                        while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                            parent = VisualTreeHelper.GetParent(parent);
+                        Keyboard.ClearFocus();
+                        FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                        //MoveFocus
+                        ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                    }));
+            }
+        }*/
+
+        private RelayCommand<RoutedEventArgs> _gotFocus;
+
+        /// <summary>
+        /// Gets the GotFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> GotFocus
+        {
+            get
+            {
+                return _gotFocus
+                    ?? (_gotFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
+                    }));
+            }
+        }
+
+        private RelayCommand<RoutedEventArgs> _lostFocus;
+
+        /// <summary>
+        /// Gets the LostFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> LostFocus
+        {
+            get
+            {
+                return _lostFocus
+                    ?? (_lostFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                    }));
+            }
         }
 
         protected bool _disposed = false;

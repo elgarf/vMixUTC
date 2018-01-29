@@ -21,6 +21,7 @@
             <conv:BoolToOrientationConverter x:Key="BoolToOrientationConverter"/>
             <conv:NonVisibilityConverter x:Key="NonVisibilityConverter"/>
             <conv:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+            <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
@@ -76,25 +77,19 @@
                             </CheckBox>
                             <!--<Label Content="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}}"></Label>-->
                             <TextBlock VerticalAlignment="Center" Style="{StaticResource CaptionText}" Grid.Column="2" Visibility="{Binding Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis">
-                                <Run Background="White" FontWeight="Bold" Text="{Binding Action.Function, FallbackValue=None}">
-                                    <Run.Foreground>
-                                        <SolidColorBrush Color="{Binding Action.Color}"/>
-                                    </Run.Foreground>
+                                <Run Background="White" FontWeight="Bold" Text="{Binding Action.Function, FallbackValue=None}" Foreground="{Binding Action.Color, Converter={StaticResource ColorToBrush}}">
                                 </Run>
                                 (&lt;<Run FontWeight="Regular" Foreground="Red" Text="{Binding Text, ElementName=In}"/>&gt;, <Run Foreground="Lime" FontWeight="Regular" Text="{Binding Parameter}"/>, "<Run FontWeight="Regular" Foreground="CornflowerBlue" Text="{Binding AdditionalParameters,Converter={StaticResource ListToStringConverter}}"/><Run Foreground="CornflowerBlue" FontWeight="Regular" Text="{Binding StringParameter}"/>")
 
                             </TextBlock>
                             <ctrls:TwoColumnGrid Grid.Column="2" RowSpacing="4" ColumnSpacing="4" Visibility="{Binding Collapsed, Converter={StaticResource NonVisibilityConverter}}">
                                 <Label Content="{e:Localize Command}"/>
-                                <ComboBox x:Name="Func" Grid.Row="1" SelectedItem="{Binding Action, Mode=TwoWay}" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}" DisplayMemberPath="Function">
+                                <ComboBox x:Name="Func" Grid.Row="1" SelectedItem="{Binding Action, Mode=TwoWay}" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}">
                                     <ComboBox.ItemContainerStyle>
                                         <Style TargetType="ComboBoxItem">
                                             <Style.Setters>
-                                                <Setter Property="Foreground">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush Color="{Binding Color}"/>
-                                                    </Setter.Value>
-                                                </Setter>
+                                                <Setter Property="Foreground" Value="{Binding Color, Converter={StaticResource ColorToBrush}}"/>
+                                                <Setter Property="ContentTemplateSelector" Value="{x:Null}"/>
                                             </Style.Setters>
                                             <Style.Triggers>
                                                 <DataTrigger Binding ="{Binding IsGroup}" Value="True">
@@ -106,11 +101,7 @@
                                     </ComboBox.ItemContainerStyle>
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock x:Name="txt" Text="{Binding Function}">
-                                                <!--<TextBlock.Foreground>
-                                                    <SolidColorBrush Color="{Binding Color}"/>
-                                                </TextBlock.Foreground>-->
-                                            </TextBlock>
+                                            <TextBlock x:Name="txt" Text="{Binding Function}"/>
                                             <DataTemplate.Triggers>
                                                 <DataTrigger Binding="{Binding IsGroup}" Value="False">
                                                     <Setter TargetName="txt" Property="Margin" Value="8,0,0,0"/>

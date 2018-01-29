@@ -2,8 +2,6 @@
 using GalaSoft.MvvmLight.Threading;
 using System;
 using System.Threading.Tasks;
-using NCrash.UI;
-using NCrash;
 using System.Windows.Markup;
 using System.IO;
 
@@ -26,19 +24,12 @@ namespace vMixController
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var userInterface = new NCrash.WPF.NormalWpfUserInterface() { SendReport = true };
-            var sender = new Classes.NCrashLocalSender();
-            var settings = new DefaultSettings { Sender = sender, HandleProcessCorruptedStateExceptions = true, UserInterface = userInterface };
-            var reporter = new ErrorReporter(settings);
-
-            // Sample NCrash configuration for console applications
-            AppDomain.CurrentDomain.UnhandledException += reporter.UnhandledException;
-            TaskScheduler.UnobservedTaskException += reporter.UnobservedTaskException;
-            App.Current.DispatcherUnhandledException += reporter.DispatcherUnhandledException;
+            
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
             base.OnStartup(e);
         }
 

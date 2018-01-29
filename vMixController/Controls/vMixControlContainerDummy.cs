@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace vMixController.Controls
 {
@@ -34,6 +35,20 @@ namespace vMixController.Controls
                 e.Handled = true;
             }
         }
+
+
+
+        public Color BorderColorProxy
+        {
+            get { return (Color)GetValue(BorderColorProxyProperty); }
+            set { SetValue(BorderColorProxyProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for BorderColorProxy.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BorderColorProxyProperty =
+            DependencyProperty.Register("BorderColorProxy", typeof(Color), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+
+
 
         public vMixController.Widgets.vMixControl Control
         {

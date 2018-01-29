@@ -7,6 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:local="clr-namespace:vMixController.Controls"
+             xmlns:conv="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="CC" SizeChanged="CC_SizeChanged">
@@ -15,6 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
             <local:LockToVisibilityConverter x:Key="LockToVisibilityConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <local:LockButtonConverter x:Key="LockButtonConverter"/>
@@ -39,11 +41,7 @@
     <Border Background="#1E2328" Margin="0" Padding="0">
         <Border.Style>
             <Style TargetType="Border">
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{Binding ParentContainer.Control.BorderColor, ElementName=CC}"/>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={StaticResource ColorToBrush}}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ParentContainer.Control.State, ElementName=CC}" Value="{x:Null}">
@@ -55,10 +53,7 @@
         </Border.Style>
         <Grid>
             <StackPanel Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
-                <Grid x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown">
-                    <Grid.Background>
-                        <SolidColorBrush x:Name="caption" Color="{Binding ParentContainer.Control.Color, ElementName=CC}"/>
-                    </Grid.Background>
+                <Grid x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource ColorToBrush}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>

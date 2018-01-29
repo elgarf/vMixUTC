@@ -34,6 +34,10 @@
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FF2D343C"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
 
+    <SolidColorBrush x:Key="Main.Background" Color="#FF1E2328"/>
+    <SolidColorBrush x:Key="Main.Foreground" Color="White"/>
+    <SolidColorBrush x:Key="Main.Border" Color="#FF404B56"/>
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
@@ -92,6 +96,17 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="WidgetTextBox" TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
+                <Setter Property="Background" Value="{StaticResource Main.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type Label}">
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="White"/>
@@ -127,7 +142,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <SolidColorBrush x:Key="ComboBox.Static.Background" Color="#404856"/>
     <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#607081"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#404856"/>
@@ -306,10 +321,17 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    <ScrollViewer x:Name="PART_ContentHost" Background="{TemplateBinding Background}" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
+                <Setter Property="Background" Value="{StaticResource Main.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
@@ -337,6 +359,9 @@
             </Border>
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger SourceName="PART_EditableTextBox" Property="IsKeyboardFocused" Value="False">
+                <Setter TargetName="border" Property="Background" Value="{StaticResource Main.Border}"/>
+            </Trigger>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
             </Trigger>
@@ -404,7 +429,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Extended WPF Toolkit Styling -->
 
     <Style TargetType="{x:Type RepeatButton}">
@@ -555,8 +580,84 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
     </Style>
 
+
+    <!--<Style TargetType="{x:Type toolkit:WatermarkTextBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="toolkit:WatermarkTextBox">
+                    <Grid>
+                        <Border Background="{TemplateBinding Control.Background}" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="1" Name="Border" />
+                        <Border BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="1" Name="MouseOverVisual" Opacity="0">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FF5794BF" Offset="0.05" />
+                                    <GradientStop Color="#FFB7D5EA" Offset="0.07" />
+                                    <GradientStop Color="#FFC7E2F1" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                        </Border>
+                        <Border BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="1" Name="FocusVisual" Opacity="0">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FF3D7BAD" Offset="0.05" />
+                                    <GradientStop Color="#FFA4C9E3" Offset="0.07" />
+                                    <GradientStop Color="#FFB7D9ED" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                        </Border>
+                        <ScrollViewer Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                        <ContentPresenter Content="{TemplateBinding toolkit:WatermarkTextBox.Watermark}" ContentTemplate="{TemplateBinding toolkit:WatermarkTextBox.WatermarkTemplate}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" IsHitTestVisible="False" Margin="{TemplateBinding Control.Padding}" Name="PART_WatermarkHost" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="UIElement.IsKeyboardFocused" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
+                            <Setter Property="Background" Value="{StaticResource Main.Background}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="UIElement.IsFocused" Value="False" />
+                                <Condition Property="TextBox.Text" Value="" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="UIElement.Visibility" TargetName="PART_WatermarkHost" Value="Visible" />
+                        </MultiTrigger>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <Setter Property="UIElement.Opacity" TargetName="MouseOverVisual" Value="1" />
+                        </Trigger>
+                        <Trigger Property="UIElement.IsFocused" Value="True">
+                            <Setter Property="UIElement.Opacity" TargetName="FocusVisual" Value="1" />
+                        </Trigger>
+                        <Trigger Property="UIElement.IsEnabled" Value="False">
+                            <Setter Property="Border.BorderBrush" TargetName="Border" Value="#FFADB2B5" />
+                            <Setter Property="Border.Background" TargetName="Border" Value="Red" />
+                            <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+    <Style x:Key="WidgetIntegerUpDown" TargetType="{x:Type toolkit:IntegerUpDown}">
+        <Style.Triggers>
+            <Trigger Property="UIElement.IsKeyboardFocusWithin" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
+                <Setter Property="Background" Value="{StaticResource Main.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="WidgetTimeSpanUpDown" TargetType="{x:Type toolkit:TimeSpanUpDown}">
+        <Style.Triggers>
+            <Trigger Property="UIElement.IsKeyboardFocusWithin" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
+                <Setter Property="Background" Value="{StaticResource Main.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <Style x:Key="TimePickerStyle" TargetType="{x:Type toolkit:TimePicker}">
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
@@ -724,6 +825,7 @@
                         <Trigger Property="IsFocused" Value="True">
                             <Setter Property="FocusManager.FocusedElement" TargetName="PART_TextBox" Value="{Binding ElementName=PART_TextBox}"/>
                         </Trigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -5,6 +5,7 @@ using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using vMixController.Classes;
@@ -39,8 +41,11 @@ namespace vMixController.ViewModel
 
 
 
-
+        object _moveSource = null;
+        Point _clickPoint;
+        Point _relativeClickPoint;
         Thickness _rawSelectorPosition = new Thickness();
+        bool _isHotkeysEnabled = true;
 
         /*Selector*/
         /// <summary>
@@ -599,6 +604,8 @@ namespace vMixController.ViewModel
                     ?? (_openPropertiesCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
                     p =>
                     {
+                        _isHotkeysEnabled = false;
+
                         _logger.Info("Opening properties for widget {0}.", p.Name);
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixControlSettingsViewModel>();
                         viewModel.Control = p;
@@ -611,6 +618,8 @@ namespace vMixController.ViewModel
                             p.SetProperties(viewModel);
                         _logger.Info("Properties updated.");
                         _settings = null;
+
+                        _isHotkeysEnabled = true;
                     }));
             }
         }
@@ -672,7 +681,7 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
-                        if (SelectorWidth != 0 && SelectorHeight != 0)
+                        /*if (SelectorWidth != 0 && SelectorHeight != 0)
                         {
 
                             var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
@@ -686,7 +695,7 @@ namespace vMixController.ViewModel
                             SelectorEnabled = false;
                             return;
                         }
-                        SelectorEnabled = false;
+                        SelectorEnabled = false;*/
                         if (_createControl != null)
                         {
                             EditorCursor = "Arrow";
@@ -695,11 +704,8 @@ namespace vMixController.ViewModel
                             _createControl = null;
                             UpdateWithLicense();
                         }
-                        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                            foreach (var item in _controls)
-                            {
-                                item.Selected = false;
-                            }
+                        if ((p.OriginalSource is ListView))
+                            _isHotkeysEnabled = true;
 
                     }));
             }
@@ -721,11 +727,13 @@ namespace vMixController.ViewModel
                         if (WindowSettings.Locked)
                             return;
                         var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
+                        _relativeClickPoint = pos;
                         SelectorEnabled = true;
                         _rawSelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
                         SelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
                         SelectorWidth = 0;
                         SelectorHeight = 0;
+                        
                     }));
             }
         }
@@ -742,9 +750,10 @@ namespace vMixController.ViewModel
             {
                 return _mouseMove
                     ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
-                    p =>
-                    {
-                        if (!SelectorEnabled)
+                    p => {
+                        
+                        _moveSource = p.Source;
+                        /*if (!SelectorEnabled)
                             return;
                         var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
                         var w = -(_rawSelectorPosition.Left - pos.X);
@@ -752,7 +761,7 @@ namespace vMixController.ViewModel
 
                         SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
                         SelectorWidth = Math.Abs(w);
-                        SelectorHeight = Math.Abs(h);
+                        SelectorHeight = Math.Abs(h);*/
 
                     }));
             }
@@ -1069,8 +1078,11 @@ namespace vMixController.ViewModel
         }
 
 
-        void ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers)
+        bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers)
         {
+            /*if (!_isHotkeysEnabled)
+                return;*/
+            var result = false;
             foreach (var ctrl in _controls)
             {
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
@@ -1084,9 +1096,13 @@ namespace vMixController.ViewModel
                         mod |= ModifierKeys.Shift;
 
                     if (item.obj.Active && ((item.obj.Key == key) || (key == Key.System && item.obj.Key == systemKey)) && modifiers == mod)
+                    {
                         ctrl.ExecuteHotkey(item.idx);
+                        result = true;
+                    }
                 }
             }
+            return result;
         }
 
         void ProcessHotkey(string link)
@@ -1110,7 +1126,9 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
-                        ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
+                        if (!_isHotkeysEnabled)
+                            return;
+                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
 
                     }));
             }
@@ -1277,6 +1295,72 @@ namespace vMixController.ViewModel
                 }
             });
 
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Pair<string, bool>>(this, (t) =>
+            {
+                switch (t.A)
+                {
+                    case "Hotkeys":
+                        _isHotkeysEnabled = t.B;
+                        Debug.WriteLine(t.B);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            if (!IsInDesignMode)
+            {
+                var globalEvents = Gma.System.MouseKeyHook.Hook.GlobalEvents();
+
+                globalEvents.MouseMove += MainViewModel_MouseMove;
+                globalEvents.MouseUp += MainViewModel_MouseUp;
+            }
+
+        }
+
+        private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            
+            if (SelectorWidth != 0 && SelectorHeight != 0)
+            {
+
+                var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
+                foreach (var item in _controls)
+                {
+                    var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
+                    item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
+                }
+                SelectorWidth = 0;
+                SelectorHeight = 0;
+                SelectorEnabled = false;
+                return;
+            }
+            SelectorEnabled = false;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                foreach (var item in _controls)
+                {
+                    item.Selected = false;
+                }
+
+        }
+
+        private void MainViewModel_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (!SelectorEnabled)
+            {
+                _clickPoint = new Point(e.X, e.Y);
+                return;
+            }
+
+
+            var pos = new Point(e.X, e.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
+            var pos1 = Mouse.PrimaryDevice.GetPosition(null);
+            var w = -(_rawSelectorPosition.Left - pos.X);
+            var h = -(_rawSelectorPosition.Top - pos.Y);
+
+            SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
+            SelectorWidth = Math.Abs(w);
+            SelectorHeight = Math.Abs(h);
         }
 
         WebClient _client = new vMixAPI.vMixWebClient();

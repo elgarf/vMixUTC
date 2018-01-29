@@ -16,10 +16,10 @@
         mc:Ignorable="d ignore"
         Title="{e:Localize Widget Properties}"
         Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="364.71"
-        Width="{Binding ControlSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay}"
-        Height="{Binding ControlSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay}"
-        Top="{Binding ControlSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay}"
-        Left="{Binding ControlSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay}"
+        Width="{Binding Path=ControlSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=382}"
+        Height="{Binding Path=ControlSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=364}"
+        Top="{Binding Path=ControlSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
+        Left="{Binding Path=ControlSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
         WindowStartupLocation="CenterScreen" Background="Black" ResizeMode="CanResize"
         e:ControlBox.HasMaximizeButton="False">
     <Window.Resources>
@@ -29,6 +29,7 @@
             </ResourceDictionary.MergedDictionaries>
             <Converters:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
             <Converters:NotConverter x:Key="NotConverter"/>
+            <Converters:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ObjectDataProvider x:Key="KeyValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
@@ -87,14 +88,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <Rectangle Height="16" Width="16" Margin="{StaticResource RightStdMargin}" StrokeThickness="1">
-                                        <Rectangle.Stroke>
-                                            <SolidColorBrush Color="{Binding B}"/>
-                                        </Rectangle.Stroke>
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{Binding A}"/>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
+                                    <Rectangle Height="16" Width="16" Margin="{StaticResource RightStdMargin}" StrokeThickness="1" Stroke="{Binding B, Converter={StaticResource ColorToBrush}}" Fill="{Binding A, Converter={StaticResource ColorToBrush}}"/>
                                     <TextBlock Grid.Column="1" Text="{Binding C}"/>
                                 </Grid>
                             </DataTemplate>
@@ -273,11 +267,11 @@
                 </StackPanel>-->
 
                 <ItemsControl VerticalContentAlignment="Stretch" ItemsSource="{Binding WidgetPropertiesControls}">
-                    <ItemsControl.ItemTemplate>
+                    <!--<ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <ContentControl Content="{Binding}"/>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                    </ItemsControl.ItemTemplate>-->
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>

@@ -42,7 +42,7 @@ namespace vMixController.ViewModel
         /// </summary>
         public const string WindowPropertiesPropertyName = "WindowProperties";
 
-        private Quadriple<double?, double?, double?, double?> _windowProperties = new Quadriple<double?, double?, double?, double?>();
+        private Quadriple<double?, double?, double?, double?> _windowProperties = new Quadriple<double?, double?, double?, double?>() { A = 512, B = 512, C = 0, D = 0 };
 
         /// <summary>
         /// Sets and gets the WindowProperties property.
@@ -96,96 +96,6 @@ namespace vMixController.ViewModel
                 RaisePropertyChanged(PeriodVisibilityPropertyName);
             }
         }
-
-        /*/// <summary>
-        /// The <see cref="PathMappingVisibility" /> property's name.
-        /// </summary>
-        public const string PathMappingVisibilityPropertyName = "PathMappingVisibility";
-
-        private Visibility _pathMappingVisibility = Visibility.Visible;
-
-        /// <summary>
-        /// Sets and gets the PathMappingVisibility property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Visibility PathMappingVisibility
-        {
-            get
-            {
-                return _pathMappingVisibility;
-            }
-
-            set
-            {
-                if (_pathMappingVisibility == value)
-                {
-                    return;
-                }
-
-                _pathMappingVisibility = value;
-                RaisePropertyChanged(PathMappingVisibilityPropertyName);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="ScriptVisibility" /> property's name.
-        /// </summary>
-        public const string ScriptVisibilityPropertyName = "ScriptVisibility";
-
-        private Visibility _scriptVisibility = Visibility.Visible;
-
-        /// <summary>
-        /// Sets and gets the ScriptVisibility property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Visibility ScriptVisibility
-        {
-            get
-            {
-                return _scriptVisibility;
-            }
-
-            set
-            {
-                if (_scriptVisibility == value)
-                {
-                    return;
-                }
-
-                _scriptVisibility = value;
-                RaisePropertyChanged(ScriptVisibilityPropertyName);
-            }
-        }
-
-        /// <summary>
-        /// The <see cref="ItemsVisibility" /> property's name.
-        /// </summary>
-        public const string ItemsVisibilityPropertyName = "ItemsVisibility";
-
-        private Visibility _itemsVisibility = Visibility.Visible;
-
-        /// <summary>
-        /// Sets and gets the ItemsVisibility property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Visibility ItemsVisibility
-        {
-            get
-            {
-                return _itemsVisibility;
-            }
-
-            set
-            {
-                if (_itemsVisibility == value)
-                {
-                    return;
-                }
-
-                _itemsVisibility = value;
-                RaisePropertyChanged(ItemsVisibilityPropertyName);
-            }
-        }*/
 
         /// <summary>
         /// The <see cref="Model" /> property's name.
@@ -503,6 +413,7 @@ namespace vMixController.ViewModel
             Type = p.Type;
 
             WindowProperties = p.WindowProperties;
+
             if (!WindowProperties.A.HasValue ||
                 !WindowProperties.B.HasValue ||
                 !WindowProperties.C.HasValue ||
