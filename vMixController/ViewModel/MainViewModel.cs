@@ -477,7 +477,7 @@ namespace vMixController.ViewModel
             get
             {
 
-                return string.Format(CultureInfo.CreateSpecificCulture("en-US").DateTimeFormat, _title + " (builded {0:d})", GetBuildDateTime(Assembly.GetExecutingAssembly()));
+                return string.Format(CultureInfo.CreateSpecificCulture("en-US").DateTimeFormat, _title + " ({0:d})", GetBuildDateTime(Assembly.GetExecutingAssembly()));
             }
         }
 
