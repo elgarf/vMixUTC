@@ -541,7 +541,6 @@ namespace vMixController.ViewModel
                             copy.Top += 8;
                             copy.Update();
                             _controls.Add(copy);
-                            UpdateWithLicense();
                         }
                         catch (Exception e)
                         {
@@ -655,8 +654,8 @@ namespace vMixController.ViewModel
                                 control.Update();
                                 _controls.Add(control);
                                 _logger.Info("New {0} widget added.", control.Type.ToLower());
-                                if (!UpdateWithLicense(control))
-                                    OpenPropertiesCommand.Execute(control);
+
+                                OpenPropertiesCommand.Execute(control);
 
                             }
                             else
@@ -702,7 +701,6 @@ namespace vMixController.ViewModel
                             var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
                             _createControl(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
                             _createControl = null;
-                            UpdateWithLicense();
                         }
                         if ((p.OriginalSource is ListView))
                             _isHotkeysEnabled = true;
@@ -733,7 +731,7 @@ namespace vMixController.ViewModel
                         SelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
                         SelectorWidth = 0;
                         SelectorHeight = 0;
-                        
+
                     }));
             }
         }
@@ -750,8 +748,9 @@ namespace vMixController.ViewModel
             {
                 return _mouseMove
                     ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
-                    p => {
-                        
+                    p =>
+                    {
+
                         _moveSource = p.Source;
                         /*if (!SelectorEnabled)
                             return;
@@ -808,7 +807,6 @@ namespace vMixController.ViewModel
                             _createControl(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
                             _createControl = null;
                             _fromContextMenu = false;
-                            UpdateWithLicense();
                         }
                     }));
             }
@@ -839,7 +837,6 @@ namespace vMixController.ViewModel
                             ctrl.Update();
                             _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
                             _controls.Add(ctrl);
-                            UpdateWithLicense();
                         };
 
                     }));
@@ -943,7 +940,6 @@ namespace vMixController.ViewModel
 
                             vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
                             UpdatevMixState();
-                            UpdateWithLicense();
 
                         }
                     }));
@@ -1301,7 +1297,7 @@ namespace vMixController.ViewModel
                 {
                     case "Hotkeys":
                         _isHotkeysEnabled = t.B;
-                        Debug.WriteLine(t.B);
+                        //Debug.WriteLine(t.B);
                         break;
                     default:
                         break;
@@ -1320,7 +1316,7 @@ namespace vMixController.ViewModel
 
         private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            
+
             if (SelectorWidth != 0 && SelectorHeight != 0)
             {
 
@@ -1387,62 +1383,6 @@ namespace vMixController.ViewModel
                 Status = "Online";
             else
                 Status = "Update State";
-        }
-
-
-        private bool UpdateWithLicense(vMixControl ctrl = null)
-        {
-            /*var container = App.License.ReadFeature<bool>("Container");
-            var externalData = App.License.ReadFeature<bool>("ExternalData");
-            var removed = false;
-            var limits = false;
-            var limit = "";
-            if (!container)
-            {
-                foreach (var ct in _controls.Where(x => x.GetType() == typeof(vMixControlContainer)).ToArray())
-                {
-                    _controls.Remove(ct);
-                    if (ctrl == ct)
-                        removed = true;
-                    limits = true;
-                    limit = LocalizationManager.Get("Container widget is not available");
-                }
-            }
-
-            if (!externalData)
-            {
-                foreach (var ct in _controls.Where(x => x.GetType() == typeof(vMixControlExternalData)).ToArray())
-                {
-                    _controls.Remove(ct);
-                    if (ctrl == ct)
-                        removed = true;
-                    limits = true;
-                    limit = LocalizationManager.Get("ExternalData widget is not available");
-                }
-            }
-
-            var count = App.License.ReadFeature<int>("WidgetCount");
-            if (_controls.Count > count)
-                limit = LocalizationManager.Get("Widget count is limited by ") + count.ToString();
-            while (_controls.Count > count)
-            {
-                if (ctrl == _controls[_controls.Count - 1])
-                    removed = true;
-                _controls.RemoveAt(_controls.Count - 1);
-                limits = true;
-            }
-
-            if (limits)
-            {
-                Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
-                td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
-                td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
-                td.MainInstruction = LocalizationManager.Get("There is license limitation, assigned with this feature!");
-                td.WindowTitle = "vMix Universal Title Controller";
-                td.Content = limit;
-                td.ShowDialog(App.Current.MainWindow);
-            }*/
-            return false;
         }
 
         public override void Cleanup()

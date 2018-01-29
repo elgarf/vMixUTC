@@ -34,7 +34,7 @@
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FF2D343C"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
 
-    <SolidColorBrush x:Key="Main.Background" Color="#FF1E2328"/>
+    <SolidColorBrush x:Key="Main.Background" Color="#FF243B53"/>
     <SolidColorBrush x:Key="Main.Foreground" Color="White"/>
     <SolidColorBrush x:Key="Main.Border" Color="#FF404B56"/>
 

@@ -486,8 +486,8 @@ namespace vMixAPI
         public bool Streaming { get; set; }
         [XmlElement(ElementName = "playList")]
         public bool PlayList { get; set; }
-        [XmlElement(ElementName = "multiCoder")]
-        public bool MultiCoder { get; set; }
+        [XmlElement(ElementName = "multiCorder")]
+        public bool MultiCorder { get; set; }
 
         [XmlArray("inputs"), XmlArrayItem(ElementName = "input")]
         public List<Input> Inputs { get; set; }

@@ -102,7 +102,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource WidgetIntegerUpDown}">
+        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" Style="{StaticResource WidgetIntegerUpDown}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
