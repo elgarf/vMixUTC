@@ -19,7 +19,6 @@ namespace vMixController
         static App()
         {
             DispatcherHelper.Initialize();
-
         }
 
         protected override void OnStartup(StartupEventArgs e)

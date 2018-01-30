@@ -20,12 +20,14 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Xml;
 using System.Windows.Media;
+using System.Windows;
 
 namespace vMixController.Widgets
 {
     [Serializable]
     public class vMixControlButton : vMixControl
     {
+        NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
         static DateTime _lastShadowUpdate = DateTime.Now;
         static object _locker = new object();
@@ -284,12 +286,14 @@ namespace vMixController.Widgets
         /// </summary>
         public const string VariablesPropertyName = "Variables";
 
+        [NonSerialized]
         private List<Pair<int, object>> _variables = new List<Pair<int, object>>();
 
         /// <summary>
         /// Sets and gets the Variables property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
+        [XmlIgnore]
         public List<Pair<int, object>> Variables
         {
             get
@@ -531,6 +535,33 @@ namespace vMixController.Widgets
                             args.Result = Dispatcher.Invoke<object>(() => GetValueByPath(State, p[0].ToString()));
                     }
                     break;
+                //string functions
+                case "split":
+                    if (p.Length > 1 && p[0] is string && p[1] is string)
+                    {
+                        args.HasResult = true;
+                        args.Result = ((string)p[0]).Split(new string[] { (string)p[1] }, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    break;
+                case "trim":
+                    if (p.Length > 0 && p[0] is string)
+                    {
+                        args.HasResult = true;
+                        args.Result = ((string)p[0]).Trim();
+                    }
+                    break;
+                //vMix functions
+                case "API":
+                    //state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0), false);
+                    break;
+                //array functions
+                case "getvalue":
+                    if (p.Length > 1 && p[0] is Array && p[1] is int)
+                    {
+                        args.HasResult = true;
+                        args.Result = ((Array)p[0]).GetValue((int)p[1]);
+                    }
+                    break;
             }
         }
 
@@ -542,7 +573,15 @@ namespace vMixController.Widgets
             if (exp.HasErrors())
                 return false;
             else
-                return (bool)exp.Evaluate();
+                try
+                {
+                    return (bool)exp.Evaluate();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Calculating expression failde");
+                    return false;
+                }
         }
 
         private object CalculateExpression(string s)
@@ -557,8 +596,9 @@ namespace vMixController.Widgets
                 {
                     return exp.Evaluate();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.Error(ex, "Calculating expression failde");
                     return s;
                 }
         }
@@ -655,11 +695,10 @@ namespace vMixController.Widgets
                             case NativeFunctions.SETVARIABLE:
                                 var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
                                 if (idx == -1)
-                                    _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = CalculateObjectParameter(cmd) });
+                                    Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = CalculateObjectParameter(cmd) }));
                                 else
                                 {
-                                    var value = CalculateObjectParameter(cmd);
-                                    Dispatcher.Invoke(() => _variables[idx].B = value);
+                                    Dispatcher.Invoke(() => _variables[idx].B = CalculateObjectParameter(cmd));
                                 }
                                 break;
                         }
@@ -675,7 +714,11 @@ namespace vMixController.Widgets
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
                             SetValueByPath(state, path, value);
                             while (GetValueByPath(state, path) != value)
+                            {
                                 Thread.Sleep(50);
+                                if (_stopThread)
+                                    return;
+                            }
                         }
                         _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
                     }
