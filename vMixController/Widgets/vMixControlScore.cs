@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using vMixController.Classes;
 using System.Windows.Controls;
 using vMixController.PropertiesControls;
+using vMixController.Extensions;
 
 namespace vMixController.Widgets
 {
@@ -21,6 +22,37 @@ namespace vMixController.Widgets
                 return Extensions.LocalizationManager.Get("Score");
             }
         }
+
+        /// <summary>
+        /// The <see cref="Style" /> property's name.
+        /// </summary>
+        public const string StylePropertyName = "Style";
+
+        private string _style = "Basic";//Basic, Basketball, American Football
+
+        /// <summary>
+        /// Sets and gets the Style property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string Style
+        {
+            get
+            {
+                return _style;
+            }
+
+            set
+            {
+                if (_style == value)
+                {
+                    return;
+                }
+
+                _style = value;
+                RaisePropertyChanged(StylePropertyName);
+            }
+        }
+
         public vMixControlScore()
         {
             Text = "0";
@@ -31,7 +63,8 @@ namespace vMixController.Widgets
             return new Classes.Hotkey[] { new Classes.Hotkey() { Name = "Reset" },
             new Classes.Hotkey() { Name = "+1" },
             new Classes.Hotkey() { Name = "+2" },
-            new Classes.Hotkey() { Name = "+3" }};
+            new Classes.Hotkey() { Name = "+3" },
+            new Classes.Hotkey() { Name = "+6" }};
         }
 
         public override void ExecuteHotkey(int index)
@@ -51,6 +84,9 @@ namespace vMixController.Widgets
                     break;
                 case 3:
                     Text = (i + 3).ToString();
+                    break;
+                case 4:
+                    Text = (i + 6).ToString();
                     break;
                 default:
                     break;
@@ -106,7 +142,22 @@ namespace vMixController.Widgets
         {
             var props = base.GetPropertiesControls();
             props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
-            return props;
+
+            var ctrl = GetPropertyControl<ComboBoxControl>();
+            ctrl.Title = Extensions.LocalizationManager.Get("Style");
+            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>();
+            ctrl.Items.Add("Basic");
+            ctrl.Items.Add("Basketball");
+            ctrl.Items.Add("American Football");
+            ctrl.Value = Style;
+
+            return (new UserControl[] { ctrl }).Concat(props).ToArray();
+        }
+
+        public override void SetProperties(UserControl[] _controls)
+        {
+            Style = ((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
+            base.SetProperties(_controls);
         }
     }
 }

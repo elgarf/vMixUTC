@@ -115,41 +115,69 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </toolkit:IntegerUpDown>
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">
-            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+1
-                <Button.Tag>
-                    <sys:Int32>1</sys:Int32>
-                </Button.Tag>
-                <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource ControlInt}">
-                        <Binding/>
-                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
-                    </MultiBinding>
-                </Button.CommandParameter>
-            </Button>
-            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+2
-                <Button.Tag>
-                    <sys:Int32>2</sys:Int32>
-                </Button.Tag>
-                <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource ControlInt}">
-                        <Binding/>
-                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
-                    </MultiBinding>
-                </Button.CommandParameter>
-            </Button>
-            <Button Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+3
-                <Button.Tag>
-                    <sys:Int32>3</sys:Int32>
-                </Button.Tag>
-                <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource ControlInt}">
-                        <Binding/>
-                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
-                    </MultiBinding>
-                </Button.CommandParameter>
-            </Button>
-        </StackPanel>
+        <ContentPresenter Grid.Column="2" Content="{Binding}">
+
+            <ContentPresenter.ContentTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">
+                        <Button x:Name="p1" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+1
+                            <Button.Tag>
+                                <sys:Int32>1</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button x:Name="p2" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+2
+                            <Button.Tag>
+                                <sys:Int32>2</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button x:Name="p3" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+3
+                            <Button.Tag>
+                                <sys:Int32>3</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button x:Name="p6" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+6
+                            <Button.Tag>
+                                <sys:Int32>6</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                    </StackPanel>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Style}" Value="Basic">
+                            <Setter Property="Visibility" TargetName="p2" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p3" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Style}" Value="Basketball">
+                            <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ContentPresenter.ContentTemplate>
+        </ContentPresenter>
     </Grid>
 
     <StackPanel x:Shared="false" x:Key="ExternalDataWidgetControl">

@@ -239,6 +239,9 @@
     <Compile Include="KeyLearnWindow.xaml.cs">
       <DependentUpon>KeyLearnWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertiesControls\ComboBoxControl.xaml.cs">
+      <DependentUpon>ComboBoxControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertiesControls\DataSourceControl.xaml.cs">
       <DependentUpon>DataSourceControl.xaml</DependentUpon>
     </Compile>
@@ -322,6 +325,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PropertiesControls\ComboBoxControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PropertiesControls\DataSourceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
