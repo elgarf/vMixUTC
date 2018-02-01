@@ -888,35 +888,6 @@ namespace vMixController.Widgets
             }
         }
 
-
-        /*private RelayCommand<RoutedEventArgs> _enableHotkeys;
-
-        /// <summary>
-        /// Gets the EnableHotkeys.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> EnableHotkeys
-        {
-            get
-            {
-                return _enableHotkeys
-                    ?? (_enableHotkeys = new RelayCommand<EventArgs>(
-                    (p) =>
-                    {
-                        DependencyObject parent = ((FrameworkElement)p.Source).Parent;
-                        while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
-                            parent = ((FrameworkElement)parent).Parent;
-                        while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
-                            parent = VisualTreeHelper.GetParent(parent);
-                        Keyboard.ClearFocus();
-                        FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                        //MoveFocus
-                        ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
-
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
-                    }));
-            }
-        }*/
-
         private RelayCommand<RoutedEventArgs> _gotFocus;
 
         /// <summary>

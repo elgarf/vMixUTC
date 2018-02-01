@@ -775,6 +775,7 @@ namespace vMixController.Widgets
         {
             _blinker.Stop();
             base.SetProperties(viewModel);
+            BlinkBorderColor = BorderColor;
             //_defaultBorderColor = BorderColor;
             _blinker.Start();
         }

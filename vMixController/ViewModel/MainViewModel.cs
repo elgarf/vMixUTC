@@ -1406,5 +1406,79 @@ namespace vMixController.ViewModel
             Dispose(true);
             //throw new NotImplementedException();
         }
+
+
+        private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<System.Windows.Input.KeyEventArgs> TExtBoxPreviewKeyUp
+        {
+            get
+            {
+                return _textBoxPreviewKeyUp
+                    ?? (_textBoxPreviewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
+                    p =>
+                    {
+                        if (p.Key == System.Windows.Input.Key.Return)
+                        {
+
+                            DependencyObject parent = ((FrameworkElement)p.Source).Parent;
+                            while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                                parent = ((FrameworkElement)parent).Parent;
+                            while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                                parent = VisualTreeHelper.GetParent(parent);
+                            Keyboard.ClearFocus();
+                            FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                            //MoveFocus
+                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+
+
+
+                            _isHotkeysEnabled = true;
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand<RoutedEventArgs> _textBoxGotFocus;
+
+        /// <summary>
+        /// Gets the GotFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> TextBoxGotFocus
+        {
+            get
+            {
+                return _textBoxGotFocus
+                    ?? (_textBoxGotFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
+                        _isHotkeysEnabled = false;
+                       // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
+                    }));
+            }
+        }
+
+        private RelayCommand<RoutedEventArgs> _textBoxLostFocus;
+
+        /// <summary>
+        /// Gets the LostFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> TextBoxLostFocus
+        {
+            get
+            {
+                return _textBoxLostFocus
+                    ?? (_textBoxLostFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
+                        _isHotkeysEnabled = true;
+                        //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                    }));
+            }
+        }
+
     }
 }

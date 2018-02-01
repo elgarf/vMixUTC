@@ -316,13 +316,37 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
-                    <TextBox IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxLostFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxPreviewKeyUp}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="Port"/></TextBlock>
-                    <TextBox IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxLostFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxPreviewKeyUp}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem>
