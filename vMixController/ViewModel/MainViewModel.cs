@@ -171,6 +171,36 @@ namespace vMixController.ViewModel
         }
 
 
+        /// <summary>
+        /// The <see cref="IsUrlValid" /> property's name.
+        /// </summary>
+        public const string IsUrlValidPropertyName = "IsUrlValid";
+
+        private bool _isUrlValid = true;
+
+        /// <summary>
+        /// Sets and gets the IsUrlValid property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsUrlValid
+        {
+            get
+            {
+                return _isUrlValid;
+            }
+
+            set
+            {
+                if (_isUrlValid == value)
+                {
+                    return;
+                }
+
+                _isUrlValid = value;
+                RaisePropertyChanged(IsUrlValidPropertyName);
+            }
+        }
+
         private vMixAPI.State _model = null;
 
         /// <summary>
@@ -255,7 +285,6 @@ namespace vMixController.ViewModel
             {
                 if (e.PropertyName == "IP" || e.PropertyName == "Port")
                     _connectTimer_Tick(null, new EventArgs());
-                //vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
             });
 
         }
@@ -680,21 +709,6 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
-                        /*if (SelectorWidth != 0 && SelectorHeight != 0)
-                        {
-
-                            var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
-                            foreach (var item in _controls)
-                            {
-                                var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
-                                item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
-                            }
-                            SelectorWidth = 0;
-                            SelectorHeight = 0;
-                            SelectorEnabled = false;
-                            return;
-                        }
-                        SelectorEnabled = false;*/
                         if (_createControl != null)
                         {
                             EditorCursor = "Arrow";
@@ -752,15 +766,6 @@ namespace vMixController.ViewModel
                     {
 
                         _moveSource = p.Source;
-                        /*if (!SelectorEnabled)
-                            return;
-                        var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
-                        var w = -(_rawSelectorPosition.Left - pos.X);
-                        var h = -(_rawSelectorPosition.Top - pos.Y);
-
-                        SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
-                        SelectorWidth = Math.Abs(w);
-                        SelectorHeight = Math.Abs(h);*/
 
                     }));
             }
@@ -939,6 +944,9 @@ namespace vMixController.ViewModel
                             _connectTimer_Tick(null, new EventArgs());
 
                             vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
+
+                            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+
                             UpdatevMixState();
 
                         }
@@ -1076,8 +1084,6 @@ namespace vMixController.ViewModel
 
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers)
         {
-            /*if (!_isHotkeysEnabled)
-                return;*/
             var result = false;
             foreach (var ctrl in _controls)
             {
@@ -1165,10 +1171,6 @@ namespace vMixController.ViewModel
         /// </summary>
         public MainViewModel()
         {
-
-            /*XmlSerializer clr = new XmlSerializer(typeof(System.Windows.Media.Color));
-            using (var fss = new FileStream("tt.xml", FileMode.Create))
-                clr.Serialize(fss, System.Windows.Media.Colors.Red);*/
 
             vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
 
@@ -1312,6 +1314,8 @@ namespace vMixController.ViewModel
                 globalEvents.MouseUp += MainViewModel_MouseUp;
             }
 
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+
         }
 
         private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -1363,10 +1367,13 @@ namespace vMixController.ViewModel
 
         private void _connectTimer_Tick(object sender, EventArgs e)
         {
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+            if (!IsUrlValid)
+                return;
 
             _client.DownloadStringCompleted += _client_DownloadStringCompleted;
             _client.CancelAsync();
-            while (_client.IsBusy) Thread.Sleep(10);
+            while (_client.IsBusy) Thread.Sleep(100);
             _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
         }
 
@@ -1413,7 +1420,7 @@ namespace vMixController.ViewModel
         /// <summary>
         /// Gets the MyCommand.
         /// </summary>
-        public RelayCommand<System.Windows.Input.KeyEventArgs> TExtBoxPreviewKeyUp
+        public RelayCommand<System.Windows.Input.KeyEventArgs> TextBoxPreviewKeyUp
         {
             get
             {

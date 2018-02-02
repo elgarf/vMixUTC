@@ -36,6 +36,7 @@
             <c:IntegerToBooleanConverter x:Key="IntegerToBooleanConverter"/>
             <c:MarginMultiConverter x:Key="MarginMultiConverter"/>
             <c:NotConverter x:Key="NotConverter"/>
+            <c:BoolToBrushConverter x:Key="BoolToBrush"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
                 <MenuItem x:Name="Button" Command="{Binding CreateControlCommand}" CommandParameter="Button" Header="{e:Localize Button}">
@@ -316,7 +317,7 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
-                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="GotFocus">
                                 <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>
@@ -334,7 +335,7 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="Port"/></TextBlock>
-                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="GotFocus">
                                 <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -32,6 +33,7 @@ namespace vMixAPI
         private static string _ip = "127.0.0.1";
         private static string _port = "8088";
         private static State _base = new State();
+        private static Regex _regex;
 
         public static event EventHandler OnStateCreated;
         //public static event EventHandler<StateUpdatedEventArgs> OnStateUpdated;
@@ -39,6 +41,7 @@ namespace vMixAPI
         static StateFabrique()
         {
             _base.OnStateCreated += _base_OnStateCreated;
+            _regex = new Regex(@"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$");
         }
 
         private static void _base_OnStateCreated(object sender, EventArgs e)
@@ -60,6 +63,11 @@ namespace vMixAPI
             return GetUrl(_ip, _port);
         }
 
+        public static bool IsUrlValid(string url)
+        {
+            return _regex.IsMatch(url);
+        }
+
         public static string GetUrl(string _ip, string _port)
         {
             return string.Format("http://{0}:{1}/api?", _ip, _port);
@@ -77,6 +85,8 @@ namespace vMixAPI
     {
         private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
+        Regex _regex;
+
         //private static bool _configured = false;
         private string _ip = "127.0.0.1";
         private string _port = "8088";
@@ -90,6 +100,7 @@ namespace vMixAPI
         {
             _ip = ip.Trim();
             _port = port.Trim();
+            
             //_configured = true;
             _logger.Info("Configuring to {0}:{1}.", ip, port);
         }
@@ -343,6 +354,12 @@ namespace vMixAPI
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
             var url = address + textParameters;
 
+            if (!StateFabrique.IsUrlValid(url))
+            {
+                _logger.Error("Function URL is not valid <{0}>.", url);
+                return "";
+            }
+
             _logger.Info("Function URL is <{0}>.", url);
 
             if (async)
@@ -414,6 +431,7 @@ namespace vMixAPI
 
         public State()
         {
+            _regex = new Regex(@"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$");
         }
 
         [XmlElement(ElementName = "version")]
