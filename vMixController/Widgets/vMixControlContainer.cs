@@ -149,6 +149,7 @@ namespace vMixController.Widgets
                 {
                     /*_controls[i].Color = Color;
                     _controls[i].BorderColor = BorderColor;*/
+                    if (_propIndex.Count > i)
                     _controls[i].SetProperties(_propIndex[i]);
                     _propIndex[i] = null;
                     //_controls[i].SetProperties(_propIndex[i]);

@@ -354,7 +354,7 @@ namespace vMixAPI
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
             var url = address + textParameters;
 
-            if (!StateFabrique.IsUrlValid(url))
+            if (!StateFabrique.IsUrlValid(address))
             {
                 _logger.Error("Function URL is not valid <{0}>.", url);
                 return "";
