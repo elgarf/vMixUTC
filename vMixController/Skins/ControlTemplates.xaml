@@ -191,6 +191,9 @@
                             <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p1" Value="Collapsed"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Style}" Value="American Football">
+                            <Setter Property="Visibility" TargetName="p5" Value="Collapsed"/>
+                        </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </ContentPresenter.ContentTemplate>
