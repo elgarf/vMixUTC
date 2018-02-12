@@ -17,7 +17,7 @@ namespace vMixAPI
                 return "OVR";
             }
         }
-
+        [XmlIgnore]
         public override State ControlledState
         {
             get
