@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
+using System.Xml.Serialization;
 using vMixAPI;
 using vMixController.Classes;
 using vMixController.PropertiesControls;
@@ -40,6 +41,7 @@ namespace vMixController.Widgets
             }
         }
 
+        [XmlIgnore]
         public override State State
         {
             get
