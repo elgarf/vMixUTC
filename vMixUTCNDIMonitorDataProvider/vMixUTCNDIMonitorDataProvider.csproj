@@ -46,16 +46,16 @@
   <ItemGroup>
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="NDIMonitorDataProvider.cs" />
-    <Compile Include="NDI\Common.cs" />
-    <Compile Include="NDI\Find.cs" />
-    <Compile Include="NDI\Recv.cs" />
-    <Compile Include="NDI\Utilites.cs" />
     <Compile Include="OnWidgetUI.xaml.cs">
       <DependentUpon>OnWidgetUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NDILibDotNet2\NDILibDotNet2.csproj">
+      <Project>{7195bfa6-8095-4618-96f6-8577db13fb43}</Project>
+      <Name>NDILibDotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vMixControllerDataProvider\vMixControllerDataProvider.csproj">
       <Project>{21c1a5ec-9fd2-44f5-bdac-98f0787102c3}</Project>
       <Name>vMixControllerDataProvider</Name>

@@ -27,12 +27,12 @@ namespace vMixUTCNDIMonitorDataProvider
         }
         public void UpdatePreview(BitmapSource src)
         {
-            Preview.Source = src;
+            //Preview.Source = src;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            (DataContext as NDIMonitorDataProvider).UpdateFindList();
+            //(DataContext as NDIMonitorDataProvider).UpdateFindList();
         }
 
         private void Preview_SizeChanged(object sender, SizeChangedEventArgs e)

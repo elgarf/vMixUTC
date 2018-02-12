@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixUTCNDIMonitorDataProvider"
              xmlns:e="clr-namespace:vMixUTCNDIMonitorDataProvider.Extensions"
+             xmlns:ndi="clr-namespace:NewTek.NDI.WPF;assembly=NDILibDotNet2"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -22,11 +23,16 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ComboBox ItemsSource="{Binding SourceNames}" SelectedValue="{Binding SourceName, Mode=TwoWay}" x:Name="SourcesListBox"/>
-        <Button Margin="{StaticResource LeftStdMargin}" Grid.Column="1" Click="Button_Click">Refresh</Button>
-        
-        <Image e:SizeObserver.Observe="True" Grid.ColumnSpan="2" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>
+        <ComboBox ItemsSource="{Binding Finder.Sources}" SelectedItem="{Binding Source, Mode=TwoWay}" x:Name="SourcesListBox">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding SourceName}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!--<Image e:SizeObserver.Observe="True" Grid.ColumnSpan="2" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
+        <ndi:ReceiveView ConnectedSource="{Binding Source}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>
     </Grid>
 </UserControl>

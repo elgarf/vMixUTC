@@ -64,6 +64,7 @@ namespace vMixController.Widgets
             new Classes.Hotkey() { Name = "+1" },
             new Classes.Hotkey() { Name = "+2" },
             new Classes.Hotkey() { Name = "+3" },
+            new Classes.Hotkey() { Name = "+5" },
             new Classes.Hotkey() { Name = "+6" }};
         }
 
@@ -86,6 +87,9 @@ namespace vMixController.Widgets
                     Text = (i + 3).ToString();
                     break;
                 case 4:
+                    Text = (i + 5).ToString();
+                    break;
+                case 5:
                     Text = (i + 6).ToString();
                     break;
                 default:
@@ -148,6 +152,7 @@ namespace vMixController.Widgets
             ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>();
             ctrl.Items.Add("Basic");
             ctrl.Items.Add("Basketball");
+            ctrl.Items.Add("Rugby");
             ctrl.Items.Add("American Football");
             ctrl.Value = Style;
 
