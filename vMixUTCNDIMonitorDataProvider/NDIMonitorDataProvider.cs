@@ -139,9 +139,9 @@ namespace vMixUTCNDIMonitorDataProvider
 
         public void Dispose()
         {
-            _ui.Preview.ConnectedSource = null;
-            _ui.Preview.Disconnect();
-            _ui.Preview.Dispose();
+            //_ui.Preview.ConnectedSource = null;
+            //_ui.Preview.Disconnect();
+            //_ui.Preview.Dispose();
             _finder.Dispose();
         }
 

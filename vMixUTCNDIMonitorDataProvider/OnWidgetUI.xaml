@@ -33,6 +33,7 @@
         </ComboBox>
 
         <!--<Image e:SizeObserver.Observe="True" Grid.ColumnSpan="2" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
-        <ndi:ReceiveView ConnectedSource="{Binding Source}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>
+        <!--<ndi:ReceiveView ConnectedSource="{Binding Source}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
+        <MediaElement Source="{Binding Source.Uri}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>
     </Grid>
 </UserControl>
