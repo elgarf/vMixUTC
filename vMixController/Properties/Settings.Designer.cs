@@ -82,5 +82,17 @@ namespace vMixController.Properties {
                 this["WindowState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool NDIFiltersRegistered {
+            get {
+                return ((bool)(this["NDIFiltersRegistered"]));
+            }
+            set {
+                this["NDIFiltersRegistered"] = value;
+            }
+        }
     }
 }

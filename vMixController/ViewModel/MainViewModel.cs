@@ -1316,6 +1316,37 @@ namespace vMixController.ViewModel
 
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
+
+            Accord.Video.DirectShow.FilterInfoCollection filters = new Accord.Video.DirectShow.FilterInfoCollection(new Guid("{083863F1-70DE-11D0-BD40-00A0C911CE86}"));
+            foreach (var item in filters)
+                if (item.Name.Contains("NewTek NDI Source"))
+                    return;
+
+            if (Properties.Settings.Default.NDIFiltersRegistered) return;
+
+            Ookii.Dialogs.Wpf.TaskDialog dialog = new Ookii.Dialogs.Wpf.TaskDialog();
+            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Yes));
+            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.No));
+            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Cancel));
+            dialog.Buttons[0].ElevationRequired = true;
+            dialog.WindowTitle = Extensions.LocalizationManager.Get("Register NDI filters");
+            dialog.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Warning;
+            dialog.MainInstruction = Extensions.LocalizationManager.Get("NDI filters not recognized in your system. Register them?");
+            var dialogresult = dialog.ShowDialog(Application.Current.MainWindow);
+            switch (dialogresult.ButtonType)
+            {
+
+                case Ookii.Dialogs.Wpf.ButtonType.Yes:
+                    Process p = new Process();
+                    p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory()  };
+                    p.Start();
+                    break;
+                case Ookii.Dialogs.Wpf.ButtonType.Cancel:
+                    Properties.Settings.Default.NDIFiltersRegistered = true;
+                    break;
+            }
+            Properties.Settings.Default.Save();
+
         }
 
         private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
