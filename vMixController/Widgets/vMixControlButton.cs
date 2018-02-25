@@ -713,11 +713,14 @@ namespace vMixController.Widgets
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0);
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
                             SetValueByPath(state, path, value);
+                            int flag = 0;
                             while (GetValueByPath(state, path) != value)
                             {
                                 Thread.Sleep(50);
                                 if (_stopThread)
                                     return;
+                                if (++flag > 10)
+                                    break;
                             }
                         }
                         _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
