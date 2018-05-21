@@ -853,7 +853,7 @@ namespace vMixController.Widgets
                     ControlsStoreUsage.Remove(item);
         }
 
-
+        [NonSerialized]
         private RelayCommand<System.Windows.Input.KeyEventArgs> _previewKeyUp;
 
         /// <summary>
@@ -887,7 +887,7 @@ namespace vMixController.Widgets
                     }));
             }
         }
-
+        [NonSerialized]
         private RelayCommand<RoutedEventArgs> _gotFocus;
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace vMixController.Widgets
                     }));
             }
         }
-
+        [NonSerialized]
         private RelayCommand<RoutedEventArgs> _lostFocus;
 
         /// <summary>

@@ -27,14 +27,19 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlButton : vMixControl
     {
+        [NonSerialized]
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
         static DateTime _lastShadowUpdate = DateTime.Now;
         static object _locker = new object();
         Stack<bool?> _conditions = new Stack<bool?>();
+        [NonSerialized]
         CultureInfo _culture;
+        [NonSerialized]
         BackgroundWorker _activeStateUpdateWorker, _executionWorker;
+        [NonSerialized]
         DispatcherTimer _blinker;
+        [NonSerialized]
         Color _defaultBorderColor;
 
         [NonSerialized]

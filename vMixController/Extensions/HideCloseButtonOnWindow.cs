@@ -8,7 +8,33 @@ using System.Windows;
 
 namespace vMixController.Extensions
 {
-    public class HideCloseButtonOnWindow : System.Windows.Interactivity.Behavior<Window>
+    static class NativeMethods
+    {
+        #region bunch of native methods
+
+        public static int GWL_STYLE = -16;
+        public static int WS_SYSMENU = 0x80000;
+
+        public static uint MF_BYCOMMAND = 0x00000000;
+        public static uint MF_GRAYED = 0x00000001;
+        public static uint SC_CLOSE = 0xF060;
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        #endregion
+
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [DllImport("user32.dll")]
+        public static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+        [DllImport("user32.dll")]
+        public static extern IntPtr DestroyMenu(IntPtr hWnd);
+    }
+    public class HideCloseButtonOnWindow : System.Windows.Interactivity.Behavior<Window>, IDisposable
     {
 
 
@@ -30,30 +56,7 @@ namespace vMixController.Extensions
 
 
 
-        #region bunch of native methods
 
-        private const int GWL_STYLE = -16;
-        private const int WS_SYSMENU = 0x80000;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        #endregion
-
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-        [DllImport("user32.dll")]
-        private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
-        [DllImport("user32.dll")]
-        private static extern IntPtr DestroyMenu(IntPtr hWnd);
-
-        private const uint MF_BYCOMMAND = 0x00000000;
-        private const uint MF_GRAYED = 0x00000001;
-        private const uint SC_CLOSE = 0xF060;
 
         IntPtr menuHandle;
         protected void DisableCloseButton(IntPtr _windowHandle)
@@ -61,15 +64,15 @@ namespace vMixController.Extensions
             if (_windowHandle == null)
                 throw new InvalidOperationException("The window has not yet been completely initialized");
 
-            menuHandle = GetSystemMenu(_windowHandle, false);
+            menuHandle = NativeMethods.GetSystemMenu(_windowHandle, false);
             if (menuHandle != IntPtr.Zero)
             {
-                EnableMenuItem(menuHandle, SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+                NativeMethods.EnableMenuItem(menuHandle, NativeMethods.SC_CLOSE, NativeMethods.MF_BYCOMMAND | NativeMethods.MF_GRAYED);
             }
         }
 
 
-        private const uint MF_ENABLED = 0x00000000;
+       // private const uint MF_ENABLED = 0x00000000;
 
         protected void EnableCloseButton(IntPtr _windowHandle)
         {
@@ -78,16 +81,16 @@ namespace vMixController.Extensions
 
             if (menuHandle != IntPtr.Zero)
             {
-                EnableMenuItem(menuHandle, SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+                NativeMethods.EnableMenuItem(menuHandle, NativeMethods.SC_CLOSE, NativeMethods.MF_BYCOMMAND | 0);
             }
         }
 
         protected void Update()
         {
-            if (AssociatedObject==null)
+            if (AssociatedObject == null)
                 return;
             var hwnd = new System.Windows.Interop.WindowInteropHelper(AssociatedObject).Handle;
-            var windowStyle = GetWindowLong(hwnd, GWL_STYLE);
+            var windowStyle = NativeMethods.GetWindowLong(hwnd, NativeMethods.GWL_STYLE);
             if (IsEnabled)
                 EnableCloseButton(hwnd);
             else
@@ -110,5 +113,25 @@ namespace vMixController.Extensions
         {
             Update();
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+            //throw new NotImplementedException();
+        }
+
+        ~HideCloseButtonOnWindow()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool dispose)
+        {
+
+        }
+
+
+        
     }
 }

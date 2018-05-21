@@ -47,6 +47,36 @@ namespace vMixController.ViewModel
         Thickness _rawSelectorPosition = new Thickness();
         bool _isHotkeysEnabled = true;
 
+        /// <summary>
+        /// The <see cref="IsFiltersRegistered" /> property's name.
+        /// </summary>
+        public const string IsFiltersRegisteredPropertyName = "IsFiltersRegistered";
+
+        private bool _isFiltersRegistered = false;
+
+        /// <summary>
+        /// Sets and gets the IsFiltersRegistered property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsFiltersRegistered
+        {
+            get
+            {
+                return _isFiltersRegistered;
+            }
+
+            set
+            {
+                if (_isFiltersRegistered == value)
+                {
+                    return;
+                }
+
+                _isFiltersRegistered = value;
+                RaisePropertyChanged(IsFiltersRegisteredPropertyName);
+            }
+        }
+
         /*Selector*/
         /// <summary>
         /// The <see cref="SelectorPosition" /> property's name.
@@ -447,10 +477,10 @@ namespace vMixController.ViewModel
         #region Gets the build date and time (by reading the COFF header)
 
         // http://msdn.microsoft.com/en-us/library/ms680313
-
+#pragma warning disable CS0649
         struct _IMAGE_FILE_HEADER
         {
-            public ushort Machine;
+            public ushort Machinev;
             public ushort NumberOfSections;
             public uint TimeDateStamp;
             public uint PointerToSymbolTable;
@@ -458,6 +488,7 @@ namespace vMixController.ViewModel
             public ushort SizeOfOptionalHeader;
             public ushort Characteristics;
         };
+#pragma warning restore CS0649
 
         static DateTime GetBuildDateTime(Assembly assembly)
         {
@@ -1214,9 +1245,9 @@ namespace vMixController.ViewModel
                 s = new XmlSerializer(typeof(MainWindowSettings));
                 if (File.Exists(Path.Combine(_documentsPath, "WindowSettings.xml")))
                     using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Open))
-                        _windowSettings = (MainWindowSettings)s.Deserialize(fs);
+                        WindowSettings = (MainWindowSettings)s.Deserialize(fs);
                 else
-                    _windowSettings = new MainWindowSettings();
+                    WindowSettings = new MainWindowSettings();
 
 
 
@@ -1320,7 +1351,10 @@ namespace vMixController.ViewModel
             Accord.Video.DirectShow.FilterInfoCollection filters = new Accord.Video.DirectShow.FilterInfoCollection(new Guid("{083863F1-70DE-11D0-BD40-00A0C911CE86}"));
             foreach (var item in filters)
                 if (item.Name.Contains("NewTek NDI Source"))
+                {
+                    IsFiltersRegistered = true;
                     return;
+                }
 
             if (Properties.Settings.Default.NDIFiltersRegistered) return;
 
@@ -1443,6 +1477,32 @@ namespace vMixController.ViewModel
         {
             Dispose(true);
             //throw new NotImplementedException();
+        }
+
+        private RelayCommand _registerNDIFilters;
+
+        /// <summary>
+        /// Gets the RegisterNDIFilters.
+        /// </summary>
+        public RelayCommand RegisterNDIFilters
+        {
+            get
+            {
+                return _registerNDIFilters
+                    ?? (_registerNDIFilters = new RelayCommand(
+                    () =>
+                    {
+                        Process p = new Process();
+                        p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() };
+                        try
+                        {
+                            p.Start();
+                        }
+                        catch (Exception) { }
+                        _isFiltersRegistered = true;
+                    },
+                    () => !IsFiltersRegistered));
+            }
         }
 
 
