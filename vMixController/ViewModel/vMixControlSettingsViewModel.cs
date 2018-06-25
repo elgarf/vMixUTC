@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using vMixController.Extensions;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 
 namespace vMixController.ViewModel
 {

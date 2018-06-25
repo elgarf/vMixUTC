@@ -146,27 +146,27 @@
     <StringDescription>N/A</StringDescription>
     <IntDescription>N/A</IntDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description></Description>
     <Function>Input Switching and Transitions</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
-    <vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description>Set active input</Description>
     <Function>ActiveInput</Function>
     <FormatString>Function=ActiveInput&amp;Input={0}</FormatString>
     <ActiveStatePath>Active</ActiveStatePath>
     <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Cut Direct</Description>
     <Function>CutDirect</Function>
     <FormatString>Function=CutDirect&amp;Input={0}</FormatString>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>CutPlayFade</Description>
     <Function>CutPlayFade</Function>
@@ -184,15 +184,15 @@
     <Function>QuickPlay</Function>
     <FormatString>Function=QuickPlay</FormatString>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Set preview input</Description>
     <Function>PreviewInput</Function>
     <FormatString>Function=PreviewInput&amp;Input={0}</FormatString>
     <ActiveStatePath>Preview</ActiveStatePath>
     <ActiveStateValue>{0}</ActiveStateValue>
-  </vMixFunctionReference>  
-  
+  </vMixFunctionReference>
+
   <vMixFunctionReference>
     <Description>Transition using stinger</Description>
     <Function>Stinger</Function>
@@ -222,7 +222,7 @@
     <Function>Media Controls</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Pause</Description>
     <Function>Pause</Function>
@@ -230,7 +230,7 @@
     <IntDescription>N/A</IntDescription>
     <StringDescription>N/A</StringDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Play</Description>
     <Function>Play</Function>
@@ -252,7 +252,7 @@
     <Function>Output Controls</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>StartStopExternal</Description>
     <Function>StartStopExternal</Function>
@@ -304,26 +304,44 @@
   <vMixFunctionReference>
     <Description>StartStopStreaming</Description>
     <Function>StartStopStreaming</Function>
-    <FormatString>Function=StartStopStreaming</FormatString>
+    <FormatString>Function=StartStopStreaming&amp;Value={1}</FormatString>
     <ActiveStatePath>Streaming</ActiveStatePath>
     <ActiveStateValue>True</ActiveStateValue>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>StartStreaming</Description>
     <Function>StartStreaming</Function>
-    <FormatString>Function=StartStreaming</FormatString>
+    <FormatString>Function=StartStreaming&amp;Value={1}</FormatString>
     <ActiveStatePath>Streaming</ActiveStatePath>
     <ActiveStateValue>False</ActiveStateValue>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>StopStreaming</Description>
     <Function>StopStreaming</Function>
-    <FormatString>Function=StopStreaming</FormatString>
-    <ActiveStatePath>Streaming</ActiveStatePath>
-    <ActiveStateValue>True</ActiveStateValue>
-  </vMixFunctionReference>
+    <FormatString>Function=StopStreaming&amp;Value={1}</FormatString>
+      <ActiveStatePath>Streaming</ActiveStatePath>
+      <ActiveStateValue>True</ActiveStateValue>
+      <IntValues>
+        <int>0</int>
+        <int>1</int>
+        <int>2</int>
+        <int>3</int>
+      </IntValues>
+    </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description></Description>
@@ -350,14 +368,14 @@
     <Function>Replay Controls</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>ReplayMarkInOutLive</Description>
     <Function>ReplayMarkInOutLive</Function>
     <FormatString>Function=ReplayMarkInOutLive&amp;Value={1}</FormatString>
     <IntDescription>Time</IntDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>ReplayPlayLastEventToOutput</Description>
     <Function>ReplayPlayLastEventToOutput</Function>
@@ -512,7 +530,7 @@
     <IntDescription>Index</IntDescription>
     <StringDescription>Path</StringDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Set title text</Description>
     <Function>SetText</Function>
@@ -544,21 +562,21 @@
     <Function>vMix DataSource Controls</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>DataSourceNextRow</Description>
     <Function>DataSourceNextRow</Function>
     <FormatString>Function=DataSourceNextRow&amp;Value={2}</FormatString>
     <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>DataSourcePreviousRow</Description>
     <Function>DataSourcePreviousRow</Function>
     <FormatString>Function=DataSourcePreviousRow&amp;Value={2}</FormatString>
     <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>DataSourceSelectRow</Description>
     <Function>DataSourceSelectRow</Function>
