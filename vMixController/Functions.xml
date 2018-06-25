@@ -450,6 +450,21 @@
       <int>4</int>
     </IntValues>
   </vMixFunctionReference>
+  
+  <vMixFunctionReference>
+    <Description>Preview Overlay</Description>
+    <Function>PreviewOverlay</Function>
+    <FormatString>Function=PreviewOverlayInput{1}&amp;Input={0}</FormatString>
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>!{0}</ActiveStateValue>
+    <IntDescription>Overlay</IntDescription>
+    <IntValues>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+    </IntValues>
+  </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description></Description>

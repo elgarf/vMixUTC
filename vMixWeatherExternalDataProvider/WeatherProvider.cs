@@ -67,7 +67,7 @@ namespace vMixWeatherExternalDataProvider
             DependencyProperty.Register("Country", typeof(string), typeof(WeatherProvider), new PropertyMetadata("Россия"));
 
 
-        internal string _city = "28642";
+        internal string _city = "37099";
         public string City
         {
             get { return (string)GetValue(CityProperty); }
@@ -101,7 +101,7 @@ namespace vMixWeatherExternalDataProvider
 
         // Using a DependencyProperty as the backing store for City.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CityProperty =
-            DependencyProperty.Register("City", typeof(string), typeof(WeatherProvider), new PropertyMetadata("28642", CityChanged));
+            DependencyProperty.Register("City", typeof(string), typeof(WeatherProvider), new PropertyMetadata("37099", CityChanged));
 
         private static void CityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
