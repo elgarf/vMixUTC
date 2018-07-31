@@ -178,6 +178,12 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
+                <MenuItem Command="{Binding AboutCommand}" Header="{e:Localize About}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>
+                    </MenuItem.Icon>                    
+                </MenuItem>
+                <Separator/>
                 <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF08B;</TextBlock>
@@ -369,6 +375,9 @@
                 </StackPanel>
             </StatusBarItem>
             <Separator/>
+            <!--<StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+                <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}">LIVE</CheckBox>
+            </StatusBarItem>-->
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}">Is Topmost</CheckBox>
             </StatusBarItem>

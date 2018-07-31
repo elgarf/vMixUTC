@@ -473,6 +473,36 @@ namespace vMixController.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="LIVE" /> property's name.
+        /// </summary>
+        public const string LIVEPropertyName = "LIVE";
+
+        private bool _LIVE = true;
+
+        /// <summary>
+        /// Sets and gets the LIVE property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool LIVE
+        {
+            get
+            {
+                return _LIVE;
+            }
+
+            set
+            {
+                if (_LIVE == value)
+                {
+                    return;
+                }
+
+                _LIVE = value;
+                RaisePropertyChanged(LIVEPropertyName);
+            }
+        }
+
 
         #region Gets the build date and time (by reading the COFF header)
 
@@ -1574,6 +1604,43 @@ namespace vMixController.ViewModel
                     {
                         _isHotkeysEnabled = true;
                         //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                    }));
+            }
+        }
+
+        private RelayCommand _aboutCommand;
+
+        /// <summary>
+        /// Gets the AboutCommand.
+        /// </summary>
+        public RelayCommand AboutCommand
+        {
+            get
+            {
+                return _aboutCommand
+                    ?? (_aboutCommand = new RelayCommand(
+                    () =>
+                    {
+                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
+                        td.WindowTitle = "About";
+
+                        td.MainInstruction = "Title controller, which works through official vMix API.\nYou can made configurable interface from some default widgets.";
+                        td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information;
+                        td.Footer = Title;
+
+                        var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "vMix Forum" };
+                        var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "Donate" };
+                        td.Buttons.Add(forumbtn);
+                        td.Buttons.Add(donatebtn);
+                        td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true });
+
+                        var btn =  td.ShowDialog();
+                        if (btn == forumbtn)
+                            Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
+                        else if (btn == donatebtn)
+                            Process.Start(new ProcessStartInfo("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WT9QZ2XH97HMN&lc=US&item_name=vMix%20Universal%20Title%20Controller&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
+
+
                     }));
             }
         }

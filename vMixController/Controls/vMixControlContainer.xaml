@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
+            <conv:BrightnessToColorConverter x:Key="BrightnessToColor"/>
             <local:LockToVisibilityConverter x:Key="LockToVisibilityConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <local:LockButtonConverter x:Key="LockButtonConverter"/>
@@ -63,7 +64,7 @@
                     <Button Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" ToolTip="{e:Localize Lock widget}" VerticalAlignment="Center" Style="{StaticResource TitleButton}" Margin="2,0,2,0" HorizontalAlignment="Left" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}"/>
 
 
-                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}"></TextBlock>
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}" Foreground="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource BrightnessToColor}}"></TextBlock>
                     <local:vMixControlMoveThumb Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
                         <local:vMixControlMoveThumb.ToolTip>
                             <ToolTip DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">

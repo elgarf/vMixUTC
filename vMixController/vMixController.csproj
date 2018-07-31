@@ -208,6 +208,7 @@
     </Compile>
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
+    <Compile Include="Converters\BrightnessToColorConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
     <Compile Include="Converters\DateTimeToDayOfWeek.cs" />
@@ -402,6 +403,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Resource Include="FodyWeavers.xml" />
+    <Content Include="Colours.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DirectShow\Filters.NdiSourceFilter.x64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

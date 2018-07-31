@@ -297,6 +297,29 @@ namespace vMixController.Widgets
             
         }
 
+        [NonSerialized]
+        private RelayCommand _selectPathCommand;
+
+        /// <summary>
+        /// Gets the SelectPathCommand.
+        /// </summary>
+        public RelayCommand SelectPathCommand
+        {
+            get
+            {
+                return _selectPathCommand
+                    ?? (_selectPathCommand = new RelayCommand(
+                    () =>
+                    {
+                        var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
+                        dialog.Filter = "All files (*.*)|*.*";
+                        var result = dialog.ShowDialog();
+                        if (result.HasValue && result.Value)
+                            Text = dialog.FileName;
+                    }));
+            }
+        }
+
         public override void SetProperties(UserControl[] _controls)
         {
             base.SetProperties(_controls);

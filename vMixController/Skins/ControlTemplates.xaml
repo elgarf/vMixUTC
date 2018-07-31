@@ -52,19 +52,26 @@
         </Grid>
     </Button>
 
-    <TextBox x:Shared="false" Style="{StaticResource WidgetTextBox}" x:Key="TextFieldWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}">
-        <i:Interaction.Triggers>
-            <i:EventTrigger EventName="PreviewKeyUp">
-                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
-            </i:EventTrigger>
-            <i:EventTrigger EventName="GotFocus">
-                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
-            </i:EventTrigger>
-            <i:EventTrigger EventName="LostFocus">
-                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>
-    </TextBox>
+    <Grid x:Shared="false" x:Key="TextFieldWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewKeyUp">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="GotFocus">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="LostFocus">
+                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}">...</Button>
+    </Grid>
 
     <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
         <ComboBox.ItemTemplate>
