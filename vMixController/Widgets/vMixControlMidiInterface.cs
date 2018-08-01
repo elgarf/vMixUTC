@@ -14,7 +14,7 @@ using vMixController.PropertiesControls;
 
 namespace vMixController.Widgets
 {
-    public class vMixControlMidiInterface : vMixWidget
+    public class vMixControlMidiInterface : vMixControl
     {
 
         /// <summary>

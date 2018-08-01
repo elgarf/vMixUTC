@@ -21,7 +21,7 @@ using vMixController.ViewModel;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlTextField : vMixWidget
+    public class vMixControlTextField : vMixControl
     {
 
         private static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();

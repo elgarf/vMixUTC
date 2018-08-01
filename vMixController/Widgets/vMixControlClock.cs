@@ -11,7 +11,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlClock : vMixWidget
+    public class vMixControlClock : vMixControl
     {
         public override string Type => "Clock";
         public override int MaxCount => 1;

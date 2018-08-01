@@ -318,13 +318,13 @@ namespace vMixController.ViewModel
         /// </summary>
         public const string ControlPropertyName = "Control";
 
-        private vMixWidget _control = null;
+        private vMixControl _control = null;
 
         /// <summary>
         /// Sets and gets the Control property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public vMixWidget Widget
+        public vMixControl Widget
         {
             get
             {
@@ -401,14 +401,14 @@ namespace vMixController.ViewModel
                         if (obj != null)
                             viewModel.WidgetTemplates[obj.idx].B = cpy;
                         else
-                            viewModel.WidgetTemplates.Add(new Pair<string, vMixWidget>(Name, cpy));
+                            viewModel.WidgetTemplates.Add(new Pair<string, vMixControl>(Name, cpy));
                         MessengerInstance.Send(true);
                     }));
             }
         }
 
 
-        public void SetProperties(vMixWidget p)
+        public void SetProperties(vMixControl p)
         {
             Model = p.State;
             Name = p.Name;

@@ -25,7 +25,7 @@ using System.Windows;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlButton : vMixWidget
+    public class vMixControlButton : vMixControl
     {
         [NonSerialized]
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

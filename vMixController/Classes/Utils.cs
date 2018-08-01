@@ -15,9 +15,9 @@ namespace vMixController.Classes
     public static class Utils
     {
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public static ObservableCollection<vMixWidget> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
+        public static ObservableCollection<vMixControl> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
         {
-            var _controls = new ObservableCollection<vMixWidget>();
+            var _controls = new ObservableCollection<vMixControl>();
             using (var stream = File.OpenRead(fileName))
             {
                 _logger.Info("Controller loading.");
@@ -26,8 +26,8 @@ namespace vMixController.Classes
                     reader.ReadStartElement();
                     reader.ReadStartElement();
                     _logger.Info("Loading widgets.");
-                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixWidget>));
-                    var collection = (ObservableCollection<vMixWidget>)s.Deserialize(reader);
+                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControl>));
+                    var collection = (ObservableCollection<vMixControl>)s.Deserialize(reader);
                     foreach (var item in collection)
                     {
                         _controls.Add(item);
@@ -61,7 +61,7 @@ namespace vMixController.Classes
             return _controls;
         }
 
-        public static void SaveController(string fileName, ObservableCollection<vMixWidget> _controls, MainWindowSettings _windowSettings)
+        public static void SaveController(string fileName, ObservableCollection<vMixControl> _controls, MainWindowSettings _windowSettings)
         {
             using (var stream = new FileStream(fileName, FileMode.Create))
             {
@@ -71,7 +71,7 @@ namespace vMixController.Classes
                     writer.WriteStartDocument();
                     writer.WriteStartElement("Root");
                     writer.WriteStartElement("Controls");
-                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixWidget>));
+                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControl>));
                     _logger.Info("Writing widgets.");
                     s.Serialize(writer, _controls);
                     writer.WriteEndElement();

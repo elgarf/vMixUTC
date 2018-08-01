@@ -41,7 +41,7 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlMultiState)),
         XmlInclude(typeof(vMixControlMidiInterface)),
         XmlInclude(typeof(vMixControlClock))]
-    public class vMixWidget : DependencyObject, INotifyPropertyChanged, IDisposable
+    public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
 
@@ -52,7 +52,7 @@ namespace vMixController.Widgets
         protected static DispatcherTimer _shadowUpdate;
 
 
-        public vMixWidget()
+        public vMixControl()
         {
 
             _shadowUpdate = new DispatcherTimer();
@@ -575,17 +575,17 @@ namespace vMixController.Widgets
 
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateProperty =
-            DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixWidget), new PropertyMetadata(null, InternalPropertyChanged));
+            DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixControl), new PropertyMetadata(null, InternalPropertyChanged));
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.Property.Name == "State")
             {
                 if (e.OldValue != null)
-                    ((vMixAPI.State)e.OldValue).OnStateUpdated -= (d as vMixWidget).VMixControl_Updated;
+                    ((vMixAPI.State)e.OldValue).OnStateUpdated -= (d as vMixControl).VMixControl_Updated;
                 if (e.NewValue != null)
-                    ((vMixAPI.State)e.NewValue).OnStateUpdated += (d as vMixWidget).VMixControl_Updated;
-                (d as vMixWidget).OnStateUpdated();
+                    ((vMixAPI.State)e.NewValue).OnStateUpdated += (d as vMixControl).VMixControl_Updated;
+                (d as vMixControl).OnStateUpdated();
             }
         }
 
@@ -757,15 +757,15 @@ namespace vMixController.Widgets
             }
         }
 
-        public vMixWidget Copy()
+        public vMixControl Copy()
         {
 
             using (MemoryStream ms = new MemoryStream())
             {
-                XmlSerializer s = new XmlSerializer(typeof(vMixWidget));
+                XmlSerializer s = new XmlSerializer(typeof(vMixControl));
                 s.Serialize(ms, this);
                 ms.Seek(0, SeekOrigin.Begin);
-                var ctrl = (vMixWidget)s.Deserialize(ms);
+                var ctrl = (vMixControl)s.Deserialize(ms);
                 //ctrl.Update();
                 return ctrl;
             }

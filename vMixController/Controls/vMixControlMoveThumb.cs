@@ -32,7 +32,7 @@ namespace vMixController.Controls
 
         private void VMixControlMoveThumb_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            var ctrl = (e.NewValue as Widgets.vMixWidget) as vMixController.Widgets.vMixWidget;
+            var ctrl = (e.NewValue as Widgets.vMixControl) as vMixController.Widgets.vMixControl;
             if (ctrl != null)
             {
                 Locked = ctrl.Locked;
@@ -46,20 +46,20 @@ namespace vMixController.Controls
         {
             if (PropertyChanged != null)
             {
-                Locked = (sender as Widgets.vMixWidget).Locked;
+                Locked = (sender as Widgets.vMixControl).Locked;
                 PropertyChanged(this, e);
             }
         }
 
         void PhotoMoveThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
-            vMixController.Widgets.vMixWidget item = this.DataContext as vMixController.Widgets.vMixWidget;
+            vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
             //item.IsSelected = true;
         }
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            vMixController.Widgets.vMixWidget item = this.DataContext as vMixController.Widgets.vMixWidget;
+            vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
 
             if (item != null && !item.Locked)
             {
@@ -67,7 +67,7 @@ namespace vMixController.Controls
                 item.Top = Math.Round(item.Top + e.VerticalChange);
                 item.AlignByGrid();
 
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<Triple<vMixWidget, double, double>>(new Triple<vMixWidget, double, double>(item, e.HorizontalChange, e.VerticalChange));
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<Triple<vMixControl, double, double>>(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
             }
 
             

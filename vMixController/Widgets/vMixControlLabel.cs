@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace vMixController.Widgets
 {
-    public class vMixControlLabel: vMixWidget
+    public class vMixControlLabel: vMixControl
     {
         public override string Type
         {

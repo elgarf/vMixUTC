@@ -63,72 +63,72 @@ namespace vMixController.Controls
 
 
 
-        public vMixController.Widgets.vMixWidget Control
+        public vMixController.Widgets.vMixControl Control
         {
-            get { return (vMixController.Widgets.vMixWidget)GetValue(ControlProperty); }
+            get { return (vMixController.Widgets.vMixControl)GetValue(ControlProperty); }
             set { SetValue(ControlProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Control.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControlProperty =
-            DependencyProperty.Register("Control", typeof(vMixController.Widgets.vMixWidget), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("Control", typeof(vMixController.Widgets.vMixControl), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
-        public RelayCommand<Widgets.vMixWidget> CloseCommand
+        public RelayCommand<Widgets.vMixControl> CloseCommand
         {
-            get { return (RelayCommand<Widgets.vMixWidget>)GetValue(CloseCommandProperty); }
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(CloseCommandProperty); }
             set { SetValue(CloseCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CloseCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CloseCommandProperty =
-            DependencyProperty.Register("CloseCommand", typeof(RelayCommand<Widgets.vMixWidget>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("CloseCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
 
-        public RelayCommand<Widgets.vMixWidget> SettingsCommand
+        public RelayCommand<Widgets.vMixControl> SettingsCommand
         {
-            get { return (RelayCommand<Widgets.vMixWidget>)GetValue(SettingsCommandProperty); }
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(SettingsCommandProperty); }
             set { SetValue(SettingsCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for SettingsCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SettingsCommandProperty =
-            DependencyProperty.Register("SettingsCommand", typeof(RelayCommand<Widgets.vMixWidget>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("SettingsCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
 
 
-        public RelayCommand<Widgets.vMixWidget> CopyCommand
+        public RelayCommand<Widgets.vMixControl> CopyCommand
         {
-            get { return (RelayCommand<Widgets.vMixWidget>)GetValue(CopyCommandProperty); }
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(CopyCommandProperty); }
             set { SetValue(CopyCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CopyCommandProperty =
-            DependencyProperty.Register("CopyCommand", typeof(RelayCommand<Widgets.vMixWidget>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("CopyCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
-        public RelayCommand<Widgets.vMixWidget> ScaleUpCommand
+        public RelayCommand<Widgets.vMixControl> ScaleUpCommand
         {
-            get { return (RelayCommand<Widgets.vMixWidget>)GetValue(ScaleUpCommandProperty); }
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(ScaleUpCommandProperty); }
             set { SetValue(ScaleUpCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ScaleUpCommandProperty =
-            DependencyProperty.Register("ScaleUpCommand", typeof(RelayCommand<Widgets.vMixWidget>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("ScaleUpCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
-        public RelayCommand<Widgets.vMixWidget> ScaleDownCommand
+        public RelayCommand<Widgets.vMixControl> ScaleDownCommand
         {
-            get { return (RelayCommand<Widgets.vMixWidget>)GetValue(ScaleDownCommandProperty); }
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(ScaleDownCommandProperty); }
             set { SetValue(ScaleDownCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ScaleDownCommandProperty =
-            DependencyProperty.Register("ScaleDownCommand", typeof(RelayCommand<Widgets.vMixWidget>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("ScaleDownCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
         public object MainContent
         {
