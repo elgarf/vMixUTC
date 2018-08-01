@@ -379,6 +379,34 @@
                 <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}">LIVE</CheckBox>
             </StatusBarItem>-->
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+                <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}" FontWeight="Bold">LIVE
+                    <CheckBox.Style>
+                        <Style TargetType="CheckBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="CheckBox">
+                                            <Grid x:Name="back" Background="Red">
+                                                <ContentPresenter Margin="2"/>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsChecked" Value="False">
+                                                    <Setter Property="Background" Value="Yellow" TargetName="back"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+                        </Style>
+                    </CheckBox.Style>
+                </CheckBox>
+            </StatusBarItem>
+            
+            <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}">Is Topmost</CheckBox>
             </StatusBarItem>
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">

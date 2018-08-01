@@ -27,7 +27,6 @@ namespace vMixController.Widgets
         private static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
         private static DispatcherTimer DelayedUpdateTimer = new DispatcherTimer();
 
-
         static vMixControlTextField()
         {
             //Отложенное обновление биндинга
@@ -52,6 +51,7 @@ namespace vMixController.Widgets
         }
 
         internal bool _updating = false;
+        internal string _text = "";
 
         public override string Type
         {
@@ -81,6 +81,48 @@ namespace vMixController.Widgets
         internal virtual string MappedTextProperty { get { return "Text"; } }
 
         internal virtual string MappedImageProperty { get { return "Image"; } }
+
+        /// <summary>
+        /// The <see cref="IsLive" /> property's name.
+        /// </summary>
+        public const string IsLivePropertyName = "IsLive";
+
+        private bool _isLive = true;
+
+        /// <summary>
+        /// Sets and gets the IsLive property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsLive
+        {
+            get
+            {
+                return _isLive;
+            }
+
+            set
+            {
+                if (_isLive == value)
+                {
+                    return;
+                }
+
+                if (!value && DelayedUpdate.Count > 0)
+                    DelayedUpdate.Clear();
+
+                _isLive = value;
+
+                if (value)
+                    _text = Text;
+
+                UpdateText(_paths);
+
+                Text = _text;
+
+                RaisePropertyChanged(IsLivePropertyName);
+            }
+        }
+
 
         /// <summary>
         /// The <see cref="IsTable" /> property's name.
@@ -125,6 +167,8 @@ namespace vMixController.Widgets
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (!((vMixControlTextField)d).IsLive)
+                return;
             if (e.Property.Name == "Text")
             {
                 try
@@ -181,6 +225,14 @@ namespace vMixController.Widgets
 
         internal virtual void UpdateText(IList<Pair<string, string>> _paths)
         {
+            if (!_isLive)
+            {
+                _text = Text;
+                BindingOperations.ClearBinding(this, TextProperty);
+                Text = _text;
+                return;
+            }
+
             if (!_updating)
             {
                 _updating = true;
@@ -195,7 +247,7 @@ namespace vMixController.Widgets
                 binding.NotifyOnSourceUpdated = true;
                 binding.NotifyOnTargetUpdated = true;
                 //binding.Delay = 10;
-                
+
 
                 InputBase text = null;
 
@@ -294,7 +346,7 @@ namespace vMixController.Widgets
         {
             base.SetProperties(viewModel);
 
-            
+
         }
 
         [NonSerialized]

@@ -498,6 +498,13 @@ namespace vMixController.ViewModel
                     return;
                 }
 
+                foreach (var item in _controls)
+                    if (item is vMixControlTextField)
+                    {
+                        ((vMixControlTextField)item).IsLive = value;
+                        //item.Update();
+                    }
+
                 _LIVE = value;
                 RaisePropertyChanged(LIVEPropertyName);
             }
@@ -741,6 +748,8 @@ namespace vMixController.ViewModel
                                 control.Top = x.Y;
                                 control.Left = x.X;
                                 control.AlignByGrid();
+                                if (control is vMixControlTextField)
+                                    ((vMixControlTextField)control).IsLive = LIVE;
                                 control.Update();
                                 _controls.Add(control);
                                 _logger.Info("New {0} widget added.", control.Type.ToLower());
