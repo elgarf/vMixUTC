@@ -11,7 +11,7 @@ using vMixController.Classes;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlMultiState : vMixControl
+    public class vMixControlMultiState : vMixWidget
     {
 
         public string IP { get; set; }

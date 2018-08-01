@@ -12,7 +12,7 @@ using vMixController.ViewModel;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlContainer: vMixControl
+    public class vMixControlContainer: vMixWidget
     {
 
         
@@ -62,13 +62,13 @@ namespace vMixController.Widgets
         /// </summary>
         public const string ControlsPropertyName = "Controls";
 
-        private ObservableCollection<vMixControl> _controls = new ObservableCollection<vMixControl>();
+        private ObservableCollection<vMixWidget> _controls = new ObservableCollection<vMixWidget>();
 
         /// <summary>
         /// Sets and gets the Controls property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<vMixControl> Controls
+        public ObservableCollection<vMixWidget> Controls
         {
             get
             {
@@ -126,7 +126,7 @@ namespace vMixController.Widgets
             return base.GetPropertiesControls().Concat(new UserControl[] { _filepath }).Concat(_props).ToArray();
         }
 
-        public override void SetProperties(vMixControlSettingsViewModel viewModel)
+        public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
 

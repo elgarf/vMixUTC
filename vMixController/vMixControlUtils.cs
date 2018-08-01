@@ -8,7 +8,7 @@ namespace vMixController
 {
     public static class vMixControlUtils
     {
-        public static void AlignByGrid(this vMixController.Widgets.vMixControl item)
+        public static void AlignByGrid(this vMixController.Widgets.vMixWidget item)
         {
             var pleft = item.Left;
             item.Left = ((int)item.Left / 8) * 8;

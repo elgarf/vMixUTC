@@ -21,7 +21,7 @@ using vMixController.ViewModel;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlTextField : vMixControl
+    public class vMixControlTextField : vMixWidget
     {
 
         private static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
@@ -342,7 +342,7 @@ namespace vMixController.Widgets
             return base.GetPropertiesControls().Concat(new UserControl[] { control1, control }).ToArray();
         }
 
-        public override void SetProperties(vMixControlSettingsViewModel viewModel)
+        public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
 

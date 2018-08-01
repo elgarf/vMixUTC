@@ -114,7 +114,7 @@ namespace vMixController.PropertiesControls
                         Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
                         opendlg.Filter = "Text Files|*.txt";
                         opendlg.DefaultExt = "txt";
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixControlSettingsView>().FirstOrDefault());
+                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                             File.WriteAllLines(opendlg.FileName, Items.Select(x => x.Value).ToArray());
                     }));
@@ -145,7 +145,7 @@ namespace vMixController.PropertiesControls
                         Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
                         opendlg.Filter = "Text Files|*.txt";
                         opendlg.DefaultExt = "txt";
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixControlSettingsView>().FirstOrDefault());
+                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                         {
                             Items.Clear();

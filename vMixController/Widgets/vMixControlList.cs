@@ -147,7 +147,7 @@ namespace vMixController.Widgets
             UpdateBinding();
         }
 
-        public override void SetProperties(vMixControlSettingsViewModel viewModel)
+        public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
 

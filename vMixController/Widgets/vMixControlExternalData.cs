@@ -392,7 +392,7 @@ namespace vMixController.Widgets
             return (new UserControl[] { control, control1, control2 }).Concat(props).ToArray();
         }
 
-        public override void SetProperties(vMixControlSettingsViewModel viewModel)
+        public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
 

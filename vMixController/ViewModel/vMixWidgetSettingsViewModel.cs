@@ -22,7 +22,7 @@ namespace vMixController.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class vMixControlSettingsViewModel : ViewModelBase
+    public class vMixWidgetSettingsViewModel : ViewModelBase
     {
 
         public static List<Triple<Color, Color, string>> Colors = new List<Triple<Color, Color, string>>()
@@ -314,17 +314,17 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
-        /// The <see cref="Control" /> property's name.
+        /// The <see cref="Widget" /> property's name.
         /// </summary>
         public const string ControlPropertyName = "Control";
 
-        private vMixControl _control = null;
+        private vMixWidget _control = null;
 
         /// <summary>
         /// Sets and gets the Control property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public vMixControl Control
+        public vMixWidget Widget
         {
             get
             {
@@ -394,21 +394,21 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.MainViewModel>();
-                        var obj = viewModel.ControlTemplates.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.A == Name).FirstOrDefault();
-                        var cpy = Control.Copy();
+                        var obj = viewModel.WidgetTemplates.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.A == Name).FirstOrDefault();
+                        var cpy = Widget.Copy();
                         cpy.SetProperties(this);
                         cpy.IsTemplate = true;
                         if (obj != null)
-                            viewModel.ControlTemplates[obj.idx].B = cpy;
+                            viewModel.WidgetTemplates[obj.idx].B = cpy;
                         else
-                            viewModel.ControlTemplates.Add(new Pair<string, vMixControl>(Name, cpy));
+                            viewModel.WidgetTemplates.Add(new Pair<string, vMixWidget>(Name, cpy));
                         MessengerInstance.Send(true);
                     }));
             }
         }
 
 
-        public void SetProperties(vMixControl p)
+        public void SetProperties(vMixWidget p)
         {
             Model = p.State;
             Name = p.Name;
@@ -482,9 +482,9 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
-        /// Initializes a new instance of the vMixControlSettingsViewModel class.
+        /// Initializes a new instance of the vMixWidgetSettingsViewModel class.
         /// </summary>
-        public vMixControlSettingsViewModel()
+        public vMixWidgetSettingsViewModel()
         {
             List<Triple<Color, Color, string>> list = null;
             XmlSerializer ser = new XmlSerializer(typeof(List<Triple<Color, Color, string>>));

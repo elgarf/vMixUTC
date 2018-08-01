@@ -38,7 +38,7 @@ namespace vMixController.ViewModel
             }*/
 
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<vMixController.ViewModel.vMixControlSettingsViewModel>();
+            SimpleIoc.Default.Register<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
         }
 
         /// <summary>
@@ -55,16 +55,16 @@ namespace vMixController.ViewModel
             }
         }
         /// <summary>
-        /// Gets the ControlSettings property.
+        /// Gets the WidgetSettings property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public vMixController.ViewModel.vMixControlSettingsViewModel ControlSettings
+        public vMixController.ViewModel.vMixWidgetSettingsViewModel WidgetSettings
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixControlSettingsViewModel>();
+                return ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
             }
         }
         /// <summary>

@@ -114,7 +114,7 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                                 <Label Content="{Binding SelectedValue.InputDescription, ElementName=Func, FallbackValue=N/A}"/>
-                                <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}"/>
+                                <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}"/>
                                 <Label x:Name="IntValuesLabel" Content="{Binding SelectedValue.IntDescription, ElementName=Func, FallbackValue=N/A}"/>
                                 <Grid x:Name="IntValuesGrid">
                                     <TextBox Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}"/>
@@ -131,7 +131,7 @@
                                     <Run> 2</Run>
                                     </TextBlock>
                                 </Label>
-                                <ComboBox Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}"/>
+                                <ComboBox Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}"/>
                                 <Label Visibility="Collapsed" x:Name="CondLabel" Content="{e:Localize Condition}"/>
                                 <Grid Visibility="Collapsed" x:Name="Cond">
                                     <Grid.ColumnDefinitions>
@@ -170,7 +170,7 @@
                         <TextBlock Grid.Column="3" Style="{StaticResource PropertyName}" Margin="4,0,0,0"><Run Text="{e:Localize String Value}"/></TextBlock>
 
                         <ComboBox x:Name="Func" Grid.Row="1" SelectedItem="{Binding Action, Mode=TwoWay}" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}" DisplayMemberPath="Function"/>
-                        <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding ControlSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" Margin="4,0" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"/>
+                        <ComboBox IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" Margin="4,0" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"/>
                         <TextBox IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}" Text="{Binding Parameter, Mode=TwoWay}" Grid.Row="1" Grid.Column="2"/>
                         <TextBox IsEnabled="{Binding SelectedValue.HasStringProperty, ElementName=Func, FallbackValue=False}" Text="{Binding StringParameter, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Margin="4,0,0,0"/>
 

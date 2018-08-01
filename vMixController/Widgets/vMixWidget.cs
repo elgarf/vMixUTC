@@ -41,7 +41,7 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlMultiState)),
         XmlInclude(typeof(vMixControlMidiInterface)),
         XmlInclude(typeof(vMixControlClock))]
-    public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
+    public class vMixWidget : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
 
@@ -52,14 +52,14 @@ namespace vMixController.Widgets
         protected static DispatcherTimer _shadowUpdate;
 
 
-        public vMixControl()
+        public vMixWidget()
         {
 
             _shadowUpdate = new DispatcherTimer();
             _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
             _shadowUpdate.Tick += _shadowUpdate_Tick;
             _shadowUpdate.Start();
-            WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).ControlSettings.WindowProperties;
+            WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
         }
 
         private void _shadowUpdate_Tick(object sender, EventArgs e)
@@ -208,7 +208,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string ColorPropertyName = "Color";
         [NonSerialized]
-        private Color _color = ViewModel.vMixControlSettingsViewModel.Colors[0].A;
+        private Color _color = ViewModel.vMixWidgetSettingsViewModel.Colors[0].A;
 
         /// <summary>
         /// Sets and gets the Color property.
@@ -238,7 +238,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string BorderColorPropertyName = "BorderColor";
         [NonSerialized]
-        private Color _borderColor = ViewModel.vMixControlSettingsViewModel.Colors[0].B;
+        private Color _borderColor = ViewModel.vMixWidgetSettingsViewModel.Colors[0].B;
 
         /// <summary>
         /// Sets and gets the BorderColor property.
@@ -575,17 +575,17 @@ namespace vMixController.Widgets
 
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateProperty =
-            DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixControl), new PropertyMetadata(null, InternalPropertyChanged));
+            DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixWidget), new PropertyMetadata(null, InternalPropertyChanged));
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.Property.Name == "State")
             {
                 if (e.OldValue != null)
-                    ((vMixAPI.State)e.OldValue).OnStateUpdated -= (d as vMixControl).VMixControl_Updated;
+                    ((vMixAPI.State)e.OldValue).OnStateUpdated -= (d as vMixWidget).VMixControl_Updated;
                 if (e.NewValue != null)
-                    ((vMixAPI.State)e.NewValue).OnStateUpdated += (d as vMixControl).VMixControl_Updated;
-                (d as vMixControl).OnStateUpdated();
+                    ((vMixAPI.State)e.NewValue).OnStateUpdated += (d as vMixWidget).VMixControl_Updated;
+                (d as vMixWidget).OnStateUpdated();
             }
         }
 
@@ -757,15 +757,15 @@ namespace vMixController.Widgets
             }
         }
 
-        public vMixControl Copy()
+        public vMixWidget Copy()
         {
 
             using (MemoryStream ms = new MemoryStream())
             {
-                XmlSerializer s = new XmlSerializer(typeof(vMixControl));
+                XmlSerializer s = new XmlSerializer(typeof(vMixWidget));
                 s.Serialize(ms, this);
                 ms.Seek(0, SeekOrigin.Begin);
-                var ctrl = (vMixControl)s.Deserialize(ms);
+                var ctrl = (vMixWidget)s.Deserialize(ms);
                 //ctrl.Update();
                 return ctrl;
             }
@@ -802,11 +802,11 @@ namespace vMixController.Widgets
             return new UserControl[0];
         }
 
-        public virtual void SetProperties(ViewModel.vMixControlSettingsViewModel viewModel)
+        public virtual void SetProperties(ViewModel.vMixWidgetSettingsViewModel viewModel)
         {
             Name = viewModel.Name;
             Color = viewModel.Color;
-            BorderColor = vMixController.ViewModel.vMixControlSettingsViewModel.Colors.Where(x => x.A == viewModel.Color).FirstOrDefault().B;
+            BorderColor = vMixController.ViewModel.vMixWidgetSettingsViewModel.Colors.Where(x => x.A == viewModel.Color).FirstOrDefault().B;
             Hotkey = viewModel.Hotkey.ToArray();
 
             WindowProperties = viewModel.WindowProperties;

@@ -32,7 +32,7 @@ namespace vMixController.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase, IDisposable
     {
-        vMixControlSettingsView _settings = null;// new vMixControlSettingsView();
+        vMixWidgetSettingsView _settings = null;// new vMixWidgetSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The <see cref="Model" /> property's name.
@@ -353,32 +353,32 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
-        /// The <see cref="ControlTemplates" /> property's name.
+        /// The <see cref="WidgetTemplates" /> property's name.
         /// </summary>
-        public const string ControlTemplatesPropertyName = "ControlTemplates";
+        public const string WidgetTemplatesPropertyName = "WidgetTemplates";
 
-        private ObservableCollection<Pair<string, vMixControl>> _controlTemplates = new ObservableCollection<Pair<string, vMixControl>>();
+        private ObservableCollection<Pair<string, vMixWidget>> _widgetTemplates = new ObservableCollection<Pair<string, vMixWidget>>();
 
         /// <summary>
-        /// Sets and gets the ControlTemplates property.
+        /// Sets and gets the WidgetTemplates property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<Pair<string, vMixControl>> ControlTemplates
+        public ObservableCollection<Pair<string, vMixWidget>> WidgetTemplates
         {
             get
             {
-                return _controlTemplates;
+                return _widgetTemplates;
             }
 
             set
             {
-                if (_controlTemplates == value)
+                if (_widgetTemplates == value)
                 {
                     return;
                 }
 
-                _controlTemplates = value;
-                RaisePropertyChanged(ControlTemplatesPropertyName);
+                _widgetTemplates = value;
+                RaisePropertyChanged(WidgetTemplatesPropertyName);
             }
         }
 
@@ -413,32 +413,32 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
-        /// The <see cref="Controls" /> property's name.
+        /// The <see cref="Widgets" /> property's name.
         /// </summary>
-        public const string ControlsPropertyName = "Controls";
+        public const string WidgetsPropertyName = "Widgets";
 
-        private ObservableCollection<vMixController.Widgets.vMixControl> _controls = new ObservableCollection<vMixController.Widgets.vMixControl>();
+        private ObservableCollection<vMixController.Widgets.vMixWidget> _widgets = new ObservableCollection<vMixController.Widgets.vMixWidget>();
 
         /// <summary>
-        /// Sets and gets the Controls property.
+        /// Sets and gets the Widgetss property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<vMixController.Widgets.vMixControl> Controls
+        public ObservableCollection<vMixController.Widgets.vMixWidget> Widgets
         {
             get
             {
-                return _controls;
+                return _widgets;
             }
 
             set
             {
-                if (_controls == value)
+                if (_widgets == value)
                 {
                     return;
                 }
 
-                _controls = value;
-                RaisePropertyChanged(ControlsPropertyName);
+                _widgets = value;
+                RaisePropertyChanged(WidgetsPropertyName);
             }
         }
 
@@ -498,7 +498,7 @@ namespace vMixController.ViewModel
                     return;
                 }
 
-                foreach (var item in _controls)
+                foreach (var item in _widgets)
                     if (item is vMixControlTextField)
                     {
                         ((vMixControlTextField)item).IsLive = value;
@@ -579,17 +579,17 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _switchLockCommand;
+        private RelayCommand<vMixController.Widgets.vMixWidget> _switchLockCommand;
 
         /// <summary>
         /// Gets the SwitchLockCommand.
         /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> SwitchLockCommand
+        public RelayCommand<vMixController.Widgets.vMixWidget> SwitchLockCommand
         {
             get
             {
                 return _switchLockCommand
-                    ?? (_switchLockCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
+                    ?? (_switchLockCommand = new RelayCommand<vMixController.Widgets.vMixWidget>(
                     p =>
                     {
                         p.Locked = !p.Locked;
@@ -597,36 +597,36 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _removeControlCommand;
+        private RelayCommand<vMixWidget> _removeWidgetCommand;
 
         /// <summary>
-        /// Gets the RemoveControlCommand.
+        /// Gets the RemoveWidgetCommand.
         /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> RemoveControlCommand
+        public RelayCommand<vMixWidget> RemoveWidgetCommand
         {
             get
             {
-                return _removeControlCommand
-                    ?? (_removeControlCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
+                return _removeWidgetCommand
+                    ?? (_removeWidgetCommand = new RelayCommand<vMixController.Widgets.vMixWidget>(
                     p =>
                     {
                         p.Dispose();
-                        Controls.Remove(p);
+                        Widgets.Remove(p);
                     }));
             }
         }
 
-        private RelayCommand<vMixControl> _copyControlCommand;
+        private RelayCommand<vMixWidget> _copyWidgetCommand;
 
         /// <summary>
-        /// Gets the CopyControlCommand.
+        /// Gets the CopyWidgetCommand.
         /// </summary>
-        public RelayCommand<vMixControl> CopyControlCommand
+        public RelayCommand<vMixWidget> CopyWidgetCommand
         {
             get
             {
-                return _copyControlCommand
-                    ?? (_copyControlCommand = new RelayCommand<vMixControl>(
+                return _copyWidgetCommand
+                    ?? (_copyWidgetCommand = new RelayCommand<vMixWidget>(
                     p =>
                     {
                         try
@@ -637,7 +637,7 @@ namespace vMixController.ViewModel
                             copy.Left += 8;
                             copy.Top += 8;
                             copy.Update();
-                            _controls.Add(copy);
+                            _widgets.Add(copy);
                         }
                         catch (Exception e)
                         {
@@ -648,17 +648,17 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<vMixControl> _scaleUpCommand;
+        private RelayCommand<vMixWidget> _scaleUpCommand;
 
         /// <summary>
         /// Gets the ScaleUpCommand.
         /// </summary>
-        public RelayCommand<vMixControl> ScaleUpCommand
+        public RelayCommand<vMixWidget> ScaleUpCommand
         {
             get
             {
                 return _scaleUpCommand
-                    ?? (_scaleUpCommand = new RelayCommand<vMixControl>(
+                    ?? (_scaleUpCommand = new RelayCommand<vMixWidget>(
                     p =>
                     {
                         p.Scale += 0.25f;
@@ -667,17 +667,17 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<vMixControl> _scaleDownCommand;
+        private RelayCommand<vMixWidget> _scaleDownCommand;
 
         /// <summary>
         /// Gets the ScaleDownCommand.
         /// </summary>
-        public RelayCommand<vMixControl> ScaleDownCommand
+        public RelayCommand<vMixWidget> ScaleDownCommand
         {
             get
             {
                 return _scaleDownCommand
-                    ?? (_scaleDownCommand = new RelayCommand<vMixControl>(
+                    ?? (_scaleDownCommand = new RelayCommand<vMixWidget>(
                     p =>
                     {
                         if (p.Scale - 0.25f >= 1.0f)
@@ -687,27 +687,27 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _openPropertiesCommand;
+        private RelayCommand<vMixController.Widgets.vMixWidget> _openPropertiesCommand;
 
         /// <summary>
         /// Gets the OpenPropertiesCommand.
         /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> OpenPropertiesCommand
+        public RelayCommand<vMixController.Widgets.vMixWidget> OpenPropertiesCommand
         {
             get
             {
                 return _openPropertiesCommand
-                    ?? (_openPropertiesCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
+                    ?? (_openPropertiesCommand = new RelayCommand<vMixController.Widgets.vMixWidget>(
                     p =>
                     {
                         _isHotkeysEnabled = false;
 
                         _logger.Info("Opening properties for widget {0}.", p.Name);
-                        var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixControlSettingsViewModel>();
-                        viewModel.Control = p;
+                        var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
+                        viewModel.Widget = p;
                         viewModel.SetProperties(p);
 
-                        _settings = new vMixControlSettingsView();
+                        _settings = new vMixWidgetSettingsView();
                         _settings.Owner = App.Current.MainWindow;
                         var result = _settings.ShowDialog();
                         if (result.HasValue && result.Value)
@@ -720,45 +720,45 @@ namespace vMixController.ViewModel
             }
         }
 
-        Action<Point> _createControl;
+        Action<Point> _createWidget;
 
-        private RelayCommand<string> _createControlCommand;
+        private RelayCommand<string> _createWidgetCommand;
 
         /// <summary>
-        /// Gets the CreateControlCommand.
+        /// Gets the CreateWidgetCommand.
         /// </summary>
-        public RelayCommand<string> CreateControlCommand
+        public RelayCommand<string> CreateWidgetCommand
         {
             get
             {
-                return _createControlCommand
-                    ?? (_createControlCommand = new RelayCommand<string>(
+                return _createWidgetCommand
+                    ?? (_createWidgetCommand = new RelayCommand<string>(
                     p =>
                     {
                         EditorCursor = CursorType.Hand.ToString();
-                        _createControl = new Action<Point>(x =>
+                        _createWidget = new Action<Point>(x =>
                         {
-                            var control = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
+                            var widget = (vMixWidget)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
 
-                            var count = _controls.Where(y => y.GetType() == control.GetType()).Count();
+                            var count = _widgets.Where(y => y.GetType() == widget.GetType()).Count();
 
-                            if (control.MaxCount == -1 || control.MaxCount > count)
+                            if (widget.MaxCount == -1 || widget.MaxCount > count)
                             {
-                                control.State = Model;
-                                control.Top = x.Y;
-                                control.Left = x.X;
-                                control.AlignByGrid();
-                                if (control is vMixControlTextField)
-                                    ((vMixControlTextField)control).IsLive = LIVE;
-                                control.Update();
-                                _controls.Add(control);
-                                _logger.Info("New {0} widget added.", control.Type.ToLower());
+                                widget.State = Model;
+                                widget.Top = x.Y;
+                                widget.Left = x.X;
+                                widget.AlignByGrid();
+                                if (widget is vMixControlTextField)
+                                    ((vMixControlTextField)widget).IsLive = LIVE;
+                                widget.Update();
+                                _widgets.Add(widget);
+                                _logger.Info("New {0} widget added.", widget.Type.ToLower());
 
-                                OpenPropertiesCommand.Execute(control);
+                                OpenPropertiesCommand.Execute(widget);
 
                             }
                             else
-                                control.Dispose();
+                                widget.Dispose();
                         });
 
                     }));
@@ -779,12 +779,12 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
-                        if (_createControl != null)
+                        if (_createWidget != null)
                         {
                             EditorCursor = "Arrow";
                             var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
-                            _createControl(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
-                            _createControl = null;
+                            _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
+                            _createWidget = null;
                         }
                         if ((p.OriginalSource is ListView))
                             _isHotkeysEnabled = true;
@@ -875,33 +875,33 @@ namespace vMixController.ViewModel
                     ?? (_contextMenuClosing = new RelayCommand<ContextMenuEventArgs>(
                     p =>
                     {
-                        if (_createControl != null && _fromContextMenu)
+                        if (_createWidget != null && _fromContextMenu)
                         {
                             EditorCursor = "Arrow";
                             var pos = _contextMenuPosition;
-                            _createControl(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
-                            _createControl = null;
+                            _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
+                            _createWidget = null;
                             _fromContextMenu = false;
                         }
                     }));
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _createControlFromTemplateCommand;
+        private RelayCommand<Pair<string, vMixWidget>> _createWidgetFromTemplateCommand;
 
         /// <summary>
-        /// Gets the CreateControlFromTemplateCommand.
+        /// Gets the CreateWidgetFromTemplateCommand.
         /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> CreateControlFromTemplateCommand
+        public RelayCommand<Pair<string, vMixWidget>> CreateWidgetFromTemplateCommand
         {
             get
             {
-                return _createControlFromTemplateCommand
-                    ?? (_createControlFromTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
+                return _createWidgetFromTemplateCommand
+                    ?? (_createWidgetFromTemplateCommand = new RelayCommand<Pair<string, vMixWidget>>(
                     p =>
                     {
                         EditorCursor = "Hand";
-                        _createControl = x =>
+                        _createWidget = x =>
                         {
                             var ctrl = p.B.Copy();
                             ctrl.Left = x.X;
@@ -911,42 +911,42 @@ namespace vMixController.ViewModel
                             ctrl.AlignByGrid();
                             ctrl.Update();
                             _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
-                            _controls.Add(ctrl);
+                            _widgets.Add(ctrl);
                         };
 
                     }));
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _removeControlTemplateCommand;
+        private RelayCommand<Pair<string, vMixWidget>> _removeWidgetTemplateCommand;
 
         /// <summary>
-        /// Gets the RemoveControlTemplateCommand.
+        /// Gets the RemoveWidgetTemplateCommand.
         /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> RemoveControlTemplateCommand
+        public RelayCommand<Pair<string, vMixWidget>> RemoveWidgetTemplateCommand
         {
             get
             {
-                return _removeControlTemplateCommand
-                    ?? (_removeControlTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
+                return _removeWidgetTemplateCommand
+                    ?? (_removeWidgetTemplateCommand = new RelayCommand<Pair<string, vMixWidget>>(
                     p =>
                     {
-                        _controlTemplates.Remove(p);
+                        _widgetTemplates.Remove(p);
                     }));
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _editControlTemplateCommand;
+        private RelayCommand<Pair<string, vMixWidget>> _editWidgetTemplateCommand;
 
         /// <summary>
-        /// Gets the EditControlTemplateCommand.
+        /// Gets the EditWidgetTemplateCommand.
         /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> EditControlTemplateCommand
+        public RelayCommand<Pair<string, vMixWidget>> EditWidgetTemplateCommand
         {
             get
             {
-                return _editControlTemplateCommand
-                    ?? (_editControlTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
+                return _editWidgetTemplateCommand
+                    ?? (_editWidgetTemplateCommand = new RelayCommand<Pair<string, vMixWidget>>(
                     p =>
                     {
                         OpenPropertiesCommand.Execute(p.B);
@@ -967,9 +967,9 @@ namespace vMixController.ViewModel
                     ?? (_newControllerCommand = new RelayCommand(
                     () =>
                     {
-                        foreach (var item in _controls)
+                        foreach (var item in _widgets)
                             item.Dispose();
-                        _controls.Clear();
+                        _widgets.Clear();
                     }));
             }
         }
@@ -998,14 +998,14 @@ namespace vMixController.ViewModel
                             var top = WindowSettings.Top;
                             var width = WindowSettings.Width;
                             var height = WindowSettings.Height;
-                            foreach (var item in _controls)
+                            foreach (var item in _widgets)
                                 item.Dispose();
-                            _controls.Clear();
+                            _widgets.Clear();
 
                             foreach (var item in Utils.LoadController(opendlg.FileName, Functions, out _windowSettings))
-                                _controls.Add(item);
+                                _widgets.Add(item);
 
-                            foreach (var item in _controls)
+                            foreach (var item in _widgets)
                                 item.Update();
 
                             RaisePropertyChanged("WindowSettings");
@@ -1042,7 +1042,7 @@ namespace vMixController.ViewModel
                         opendlg.DefaultExt = "vmc";
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
-                            Utils.SaveController(opendlg.FileName, _controls, _windowSettings);
+                            Utils.SaveController(opendlg.FileName, _widgets, _windowSettings);
 
                     }));
             }
@@ -1062,7 +1062,7 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         WindowSettings.Locked = !WindowSettings.Locked;
-                        foreach (var item in _controls)
+                        foreach (var item in _widgets)
                         {
                             item.Locked = WindowSettings.Locked;
                         }
@@ -1129,7 +1129,7 @@ namespace vMixController.ViewModel
             if (Model != null)
                 Model.OnStateUpdated -= Model_OnStateUpdated;
             Model = (vMixAPI.State)sender;
-            foreach (var item in _controls)
+            foreach (var item in _widgets)
                 item.State = Model;
             if (Model != null)
                 Model.OnStateUpdated += Model_OnStateUpdated;
@@ -1146,7 +1146,7 @@ namespace vMixController.ViewModel
             }
             else
             {
-                foreach (var item in _controls)
+                foreach (var item in _widgets)
                     item.State = (vMixAPI.State)sender;
             }
         }
@@ -1155,7 +1155,7 @@ namespace vMixController.ViewModel
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers)
         {
             var result = false;
-            foreach (var ctrl in _controls)
+            foreach (var ctrl in _widgets)
             {
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
                 {
@@ -1179,7 +1179,7 @@ namespace vMixController.ViewModel
 
         void ProcessHotkey(string link)
         {
-            foreach (var ctrl in _controls)
+            foreach (var ctrl in _widgets)
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
                     if (item.obj.Link == link)
                         ctrl.ExecuteHotkey(item.idx);
@@ -1220,9 +1220,9 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         _logger.Info("Saving templates.");
-                        XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
+                        XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<Pair<string, vMixWidget>>));
                         using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Create))
-                            s.Serialize(fs, _controlTemplates);
+                            s.Serialize(fs, _widgetTemplates);
 
                         _logger.Info("Saving window settings.");
                         s = new XmlSerializer(typeof(MainWindowSettings));
@@ -1268,10 +1268,10 @@ namespace vMixController.ViewModel
             try
             {
                 _logger.Info("Loading templates.");
-                s = new XmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
+                s = new XmlSerializer(typeof(ObservableCollection<Pair<string, vMixWidget>>));
                 if (File.Exists(Path.Combine(_documentsPath, "Templates.xml")))
                     using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Open))
-                        _controlTemplates = (ObservableCollection<Pair<string, vMixControl>>)s.Deserialize(fs);
+                        _widgetTemplates = (ObservableCollection<Pair<string, vMixWidget>>)s.Deserialize(fs);
             }
             catch (Exception)
             {
@@ -1319,7 +1319,7 @@ namespace vMixController.ViewModel
 
             Singleton<SharedData>.Instance.GetData = (name, property) =>
             {
-                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                var ds = Widgets.Where(x => x.Name == name).FirstOrDefault();
                 var result = new List<string>();
                 if (ds == null)
                     return result;
@@ -1333,12 +1333,12 @@ namespace vMixController.ViewModel
 
             Singleton<SharedData>.Instance.GetDataSources = () =>
             {
-                return Controls.Select(x => x.Name).ToList();
+                return Widgets.Select(x => x.Name).ToList();
             };
 
             Singleton<SharedData>.Instance.GetDataSourceProps = (name) =>
             {
-                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                var ds = Widgets.Where(x => x.Name == name).FirstOrDefault();
                 if (ds == null) return new List<string>();
                 return ds.GetType().GetProperties().Where(x =>
                 {
@@ -1349,13 +1349,13 @@ namespace vMixController.ViewModel
 
             Singleton<SharedData>.Instance.GetDataSource = (name) =>
             {
-                var ds = Controls.Where(x => x.Name == name).FirstOrDefault();
+                var ds = Widgets.Where(x => x.Name == name).FirstOrDefault();
                 return ds;
             };
 
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixWidget, double, double>>(this, (t) =>
             {
-                foreach (var item in _controls.Where(x => x.Selected && x != t.A))
+                foreach (var item in _widgets.Where(x => x.Selected && x != t.A))
                 {
                     item.Left = Math.Round(item.Left + t.B);
                     item.Top = Math.Round(item.Top + t.C);
@@ -1429,7 +1429,7 @@ namespace vMixController.ViewModel
             {
 
                 var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
-                foreach (var item in _controls)
+                foreach (var item in _widgets)
                 {
                     var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
                     item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
@@ -1441,7 +1441,7 @@ namespace vMixController.ViewModel
             }
             SelectorEnabled = false;
             if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                foreach (var item in _controls)
+                foreach (var item in _widgets)
                 {
                     item.Selected = false;
                 }
@@ -1499,7 +1499,7 @@ namespace vMixController.ViewModel
         public override void Cleanup()
         {
             // Clean up if needed
-            foreach (var item in Controls.OfType<IDisposable>())
+            foreach (var item in Widgets.OfType<IDisposable>())
             {
                 item.Dispose();
             }

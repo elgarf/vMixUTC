@@ -79,7 +79,7 @@ namespace vMixController.PropertiesControls
                     {
                         Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
                         opendlg.Filter = Filter;
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixControlSettingsView>().FirstOrDefault());
+                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                             Value = opendlg.FileName;
                     }));

@@ -278,7 +278,7 @@
     <Compile Include="vMixControlUtils.cs" />
     <Compile Include="Widgets\IvMixAutoUpdateWidget.cs" />
     <Compile Include="Classes\MainWindowSettings.cs" />
-    <Compile Include="Widgets\vMixControl.cs" />
+    <Compile Include="Widgets\vMixWidget.cs" />
     <Compile Include="Widgets\vMixControlClock.cs" />
     <Compile Include="Widgets\vMixControlContainer.cs" />
     <Compile Include="Widgets\vMixControlButton.cs" />
@@ -293,7 +293,7 @@
     <Compile Include="Widgets\vMixControlTextField.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="ViewModel\vMixControlSettingsViewModel.cs" />
+    <Compile Include="ViewModel\vMixWidgetSettingsViewModel.cs" />
     <Compile Include="vMixControlSettingsView.xaml.cs">
       <DependentUpon>vMixControlSettingsView.xaml</DependentUpon>
     </Compile>

@@ -25,7 +25,7 @@ using System.Windows;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlButton : vMixControl
+    public class vMixControlButton : vMixWidget
     {
         [NonSerialized]
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -102,7 +102,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string BlinkBorderColorPropertyName = "BlinkBorderColor";
         [NonSerialized]
-        private Color _blinkBorderColor = ViewModel.vMixControlSettingsViewModel.Colors[0].B;
+        private Color _blinkBorderColor = ViewModel.vMixWidgetSettingsViewModel.Colors[0].B;
 
         /// <summary>
         /// Sets and gets the BorderColor property.
@@ -779,7 +779,7 @@ namespace vMixController.Widgets
             return base.GetPropertiesControls().Concat(new UserControl[] { boolctrl, control }).ToArray();
         }
 
-        public override void SetProperties(vMixControlSettingsViewModel viewModel)
+        public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             _blinker.Stop();
             base.SetProperties(viewModel);

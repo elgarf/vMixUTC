@@ -5,14 +5,14 @@ using System.Windows;
 namespace vMixController
 {
     /// <summary>
-    /// Description for vMixControlSettingsView.
+    /// Description for vMixWidgetSettingsView.
     /// </summary>
-    public partial class vMixControlSettingsView : Window
+    public partial class vMixWidgetSettingsView : Window
     {
         /// <summary>
-        /// Initializes a new instance of the vMixControlSettingsView class.
+        /// Initializes a new instance of the vMixWidgetSettingsView class.
         /// </summary>
-        public vMixControlSettingsView()
+        public vMixWidgetSettingsView()
         {
             InitializeComponent();
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<bool>(this, x =>

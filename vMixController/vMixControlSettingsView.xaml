@@ -9,17 +9,17 @@
         xmlns:mdl="clr-namespace:vMixController.Widgets"
         xmlns:views="clr-namespace:vMixController.ViewModel"
         xmlns:input="clr-namespace:System.Windows.Input;assembly=WindowsBase"
-        xmlns:Converters="clr-namespace:vMixController.Converters" x:Class="vMixController.vMixControlSettingsView"
+        xmlns:Converters="clr-namespace:vMixController.Converters" x:Class="vMixController.vMixWidgetSettingsView"
         xmlns:e="clr-namespace:vMixController.Extensions"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         mc:Ignorable="d ignore"
         Title="{e:Localize Widget Properties}"
         Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="364.71"
-        Width="{Binding Path=ControlSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=382}"
-        Height="{Binding Path=ControlSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=364}"
-        Top="{Binding Path=ControlSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
-        Left="{Binding Path=ControlSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
+        Width="{Binding Path=WidgetSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=382}"
+        Height="{Binding Path=WidgetSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=364}"
+        Top="{Binding Path=WidgetSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
+        Left="{Binding Path=WidgetSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
         WindowStartupLocation="CenterScreen" Background="Black" ResizeMode="CanResize"
         e:ControlBox.HasMaximizeButton="False">
     <Window.Resources>
@@ -53,7 +53,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
-        <Binding Path="ControlSettings" Source="{StaticResource Locator}"/>
+        <Binding Path="WidgetSettings" Source="{StaticResource Locator}"/>
     </Window.DataContext>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
@@ -80,7 +80,7 @@
                 </StackPanel>
                 <StackPanel Margin="{StaticResource BottomStdMargin}">
                     <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Color}"/></TextBlock>
-                    <ComboBox ItemsSource="{x:Static views:vMixControlSettingsViewModel.Colors}" SelectedValue="{Binding Color, Mode=TwoWay}" SelectedValuePath="A">
+                    <ComboBox ItemsSource="{x:Static views:vMixWidgetSettingsViewModel.Colors}" SelectedValue="{Binding Color, Mode=TwoWay}" SelectedValuePath="A">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -187,7 +187,7 @@
                                         <GridViewColumn Width="50">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <Button IsEnabled="{Binding Active}" Content="{e:Localize Learn}" Command="{Binding ControlSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                                    <Button IsEnabled="{Binding Active}" Content="{e:Localize Learn}" Command="{Binding WidgetSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -246,7 +246,7 @@
                 <!--<StackPanel Visibility="{Binding PathMappingVisibility}" Margin="0,0,0,2">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource PropertyName}"><Run Text="Title Mapping"/></TextBlock>
-                        <Button ToolTip="Add title mapping" Style="{StaticResource TitleButton}" Command="{Binding ControlSettings.AddPathCommand, Source={StaticResource Locator}}" Content="&#xE109;"/>
+                        <Button ToolTip="Add title mapping" Style="{StaticResource TitleButton}" Command="{Binding WidgetSettings.AddPathCommand, Source={StaticResource Locator}}" Content="&#xE109;"/>
                     </StackPanel>
                     <ListView ItemsSource="{Binding Paths}" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
@@ -257,9 +257,9 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" HorizontalAlignment="Right">
-                                        <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding ControlSettings.RemovePathCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}" Content="&#xE10A;"/>
+                                        <Button Style="{StaticResource TitleButton}" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Command="{Binding WidgetSettings.RemovePathCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}" Content="&#xE10A;"/>
                                     </StackPanel>
-                                    <ctrl:vMixPathSelector InputIndex="{Binding A, Mode=TwoWay}" TitleIndex="{Binding B, Mode=TwoWay}" Model="{Binding ControlSettings.Model, Source={StaticResource Locator}}" Width="Auto" HorizontalAlignment="Stretch"/>
+                                    <ctrl:vMixPathSelector InputIndex="{Binding A, Mode=TwoWay}" TitleIndex="{Binding B, Mode=TwoWay}" Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" Width="Auto" HorizontalAlignment="Stretch"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -276,7 +276,7 @@
             </StackPanel>
         </ScrollViewer>
         <StackPanel Margin="2" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1">
-            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Control.IsTemplate, Converter={StaticResource NotConverter}}"/>
+            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Widget.IsTemplate, Converter={StaticResource NotConverter}}"/>
             <Button Margin="0,0,4,0" Command="{Binding CancelCommand}" IsCancel="True" Content="{e:Localize Cancel}"/>
             <Button Command="{Binding OkCommand}" Content="{e:Localize Ok}" IsDefault="True"/>
         </StackPanel>
