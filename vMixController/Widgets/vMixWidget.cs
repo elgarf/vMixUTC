@@ -726,7 +726,7 @@ namespace vMixController.Widgets
             if (items != null && items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
             else if (found_prop != null && found_prop.PropertyType == value.GetType())
-                Dispatcher.Invoke(()=>found_prop.SetValue(obj, value));
+                Dispatcher.Invoke(() => found_prop.SetValue(obj, value));
         }
 
         protected T GetValueByPath<T>(object obj, string path)
@@ -775,7 +775,7 @@ namespace vMixController.Widgets
         {
             if (_hotkey == null)
                 _hotkey = GetHotkeys();
-            else 
+            else
             {
                 //UpdateHotkeys
                 var hk = _hotkey;
@@ -879,7 +879,7 @@ namespace vMixController.Widgets
                             FocusManager.SetFocusedElement(parent, (IInputElement)parent);
                             //MoveFocus
                             ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
-                            
+
 
 
                             GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
