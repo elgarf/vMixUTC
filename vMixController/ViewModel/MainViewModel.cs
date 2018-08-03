@@ -988,6 +988,8 @@ namespace vMixController.ViewModel
                     () =>
                     {
 
+                        LIVE = true;
+
                         Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
                         opendlg.Filter = "vMix Controller|*.vmc";
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
@@ -1008,6 +1010,9 @@ namespace vMixController.ViewModel
                             foreach (var item in _widgets)
                                 item.Update();
 
+
+
+
                             RaisePropertyChanged("WindowSettings");
                             _logger.Info("Configuring API.");
 
@@ -1018,7 +1023,6 @@ namespace vMixController.ViewModel
                             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
                             UpdatevMixState();
-
                         }
                     }));
             }
@@ -1411,7 +1415,7 @@ namespace vMixController.ViewModel
 
                 case Ookii.Dialogs.Wpf.ButtonType.Yes:
                     Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory()  };
+                    p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() };
                     p.Start();
                     break;
                 case Ookii.Dialogs.Wpf.ButtonType.Cancel:
@@ -1593,7 +1597,7 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         _isHotkeysEnabled = false;
-                       // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
+                        // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
                     }));
             }
         }
@@ -1643,7 +1647,7 @@ namespace vMixController.ViewModel
                         td.Buttons.Add(donatebtn);
                         td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true });
 
-                        var btn =  td.ShowDialog();
+                        var btn = td.ShowDialog();
                         if (btn == forumbtn)
                             Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
                         else if (btn == donatebtn)

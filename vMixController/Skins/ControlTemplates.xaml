@@ -96,9 +96,6 @@
             <i:EventTrigger EventName="LostFocus">
                 <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
             </i:EventTrigger>
-            <!--<i:EventTrigger EventName="DropDownClosed">
-                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding EnableHotkeys}"/>
-            </i:EventTrigger>-->
         </i:Interaction.Triggers>
     </ComboBox>
 
