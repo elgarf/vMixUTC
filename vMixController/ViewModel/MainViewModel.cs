@@ -987,9 +987,6 @@ namespace vMixController.ViewModel
                     ?? (_loadControllerCommand = new RelayCommand(
                     () =>
                     {
-
-                        LIVE = true;
-
                         Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
                         opendlg.Filter = "vMix Controller|*.vmc";
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
@@ -1003,6 +1000,8 @@ namespace vMixController.ViewModel
                             foreach (var item in _widgets)
                                 item.Dispose();
                             _widgets.Clear();
+
+                            LIVE = true;
 
                             foreach (var item in Utils.LoadController(opendlg.FileName, Functions, out _windowSettings))
                                 _widgets.Add(item);
