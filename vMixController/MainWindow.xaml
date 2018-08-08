@@ -190,7 +190,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="{e:Localize Create}" ItemsSource="{DynamicResource CreateItems}">
+            <MenuItem Header="{e:Localize Widget}" ItemsSource="{DynamicResource CreateItems}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
