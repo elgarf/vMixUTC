@@ -17,6 +17,9 @@ namespace vMixController.Classes
         public const string TIMER = "Timer";
         public const string UPDATEINTERNALBUTTONSTATE = "UpdateInternalButtonState";
         public const string UPDATESTATE = "UpdateState";
-        
+        public const string LIVETOGGLE = "LIVEToggle";
+        public const string LIVEOFF = "LIVEOff";
+        public const string LIVEON = "LIVEOn";
+
     }
 }

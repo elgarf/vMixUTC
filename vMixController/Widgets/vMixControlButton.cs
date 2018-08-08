@@ -688,6 +688,15 @@ namespace vMixController.Widgets
                             case NativeFunctions.EXECLINK:
                                 Dispatcher.Invoke(() => Messenger.Default.Send<string>(cmd.StringParameter));
                                 break;
+                            case NativeFunctions.LIVETOGGLE:
+                                Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 2 }));
+                                break;
+                            case NativeFunctions.LIVEOFF:
+                                Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 0 }));
+                                break;
+                            case NativeFunctions.LIVEON:
+                                Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 1 }));
+                                break;
                             case NativeFunctions.CONDITION:
                                 _conditions.Push(cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null);
                                 break;

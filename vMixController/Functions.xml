@@ -137,6 +137,42 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
+    <Description>Toggle LIVE switch</Description>
+    <Function>LIVEToggle</Function>
+    <HasInputProperty>false</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>false</HasStringProperty>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
+    <IntDescription>N/A</IntDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>Toggle LIVE switch On</Description>
+    <Function>LIVEOn</Function>
+    <HasInputProperty>false</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>false</HasStringProperty>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
+    <IntDescription>N/A</IntDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>Toggle LIVE switch Off</Description>
+    <Function>LIVEOff</Function>
+    <HasInputProperty>false</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>false</HasStringProperty>
+    <InputDescription>N/A</InputDescription>
+    <StringDescription>N/A</StringDescription>
+    <IntDescription>N/A</IntDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
     <Description>Update internal UTC button vMix state</Description>
     <Function>UpdateInternalButtonState</Function>
     <HasInputProperty>false</HasInputProperty>

@@ -1356,6 +1356,17 @@ namespace vMixController.ViewModel
                 return ds;
             };
 
+
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<LIVEToggleMessage>(this, (msg) =>
+            {
+                switch (msg.State)
+                {
+                    case 0: LIVE = false; break;
+                    case 1: LIVE = true; break;
+                    case 2: LIVE = !LIVE; break;
+                }
+            });
+
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
             {
                 foreach (var item in _widgets.Where(x => x.Selected && x != t.A))

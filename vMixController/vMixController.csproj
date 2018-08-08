@@ -186,6 +186,7 @@
     <Compile Include="Classes\DummyStringProperty.cs" />
     <Compile Include="Classes\Hotkey.cs" />
     <Compile Include="Classes\MenuStyleSelector.cs" />
+    <Compile Include="Classes\Messages.cs" />
     <Compile Include="Classes\NativeFunctions.cs" />
     <Compile Include="Classes\One.cs" />
     <Compile Include="Classes\Pair.cs" />
