@@ -348,6 +348,15 @@ namespace vMixController.Widgets
                         var value = values[i % values.Length];
                         if (!_restartData && i >= values.Length)
                             value = "";
+
+                        if (value.StartsWith("@[cmd]"))
+                        {
+                            var command = value.Substring(6);
+                            if (!string.IsNullOrWhiteSpace(command))
+                                State.SendFunction(string.Format(command, item.A, item.B));
+                            continue;
+                        }
+
                         //var obj = GetValueByPath(State, string.Format("Inputs[{0}].Elements[{1}]", item.A, item.B));
 
                         var input = (Input)GetValueByPath(State, string.Format("Inputs[{0}]", item.A));
