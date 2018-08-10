@@ -40,6 +40,7 @@
             </ComboBox>
             <ComboBox Grid.Column="2" SelectedIndex="{Binding MultiViewLayout, Mode=TwoWay}">
                 <ComboBox.Items>
+                    <sys:String>None</sys:String>
                     <sys:String>8 Input</sys:String>
                     <sys:String>14 Input</sys:String>
                     <sys:String>2 Input</sys:String>
@@ -160,19 +161,24 @@
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
-                            <Setter Property="Visibility" Value="Visible" TargetName="Multiview8"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="1">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="Multiview8"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding MultiViewLayout}" Value="2">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding MultiViewLayout}" Value="2">
+                        <DataTrigger Binding="{Binding MultiViewLayout}" Value="3">
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding MultiViewLayout}" Value="3">
+                        <DataTrigger Binding="{Binding MultiViewLayout}" Value="4">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview8"/>
