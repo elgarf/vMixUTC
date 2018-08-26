@@ -21,7 +21,7 @@
         Top="{Binding Path=WidgetSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
         Left="{Binding Path=WidgetSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
         WindowStartupLocation="CenterScreen" Background="Black" ResizeMode="CanResize"
-        e:ControlBox.HasMaximizeButton="False">
+        e:ControlBox.HasMaximizeButton="False" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
