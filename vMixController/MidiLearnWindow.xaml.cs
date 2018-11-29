@@ -20,6 +20,7 @@ namespace vMixController
     public partial class MidiLearnWindow : Window
     {
         private Sanford.Multimedia.Midi.InputDevice _device;
+        private bool _doNotDispose;
 
         public Widgets.MidiInterfaceKey Key { get; set; }
 
@@ -28,9 +29,10 @@ namespace vMixController
             InitializeComponent();
         }
 
-        public MidiLearnWindow(Sanford.Multimedia.Midi.InputDevice device)
+        public MidiLearnWindow(Sanford.Multimedia.Midi.InputDevice device, bool doNotDispose = true)
         {
             InitializeComponent();
+            _doNotDispose = doNotDispose;
             if (device != null)
             {
                 _device = device;
@@ -63,8 +65,11 @@ namespace vMixController
             if (_device != null)
             {
                 _device.ChannelMessageReceived -= Device_ChannelMessageReceived;
-                _device.Reset();
-                _device.Dispose();
+                if (!_doNotDispose)
+                {
+                    _device.Reset();
+                    _device.Dispose();
+                }
             }
         }
     }

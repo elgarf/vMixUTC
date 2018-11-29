@@ -68,8 +68,8 @@ namespace vMixController.Widgets
 
 
         /// <summary>
-            /// The <see cref="DeviceCaps" /> property's name.
-            /// </summary>
+        /// The <see cref="DeviceCaps" /> property's name.
+        /// </summary>
         public const string DeviceCapsPropertyName = "DeviceCaps";
 
         private string _deviceCaps = "";
@@ -163,6 +163,18 @@ namespace vMixController.Widgets
                 Device = null;
             }
 
+            Device = CreateDeviceByName(_midiDeviceName);
+            if (Device != null)
+            {
+                Device.Reset();
+                Device.StartRecording();
+                Device.ChannelMessageReceived += Device_ChannelMessageReceived;
+
+            }
+
+            var lbl = GetPropertyControl<LabelControl>();
+            lbl.Title = "Devices";
+
             var midiDeviceSelector = new ComboBox();
             midiDeviceSelector.ItemsSource = MidiDevices;
             midiDeviceSelector.SelectedValue = Device;
@@ -183,13 +195,13 @@ namespace vMixController.Widgets
             /*Binding bnd = new Binding("Device");
             bnd.Source = this;
             BindingOperations.SetBinding(midiDeviceSelector, ComboBox.SelectedValueProperty, bnd);*/
-            return base.GetPropertiesControls().Union(new UserControl[] { new UserControl() { Tag = "DeviceSelector", Content = midiDeviceSelector }, midiMappingCtrl }).ToArray();
+            return base.GetPropertiesControls().Union(new UserControl[] { lbl, new UserControl() { Tag = "DeviceSelector", Content = midiDeviceSelector }, midiMappingCtrl }).ToArray();
         }
 
         private MidiInterfaceKey Learn()
         {
 
-            var wnd = new MidiLearnWindow(CreateDeviceByName(DeviceCaps));
+            var wnd = new MidiLearnWindow(Device == null ? CreateDeviceByName(DeviceCaps) : Device);
             var result = wnd.ShowDialog();
             if (result ?? true)
             {
@@ -211,6 +223,7 @@ namespace vMixController.Widgets
             {
                 Midis.Add(item);
             }
+            
             base.SetProperties(_controls);
         }
 
