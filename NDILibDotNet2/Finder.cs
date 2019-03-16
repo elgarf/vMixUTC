@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -115,8 +114,6 @@ namespace NewTek.NDI
 
         protected virtual void Dispose(bool disposing)
         {
-            if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
-                return;
             if (!_disposed)
             {
                 if (disposing)

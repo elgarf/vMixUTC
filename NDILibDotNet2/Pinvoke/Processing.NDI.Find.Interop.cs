@@ -44,25 +44,6 @@ namespace NewTek
 				return  UnsafeNativeMethods.find_create_v2_32(ref p_create_settings);
 		}
 
-		// For legacy reasons I called this the wrong thing. For backwards compatability.
-		[Obsolete("find_create2 is obsolete.", false)]
-		public static IntPtr find_create2(ref find_create_t p_create_settings)
-		{
-			if (IntPtr.Size == 8)
-				return  UnsafeNativeMethods.find_create2_64(ref p_create_settings);
-			else
-				return  UnsafeNativeMethods.find_create2_32(ref p_create_settings);
-		}
-
-		[Obsolete("find_create is obsolete.", false)]
-		public static IntPtr find_create(ref find_create_t p_create_settings)
-		{
-			if (IntPtr.Size == 8)
-				return  UnsafeNativeMethods.find_create_64(ref p_create_settings);
-			else
-				return  UnsafeNativeMethods.find_create_32(ref p_create_settings);
-		}
-
 		// This will destroy an existing finder instance.
 		public static void find_destroy(IntPtr p_instance)
 		{
@@ -73,6 +54,8 @@ namespace NewTek
 		}
 
 		// This function will recover the current set of sources (i.e. the ones that exist right this second).
+		// The char* memory buffers returned in NDIlib_source_t are valid until the next call to NDIlib_find_get_current_sources or a call to NDIlib_find_destroy.
+		// For a given NDIlib_find_instance_t, do not call NDIlib_find_get_current_sources asynchronously.
 		public static IntPtr find_get_current_sources(IntPtr p_instance, ref UInt32 p_no_sources)
 		{
 			if (IntPtr.Size == 8)
@@ -90,19 +73,6 @@ namespace NewTek
 				return  UnsafeNativeMethods.find_wait_for_sources_32( p_instance,  timeout_in_ms);
 		}
 
-		// DEPRECATED. This function is basically exactly the following and was confusing to use.
-		//		if ((!timeout_in_ms) || (NDIlib_find_wait_for_sources(timeout_in_ms)))
-		//				return NDIlib_find_get_current_sources(p_instance, p_no_sources);
-		//		return NULL;
-		[Obsolete("find_get_sources is obsolete.", false)]
-		public static IntPtr find_get_sources(IntPtr p_instance, ref UInt32 p_no_sources, UInt32 timeout_in_ms)
-		{
-			if (IntPtr.Size == 8)
-				return  UnsafeNativeMethods.find_get_sources_64( p_instance, ref p_no_sources,  timeout_in_ms);
-			else
-				return  UnsafeNativeMethods.find_get_sources_32( p_instance, ref p_no_sources,  timeout_in_ms);
-		}
-
 		[SuppressUnmanagedCodeSecurity]
 		internal static partial class UnsafeNativeMethods
 		{
@@ -111,18 +81,6 @@ namespace NewTek
 			internal static extern IntPtr find_create_v2_64(ref find_create_t p_create_settings);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_find_create_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern IntPtr find_create_v2_32(ref find_create_t p_create_settings);
-
-			// find_create2 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_find_create2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_create2_64(ref find_create_t p_create_settings);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_find_create2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_create2_32(ref find_create_t p_create_settings);
-
-			// find_create 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_find_create", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_create_64(ref find_create_t p_create_settings);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_find_create", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_create_32(ref find_create_t p_create_settings);
 
 			// find_destroy 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_find_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
@@ -143,12 +101,6 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_find_wait_for_sources", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			[return: MarshalAsAttribute(UnmanagedType.U1)]
 			internal static extern bool find_wait_for_sources_32(IntPtr p_instance, UInt32 timeout_in_ms);
-
-			// find_get_sources 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_find_get_sources", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_get_sources_64(IntPtr p_instance, ref UInt32 p_no_sources, UInt32 timeout_in_ms);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_find_get_sources", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern IntPtr find_get_sources_32(IntPtr p_instance, ref UInt32 p_no_sources, UInt32 timeout_in_ms);
 
 		} // UnsafeNativeMethods
 

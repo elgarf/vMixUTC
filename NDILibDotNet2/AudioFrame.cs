@@ -22,7 +22,7 @@ namespace NewTek.NDI
                 p_data = audioBufferPtr,
                 channel_stride_in_bytes = sizeof(float) * maxSamples,
                 p_metadata = IntPtr.Zero,
-                timestamp = NDIlib.recv_timestamp_undefined
+                timestamp = 0
             };
         }
 
@@ -37,7 +37,7 @@ namespace NewTek.NDI
                 p_data = bufferPtr,
                 channel_stride_in_bytes = channelStride,
                 p_metadata = IntPtr.Zero,
-                timestamp = NDIlib.recv_timestamp_undefined
+                timestamp = 0
             };
         }
 

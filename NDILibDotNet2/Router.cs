@@ -17,7 +17,7 @@ namespace NewTek.NDI
             get { return _selectedSource; }
             set
             {
-                if (value.Name != _selectedSource.Name || value.IpAddress != _selectedSource.IpAddress)
+                if (value.Name != _selectedSource.Name)
                 {
                     _selectedSource = value;
                     
@@ -83,7 +83,7 @@ namespace NewTek.NDI
             }
 
             // Sanity
-            if (_selectedSource == null || (String.IsNullOrEmpty(_selectedSource.Name) && String.IsNullOrEmpty(_selectedSource.IpAddress)))
+            if (_selectedSource == null || String.IsNullOrEmpty(_selectedSource.Name))
             {
                 Clear();
                 return;
@@ -92,21 +92,18 @@ namespace NewTek.NDI
             // a source_t to describe the source to connect to.
             NDIlib.source_t source_t = new NDIlib.source_t()
             {
-                p_ip_address = UTF.StringToUtf8(_selectedSource.IpAddress),
                 p_ndi_name = UTF.StringToUtf8(_selectedSource.Name)
             };
 
             if (!NDIlib.routing_change(_routingInstancePtr, ref source_t))
             {
                 // free the memory we allocated with StringToUtf8
-                Marshal.FreeHGlobal(source_t.p_ip_address);
                 Marshal.FreeHGlobal(source_t.p_ndi_name);
 
                 throw new InvalidOperationException("Failed to change routing.");
             }
 
             // free the memory we allocated with StringToUtf8
-            Marshal.FreeHGlobal(source_t.p_ip_address);
             Marshal.FreeHGlobal(source_t.p_ndi_name);
         }
 
@@ -163,7 +160,7 @@ namespace NewTek.NDI
             }
 
             // Sanity check
-            if (_selectedSource == null || (String.IsNullOrEmpty(_selectedSource.Name) && String.IsNullOrEmpty(_selectedSource.IpAddress)))
+            if (_selectedSource == null || String.IsNullOrEmpty(_selectedSource.Name))
                 return;
 
             // .Net interop doesn't handle UTF-8 strings, so do it manually

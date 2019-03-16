@@ -125,6 +125,21 @@ namespace NewTek.NDI.WPF
             }
         }
 
+        [Category("NewTek NDI"),
+        Description("If you need partial transparency, set this to true. If not, set to false and save some CPU cycles.")]
+        public bool UnPremultiply
+        {
+            get { return unPremultiply; }
+            set
+            {
+                if (value != unPremultiply)
+                {
+                    unPremultiply = value;
+                    NotifyPropertyChanged("UnPremultiply");
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(String info)
@@ -213,15 +228,9 @@ namespace NewTek.NDI.WPF
         }
 
         private bool _disposed = false;
-
-        List<long> FrameDurations = new List<long>();
-        private long PreviousFrameTime = 0;
-
+        
         private void OnCompositionTargetRendering(object sender, EventArgs e)
         {
-            FrameDurations.Add(DateTime.Now.Ticks - PreviousFrameTime);
-            PreviousFrameTime = DateTime.Now.Ticks;
-
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 return;
 
@@ -239,6 +248,12 @@ namespace NewTek.NDI.WPF
             {
                 // Create a properly sized RenderTargetBitmap
                 targetBitmap = new RenderTargetBitmap(xres, yres, 96, 96, PixelFormats.Pbgra32);
+
+                fmtConvertedBmp = new FormatConvertedBitmap();
+                fmtConvertedBmp.BeginInit();
+                fmtConvertedBmp.Source = targetBitmap;
+                fmtConvertedBmp.DestinationFormat = PixelFormats.Bgra32;
+                fmtConvertedBmp.EndInit();
             }
 
             // clear to prevent trails
@@ -270,7 +285,7 @@ namespace NewTek.NDI.WPF
                 // This is a progressive frame
                 frame_format_type = NDIlib.frame_format_type_e.frame_format_type_progressive,
                 // Timecode.
-                timecode = 0,
+                timecode = NDIlib.send_timecode_synthesize,
                 // The video memory used for this frame
                 p_data = bufferPtr,
                 // The line to line stride of this image
@@ -278,17 +293,23 @@ namespace NewTek.NDI.WPF
                 // no metadata
                 p_metadata = IntPtr.Zero,
                 // only valid on received frames
-                timestamp = NDIlib.recv_timestamp_undefined
+                timestamp = 0
             };
 
-            // copy the pixels into the buffer
-            targetBitmap.CopyPixels(new Int32Rect(0, 0, xres, yres), bufferPtr, bufferSize, stride);
+            if (UnPremultiply && fmtConvertedBmp != null)
+            {
+                fmtConvertedBmp.CopyPixels(new Int32Rect(0, 0, xres, yres), bufferPtr, bufferSize, stride);
+            }
+            else
+            {
+                // copy the pixels into the buffer
+                targetBitmap.CopyPixels(new Int32Rect(0, 0, xres, yres), bufferPtr, bufferSize, stride);
+            }
 
             // add it to the output queue
             AddFrame(videoFrame);
         }
-
-
+        
         private static void OnNdiSenderPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             NdiSendContainer s = sender as NdiSendContainer;
@@ -470,6 +491,7 @@ namespace NewTek.NDI.WPF
         private IntPtr sendInstancePtr = IntPtr.Zero;
 
         RenderTargetBitmap targetBitmap = null;
+        FormatConvertedBitmap fmtConvertedBmp = null;
 
         private int stride;
         private int bufferSize;
@@ -486,5 +508,8 @@ namespace NewTek.NDI.WPF
 
         // used for pausing the send thread
         bool isPausedValue = false;
+
+        // a safe value at the expense of CPU cycles
+        bool unPremultiply = true;
     }
 }

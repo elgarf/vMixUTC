@@ -229,6 +229,7 @@
     <Compile Include="Converters\NonVisibilityConverter.cs" />
     <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\TagConverter.cs" />
+    <Compile Include="Converters\TextIsPathToImageConverter.cs" />
     <Compile Include="Extensions\ControlBox.cs" />
     <Compile Include="Extensions\HideCloseButtonOnWindow.cs" />
     <Compile Include="Extensions\IgnoreMouseWheelBehavior.cs" />

@@ -47,15 +47,6 @@ namespace NewTek
 		}
 
 		// This will add a video frame
-		[Obsolete("send_send_video is obsolete.", false)]
-		public static void send_send_video(IntPtr p_instance, ref video_frame_t p_video_data)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.send_send_video_64( p_instance, ref p_video_data);
-			else
-				 UnsafeNativeMethods.send_send_video_32( p_instance, ref p_video_data);
-		}
-
 		public static void send_send_video_v2(IntPtr p_instance, ref video_frame_v2_t p_video_data)
 		{
 			if (IntPtr.Size == 8)
@@ -66,7 +57,7 @@ namespace NewTek
 
 		// This will add a video frame and will return immediately, having scheduled the frame to be displayed.
 		// All processing and sending of the video will occur asynchronously. The memory accessed by NDIlib_video_frame_t
-		// cannot be freed or re-used by the caller until a synchronizing event has occured. In general the API is better
+		// cannot be freed or re-used by the caller until a synchronizing event has occurred. In general the API is better
 		// able to take advantage of asynchronous processing than you might be able to by simple having a separate thread
 		// to submit frames.
 		//
@@ -78,15 +69,6 @@ namespace NewTek
 		//		- a call to NDIlib_send_send_video_async with another frame to be sent
 		//		- a call to NDIlib_send_send_video with p_video_data=NULL
 		//		- a call to NDIlib_send_destroy
-		[Obsolete("send_send_video_async is obsolete.", false)]
-		public static void send_send_video_async(IntPtr p_instance, ref video_frame_t p_video_data)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.send_send_video_async_64( p_instance, ref p_video_data);
-			else
-				 UnsafeNativeMethods.send_send_video_async_32( p_instance, ref p_video_data);
-		}
-
 		public static void send_send_video_async_v2(IntPtr p_instance, ref video_frame_v2_t p_video_data)
 		{
 			if (IntPtr.Size == 8)
@@ -96,15 +78,6 @@ namespace NewTek
 		}
 
 		// This will add an audio frame
-		[Obsolete("send_send_audio is obsolete.", false)]
-		public static void send_send_audio(IntPtr p_instance, ref audio_frame_t p_audio_data)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.send_send_audio_64( p_instance, ref p_audio_data);
-			else
-				 UnsafeNativeMethods.send_send_audio_32( p_instance, ref p_audio_data);
-		}
-
 		public static void send_send_audio_v2(IntPtr p_instance, ref audio_frame_v2_t p_audio_data)
 		{
 			if (IntPtr.Size == 8)
@@ -207,35 +180,17 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_destroy", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_destroy_32(IntPtr p_instance);
 
-			// send_send_video 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_video", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_video_64(IntPtr p_instance, ref video_frame_t p_video_data);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_video", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_video_32(IntPtr p_instance, ref video_frame_t p_video_data);
-
 			// send_send_video_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_video_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_video_v2_64(IntPtr p_instance, ref video_frame_v2_t p_video_data);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_video_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_video_v2_32(IntPtr p_instance, ref video_frame_v2_t p_video_data);
 
-			// send_send_video_async 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_video_async", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_video_async_64(IntPtr p_instance, ref video_frame_t p_video_data);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_video_async", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_video_async_32(IntPtr p_instance, ref video_frame_t p_video_data);
-
 			// send_send_video_async_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_video_async_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_video_async_v2_64(IntPtr p_instance, ref video_frame_v2_t p_video_data);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_video_async_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_video_async_v2_32(IntPtr p_instance, ref video_frame_v2_t p_video_data);
-
-			// send_send_audio 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_audio", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_audio_64(IntPtr p_instance, ref audio_frame_t p_audio_data);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_audio", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void send_send_audio_32(IntPtr p_instance, ref audio_frame_t p_audio_data);
 
 			// send_send_audio_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_audio_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]

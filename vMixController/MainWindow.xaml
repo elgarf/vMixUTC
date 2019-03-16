@@ -200,11 +200,11 @@
 
             </MenuItem>
             <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{e:Localize Lock}" IsChecked="{Binding WindowSettings.Locked, Mode=OneWay}" Command="{Binding ToggleLockCommand}" IsCheckable="True"/>
-            <MenuItem ToolTip="{e:Localize Update vMix state}" Header="{e:Localize Update State}" Command="{Binding UpdateStateCommand}">
+            <MenuItem ToolTip="{e:Localize Sync UTC to vMix state}" Header="{e:Localize Sync}" Command="{Binding SyncStateCommand}">
                 <MenuItem.Style>
                     <Style TargetType="MenuItem">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Status}" Value="Update State">
+                            <DataTrigger Binding="{Binding Status}" Value="Sync">
                                 <Setter Property="FontWeight" Value="Bold"/>
                             </DataTrigger>
                         </Style.Triggers>

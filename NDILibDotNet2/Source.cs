@@ -14,22 +14,18 @@ namespace NewTek.NDI
         public Source(NDIlib.source_t source_t)
         {
             Name = UTF.Utf8ToString(source_t.p_ndi_name);
-
-            _ipAddress = UTF.Utf8ToString(source_t.p_ip_address);
         }
 
         // Construct from strings
-        public Source(String name, String ipAddress)
+        public Source(String name)
         {
             Name = name;
-            _ipAddress = ipAddress;
         }
 
         // Copy constructor.
         public Source(Source previousSource)
         {
             Name = previousSource.Name;
-            _ipAddress = previousSource._ipAddress;
             _uri = previousSource._uri;
         }
 
@@ -64,12 +60,7 @@ namespace NewTek.NDI
         {
             get { return _sourceName; }
         }
-
-        public String IpAddress
-        {
-            get { return _ipAddress; }
-        }
-
+        
         public Uri Uri
         {
             get { return _uri; }
@@ -83,7 +74,6 @@ namespace NewTek.NDI
         private String _name = String.Empty;
         private String _computerName = String.Empty;
         private String _sourceName = String.Empty;
-        private String _ipAddress = String.Empty;
         private Uri _uri = null;
     }
 }

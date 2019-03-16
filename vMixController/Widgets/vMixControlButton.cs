@@ -87,12 +87,12 @@ namespace vMixController.Widgets
             set
             {
                 if (_internalState != null)
-                    _internalState.OnStateUpdated -= State_OnStateUpdated;
+                    _internalState.OnStateSynced -= State_OnStateUpdated;
 
                 base.State = value;
 
                 if (_internalState != null)
-                    _internalState.OnStateUpdated += State_OnStateUpdated;
+                    _internalState.OnStateSynced += State_OnStateUpdated;
             }
         }
 
@@ -138,7 +138,7 @@ namespace vMixController.Widgets
             base.ShadowUpdate();
         }
 
-        private void State_OnStateUpdated(object sender, StateUpdatedEventArgs e)
+        private void State_OnStateUpdated(object sender, StateSyncedEventArgs e)
         {
             if (e.Successfully)
                 RealUpdateActiveProperty(false, null, State);
@@ -824,7 +824,7 @@ namespace vMixController.Widgets
             {
                 _blinker.Stop();
                 if (_internalState != null)
-                    _internalState.OnStateUpdated -= State_OnStateUpdated;
+                    _internalState.OnStateSynced -= State_OnStateUpdated;
                 _stopThread = true;
                 
                 if (_executionWorker != null && _executionWorker.IsBusy)

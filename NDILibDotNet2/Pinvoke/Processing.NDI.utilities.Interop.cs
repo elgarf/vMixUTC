@@ -73,34 +73,12 @@ namespace NewTek
 				 UnsafeNativeMethods.util_send_send_audio_interleaved_32f_32( p_instance, ref p_audio_data);
 		}
 
-		// Convert an planar floating point audio buffer into a interleaved short audio buffer.
-		// IMPORTANT : You must allocate the space for the samples in the destination to allow for your own memory management.
-		[Obsolete("util_audio_to_interleaved_16s is obsolete.", false)]
-		public static void util_audio_to_interleaved_16s(ref audio_frame_t p_src, ref audio_frame_interleaved_16s_t p_dst)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.util_audio_to_interleaved_16s_64(ref p_src, ref p_dst);
-			else
-				 UnsafeNativeMethods.util_audio_to_interleaved_16s_32(ref p_src, ref p_dst);
-		}
-
 		public static void util_audio_to_interleaved_16s_v2(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_16s_t p_dst)
 		{
 			if (IntPtr.Size == 8)
 				 UnsafeNativeMethods.util_audio_to_interleaved_16s_v2_64(ref p_src, ref p_dst);
 			else
 				 UnsafeNativeMethods.util_audio_to_interleaved_16s_v2_32(ref p_src, ref p_dst);
-		}
-
-		// Convert an interleaved short audio buffer audio buffer into a planar floating point one.
-		// IMPORTANT : You must allocate the space for the samples in the destination to allow for your own memory management.
-		[Obsolete("util_audio_from_interleaved_16s is obsolete.", false)]
-		public static void util_audio_from_interleaved_16s(ref audio_frame_interleaved_16s_t p_src, ref audio_frame_t p_dst)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.util_audio_from_interleaved_16s_64(ref p_src, ref p_dst);
-			else
-				 UnsafeNativeMethods.util_audio_from_interleaved_16s_32(ref p_src, ref p_dst);
 		}
 
 		public static void util_audio_from_interleaved_16s_v2(ref audio_frame_interleaved_16s_t p_src, ref audio_frame_v2_t p_dst)
@@ -111,34 +89,12 @@ namespace NewTek
 				 UnsafeNativeMethods.util_audio_from_interleaved_16s_v2_32(ref p_src, ref p_dst);
 		}
 
-		// Convert an planar floating point audio buffer into a interleaved floating point audio buffer.
-		// IMPORTANT : You must allocate the space for the samples in the destination to allow for your own memory management.
-		[Obsolete("util_audio_to_interleaved_32f is obsolete.", false)]
-		public static void util_audio_to_interleaved_32f(ref audio_frame_t p_src, ref audio_frame_interleaved_32f_t p_dst)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.util_audio_to_interleaved_32f_64(ref p_src, ref p_dst);
-			else
-				 UnsafeNativeMethods.util_audio_to_interleaved_32f_32(ref p_src, ref p_dst);
-		}
-
 		public static void util_audio_to_interleaved_32f_v2(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_32f_t p_dst)
 		{
 			if (IntPtr.Size == 8)
 				 UnsafeNativeMethods.util_audio_to_interleaved_32f_v2_64(ref p_src, ref p_dst);
 			else
 				 UnsafeNativeMethods.util_audio_to_interleaved_32f_v2_32(ref p_src, ref p_dst);
-		}
-
-		// Convert an interleaved floating point audio buffer into a planar floating point one.
-		// IMPORTANT : You must allocate the space for the samples in the destination to allow for your own memory management.
-		[Obsolete("util_audio_from_interleaved_32f is obsolete.", false)]
-		public static void util_audio_from_interleaved_32f(ref audio_frame_interleaved_32f_t p_src, ref audio_frame_t p_dst)
-		{
-			if (IntPtr.Size == 8)
-				 UnsafeNativeMethods.util_audio_from_interleaved_32f_64(ref p_src, ref p_dst);
-			else
-				 UnsafeNativeMethods.util_audio_from_interleaved_32f_32(ref p_src, ref p_dst);
 		}
 
 		public static void util_audio_from_interleaved_32f_v2(ref audio_frame_interleaved_32f_t p_src, ref audio_frame_v2_t p_dst)
@@ -164,23 +120,11 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_send_send_audio_interleaved_32f", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_send_send_audio_interleaved_32f_32(IntPtr p_instance, ref audio_frame_interleaved_32f_t p_audio_data);
 
-			// util_audio_to_interleaved_16s 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_16s", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_to_interleaved_16s_64(ref audio_frame_t p_src, ref audio_frame_interleaved_16s_t p_dst);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_16s", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_to_interleaved_16s_32(ref audio_frame_t p_src, ref audio_frame_interleaved_16s_t p_dst);
-
 			// util_audio_to_interleaved_16s_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_16s_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_audio_to_interleaved_16s_v2_64(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_16s_t p_dst);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_16s_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_audio_to_interleaved_16s_v2_32(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_16s_t p_dst);
-
-			// util_audio_from_interleaved_16s 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_16s", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_from_interleaved_16s_64(ref audio_frame_interleaved_16s_t p_src, ref audio_frame_t p_dst);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_16s", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_from_interleaved_16s_32(ref audio_frame_interleaved_16s_t p_src, ref audio_frame_t p_dst);
 
 			// util_audio_from_interleaved_16s_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_16s_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
@@ -188,23 +132,11 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_16s_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_audio_from_interleaved_16s_v2_32(ref audio_frame_interleaved_16s_t p_src, ref audio_frame_v2_t p_dst);
 
-			// util_audio_to_interleaved_32f 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_32f", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_to_interleaved_32f_64(ref audio_frame_t p_src, ref audio_frame_interleaved_32f_t p_dst);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_32f", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_to_interleaved_32f_32(ref audio_frame_t p_src, ref audio_frame_interleaved_32f_t p_dst);
-
 			// util_audio_to_interleaved_32f_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_32f_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_audio_to_interleaved_32f_v2_64(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_32f_t p_dst);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_to_interleaved_32f_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void util_audio_to_interleaved_32f_v2_32(ref audio_frame_v2_t p_src, ref audio_frame_interleaved_32f_t p_dst);
-
-			// util_audio_from_interleaved_32f 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_32f", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_from_interleaved_32f_64(ref audio_frame_interleaved_32f_t p_src, ref audio_frame_t p_dst);
-			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_32f", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-			internal static extern void util_audio_from_interleaved_32f_32(ref audio_frame_interleaved_32f_t p_src, ref audio_frame_t p_dst);
 
 			// util_audio_from_interleaved_32f_v2 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_util_audio_from_interleaved_32f_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]

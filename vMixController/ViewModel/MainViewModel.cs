@@ -1021,7 +1021,7 @@ namespace vMixController.ViewModel
 
                             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
-                            UpdatevMixState();
+                            SyncTovMixState();
                         }
                     }));
             }
@@ -1073,20 +1073,20 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand _updateStateCommand;
+        private RelayCommand _syncStateCommand;
 
         /// <summary>
         /// Gets the UpdateStateCommand.
         /// </summary>
-        public RelayCommand UpdateStateCommand
+        public RelayCommand SyncStateCommand
         {
             get
             {
-                return _updateStateCommand
-                    ?? (_updateStateCommand = new RelayCommand(
+                return _syncStateCommand
+                    ?? (_syncStateCommand = new RelayCommand(
                     () =>
                     {
-                        UpdatevMixState();
+                        SyncTovMixState();
                     }));
             }
         }
@@ -1109,9 +1109,9 @@ namespace vMixController.ViewModel
             }
         }
 
-        private void UpdatevMixState()
+        private void SyncTovMixState()
         {
-            _logger.Info("Updating state.");
+            _logger.Info("Syncing to vMix state.");
             {
                 if (Model == null || (Model.Ip != WindowSettings.IP || Model.Port != WindowSettings.Port))
                 {
@@ -1130,16 +1130,16 @@ namespace vMixController.ViewModel
         private void State_OnStateCreated(object sender, EventArgs e)
         {
             if (Model != null)
-                Model.OnStateUpdated -= Model_OnStateUpdated;
+                Model.OnStateSynced -= Model_OnStateUpdated;
             Model = (vMixAPI.State)sender;
             foreach (var item in _widgets)
                 item.State = Model;
             if (Model != null)
-                Model.OnStateUpdated += Model_OnStateUpdated;
+                Model.OnStateSynced += Model_OnStateUpdated;
             _connectTimer_Tick(null, new EventArgs());
         }
 
-        private void Model_OnStateUpdated(object sender, vMixAPI.StateUpdatedEventArgs e)
+        private void Model_OnStateUpdated(object sender, vMixAPI.StateSyncedEventArgs e)
         {
             if (!e.Successfully)
             {
@@ -1507,7 +1507,7 @@ namespace vMixController.ViewModel
             if (Model != null && (Model.Ip == WindowSettings.IP && Model.Port == WindowSettings.Port))
                 Status = "Online";
             else
-                Status = "Update State";
+                Status = "Sync";
         }
 
         public override void Cleanup()

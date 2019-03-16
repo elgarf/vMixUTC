@@ -18,6 +18,7 @@
     <c:TagConverter x:Key="TagConverter"/>
     <c:StringToVisibilityConverter x:Key="StringToVis"/>
     <c:StringToThicknessConverter x:Key="StringToThickness"/>
+    <c:TextIsPathToImageConverter x:Key="TextIsPathToImage"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -56,6 +57,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
@@ -70,7 +72,13 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}">...</Button>
+        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}" Content="...">
+            <Button.ToolTip>
+                <ToolTip Visibility="{Binding Text, Converter={StaticResource TextIsPathToImage}}">
+                    <Image Width="128" Height="128" Source="{Binding Text}"></Image>
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
     </Grid>
 
     <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

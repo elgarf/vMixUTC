@@ -7,7 +7,7 @@ namespace NewTek.NDI
 {
     public class Sender : IDisposable
     {
-        public Sender(String sourceName, bool clockVideo=true, bool clockAudio=false, String[] groups = null)
+        public Sender(String sourceName, bool clockVideo=true, bool clockAudio=false, String[] groups = null, String failoverName=null)
         {
             if (String.IsNullOrEmpty(sourceName))
             {
@@ -64,6 +64,24 @@ namespace NewTek.NDI
             if (_sendInstancePtr == IntPtr.Zero)
             {
                 throw new InvalidOperationException("Failed to create send instance.");
+            }
+
+            if (!String.IsNullOrEmpty(failoverName))
+            {
+                // .Net interop doesn't handle UTF-8 strings, so do it manually
+                // These must be freed later
+                IntPtr failoverNamePtr = UTF.StringToUtf8(failoverName);
+
+                NDIlib.source_t failoverDesc = new NDIlib.source_t()
+                {
+                    p_ndi_name = failoverNamePtr,
+                    p_url_address = IntPtr.Zero
+                };
+
+                NDIlib.send_set_failover(_sendInstancePtr, ref failoverDesc);
+
+                // free the strings we allocated
+                Marshal.FreeHGlobal(failoverNamePtr);
             }
         }
 

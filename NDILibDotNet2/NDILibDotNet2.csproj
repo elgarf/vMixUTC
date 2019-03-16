@@ -66,12 +66,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonServiceLocator, Version=2.0.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.3\lib\net45\CommonServiceLocator.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NAudio\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -88,6 +85,8 @@
   <ItemGroup>
     <Compile Include="AudioFrame.cs" />
     <Compile Include="Finder.cs" />
+    <Compile Include="Pinvoke\Processing.NDI.deprecated.Interop.cs" />
+    <Compile Include="Pinvoke\Processing.NDI.Recv.ex.Interop.cs" />
     <Compile Include="Router.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="VideoFrame.cs" />
@@ -101,13 +100,9 @@
     <Compile Include="Pinvoke\Processing.NDI.Routing.Interop.cs" />
     <Compile Include="Pinvoke\Processing.NDI.Send.Interop.cs" />
     <Compile Include="Pinvoke\Processing.NDI.structs.Interop.cs" />
-    <Compile Include="Pinvoke\Processing.NDI.structs_deprecated.Interop.cs" />
     <Compile Include="Pinvoke\Processing.NDI.utilities.Interop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

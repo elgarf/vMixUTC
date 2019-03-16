@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,6 +49,7 @@ namespace vMixController.Widgets
         internal static Dictionary<Type, UserControl> ControlsStore = new Dictionary<Type, UserControl>();
         internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();
         internal static State _internalState;
+        internal static Regex _regexInt = new Regex(@"^\d+$");
 
         protected static DispatcherTimer _shadowUpdate;
 
@@ -582,14 +584,14 @@ namespace vMixController.Widgets
             if (e.Property.Name == "State")
             {
                 if (e.OldValue != null)
-                    ((vMixAPI.State)e.OldValue).OnStateUpdated -= (d as vMixControl).VMixControl_Updated;
+                    ((vMixAPI.State)e.OldValue).OnStateSynced -= (d as vMixControl).VMixControl_Updated;
                 if (e.NewValue != null)
-                    ((vMixAPI.State)e.NewValue).OnStateUpdated += (d as vMixControl).VMixControl_Updated;
+                    ((vMixAPI.State)e.NewValue).OnStateSynced += (d as vMixControl).VMixControl_Updated;
                 (d as vMixControl).OnStateUpdated();
             }
         }
 
-        private void VMixControl_Updated(object sender, vMixAPI.StateUpdatedEventArgs e)
+        private void VMixControl_Updated(object sender, vMixAPI.StateSyncedEventArgs e)
         {
             OnStateUpdated();
         }
@@ -617,8 +619,30 @@ namespace vMixController.Widgets
             var type = obj.GetType();
             if (string.IsNullOrWhiteSpace(path))
                 return null;
-            var items = path.Split('.');
-            if (items.Length < 1)
+            var items = new List<string>();//path.Split('.');
+
+            int intoArray = 0;
+            int start = 0;
+            for (int i = 0; i < path.Length; i++)
+                switch (path[i])
+                {
+                    case '[':
+                    intoArray++;
+                        break;
+                    case ']':
+                        intoArray--;
+                        break;
+                    case '.':
+                        if (intoArray == 0)
+                        {
+                            items.Add(path.Substring(start, i - start));
+                            start = i + 1;
+                        }
+                        break;
+                }
+            items.Add(path.Substring(start, path.Length - start));
+
+            if (items.Count < 1)
                 return null;
 
             //If path goes to array
@@ -635,8 +659,9 @@ namespace vMixController.Widgets
                         found = (array as List<Input>).Where(x => x.Key == propindex[1]).FirstOrDefault();
                     else
                     {
+                        
                         //If it's just index
-                        if (!propindex[1].Contains("/"))
+                        if (!propindex[1].Contains("/") && _regexInt.IsMatch(propindex[1]))
                         {
 
                             var idx = -1;
@@ -654,27 +679,49 @@ namespace vMixController.Widgets
                         else
                         {
                             var parts = propindex[1].Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (parts.Length < 3) return null;
-                            var tpof = Assembly.GetAssembly(typeof(Input)).DefinedTypes.Where(x => x.Name.Contains(parts[0])).First().UnderlyingSystemType;
-                            var idx = int.Parse(parts[2]);
-                            if (idx >= 0 && idx < (array as IList).Count)
+                            if (parts.Length < 3)
                             {
-                                foreach (var item in array as IList)
+                                if (parts.Length > 0)
                                 {
-                                    if (tpof.IsInstanceOfType(item))
+                                    //try find property by name
+                                    foreach (var item in array as IList)
                                     {
-                                        var p = GetPropertyOrNull(tpof, parts[1]);
-                                        if (p != null && p.PropertyType == typeof(int))
-                                            if ((int)p.GetValue(item) == idx)
-                                            {
-                                                found = item;
-                                                break;
-                                            }
+                                        var prop = item.GetType().GetProperties()?.Where(x => x.Name == "Name" && x.PropertyType == typeof(string))?.SingleOrDefault();
+                                        if (prop == null)
+                                            return null;
+                                        if ((string)prop.GetValue(item) == parts[0])
+                                        {
+                                            found = item;
+                                            break;
+                                        }
                                     }
                                 }
+                                else
+                                    return null;
                             }
                             else
-                                return null;
+                            {
+                                var tpof = Assembly.GetAssembly(typeof(Input)).DefinedTypes.Where(x => x.Name.Contains(parts[0])).First().UnderlyingSystemType;
+                                var idx = int.Parse(parts[2]);
+                                if (idx >= 0 && idx < (array as IList).Count)
+                                {
+                                    foreach (var item in array as IList)
+                                    {
+                                        if (tpof.IsInstanceOfType(item))
+                                        {
+                                            var p = GetPropertyOrNull(tpof, parts[1]);
+                                            if (p != null && p.PropertyType == typeof(int))
+                                                if ((int)p.GetValue(item) == idx)
+                                                {
+                                                    found = item;
+                                                    break;
+                                                }
+                                        }
+                                    }
+                                }
+                                else
+                                    return null;
+                            }
                         }
                     }
 
@@ -704,7 +751,7 @@ namespace vMixController.Widgets
                     found = null;
             }
 
-            return items;
+            return items.ToArray();
         }
 
         protected object GetValueByPath(object obj, string path)

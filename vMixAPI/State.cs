@@ -20,7 +20,7 @@ namespace vMixAPI
     {
 
     }
-    public class StateUpdatedEventArgs : EventArgs
+    public class StateSyncedEventArgs : EventArgs
     {
         public bool Successfully { get; set; }
         public int[] OldInputs { get; set; }
@@ -199,7 +199,7 @@ namespace vMixAPI
 
         public event EventHandler OnStateCreated;
         public event EventHandler<FunctionSendArgs> OnFunctionSend;
-        public event EventHandler<StateUpdatedEventArgs> OnStateUpdated;
+        public event EventHandler<StateSyncedEventArgs> OnStateSynced;
 
         private void UpdateChangedInputs(string _a, string _b)
         {
@@ -259,8 +259,8 @@ namespace vMixAPI
                 _logger.Info("vMix is offline");
                 _logger.Info("Firing \"updated\" event.");
 
-                if (OnStateUpdated != null)
-                    OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
+                if (OnStateSynced != null)
+                    OnStateSynced(this, new StateSyncedEventArgs() { Successfully = false });
                 IsInitializing = false;
                 return false;
             }
@@ -284,7 +284,7 @@ namespace vMixAPI
 
             _logger.Info("Firing \"updated\" event.");
 
-            OnStateUpdated?.Invoke(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
+            OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
             IsInitializing = false;
             return true;
         }
@@ -297,8 +297,8 @@ namespace vMixAPI
 
                 if (e.Error != null)
                 {
-                    if (OnStateUpdated != null)
-                        OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
+                    if (OnStateSynced != null)
+                        OnStateSynced(this, new StateSyncedEventArgs() { Successfully = false });
                     return;
                 }
                 if (e.UserState == null)
@@ -313,8 +313,7 @@ namespace vMixAPI
                     _logger.Info("Firing \"updated\" event.");
 
                     IsInitializing = false;
-                    if (OnStateUpdated != null)
-                        OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = false });
+                    OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
                 }
 
                 _logger.Info("Calculating difference.");
@@ -338,8 +337,7 @@ namespace vMixAPI
                 _logger.Info("Firing \"updated\" event.");
 
                 IsInitializing = false;
-                if (OnStateUpdated != null)
-                    OnStateUpdated(this, new StateUpdatedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
+                OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
                 return;
             });
         }

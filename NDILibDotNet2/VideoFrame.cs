@@ -33,7 +33,7 @@ namespace NewTek.NDI
                 p_data = videoBufferPtr,
                 line_stride_in_bytes = stride,
                 p_metadata = IntPtr.Zero,
-                timestamp = NDIlib.recv_timestamp_undefined
+                timestamp = 0
             };
         }
 
@@ -53,7 +53,7 @@ namespace NewTek.NDI
                 p_data = bufferPtr,
                 line_stride_in_bytes = stride,
                 p_metadata = IntPtr.Zero,
-                timestamp = NDIlib.recv_timestamp_undefined
+                timestamp = 0
             };
         }
 

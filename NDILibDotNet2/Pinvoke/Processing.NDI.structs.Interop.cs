@@ -29,6 +29,11 @@ namespace NewTek
 			// YCbCr color space
 			FourCC_type_UYVY = 0x59565955,
 
+            // 4:2:0 formats
+            NDIlib_FourCC_type_YV12 = 0x32315659,
+            NDIlib_FourCC_type_NV12 = 0x3231564E,
+            NDIlib_FourCC_type_I420 = 0x30323449,
+
 			// BGRA
 			FourCC_type_BGRA = 0x41524742,
 			FourCC_type_BGRX = 0x58524742,
@@ -69,12 +74,11 @@ namespace NewTek
 			// specific ip addres adn port number from below is used.
 			public IntPtr	p_ndi_name;
 
-			// A UTF8 string that provides the actual IP address and port number.
-			// This is in the form : IP_ADDRESS:PORT_NO, for instance "127.0.0.1:10000"
-			// If you leave this parameter either as NULL, or an EMPTY string then the
-			// ndi name above is used to look up the mDNS name to determine the IP and
-			// port number. Connection is faster if the IP address is known.
-			public IntPtr	p_ip_address;
+            // A UTF8 string that provides the actual network address and any parameters. 
+            // This is not meant to be application readable and might well change in teh future.
+            // This can be nullptr if you do not know it and the API internally will instantiate
+            // a finder that is used to discover it even if it is not yet available on the network.
+            public IntPtr p_url_address;
 		}
 
 		// This describes a video frame
@@ -155,7 +159,7 @@ namespace NewTek
 		public struct metadata_frame_t
 		{
 			// The length of the string in UTF8 characters. This includes the NULL terminating character.
-			// If this is 0, then the length is assume to be the length of a null terminated string.
+			// If this is 0, then the length is assume to be the length of a NULL terminated string.
 			public int	length;
 
 			// The timecode of this frame in 100ns intervals
@@ -204,7 +208,7 @@ namespace NewTek
 		// last ones known and the time since it was sent.
 		//
 		public static Int64 send_timecode_synthesize =  Int64.MaxValue;
-
+        
 		// If the time-stamp is not available (i.e. a version of a sender before v2.5)
 		public static Int64 recv_timestamp_undefined =  Int64.MaxValue;
 

@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using NewTek;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,13 +29,13 @@ namespace vMixUTCNDIMonitorDataProvider
         /// </summary>
         public const string SourcePropertyName = "Source";
 
-        private NewTek.NDI.Source _source = null;
+        private string _source = null;
 
         /// <summary>
         /// Sets and gets the SourceName property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public NewTek.NDI.Source Source
+        public string Source
         {
             get
             {
@@ -49,7 +50,38 @@ namespace vMixUTCNDIMonitorDataProvider
                 }
 
                 _source = value;
+                NDISource = new NewTek.NDI.Source(value);
                 RaisePropertyChanged(SourcePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="NDISource" /> property's name.
+        /// </summary>
+        public const string NDISourcePropertyName = "NDISource";
+
+        private NewTek.NDI.Source _NDISource = null;
+
+        /// <summary>
+        /// Sets and gets the NDISource property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public NewTek.NDI.Source NDISource
+        {
+            get
+            {
+                return _NDISource;
+            }
+
+            set
+            {
+                if (_NDISource == value)
+                {
+                    return;
+                }
+
+                _NDISource = value;
+                RaisePropertyChanged(NDISourcePropertyName);
             }
         }
 
@@ -145,6 +177,36 @@ namespace vMixUTCNDIMonitorDataProvider
         }
 
 
+        /// <summary>
+        /// The <see cref="Sources" /> property's name.
+        /// </summary>
+        public const string SourcesPropertyName = "Sources";
+
+        private ObservableCollection<string> _sources = new ObservableCollection<string>();
+
+        /// <summary>
+        /// Sets and gets the Sources property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<string> Sources
+        {
+            get
+            {
+                return _sources;
+            }
+
+            set
+            {
+                if (_sources == value)
+                {
+                    return;
+                }
+
+                _sources = value;
+                RaisePropertyChanged(SourcesPropertyName);
+            }
+        }
+
         private void RaisePropertyChanged(string sourceNamePropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(sourceNamePropertyName));
@@ -208,14 +270,18 @@ namespace vMixUTCNDIMonitorDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object>() { Source.Name, Source.IpAddress, MultiViewLayout, AspectRatio };
+            return new List<object>() { NDISource.Name, null, MultiViewLayout, AspectRatio };
         }
 
         public void SetProperties(List<object> props)
         {
             if (props != null && props.Count > 0)
             {
-                Source = new NewTek.NDI.Source((string)props[0], (string)props[1]);//_finder.Sources.Where(x => x.Name == (string)props[0] && x.IpAddress == (string)props[1]).FirstOrDefault();
+                /*foreach (var src in Finder.Sources)
+                    if (src.Name == (string)props[0])
+                        Source = src;*/
+                Source = (string)props[0];
+                //NDISource = new NewTek.NDI.Source((string)props[0]);//_finder.Sources.Where(x => x.Name == (string)props[0] && x.IpAddress == (string)props[1]).FirstOrDefault();
                 //8in, 14in, legacy
                 if (props.Count >= 3)
                     MultiViewLayout = (byte)props[2];
@@ -234,9 +300,10 @@ namespace vMixUTCNDIMonitorDataProvider
 
         public void Dispose()
         {
-            //_ui.Preview.ConnectedSource = null;
-            //_ui.Preview.Disconnect();
-            //_ui.Preview.Dispose();
+            _ui.Preview.ConnectedSource = null;
+            _ui.Preview.Disconnect();
+            _ui.Preview.Dispose();
+            
             _finder.Dispose();
         }
 
@@ -246,9 +313,36 @@ namespace vMixUTCNDIMonitorDataProvider
 
             _ui = new OnWidgetUI() { DataContext = this };
             _ui.InitializeComponent();
+
+            _finder.Sources.CollectionChanged += Sources_CollectionChanged;
+
+            // Not required, but "correct". (see the SDK documentation)
+            if (!NDIlib.initialize())
+            {
+                // Cannot run NDI. Most likely because the CPU is not sufficient (see SDK documentation).
+                // you can check this directly with a call to NDIlib.is_supported_CPU()
+                if (!NDIlib.is_supported_CPU())
+                {
+                    MessageBox.Show("CPU unsupported.");
+                }
+                else
+                {
+                    // not sure why, but it's not going to run
+                    MessageBox.Show("Cannot run NDI.");
+                }
+
+                // we can't go on
+            }
             /*foreach (var b in ((Grid)_ui.FindName("Multiview8")).Children.OfType<Button>())
                 b.Command = PlayInput;*/
 
+        }
+
+        private void Sources_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Sources = new ObservableCollection<string>(_finder.Sources.Select(x => x.Name).ToArray());
+            //foreach (var item in _finder.Sources)
+            //    Sources.Add(item.Name);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
