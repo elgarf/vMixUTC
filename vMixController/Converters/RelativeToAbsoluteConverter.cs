@@ -3,26 +3,30 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
 namespace vMixController.Converters
 {
-    public class TextIsPathToImageConverter : IValueConverter
+    public class RelativeToAbsoluteConverter : IValueConverter
     {
-        private string[] _extensions = { ".bmp", ".gif", ".png", ".ico", ".jpg", ".jpeg", ".tiff", ".dds" };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var p = string.IsNullOrEmpty((string)parameter);
-            if (value is string)
+            var val = (string)value;
+            try
             {
-                var v = (string)value;
-                if (File.Exists(v) && _extensions.Contains(Path.GetExtension(v)))
-                    return p ? Visibility.Visible : Visibility.Collapsed;
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    return new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), val)));
+                }
+            } catch (UriFormatException)
+            {
+                return null;
             }
-            return p ? Visibility.Collapsed : Visibility.Visible;
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

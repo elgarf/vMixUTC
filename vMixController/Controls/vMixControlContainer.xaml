@@ -10,12 +10,13 @@
              xmlns:conv="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             x:Name="CC" SizeChanged="CC_SizeChanged">
+             x:Name="CC" SizeChanged="CC_SizeChanged" PreviewMouseMove="CC_PreviewMouseMove" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <conv:NotConverter x:Key="NotConverter"/>
             <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
             <conv:BrightnessToColorConverter x:Key="BrightnessToColor"/>
             <local:LockToVisibilityConverter x:Key="LockToVisibilityConverter"/>
@@ -52,9 +53,44 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        <Grid>
+        <Grid Tag="{Binding ParentContainer, ElementName=CC}">
+            <Grid.ContextMenu>
+                <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Toggle caption" Command="{Binding ToggleCaptionCommand}" CommandParameter="{Binding Control}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf150;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Scale Up" Command="{Binding ScaleUpCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf062;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Scale Down" Command="{Binding ScaleDownCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf063;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Duplicate" Command="{Binding CopyCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61839;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Properties" Command="{Binding SettingsCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#62611;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Remove" Command="{Binding CloseCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61782;</TextBlock>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Grid.ContextMenu>
             <StackPanel Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
-                <Grid x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource ColorToBrush}}">
+                <Grid Visibility="{Binding ParentContainer.Control.IsCaptionOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource ColorToBrush}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -87,9 +123,9 @@
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale up}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleUpCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf062;</Button>
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale down}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleDownCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf063;</Button>
 
-                        <Button ToolTip="{e:Localize Copy widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.CopyCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61839;</Button>
+                        <Button ToolTip="{e:Localize Duplicate widget}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.CopyCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61839;</Button>
                         <Button ToolTip="{e:Localize Widget properties}" Style="{StaticResource TitleButton}" Margin="0,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.SettingsCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#62611;</Button>
-                        <Button ToolTip="{e:Localize Close widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ParentContainer.CloseCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61782;</Button>
+                        <Button ToolTip="{e:Localize Remove widget}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding ParentContainer.CloseCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#61782;</Button>
                     </StackPanel>
                 </Grid>
                 <ContentControl x:Name="ContentControl" Content="{Binding ParentContainer.MainContent, ElementName=CC}">
@@ -101,6 +137,7 @@
             <Grid x:Name="Overlay" Background="#7F00FFFF" Visibility="{Binding ParentContainer.Control.Selected, ElementName=CC, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False"/>
             <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
             <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+            <local:vMixControlMoveThumb x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
         </Grid>
     </Border>
 

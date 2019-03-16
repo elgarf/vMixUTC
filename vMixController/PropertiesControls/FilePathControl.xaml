@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize File Path}"/>
+        <TextBlock Style="{StaticResource PropertyName}" Text="{Binding Title, ElementName=Me}"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

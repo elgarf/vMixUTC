@@ -35,6 +35,23 @@ namespace vMixController.Widgets
             DelayedUpdateTimer.Start();
         }
 
+        public override Hotkey[] GetHotkeys()
+        {
+            return new Classes.Hotkey[] { new Classes.Hotkey() { Name = "Focus" } };
+        }
+
+        public override void ExecuteHotkey(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    IsFocused = false;
+                    IsFocused = true;
+                    break;
+            }
+            base.ExecuteHotkey(index);
+        }
+
         private static void DelayedUpdateTimer_Tick(object sender, EventArgs e)
         {
             while (DelayedUpdate.Count > 0 && DelayedUpdate.Peek().C.AddSeconds(0.1) < DateTime.Now)
@@ -66,7 +83,7 @@ namespace vMixController.Widgets
             _paths.CollectionChanged += _paths_CollectionChanged;
         }
 
-        internal override void OnStateUpdated()
+        internal override void OnStateSynced()
         {
             UpdateText(_paths);
         }

@@ -168,10 +168,71 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsCaptionOn" /> property's name.
+        /// </summary>
+        public const string IsCaptionOffPropertyName = "IsCaptionOn";
+
+        private bool _isCaptionOn = true;
+
+        /// <summary>
+        /// Sets and gets the IsCaptionOff property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public virtual bool IsCaptionOn
+        {
+            get
+            {
+                return _isCaptionOn;
+            }
+
+            set
+            {
+                if (_isCaptionOn == value)
+                {
+                    return;
+                }
+
+                _isCaptionOn = value;
+                RaisePropertyChanged(IsCaptionOffPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="IsFocused" /> property's name.
+        /// </summary>
+        public const string IsFocusedPropertyName = "IsFocused";
+
+        [NonSerialized]
+        private bool _isFocused = false;
+
+        /// <summary>
+        /// Sets and gets the IsFocused property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        [XmlIgnore]
+        public bool IsFocused
+        {
+            get
+            {
+                return _isFocused;
+            }
+
+            set
+            {
+                if (_isFocused == value)
+                {
+                    return;
+                }
+
+                _isFocused = value;
+                RaisePropertyChanged(IsFocusedPropertyName);
+            }
+        }
+
         internal void RaisePropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         /// <summary>
@@ -587,16 +648,16 @@ namespace vMixController.Widgets
                     ((vMixAPI.State)e.OldValue).OnStateSynced -= (d as vMixControl).VMixControl_Updated;
                 if (e.NewValue != null)
                     ((vMixAPI.State)e.NewValue).OnStateSynced += (d as vMixControl).VMixControl_Updated;
-                (d as vMixControl).OnStateUpdated();
+                (d as vMixControl).OnStateSynced();
             }
         }
 
         private void VMixControl_Updated(object sender, vMixAPI.StateSyncedEventArgs e)
         {
-            OnStateUpdated();
+            OnStateSynced();
         }
 
-        internal virtual void OnStateUpdated()
+        internal virtual void OnStateSynced()
         {
 
         }

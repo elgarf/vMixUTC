@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Xml;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
 
 namespace vMixController.Widgets
 {
@@ -287,6 +288,36 @@ namespace vMixController.Widgets
 
 
         /// <summary>
+        /// The <see cref="Image" /> property's name.
+        /// </summary>
+        public const string ImagePropertyName = "Image";
+
+        private string _image = "";
+
+        /// <summary>
+        /// Sets and gets the Image property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string Image
+        {
+            get
+            {
+                return _image;
+            }
+
+            set
+            {
+                if (_image == value)
+                {
+                    return;
+                }
+
+                _image = value;
+                RaisePropertyChanged(ImagePropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Variables" /> property's name.
         /// </summary>
         public const string VariablesPropertyName = "Variables";
@@ -437,6 +468,8 @@ namespace vMixController.Widgets
                     var item = _commands[i];
                     if (stateToCheck.ChangedInputs.Contains(item.InputKey))
                         cnt++;
+                    if (!string.IsNullOrWhiteSpace(item.Action.ActiveStatePath))
+                        cnt++;
                 }
                 if (cnt == 0)
                 {
@@ -506,7 +539,11 @@ namespace vMixController.Widgets
         {
             try
             {
-                return (state ?? State).Inputs.Where(x => x.Key == key).FirstOrDefault().Number.ToString();
+                var input = (state ?? State).Inputs.Where(x => x.Key == key).FirstOrDefault();
+                if (input != null)
+                    return input.Number.ToString();
+                else
+                    return "-1";
             }
             catch (Exception)
             {
@@ -774,6 +811,7 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
+            FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
@@ -785,7 +823,7 @@ namespace vMixController.Widgets
                         item.AdditionalParameters.Add(new One<string>());
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
-            return base.GetPropertiesControls().Concat(new UserControl[] { boolctrl, control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, control }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
@@ -804,6 +842,16 @@ namespace vMixController.Widgets
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
+            var u = _controls.OfType<FilePathControl>().First().Value;
+            if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
+            {
+                
+                var uri = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), u)));
+                var dir = new Uri(Directory.GetCurrentDirectory() + @"\");
+                Image = Uri.UnescapeDataString(dir.MakeRelativeUri(uri).ToString());
+            }
+            else
+                Image = "";
 
             RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);

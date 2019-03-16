@@ -130,6 +130,17 @@ namespace vMixController.Controls
         public static readonly DependencyProperty ScaleDownCommandProperty =
             DependencyProperty.Register("ScaleDownCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
+        public RelayCommand<Widgets.vMixControl> ToggleCaptionCommand
+        {
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(ToggleCaptionCommandProperty); }
+            set { SetValue(ToggleCaptionCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ToggleCaptionCommandProperty =
+            DependencyProperty.Register("ToggleCaptionCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+
+
         public object MainContent
         {
             get { return (object)GetValue(MainContentProperty); }

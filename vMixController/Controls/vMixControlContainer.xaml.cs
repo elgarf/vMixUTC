@@ -76,6 +76,12 @@ namespace vMixController.Controls
         {
             e.Handled = true;
         }
+
+        private void CC_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            moveThumb.Visibility = Keyboard.IsKeyDown(Key.LeftAlt) ? Visibility.Visible : Visibility.Collapsed;
+
+        }
     }
 
 }

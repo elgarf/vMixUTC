@@ -648,6 +648,24 @@ namespace vMixController.ViewModel
         }
 
 
+        private RelayCommand<vMixControl> _toggleCaptionCommand;
+
+        /// <summary>
+        /// Gets the ToggleCaptionCommand.
+        /// </summary>
+        public RelayCommand<vMixControl> ToggleCaptionCommand
+        {
+            get
+            {
+                return _toggleCaptionCommand
+                    ?? (_toggleCaptionCommand = new RelayCommand<vMixControl>(
+                    p =>
+                    {
+                        p.IsCaptionOn = !p.IsCaptionOn;
+                    }));
+            }
+        }
+
         private RelayCommand<vMixControl> _scaleUpCommand;
 
         /// <summary>
@@ -1572,7 +1590,7 @@ namespace vMixController.ViewModel
                     ?? (_textBoxPreviewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
                     p =>
                     {
-                        if (p.Key == System.Windows.Input.Key.Return)
+                        if (p.Key == System.Windows.Input.Key.Return || p.Key == Key.Escape)
                         {
 
                             DependencyObject parent = ((FrameworkElement)p.Source).Parent;
