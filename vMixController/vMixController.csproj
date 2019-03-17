@@ -286,6 +286,7 @@
     <Compile Include="Widgets\vMixControlContainer.cs" />
     <Compile Include="Widgets\vMixControlButton.cs" />
     <Compile Include="Widgets\vMixControlButtonAction.cs" />
+    <Compile Include="Widgets\vMixControlRegion.cs" />
     <Compile Include="Widgets\vMixControlLabel.cs" />
     <Compile Include="Widgets\vMixControlExternalData.cs" />
     <Compile Include="Widgets\vMixControlList.cs" />

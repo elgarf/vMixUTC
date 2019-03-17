@@ -101,7 +101,7 @@
 
 
                     <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}" Foreground="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource BrightnessToColor}}"></TextBlock>
-                    <local:vMixControlMoveThumb Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
+                    <local:vMixControlMoveThumb IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
                         <local:vMixControlMoveThumb.ToolTip>
                             <ToolTip DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
                                 <StackPanel>
@@ -135,9 +135,9 @@
                 </ContentControl>
             </StackPanel>
             <Grid x:Name="Overlay" Background="#7F00FFFF" Visibility="{Binding ParentContainer.Control.Selected, ElementName=CC, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False"/>
-            <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
-            <local:vMixControlResizeThumb Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
-            <local:vMixControlMoveThumb x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
+            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+            <local:vMixControlMoveThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
         </Grid>
     </Border>
 

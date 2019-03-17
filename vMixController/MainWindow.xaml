@@ -49,6 +49,11 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem x:Name="Region" Command="{Binding CreateWidgetCommand}" CommandParameter="Region" Header="{e:Localize Region}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF2D0;</TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!--<MenuItem Command="{Binding CreateWidgetCommand}" CommandParameter="Image" Header="Image"/>-->
                 <MenuItem x:Name="List" Command="{Binding CreateWidgetCommand}" CommandParameter="List" Header="{e:Localize List}">
                     <MenuItem.Icon>

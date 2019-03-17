@@ -70,6 +70,9 @@ namespace vMixController.Widgets
                 GetPropertyControl<StringControl>()
             };
 
+            var lbl = GetPropertyControl<LabelControl>();
+            lbl.Title = "Events";
+
             links[0].Title = "On Start";
             links[0].Value = Links[0];
             links[0].Tag = 0;
@@ -83,7 +86,7 @@ namespace vMixController.Widgets
             links[3].Value = Links.Length > 3 ? Links[3] : "";
             links[3].Tag = 3;
 
-            return props.Concat(new UserControl[] { control }.Union(links)).ToArray();
+            return props.Concat(new UserControl[] { control, lbl }.Union(links)).ToArray();
         }
 
         private void _timer_Tick(object sender, EventArgs e)

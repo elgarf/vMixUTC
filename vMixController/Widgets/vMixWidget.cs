@@ -449,6 +449,36 @@ namespace vMixController.Widgets
 
 
         /// <summary>
+        /// The <see cref="ZIndex" /> property's name.
+        /// </summary>
+        public const string ZIndexPropertyName = "ZIndex";
+
+        private int _ZIndex = 0;
+
+        /// <summary>
+        /// Sets and gets the ZIndex property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int ZIndex
+        {
+            get
+            {
+                return _ZIndex;
+            }
+
+            set
+            {
+                if (_ZIndex == value)
+                {
+                    return;
+                }
+
+                _ZIndex = value;
+                RaisePropertyChanged(ZIndexPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Selected" /> property's name.
         /// </summary>
         public const string SelectedPropertyName = "Selected";

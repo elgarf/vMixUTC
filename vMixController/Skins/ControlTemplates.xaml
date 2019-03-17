@@ -335,6 +335,25 @@
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 
+    <DataTemplate x:Key="vMixControlRegion">
+        <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <Grid Height="{Binding Height}">
+                    <Grid.Background>
+                        <SolidColorBrush Color="{Binding BorderColor}"/>
+                    </Grid.Background>
+                    <ctrls:vMixControlResizeThumb Margin="0,4,0,-4"  IsEnabled="{Binding}" Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                        <ctrls:vMixControlResizeThumb.Template>
+                            <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+                                <Rectangle Fill="Transparent"/>
+                            </ControlTemplate>
+                        </ctrls:vMixControlResizeThumb.Template>
+                    </ctrls:vMixControlResizeThumb>
+                </Grid>
+            </ctrls:vMixControlContainerDummy.MainContent>
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+    
     <DataTemplate x:Key="vMixControlMidiInterface">
         <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>

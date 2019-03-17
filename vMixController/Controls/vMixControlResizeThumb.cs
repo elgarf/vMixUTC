@@ -21,6 +21,7 @@ namespace vMixController.Controls
             if (item != null && !item.Locked)
             {
                 double deltaHorizontal = 0;
+                double deltaVertical = 0;
 
                 switch (HorizontalAlignment)
                 {
@@ -34,6 +35,23 @@ namespace vMixController.Controls
                         deltaHorizontal = Math.Min(e.HorizontalChange, item.Width - 64);
                         item.Width -= deltaHorizontal;
                         item.Left += deltaHorizontal;
+                        item.AlignByGrid();
+                        break;
+                    default:
+                        break;
+                }
+
+                switch (VerticalAlignment)
+                {
+                    case System.Windows.VerticalAlignment.Bottom:
+                        deltaVertical = Math.Min(-e.VerticalChange, item.Height - 8);
+                        item.Height -= deltaVertical;
+                        item.AlignByGrid();
+                        break;
+                    case System.Windows.VerticalAlignment.Top:
+                        deltaVertical = Math.Min(e.VerticalChange, item.Height - 8);
+                        item.Height -= deltaVertical;
+                        item.Top += deltaVertical;
                         item.AlignByGrid();
                         break;
                     default:

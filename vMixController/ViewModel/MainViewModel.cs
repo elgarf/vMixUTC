@@ -579,6 +579,18 @@ namespace vMixController.ViewModel
         }
 
 
+        private void InsertWidgetByZIndex(vMixControl widget)
+        {
+            var first = _widgets.Select((item, index) => new { itm = item, idx = index }).OrderBy(i => i.itm.ZIndex).FirstOrDefault();
+            if (first != null)
+            {
+                _widgets.Insert(first.idx + 1, widget);
+            }
+            else
+                _widgets.Add(widget);
+        }
+
+
         private RelayCommand<vMixController.Widgets.vMixControl> _switchLockCommand;
 
         /// <summary>
@@ -769,7 +781,7 @@ namespace vMixController.ViewModel
                                 if (widget is vMixControlTextField)
                                     ((vMixControlTextField)widget).IsLive = LIVE;
                                 widget.Update();
-                                _widgets.Add(widget);
+                                InsertWidgetByZIndex(widget);
                                 _logger.Info("New {0} widget added.", widget.Type.ToLower());
 
                                 OpenPropertiesCommand.Execute(widget);
@@ -929,7 +941,8 @@ namespace vMixController.ViewModel
                             ctrl.AlignByGrid();
                             ctrl.Update();
                             _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
-                            _widgets.Add(ctrl);
+                            InsertWidgetByZIndex(ctrl);
+                            //_widgets.Add(ctrl);
                         };
 
                     }));

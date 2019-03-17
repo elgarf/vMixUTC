@@ -15,6 +15,7 @@ namespace vMixController
             if (pleft > 0)
                 item.Width += pleft - item.Left;
             item.Width = ((int)item.Width / 8) * 8;
+            item.Height = ((int)item.Height / 8) * 8;
             item.Top = ((int)item.Top / 8) * 8;
 
             //Avoid widget to be unreachable
