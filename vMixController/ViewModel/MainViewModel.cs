@@ -578,13 +578,50 @@ namespace vMixController.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsGhosted" /> property's name.
+        /// </summary>
+        public const string IsGhostedPropertyName = "IsGhosted";
+
+        private bool _isGhosted = false;
+
+        /// <summary>
+        /// Sets and gets the IsGhosted property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsGhosted
+        {
+            get
+            {
+                return _isGhosted;
+            }
+
+            set
+            {
+                if (_isGhosted == value)
+                {
+                    return;
+                }
+
+                _isGhosted = value;
+
+                foreach (var item in _widgets)
+                {
+                    if (item.ZIndex >= 0)
+                        item.IsGhosted = _isGhosted;
+                }
+
+                RaisePropertyChanged(IsGhostedPropertyName);
+            }
+        }
 
         private void InsertWidgetByZIndex(vMixControl widget)
         {
+            widget.IsGhosted = widget.ZIndex >= 0 && IsGhosted;
             var first = _widgets.Select((item, index) => new { itm = item, idx = index }).OrderBy(i => i.itm.ZIndex).FirstOrDefault();
             if (first != null)
             {
-                _widgets.Insert(first.idx + 1, widget);
+                _widgets.Insert(first.idx, widget);
             }
             else
                 _widgets.Add(widget);
@@ -649,7 +686,7 @@ namespace vMixController.ViewModel
                             copy.Left += 8;
                             copy.Top += 8;
                             copy.Update();
-                            _widgets.Add(copy);
+                            InsertWidgetByZIndex(copy);
                         }
                         catch (Exception e)
                         {
@@ -1424,7 +1461,7 @@ namespace vMixController.ViewModel
             if (!IsInDesignMode)
             {
                 var globalEvents = Gma.System.MouseKeyHook.Hook.GlobalEvents();
-
+                
                 globalEvents.MouseMove += MainViewModel_MouseMove;
                 globalEvents.MouseUp += MainViewModel_MouseUp;
             }

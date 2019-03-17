@@ -41,7 +41,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlContainer)),
         XmlInclude(typeof(vMixControlMultiState)),
         XmlInclude(typeof(vMixControlMidiInterface)),
-        XmlInclude(typeof(vMixControlClock))]
+        XmlInclude(typeof(vMixControlClock)),
+        XmlInclude(typeof(vMixControlRegion))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
@@ -505,6 +506,38 @@ namespace vMixController.Widgets
 
                 _selected = value;
                 RaisePropertyChanged(SelectedPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="IsGhosted" /> property's name.
+        /// </summary>
+        public const string IsGhostedPropertyName = "IsGhosted";
+
+        [NonSerialized]
+        private bool _isGhosted = false;
+
+        /// <summary>
+        /// Sets and gets the IsGhosted property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        [XmlIgnore]
+        public bool IsGhosted
+        {
+            get
+            {
+                return _isGhosted;
+            }
+
+            set
+            {
+                if (_isGhosted == value)
+                {
+                    return;
+                }
+
+                _isGhosted = value;
+                RaisePropertyChanged(IsGhostedPropertyName);
             }
         }
 

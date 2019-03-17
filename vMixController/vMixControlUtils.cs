@@ -23,6 +23,8 @@ namespace vMixController
                 item.Top = 0;
             if (item.Left < 0)
                 item.Left = 0;
+            if (item.Height < 8)
+                item.Height = 8;
 
         }
     }

@@ -10,7 +10,7 @@
              xmlns:conv="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             x:Name="CC" SizeChanged="CC_SizeChanged" PreviewMouseMove="CC_PreviewMouseMove" >
+             x:Name="CC" SizeChanged="CC_SizeChanged" PreviewMouseMove="CC_PreviewMouseMove">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,7 +40,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#1E2328" Margin="0" Padding="0">
+    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={StaticResource NotConverter}}">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={StaticResource ColorToBrush}}"/>
@@ -49,6 +49,9 @@
                     <DataTrigger Binding="{Binding ParentContainer.Control.State, ElementName=CC}" Value="{x:Null}">
                         <Setter Property="BorderBrush" Value="Red"/>
                         <Setter Property="BorderThickness" Value="2"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ParentContainer.Control.IsGhosted, ElementName=CC}" Value="True">
+                        <Setter Property="Opacity" Value="0.5"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
