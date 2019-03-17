@@ -342,7 +342,7 @@
                     <Grid.Background>
                         <SolidColorBrush Color="{Binding BorderColor}"/>
                     </Grid.Background>
-                    <ctrls:vMixControlResizeThumb Margin="0,4,0,-4"  IsEnabled="{Binding}" Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
                                 <Rectangle Fill="Transparent"/>

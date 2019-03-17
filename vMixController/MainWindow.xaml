@@ -20,7 +20,7 @@
         
         Left="{Binding WindowSettings.Left, Mode=TwoWay}"
         Top="{Binding WindowSettings.Top, Mode=TwoWay}"
-        Width="1062.828"
+        Width="{Binding WindowSettings.Width, Mode=TwoWay}"
         Height="{Binding WindowSettings.Height, Mode=TwoWay}"
         WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
         Title="{Binding Title}"
@@ -419,7 +419,7 @@
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="Make top layer transparent">
+                    <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="Make top layer transparent" IsEnabled="{Binding WindowSettings.Locked, Mode=OneWay, Converter={StaticResource NotConverter}}">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox">
                                 <Style.Setters>
@@ -433,9 +433,12 @@
                                                     </StackPanel>
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Foreground" Value="Gray"/>
+                                                    </Trigger>
                                                     <Trigger Property="IsChecked" Value="True">
                                                         <Setter Property="Text" Value="&#xf06e;" TargetName="Icon"/>
-                                                        <Setter Property="Content" Value="Hidden"/>
+                                                        <Setter Property="Content" Value="Ghosted"/>
                                                     </Trigger>
                                                     <Trigger Property="IsChecked" Value="False">
                                                         <Setter Property="Text" Value="&#xf070;" TargetName="Icon"/>

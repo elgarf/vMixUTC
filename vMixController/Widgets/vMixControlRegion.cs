@@ -22,5 +22,12 @@ namespace vMixController.Widgets
                 return Extensions.LocalizationManager.Get("Region");
             }
         }
+
+        public override void Update()
+        {
+            Height++;
+            Height--;
+            base.Update();
+        }
     }
 }

@@ -167,10 +167,13 @@ namespace vMixController.Controls
         {
             /*var Caption = (((this.GetVisualChild(0) as Border).Child as Grid).Children[0] as StackPanel).Children[0] as Grid;
             var ContentControl = (((this.GetVisualChild(0) as Border).Child as Grid).Children[0] as StackPanel).Children[1] as ContentControl;*/
-            if (!double.IsNaN(((vMixControlContainer)Content).ContentControl.ActualHeight) && ((vMixControlContainer)Content).ContentControl.ActualHeight != 0)
-                Control.Height = ((vMixControlContainer)Content).ContentControl.ActualHeight;
-            if (!double.IsNaN(((vMixControlContainer)Content).Caption.ActualHeight) && ((vMixControlContainer)Content).Caption.ActualHeight != 0)
-                Control.CaptionHeight = ((vMixControlContainer)Content).Caption.ActualHeight;
+            if (Control.Type != "Region")
+            {
+                if (!double.IsNaN(((vMixControlContainer)Content).ContentControl.ActualHeight) && ((vMixControlContainer)Content).ContentControl.ActualHeight != 0)
+                    Control.Height = ((vMixControlContainer)Content).ContentControl.ActualHeight;
+                if (!double.IsNaN(((vMixControlContainer)Content).Caption.ActualHeight) && ((vMixControlContainer)Content).Caption.ActualHeight != 0)
+                    Control.CaptionHeight = ((vMixControlContainer)Content).Caption.ActualHeight;
+            }
         }
 
 

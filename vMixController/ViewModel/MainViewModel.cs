@@ -1077,9 +1077,6 @@ namespace vMixController.ViewModel
                             foreach (var item in _widgets)
                                 item.Update();
 
-
-
-
                             RaisePropertyChanged("WindowSettings");
                             _logger.Info("Configuring API.");
 
@@ -1715,7 +1712,7 @@ namespace vMixController.ViewModel
                         Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
                         td.WindowTitle = "About";
 
-                        td.MainInstruction = "Title controller, which works through official vMix API.\nYou can made configurable interface from some default widgets.";
+                        td.MainInstruction = "One controller to rule them all.";
                         td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information;
                         td.Footer = Title;
 

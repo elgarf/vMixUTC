@@ -630,10 +630,13 @@ namespace vMixController.Widgets
         {
             if (string.IsNullOrWhiteSpace(s)) return s;
             NCalc.Expression exp = new NCalc.Expression(s);
+            exp.EvaluateParameter += Exp_EvaluateParameter;
             PopulateVariables(exp);
             if (exp.HasErrors())
                 return s;
             else
+            {
+                
                 try
                 {
                     return exp.Evaluate();
@@ -643,6 +646,13 @@ namespace vMixController.Widgets
                     _logger.Error(ex, "Calculating expression failde");
                     return s;
                 }
+            }
+        }
+
+        private void Exp_EvaluateParameter(string name, NCalc.ParameterArgs args)
+        {
+            //Avoid non-defined parameters
+            args.Result = 0;
         }
 
         private T CalculateExpression<T>(string s)

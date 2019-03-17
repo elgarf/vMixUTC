@@ -48,8 +48,8 @@ namespace vMixController.Classes
                     _logger.Info("Loading window settings.");
                     s = new XmlSerializer(typeof(MainWindowSettings));
 
-
-                    windowSettings = (MainWindowSettings)s.Deserialize(reader);
+                    var settings = (MainWindowSettings)s.Deserialize(reader);
+                    windowSettings = settings;
 
                     reader.ReadEndElement();
                     reader.ReadEndElement();
