@@ -39,10 +39,6 @@ namespace vMixController.PropertiesControls
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(StringControl), new PropertyMetadata(""));
 
-
-
-
-
         public string Value
         {
             get { return (string)GetValue(ValueProperty); }
@@ -52,6 +48,18 @@ namespace vMixController.PropertiesControls
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(string), typeof(StringControl), new PropertyMetadata(""));
+
+
+
+        public bool AcceptReturn
+        {
+            get { return (bool)GetValue(AcceptReturnProperty); }
+            set { SetValue(AcceptReturnProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AcceptReturns.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AcceptReturnProperty =
+            DependencyProperty.Register("AcceptReturn", typeof(bool), typeof(StringControl), new PropertyMetadata(false));
 
 
 

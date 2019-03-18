@@ -96,7 +96,7 @@ namespace vMixController.Widgets
                     break;
             }
 
-            base.ExecuteHotkey(index);
+            //base.ExecuteHotkey(index);
         }
 
         [NonSerialized]

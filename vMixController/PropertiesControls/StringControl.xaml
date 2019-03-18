@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
-        <TextBox Text="{Binding Value, Mode=TwoWay, ElementName=Me}"></TextBox>
+        <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}" /></TextBlock>
+        <TextBox Text="{Binding Value, Mode=TwoWay, ElementName=Me}" AcceptsReturn="{Binding AcceptReturn, ElementName=Me}"/>
     </StackPanel>
 </UserControl>

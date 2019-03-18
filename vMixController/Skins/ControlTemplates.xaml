@@ -21,6 +21,7 @@
     <c:StringToThicknessConverter x:Key="StringToThickness"/>
     <c:TextIsPathToImageConverter x:Key="TextIsPathToImage"/>
     <c:RelativeToAbsoluteConverter x:Key="RelativeToAbsolute"/>
+    <c:BrightnessToColorConverter x:Key="BrightnessToColor"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -342,6 +343,7 @@
                     <Grid.Background>
                         <SolidColorBrush Color="{Binding BorderColor}"/>
                     </Grid.Background>
+                    <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}"/>
                     <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">

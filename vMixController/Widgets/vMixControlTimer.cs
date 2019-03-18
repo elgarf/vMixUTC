@@ -439,7 +439,7 @@ namespace vMixController.Widgets
         public override void ExecuteHotkey(int index)
         {
             TimerCommand.Execute(Hotkey[index].Name);
-            base.ExecuteHotkey(index);
+            //base.ExecuteHotkey(index);
         }
 
         [NonSerialized]
