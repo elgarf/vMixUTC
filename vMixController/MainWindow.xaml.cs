@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using vMixController.ViewModel;
 
 namespace vMixController
@@ -38,6 +40,24 @@ namespace vMixController
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            var scrollViewer = (ScrollViewer)sender;
+
+            if (scrollViewer == null || (scrollViewer.Tag is bool && (bool)scrollViewer.Tag))
+                return;
+
+            if (Keyboard.Modifiers != ModifierKeys.Shift && scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                return;
+
+            if (e.Delta < 0)
+                scrollViewer.LineRight();
+            else
+                scrollViewer.LineLeft();
+
             e.Handled = true;
         }
     }

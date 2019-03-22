@@ -23,6 +23,8 @@ namespace vMixController.Widgets
             }
         }
 
+        public override bool IsResizeableVertical => true;
+
         /// <summary>
         /// The <see cref="Text" /> property's name.
         /// </summary>

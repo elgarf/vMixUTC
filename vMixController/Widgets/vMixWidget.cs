@@ -75,6 +75,7 @@ namespace vMixController.Widgets
 
 
         public virtual string Type { get; }
+        public virtual bool IsResizeableVertical { get { return false; } }
 
         public virtual int MaxCount => -1;
 
@@ -106,6 +107,37 @@ namespace vMixController.Widgets
 
                 _windowProperties = value;
                 RaisePropertyChanged(WindowPropertiesPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="IsPasswordLocked" /> property's name.
+        /// </summary>
+        public const string IsPasswordLockedPropertyName = "IsPasswordLocked";
+
+        private bool _isPasswordLocked = false;
+
+        /// <summary>
+        /// Sets and gets the IsPasswordLocked property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsPasswordLocked
+        {
+            get
+            {
+                return _isPasswordLocked;
+            }
+
+            set
+            {
+                if (_isPasswordLocked == value)
+                {
+                    return;
+                }
+
+                _isPasswordLocked = value;
+                RaisePropertyChanged(IsPasswordLockedPropertyName);
             }
         }
 

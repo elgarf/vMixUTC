@@ -186,7 +186,7 @@
                 <MenuItem Command="{Binding AboutCommand}" Header="{e:Localize About}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>
-                    </MenuItem.Icon>                    
+                    </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
@@ -204,8 +204,37 @@
                 </MenuItem.ItemContainerStyle>
 
             </MenuItem>
-            <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{e:Localize Lock}" IsChecked="{Binding WindowSettings.Locked, Mode=OneWay}" Command="{Binding ToggleLockCommand}" IsCheckable="True"/>
-            <MenuItem ToolTip="{e:Localize Sync UTC to vMix state}" Header="{e:Localize Sync}" Command="{Binding SyncStateCommand}">
+            <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{Binding WindowSettings.Locked}" Command="{Binding ToggleLockCommand}">
+                <MenuItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Material Design Icons" x:Name="LockedIcon"></TextBlock>
+                            <TextBlock Text="Lock"/>
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="True">
+                                <Setter Property="Text" Value="&#xF33E;" TargetName="LockedIcon"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="False">
+                                <Setter Property="Text" Value="&#xF340;" TargetName="LockedIcon"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </MenuItem.HeaderTemplate>
+            </MenuItem>
+            <MenuItem ToolTip="{e:Localize Sync UTC to vMix state}" Header="{Binding Status}" Command="{Binding SyncStateCommand}">
+                <MenuItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Margin="{StaticResource RightStdMargin}" Stroke="Black">
+                            <Ellipse.Fill>
+                                <SolidColorBrush Color="{Binding Converter={StaticResource StatusToColorConverter}}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                            <TextBlock Text="{e:Localize Sync}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </MenuItem.HeaderTemplate>
                 <MenuItem.Style>
                     <Style TargetType="MenuItem">
                         <Style.Triggers>
@@ -217,7 +246,7 @@
                 </MenuItem.Style>
             </MenuItem>
         </Menu>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+        <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
             <ListView ItemsSource="{Binding Widgets}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
                 <ListView.ContextMenu>
                     <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
@@ -264,7 +293,9 @@
                         <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-
+                <i:Interaction.Behaviors>
+                    <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
+                </i:Interaction.Behaviors>
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -363,7 +394,7 @@
             </StatusBarItem>
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
-                    <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}">
+                    <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}" Stroke="Black">
                         <Ellipse.Fill>
                             <SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
                         </Ellipse.Fill>
@@ -410,7 +441,7 @@
                     </CheckBox.Style>
                 </CheckBox>
             </StatusBarItem>
-            
+
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}">Is Topmost</CheckBox>
             </StatusBarItem>

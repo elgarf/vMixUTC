@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using vMixController.Classes;
 using vMixController.Widgets;
+using System.Text;
 
 namespace vMixController.ViewModel
 {
@@ -45,7 +46,37 @@ namespace vMixController.ViewModel
         Point _clickPoint;
         Point _relativeClickPoint;
         Thickness _rawSelectorPosition = new Thickness();
-        bool _isHotkeysEnabled = true;
+
+
+        /// <summary>
+            /// The <see cref="IsHotkeysEnabled" /> property's name.
+            /// </summary>
+        public const string IsHotkeysEnabledPropertyName = "IsHotkeysEnabled";
+
+        private bool _isHotkeysEnabled = true;
+
+        /// <summary>
+        /// Sets and gets the IsHotkeysEnabled property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsHotkeysEnabled
+        {
+            get
+            {
+                return _isHotkeysEnabled;
+            }
+
+            set
+            {
+                if (_isHotkeysEnabled == value)
+                {
+                    return;
+                }
+
+                _isHotkeysEnabled = value;
+                RaisePropertyChanged(IsHotkeysEnabledPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="IsFiltersRegistered" /> property's name.
@@ -686,7 +717,10 @@ namespace vMixController.ViewModel
                             copy.Left += 8;
                             copy.Top += 8;
                             copy.Update();
-                            InsertWidgetByZIndex(copy);
+                            if (copy.ZIndex < 0)
+                                InsertWidgetByZIndex(copy);
+                            else
+                                _widgets.Add(copy);
                         }
                         catch (Exception e)
                         {
@@ -767,7 +801,7 @@ namespace vMixController.ViewModel
                     ?? (_openPropertiesCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
                     p =>
                     {
-                        _isHotkeysEnabled = false;
+                        IsHotkeysEnabled = false;
 
                         _logger.Info("Opening properties for widget {0}.", p.Name);
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
@@ -782,7 +816,7 @@ namespace vMixController.ViewModel
                         _logger.Info("Properties updated.");
                         _settings = null;
 
-                        _isHotkeysEnabled = true;
+                        IsHotkeysEnabled = true;
                     }));
             }
         }
@@ -854,7 +888,7 @@ namespace vMixController.ViewModel
                             _createWidget = null;
                         }
                         if ((p.OriginalSource is ListView))
-                            _isHotkeysEnabled = true;
+                            IsHotkeysEnabled = true;
 
                     }));
             }
@@ -1116,6 +1150,12 @@ namespace vMixController.ViewModel
             }
         }
 
+        private string ToMD5Hash(string str)
+        {
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+                return Convert.ToBase64String(md5.ComputeHash(Encoding.ASCII.GetBytes(str)));
+        }
+
         private RelayCommand _toggleLockCommand;
 
         /// <summary>
@@ -1129,10 +1169,58 @@ namespace vMixController.ViewModel
                     ?? (_toggleLockCommand = new RelayCommand(
                     () =>
                     {
+                        if (!WindowSettings.Locked)
+                        {
+                            WindowSettings.Password = null;
+                            WindowSettings.UserName = null;
+                            if (Keyboard.IsKeyDown(Key.LeftShift))
+                            {
+                                Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog();
+                                cred.ShowSaveCheckBox = false;
+                                cred.ShowUIForSavedCredentials = false;
+                                cred.Target = "vMixUTC";
+                                cred.MainInstruction = "Enter password to lock controller";
+                                if (cred.ShowDialog())
+                                {
+                                    WindowSettings.Password = ToMD5Hash(cred.Password);
+                                    WindowSettings.UserName = ToMD5Hash(cred.UserName);
+                                }
+                            }
+                        }
+                        else
+                        if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
+                        {
+                            Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog();
+                            cred.ShowSaveCheckBox = false;
+                            cred.ShowUIForSavedCredentials = false;
+                            cred.MainInstruction = "Enter password to unlock controller";
+                            cred.Target = "UTC";
+                            cred.WindowTitle = "Universal Title Controller";
+                            if (cred.ShowDialog())
+                            {
+
+                                if (ToMD5Hash(cred.Password) == WindowSettings.Password && ToMD5Hash(cred.UserName) == WindowSettings.UserName)
+                                {
+                                    WindowSettings.Password = null;
+                                    WindowSettings.UserName = null;
+                                }
+                                else
+                                {
+                                    Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
+                                    td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
+                                    td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
+                                    td.MainInstruction = "Incorrect password!";
+                                    td.ShowDialog();
+                                    return;
+                                }
+                            }
+                            else return;
+                        }
                         WindowSettings.Locked = !WindowSettings.Locked;
                         foreach (var item in _widgets)
                         {
                             item.Locked = WindowSettings.Locked;
+                            item.IsPasswordLocked = !string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password);
                         }
                     }));
             }
@@ -1266,7 +1354,7 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
-                        if (!_isHotkeysEnabled)
+                        if (!IsHotkeysEnabled)
                             return;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
 
@@ -1447,7 +1535,7 @@ namespace vMixController.ViewModel
                 switch (t.A)
                 {
                     case "Hotkeys":
-                        _isHotkeysEnabled = t.B;
+                        IsHotkeysEnabled = t.B;
                         //Debug.WriteLine(t.B);
                         break;
                     default:
@@ -1458,7 +1546,7 @@ namespace vMixController.ViewModel
             if (!IsInDesignMode)
             {
                 var globalEvents = Gma.System.MouseKeyHook.Hook.GlobalEvents();
-                
+
                 globalEvents.MouseMove += MainViewModel_MouseMove;
                 globalEvents.MouseUp += MainViewModel_MouseUp;
             }
@@ -1652,7 +1740,7 @@ namespace vMixController.ViewModel
 
 
 
-                            _isHotkeysEnabled = true;
+                            IsHotkeysEnabled = true;
                         }
                     }));
             }
@@ -1671,7 +1759,7 @@ namespace vMixController.ViewModel
                     ?? (_textBoxGotFocus = new RelayCommand<RoutedEventArgs>(
                     p =>
                     {
-                        _isHotkeysEnabled = false;
+                        IsHotkeysEnabled = false;
                         // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
                     }));
             }
@@ -1690,7 +1778,7 @@ namespace vMixController.ViewModel
                     ?? (_textBoxLostFocus = new RelayCommand<RoutedEventArgs>(
                     p =>
                     {
-                        _isHotkeysEnabled = true;
+                        IsHotkeysEnabled = true;
                         //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
                     }));
             }
@@ -1732,6 +1820,5 @@ namespace vMixController.ViewModel
                     }));
             }
         }
-
     }
 }

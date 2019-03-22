@@ -13,6 +13,21 @@ namespace vMixController.Extensions
 {
     public sealed class IgnoreMouseWheelBehavior : Behavior<UIElement>
     {
+
+
+
+        public bool IgnoreBehavior
+        {
+            get { return (bool)GetValue(IgnoreBehaviorProperty); }
+            set { SetValue(IgnoreBehaviorProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IgnoreBehavior.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IgnoreBehaviorProperty =
+            DependencyProperty.Register("IgnoreBehavior", typeof(bool), typeof(IgnoreMouseWheelBehavior), new PropertyMetadata(false));
+
+
+
         /// <summary>
         /// Looks for a child control within a parent by type
         /// </summary>
@@ -59,7 +74,7 @@ namespace vMixController.Extensions
         void AssociatedObject_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var popup = FindChild<Popup>((DependencyObject)sender);
-            if (popup.Count(x=>x.IsOpen) == 0)
+            if (popup.Count(x=>x.IsOpen) == 0 && !IgnoreBehavior)
             {
                 e.Handled = true;
                 var e2 = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);

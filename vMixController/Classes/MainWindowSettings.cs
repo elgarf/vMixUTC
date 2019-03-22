@@ -341,5 +341,65 @@ namespace vMixController.Classes
             }
         }
 
+        /// <summary>
+        /// The <see cref="Password" /> property's name.
+        /// </summary>
+        public const string PasswordPropertyName = "Password";
+
+        private string _password = null;
+
+        /// <summary>
+        /// Sets and gets the Password property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+
+            set
+            {
+                if (_password == value)
+                {
+                    return;
+                }
+
+                _password = value;
+                RaisePropertyChanged(PasswordPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="UserName" /> property's name.
+        /// </summary>
+        public const string UserNamePropertyName = "UserName";
+
+        private string _userName = "";
+
+        /// <summary>
+        /// Sets and gets the UserName property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+
+            set
+            {
+                if (_userName == value)
+                {
+                    return;
+                }
+
+                _userName = value;
+                RaisePropertyChanged(UserNamePropertyName);
+            }
+        }
+
     }
 }

@@ -237,6 +237,7 @@
     <Compile Include="Extensions\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="Extensions\LocalizationManager.cs" />
     <Compile Include="Extensions\Localize.cs" />
+    <Compile Include="Extensions\ScrollViewerHelper.cs" />
     <Compile Include="MidiLearnWindow.xaml.cs">
       <DependentUpon>MidiLearnWindow.xaml</DependentUpon>
     </Compile>
