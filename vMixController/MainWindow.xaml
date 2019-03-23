@@ -195,7 +195,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="{e:Localize Widget}" ItemsSource="{DynamicResource CreateItems}">
+            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Header="{e:Localize Widget}" ItemsSource="{DynamicResource CreateItems}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -259,6 +259,7 @@
                                     <Style TargetType="MenuItem">
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
                                     </Style>
                                 </cls:MenuStyleSelector.MenuItem>
                             </cls:MenuStyleSelector>

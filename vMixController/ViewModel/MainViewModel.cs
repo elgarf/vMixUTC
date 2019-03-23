@@ -1071,6 +1071,11 @@ namespace vMixController.ViewModel
                     {
                         foreach (var item in _widgets)
                             item.Dispose();
+
+                        WindowSettings.Password = null;
+                        WindowSettings.UserName = null;
+                        WindowSettings.Locked = false;
+
                         _widgets.Clear();
                     }));
             }
