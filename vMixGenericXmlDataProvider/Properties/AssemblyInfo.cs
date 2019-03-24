@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("vMixGenericXmlDataProvider")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("XML Data")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("vMixGenericXmlDataProvider")]

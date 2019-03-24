@@ -1480,12 +1480,15 @@ namespace vMixController.ViewModel
             }
 
             _logger.Info("Searching for data providers.");
-            var files = Directory.EnumerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "DataProviders"), "*.dll");
+            var files = Directory.EnumerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "DataProviders"), "*DataProvider.dll");
             if (files.Count() > 0)
                 ExternalDataProviders.Add(new Pair<string, vMixControl>()
                 {
                     A = "Default",
-                    B = new vMixControlExternalData() { }
+                    B = new vMixControlExternalData() {
+                        Color = ViewModel.vMixWidgetSettingsViewModel.Colors[1].A,
+                        BorderColor = ViewModel.vMixWidgetSettingsViewModel.Colors[1].B
+                    },
                 });
             foreach (var item in files)
             {
@@ -1498,13 +1501,17 @@ namespace vMixController.ViewModel
                         Name = attr.Description,
                         DataProviderPath = item,
                         IsTemplate = true,
-                        IsLive = true
+                        IsLive = true,
+                        Color = ViewModel.vMixWidgetSettingsViewModel.Colors[0].A,
+                        BorderColor = ViewModel.vMixWidgetSettingsViewModel.Colors[0].B
                     };
                     control.Update();
                     ExternalDataProviders.Add(new Pair<string, vMixControl>() { A = control.Name, B = control });
                     
                 }
-                catch (Exception) { }
+                catch (Exception e) {
+                    _logger.Error(e, "Failed loading data provider. {0}");
+                }
 
             }
 

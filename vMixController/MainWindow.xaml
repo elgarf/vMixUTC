@@ -38,6 +38,20 @@
             <c:NotConverter x:Key="NotConverter"/>
             <c:BoolToBrushConverter x:Key="BoolToBrush"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
+            <CompositeCollection x:Key="SubMenu" x:Shared="False">
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Add Widget}" Command="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                <Separator/>
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Edit Template}" Command="{Binding Main.EditWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Remove Template}" Command="{Binding Main.RemoveWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+            </CompositeCollection>
+            <Rectangle x:Key="DynamicIcon" x:Shared="False"  Width="16" Height="16" StrokeThickness="1">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{Binding B.Color}"/>
+                </Rectangle.Fill>
+                <Rectangle.Stroke>
+                    <SolidColorBrush Color="{Binding B.BorderColor}"/>
+                </Rectangle.Stroke>
+            </Rectangle>
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
                 <MenuItem x:Name="Button" Command="{Binding CreateWidgetCommand}" CommandParameter="Button" Header="{e:Localize Button}">
                     <MenuItem.Icon>
@@ -101,18 +115,7 @@
                             <Setter Property="CommandParameter" Value="{Binding}"/>
                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="Icon">
-                                <Setter.Value>
-                                    <Rectangle Width="16" Height="16" StrokeThickness="1">
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{Binding B.Color}"/>
-                                        </Rectangle.Fill>
-                                        <Rectangle.Stroke>
-                                            <SolidColorBrush Color="{Binding B.BorderColor}"/>
-                                        </Rectangle.Stroke>
-                                    </Rectangle>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Icon" Value="{StaticResource DynamicIcon}"/>
                         </Style>
                     </MenuItem.Resources>
                 </MenuItem>
@@ -128,6 +131,16 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem x:Name="Templates" Header="{e:Localize Templates}" ItemsSource="{Binding WidgetTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                    <MenuItem.Icon>
+                        <Rectangle Width="16" Height="16" StrokeThickness="1">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding B.Color}"/>
+                            </Rectangle.Fill>
+                            <Rectangle.Stroke>
+                                <SolidColorBrush Color="{Binding B.BorderColor}"/>
+                            </Rectangle.Stroke>
+                        </Rectangle>
+                    </MenuItem.Icon>
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <TextBlock><Run Text="["/><InlineUIContainer>
@@ -141,28 +154,8 @@
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="Icon">
-                                <Setter.Value>
-                                    <Rectangle Width="16" Height="16" StrokeThickness="1">
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{Binding B.Color}"/>
-                                        </Rectangle.Fill>
-                                        <Rectangle.Stroke>
-                                            <SolidColorBrush Color="{Binding B.BorderColor}"/>
-                                        </Rectangle.Stroke>
-                                    </Rectangle>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ItemsSource">
-                                <Setter.Value>
-                                    <CompositeCollection>
-                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Add Widget}" Command="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
-                                        <Separator/>
-                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Edit Template}" Command="{Binding Main.EditWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
-                                        <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Remove Template}" Command="{Binding Main.RemoveWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
-                                    </CompositeCollection>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="ItemsSource" Value="{StaticResource SubMenu}"/>
+                            <Setter Property="Icon" Value="{StaticResource DynamicIcon}"/>
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
@@ -251,11 +244,11 @@
                 <MenuItem.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Margin="{StaticResource RightStdMargin}" Stroke="Black">
-                            <Ellipse.Fill>
-                                <SolidColorBrush Color="{Binding Converter={StaticResource StatusToColorConverter}}"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
+                            <Ellipse Width="8" Height="8" Margin="{StaticResource RightStdMargin}" Stroke="Black">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="{Binding Converter={StaticResource StatusToColorConverter}}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
                             <TextBlock Text="{e:Localize Sync}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
