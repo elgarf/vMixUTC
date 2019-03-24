@@ -502,7 +502,7 @@
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
-                    <Button Margin="0,0,8,0" Command="{Binding RegisterNDIFilters}">Register Filters</Button>
+                    <!--<Button Margin="0,0,8,0" Command="{Binding RegisterNDIFilters}">Register Filters</Button>-->
                     <TextBlock>
                     <Hyperlink ToolTip="{e:Localize Support vMix Universal Title Controller!}" NavigateUri="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=WT9QZ2XH97HMN&amp;lc=US&amp;item_name=vMix%20Universal%20Title%20Controller&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" RequestNavigate="Hyperlink_RequestNavigate">
                         <Image Source="/vMixControllerSkin;component\btn_donate_SM.gif" Stretch="None" Cursor="Hand"/>

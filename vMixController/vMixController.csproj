@@ -406,9 +406,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="RegisterFilters.cmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="RegisterFilters.cmd" />
     <Resource Include="FodyWeavers.xml" />
     <Content Include="Colours.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

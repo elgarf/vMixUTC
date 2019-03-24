@@ -1636,7 +1636,7 @@ namespace vMixController.ViewModel
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
 
-            Accord.Video.DirectShow.FilterInfoCollection filters = new Accord.Video.DirectShow.FilterInfoCollection(new Guid("{083863F1-70DE-11D0-BD40-00A0C911CE86}"));
+            /*Accord.Video.DirectShow.FilterInfoCollection filters = new Accord.Video.DirectShow.FilterInfoCollection(new Guid("{083863F1-70DE-11D0-BD40-00A0C911CE86}"));
             foreach (var item in filters)
                 if (item.Name.Contains("NewTek NDI Source"))
                 {
@@ -1668,7 +1668,7 @@ namespace vMixController.ViewModel
                 case Ookii.Dialogs.Wpf.ButtonType.Cancel:
                     Properties.Settings.Default.NDIFiltersRegistered = true;
                     break;
-            }
+            }*/
             Properties.Settings.Default.Save();
 
         }
@@ -1771,7 +1771,7 @@ namespace vMixController.ViewModel
             //throw new NotImplementedException();
         }
 
-        private RelayCommand _registerNDIFilters;
+        /*private RelayCommand _registerNDIFilters;
 
         /// <summary>
         /// Gets the RegisterNDIFilters.
@@ -1797,7 +1797,7 @@ namespace vMixController.ViewModel
                     },
                     () => !IsFiltersRegistered));
             }
-        }
+        }*/
 
 
         private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
