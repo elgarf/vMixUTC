@@ -554,6 +554,9 @@ namespace NewTek.NDI.WPF
             }
         }
 
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
+
         // the receive thread runs though this loop until told to exit
         void ReceiveThreadProc()
         {
@@ -628,23 +631,31 @@ namespace NewTek.NDI.WPF
                         if (VideoBitmap == null ||
                             VideoBitmap.PixelWidth != xres ||
                             VideoBitmap.PixelHeight != yres ||
-                            VideoBitmap.DpiX != dpiX)
+                            Math.Abs(VideoBitmap.DpiX - dpiX) > 0.001)
                         {
+
+                            VideoBitmap = null;
+                            GC.Collect(1);
                             VideoBitmap = new WriteableBitmap(xres, yres, dpiX, 96.0, PixelFormats.Pbgra32, null);
                             VideoSurface.Source = VideoBitmap;
                         }
 
+                        VideoBitmap.Lock();
                         // update the writeable bitmap
-                        VideoBitmap.WritePixels(new Int32Rect(0, 0, xres, yres), videoFrame.p_data, bufferSize, stride);
+                        VideoBitmap.WritePixels(new Int32Rect(0, 0, xres, yres), videoFrame.p_data, bufferSize, stride, 0, 0);
+                        VideoBitmap.Unlock();
+                        //GC.Collect(1);
 
                         // free frames that were received AFTER use!
                         // This writepixels call is dispatched, so we must do it inside this scope.
                         NDIlib.recv_free_video_v2(_recvInstancePtr, ref videoFrame);
+                        
                     }));
 
                     break;
 
                 // audio is beyond the scope of this example
+                //ignore audio
                 case NDIlib.frame_type_e.frame_type_audio:
 
                     // if no audio or disabled, nothing to do
@@ -780,7 +791,7 @@ namespace NewTek.NDI.WPF
         private WriteableBitmap VideoBitmap;
 
         // should we send audio to Windows or not?
-        private bool _audioEnabled = true;
+        private bool _audioEnabled = false;
 
         // should we send video to Windows or not?
         private bool _videoEnabled = true;

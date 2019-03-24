@@ -51,7 +51,7 @@
         <!--<Image e:SizeObserver.Observe="True" Grid.ColumnSpan="2" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
         <!--<ndi:ReceiveView ConnectedSource="{Binding Source}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
         <!--<MediaElement IsHitTestVisible="False" Source="{Binding Source.Uri}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
-        <ndi:ReceiveView ReceiverName="UTC NDI MONITOR" ConnectedSource="{Binding NDISource}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>
+        <ndi:ReceiveView ReceiverName="UTC NDI MONITOR" ConnectedSource="{Binding NDISource}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly" IsVideoEnabled="True" IsAudioEnabled="False"/>
         <ContentControl Grid.Row="2">
             <ContentControl.Template>
                 <ControlTemplate>
