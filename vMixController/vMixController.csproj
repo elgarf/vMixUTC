@@ -411,12 +411,6 @@
     <Content Include="Colours.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DirectShow\Filters.NdiSourceFilter.x64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectShow\Filters.NdiSourceFilter.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Processing.NDI.Lib.x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
