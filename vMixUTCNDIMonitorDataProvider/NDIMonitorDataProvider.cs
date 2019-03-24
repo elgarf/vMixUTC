@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using NewTek;
+using NewTek.NDI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,7 +23,8 @@ namespace vMixUTCNDIMonitorDataProvider
     {
         private OnWidgetUI _ui;
         private static Random _random = new Random();
-        private int _number;
+        private static Finder _finder;
+        private static int _instances;
         //private string _sourcePath;
         /// <summary>
         /// The <see cref="Source" /> property's name.
@@ -146,36 +148,6 @@ namespace vMixUTCNDIMonitorDataProvider
             }
         }
 
-        /// <summary>
-        /// The <see cref="Finder" /> property's name.
-        /// </summary>
-        public const string FinderPropertyName = "Finder";
-
-        private NewTek.NDI.Finder _finder = new NewTek.NDI.Finder(true);
-
-        /// <summary>
-        /// Sets and gets the Finder property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public NewTek.NDI.Finder Finder
-        {
-            get
-            {
-                return _finder;
-            }
-
-            set
-            {
-                if (_finder == value)
-                {
-                    return;
-                }
-
-                _finder = value;
-                RaisePropertyChanged(FinderPropertyName);
-            }
-        }
-
 
         /// <summary>
         /// The <see cref="Sources" /> property's name.
@@ -212,8 +184,8 @@ namespace vMixUTCNDIMonitorDataProvider
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(sourceNamePropertyName));
         }
 
-        public static readonly DependencyProperty SourceNamesProperty =
-            DependencyProperty.Register("SourceNames", typeof(ObservableCollection<String>), typeof(NDIMonitorDataProvider), new PropertyMetadata(new ObservableCollection<String>()));
+        //public static readonly DependencyProperty SourceNamesProperty =
+        //    DependencyProperty.Register("SourceNames", typeof(ObservableCollection<string>), typeof(NDIMonitorDataProvider), new PropertyMetadata(new ObservableCollection<String>()));
 
 
         public System.Windows.UIElement CustomUI
@@ -270,7 +242,7 @@ namespace vMixUTCNDIMonitorDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object>() { NDISource.Name, null, MultiViewLayout, AspectRatio };
+            return new List<object>() { NDISource?.Name, null, MultiViewLayout, AspectRatio };
         }
 
         public void SetProperties(List<object> props)
@@ -304,16 +276,25 @@ namespace vMixUTCNDIMonitorDataProvider
             _ui.Preview.Disconnect();
             _ui.Preview.Dispose();
             
-            _finder.Dispose();
+            _instances--;
+            if (_instances <= 0)
+            {
+                _finder.Dispose();
+                _finder = null;
+            }
         }
 
         public NDIMonitorDataProvider()
         {
-            _number = _random.Next();
+            _instances++;
 
             _ui = new OnWidgetUI() { DataContext = this };
             _ui.InitializeComponent();
 
+            if (_finder == null)
+                _finder = new Finder(true);
+            else
+                Sources = new ObservableCollection<string>(_finder.Sources.Select(x => x.Name).ToArray());
             _finder.Sources.CollectionChanged += Sources_CollectionChanged;
 
             // Not required, but "correct". (see the SDK documentation)

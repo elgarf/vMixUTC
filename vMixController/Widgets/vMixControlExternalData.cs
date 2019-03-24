@@ -313,10 +313,15 @@ namespace vMixController.Widgets
 
         private void InitializeDataProvider(byte[] value)
         {
-            var assembly = Assembly.Load(value);
+            var name = AssemblyName.GetAssemblyName(_dataProviderPath);
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
+            var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
             var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
-            if (type != null)
+
+            if (DataProvider?.GetType() != type && type != null)
+            {
                 DataProvider = (IvMixDataProvider)assembly.CreateInstance(type.FullName);
+            }
 
             DataProvider.SetProperties(_dataProviderProperties);
 

@@ -414,6 +414,36 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
+        /// The <see cref="ExternalDataProviders" /> property's name.
+        /// </summary>
+        public const string ExternalDataProvidersPropertyName = "ExternalDataProviders";
+
+        private ObservableCollection<Pair<string, vMixControl>> _externalDataProviders = new ObservableCollection<Pair<string, vMixControl>>();
+
+        /// <summary>
+        /// Sets and gets the ExternalDataProviders property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<Pair<string, vMixControl>> ExternalDataProviders
+        {
+            get
+            {
+                return _externalDataProviders;
+            }
+
+            set
+            {
+                if (_externalDataProviders == value)
+                {
+                    return;
+                }
+
+                _externalDataProviders = value;
+                RaisePropertyChanged(ExternalDataProvidersPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Functions" /> property's name.
         /// </summary>
         public const string FunctionsPropertyName = "Functions";
@@ -1449,6 +1479,36 @@ namespace vMixController.ViewModel
 
             }
 
+            _logger.Info("Searching for data providers.");
+            var files = Directory.EnumerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "DataProviders"), "*.dll");
+            if (files.Count() > 0)
+                ExternalDataProviders.Add(new Pair<string, vMixControl>()
+                {
+                    A = "Default",
+                    B = new vMixControlExternalData() { }
+                });
+            foreach (var item in files)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFrom(item);
+                    var attr = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
+                    var control = new vMixControlExternalData()
+                    {
+                        Name = attr.Description,
+                        DataProviderPath = item,
+                        IsTemplate = true,
+                        IsLive = true
+                    };
+                    control.Update();
+                    ExternalDataProviders.Add(new Pair<string, vMixControl>() { A = control.Name, B = control });
+                    
+                }
+                catch (Exception) { }
+
+            }
+
+
             try
             {
                 _logger.Info("Loading window settings.");
@@ -1655,6 +1715,8 @@ namespace vMixController.ViewModel
 
         private void _connectTimer_Tick(object sender, EventArgs e)
         {
+            if (IsInDesignMode) return;
+
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
             if (!IsUrlValid)
                 return;

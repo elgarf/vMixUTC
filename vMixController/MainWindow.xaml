@@ -86,10 +86,35 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1B2;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="ExternalData" Command="{Binding CreateWidgetCommand}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
+                <MenuItem x:Name="ExternalData" Command="{Binding CreateWidgetCommand}" ItemsSource="{Binding ExternalDataProviders}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1C0;</TextBlock>
                     </MenuItem.Icon>
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding A}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                    <MenuItem.Resources>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Command" Value="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}"/>
+                            <Setter Property="CommandParameter" Value="{Binding}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <Rectangle Width="16" Height="16" StrokeThickness="1">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding B.Color}"/>
+                                        </Rectangle.Fill>
+                                        <Rectangle.Stroke>
+                                            <SolidColorBrush Color="{Binding B.BorderColor}"/>
+                                        </Rectangle.Stroke>
+                                    </Rectangle>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </MenuItem.Resources>
                 </MenuItem>
                 <MenuItem x:Name="MidiInterface" Command="{Binding CreateWidgetCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
                     <MenuItem.Icon>
