@@ -213,6 +213,8 @@
     <Description>FadeToBlack</Description>
     <Function>FadeToBlack</Function>
     <FormatString>Function=FadeToBlack</FormatString>
+    <ActiveStatePath>FadeToBlack</ActiveStatePath>
+    <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

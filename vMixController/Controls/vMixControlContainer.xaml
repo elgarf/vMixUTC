@@ -48,7 +48,7 @@
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ParentContainer.Control.State, ElementName=CC}" Value="{x:Null}">
                         <Setter Property="BorderBrush" Value="Red"/>
-                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="BorderThickness" Value="1"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ParentContainer.Control.IsGhosted, ElementName=CC}" Value="True">
                         <Setter Property="Opacity" Value="0.5"/>

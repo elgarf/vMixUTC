@@ -475,7 +475,7 @@ namespace vMixAPI
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (State.IsInitializing) return;
-            switch (e.Property.Name)
+            /*switch (e.Property.Name)
             {
                 case "Preview":
                     (d as State).PreviewInput((int)e.NewValue);
@@ -487,7 +487,7 @@ namespace vMixAPI
                     if (e.NewValue != e.OldValue)
                         (d as State).FadeToBlack();
                     break;
-            }
+            }*/
         }
 
 
