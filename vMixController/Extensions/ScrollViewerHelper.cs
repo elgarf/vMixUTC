@@ -20,9 +20,8 @@ namespace vMixController.Extensions
 
         private static void UseHorizontalScrollingChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var element = d as UIElement;
 
-            if (element == null)
+            if (!(d is UIElement element))
                 throw new Exception("Attached property must be used with UIElement.");
 
             if ((bool)e.NewValue)

@@ -16,9 +16,8 @@ namespace vMixController.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var p = string.IsNullOrEmpty((string)parameter);
-            if (value is string)
+            if (value is string v)
             {
-                var v = (string)value;
                 if (File.Exists(v) && _extensions.Contains(Path.GetExtension(v)))
                     return p ? Visibility.Visible : Visibility.Collapsed;
             }

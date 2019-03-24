@@ -490,11 +490,11 @@ namespace vMixController.Widgets
 
                         var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
                         if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input.HasValue ? input.Value : -1);
+                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input ?? -1);
                         var nval = GetValueByPath(stateToCheck, path);
                         var val = nval == null ? "" : nval.ToString();
                         HasScriptErrors = HasScriptErrors || nval == null;
-                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input.HasValue ? input.Value : -1);
+                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input ?? -1);
                         var realval = aval;
                         aval = aval.TrimStart('!');
                         bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
@@ -555,7 +555,7 @@ namespace vMixController.Widgets
         {
             foreach (var item in _variables)
             {
-                var x = Dispatcher.Invoke(() => new { A = item.A, B = item.B });
+                var x = Dispatcher.Invoke(() => new { item.A, item.B });
                 exp.Parameters.Add(string.Format("{0}{1}", VARIABLEPREFIX, x.A), x.B);
             }
             exp.EvaluateFunction += Exp_EvaluateFunction;
@@ -667,8 +667,7 @@ namespace vMixController.Widgets
         {
             if (o is string)
             {
-                float val = 0;
-                if (!float.TryParse((string)o, out val))
+                if (!float.TryParse((string)o, out float val))
                     return string.Format("'{0}'", o);
                 return
                     val;
@@ -768,10 +767,10 @@ namespace vMixController.Widgets
                         var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
 
                         if (!cmd.Action.StateDirect)
-                            state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0), false);
+                            state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0), false);
                         else
                         {
-                            var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0);
+                            var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
                             SetValueByPath(state, path, value);
                             int flag = 0;

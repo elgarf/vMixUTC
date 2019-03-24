@@ -16,9 +16,8 @@ namespace vMixController.Controls
 
         private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
 
-            if (item != null && !item.Locked)
+            if (this.DataContext is vMixController.Widgets.vMixControl item && !item.Locked)
             {
                 double deltaHorizontal = 0;
                 double deltaVertical = 0;
@@ -58,8 +57,8 @@ namespace vMixController.Controls
                         break;
                 }
 
-                
-                
+
+
             }
 
             e.Handled = true;

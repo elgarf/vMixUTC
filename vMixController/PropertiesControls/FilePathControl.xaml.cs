@@ -91,8 +91,10 @@ namespace vMixController.PropertiesControls
                     ?? (_selectFilePathCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        opendlg.Filter = Filter;
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = Filter
+                        };
                         var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                             Value = opendlg.FileName;

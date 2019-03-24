@@ -649,13 +649,13 @@ namespace vMixController.ViewModel
         private void InsertWidgetByZIndex(vMixControl widget)
         {
             widget.IsGhosted = widget.ZIndex >= 0 && IsGhosted;
-            var first = _widgets.Select((item, index) => new { itm = item, idx = index }).OrderBy(i => i.itm.ZIndex).FirstOrDefault();
-            if (first != null)
-            {
-                _widgets.Insert(first.idx, widget);
-            }
-            else
-                _widgets.Add(widget);
+            //var first = _widgets.Select((item, index) => new { itm = item, idx = index }).OrderBy(i => i.itm.ZIndex).FirstOrDefault();
+            //if (first != null)
+            //{
+                _widgets.Insert(0, widget);
+            //}
+            //else
+            //    _widgets.Add(widget);
         }
 
 
@@ -808,8 +808,10 @@ namespace vMixController.ViewModel
                         viewModel.Widget = p;
                         viewModel.SetProperties(p);
 
-                        _settings = new vMixWidgetSettingsView();
-                        _settings.Owner = App.Current.MainWindow;
+                        _settings = new vMixWidgetSettingsView
+                        {
+                            Owner = App.Current.MainWindow
+                        };
                         var result = _settings.ShowDialog();
                         if (result.HasValue && result.Value)
                             p.SetProperties(viewModel);
@@ -1094,8 +1096,10 @@ namespace vMixController.ViewModel
                     ?? (_loadControllerCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        opendlg.Filter = "vMix Controller|*.vmc";
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = "vMix Controller|*.vmc"
+                        };
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
                         {
@@ -1144,9 +1148,11 @@ namespace vMixController.ViewModel
                     ?? (_saveControllerCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
-                        opendlg.Filter = "vMix Controller|*.vmc";
-                        opendlg.DefaultExt = "vmc";
+                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
+                        {
+                            Filter = "vMix Controller|*.vmc",
+                            DefaultExt = "vmc"
+                        };
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
                             Utils.SaveController(opendlg.FileName, _widgets, _windowSettings);
@@ -1180,11 +1186,13 @@ namespace vMixController.ViewModel
                             WindowSettings.UserName = null;
                             if (Keyboard.IsKeyDown(Key.LeftShift))
                             {
-                                Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog();
-                                cred.ShowSaveCheckBox = false;
-                                cred.ShowUIForSavedCredentials = false;
-                                cred.Target = "vMixUTC";
-                                cred.MainInstruction = "Enter password to lock controller";
+                                Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog
+                                {
+                                    ShowSaveCheckBox = false,
+                                    ShowUIForSavedCredentials = false,
+                                    Target = "vMixUTC",
+                                    MainInstruction = "Enter password to lock controller"
+                                };
                                 if (cred.ShowDialog())
                                 {
                                     WindowSettings.Password = ToMD5Hash(cred.Password);
@@ -1195,12 +1203,14 @@ namespace vMixController.ViewModel
                         else
                         if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
                         {
-                            Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog();
-                            cred.ShowSaveCheckBox = false;
-                            cred.ShowUIForSavedCredentials = false;
-                            cred.MainInstruction = "Enter password to unlock controller";
-                            cred.Target = "UTC";
-                            cred.WindowTitle = "Universal Title Controller";
+                            Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog
+                            {
+                                ShowSaveCheckBox = false,
+                                ShowUIForSavedCredentials = false,
+                                MainInstruction = "Enter password to unlock controller",
+                                Target = "UTC",
+                                WindowTitle = "Universal Title Controller"
+                            };
                             if (cred.ShowDialog())
                             {
 
@@ -1582,8 +1592,10 @@ namespace vMixController.ViewModel
             {
 
                 case Ookii.Dialogs.Wpf.ButtonType.Yes:
-                    Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() };
+                    Process p = new Process
+                    {
+                        StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() }
+                    };
                     p.Start();
                     break;
                 case Ookii.Dialogs.Wpf.ButtonType.Cancel:
@@ -1703,8 +1715,10 @@ namespace vMixController.ViewModel
                     ?? (_registerNDIFilters = new RelayCommand(
                     () =>
                     {
-                        Process p = new Process();
-                        p.StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() };
+                        Process p = new Process
+                        {
+                            StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() }
+                        };
                         try
                         {
                             p.Start();
@@ -1802,12 +1816,14 @@ namespace vMixController.ViewModel
                     ?? (_aboutCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
-                        td.WindowTitle = "About";
+                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog
+                        {
+                            WindowTitle = "About",
 
-                        td.MainInstruction = "One controller to rule them all.";
-                        td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information;
-                        td.Footer = Title;
+                            MainInstruction = "One controller to rule them all.",
+                            MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information,
+                            Footer = Title
+                        };
 
                         var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "vMix Forum" };
                         var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "Donate" };

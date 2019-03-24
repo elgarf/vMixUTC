@@ -19,8 +19,10 @@ namespace vMixController.Controls
         {
             
             base.OnInitialized(e);
-            var CC = new vMixControlContainer();
-            CC.ParentContainer = this;
+            var CC = new vMixControlContainer
+            {
+                ParentContainer = this
+            };
             Content = CC;
             PreviewMouseDown += VMixControlContainerDummy_PreviewMouseDown;
             //CC.OnSizeChanged = CC_SizeChanged;

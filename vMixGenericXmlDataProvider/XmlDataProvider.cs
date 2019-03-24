@@ -187,8 +187,7 @@ namespace vMixGenericXmlDataProvider
             set
             {
                 _data = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Data"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Data"));
             }
         }
 
@@ -225,9 +224,11 @@ namespace vMixGenericXmlDataProvider
         /// <param name="owner"></param>
         public void ShowProperties(System.Windows.Window owner)
         {
-            PropertiesWindow _properties = new PropertiesWindow();
-            _properties.Owner = owner;
-            _properties.DataContext = this;
+            PropertiesWindow _properties = new PropertiesWindow
+            {
+                Owner = owner,
+                DataContext = this
+            };
             var previous = GetProperties();
             var result = _properties.ShowDialog();
             if (!(result.HasValue && result.Value))

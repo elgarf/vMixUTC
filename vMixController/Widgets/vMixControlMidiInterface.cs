@@ -142,7 +142,7 @@ namespace vMixController.Widgets
 
         private InputDevice CreateDeviceByName(string name)
         {
-            var deviceNumber = MidiDevices.Select((obj, idx) => new { obj = obj, idx = idx }).Where(x => x.obj == name).FirstOrDefault();
+            var deviceNumber = MidiDevices.Select((obj, idx) => new { obj, idx }).Where(x => x.obj == name).FirstOrDefault();
             if (deviceNumber != null)
                 return new InputDevice(deviceNumber.idx);
             return null;
@@ -175,12 +175,16 @@ namespace vMixController.Widgets
             var lbl = GetPropertyControl<LabelControl>();
             lbl.Title = "Devices";
 
-            var midiDeviceSelector = new ComboBox();
-            midiDeviceSelector.ItemsSource = MidiDevices;
-            midiDeviceSelector.SelectedValue = Device;
+            var midiDeviceSelector = new ComboBox
+            {
+                ItemsSource = MidiDevices,
+                SelectedValue = Device
+            };
 
-            Binding bnd = new Binding("DeviceCaps");
-            bnd.Source = this;
+            Binding bnd = new Binding("DeviceCaps")
+            {
+                Source = this
+            };
             BindingOperations.SetBinding(midiDeviceSelector, ComboBox.SelectedValueProperty, bnd);
 
             var midiMappingCtrl = GetPropertyControl<MidiMappingControl>();
@@ -201,7 +205,7 @@ namespace vMixController.Widgets
         private MidiInterfaceKey Learn()
         {
 
-            var wnd = new MidiLearnWindow(Device == null ? CreateDeviceByName(DeviceCaps) : Device);
+            var wnd = new MidiLearnWindow(Device ?? CreateDeviceByName(DeviceCaps));
             var result = wnd.ShowDialog();
             if (result ?? true)
             {

@@ -164,8 +164,7 @@ namespace vMixAPI
                     foreach (var item in state.Overlays)
                         item.ControlledState = state;
 
-                    if (OnStateCreated != null)
-                        OnStateCreated(state, null);
+                    OnStateCreated?.Invoke(state, null);
                     state.Configure(_ip, _port);
                     return state;
                 }
@@ -259,8 +258,7 @@ namespace vMixAPI
                 _logger.Info("vMix is offline");
                 _logger.Info("Firing \"updated\" event.");
 
-                if (OnStateSynced != null)
-                    OnStateSynced(this, new StateSyncedEventArgs() { Successfully = false });
+                OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
                 IsInitializing = false;
                 return false;
             }
@@ -297,8 +295,7 @@ namespace vMixAPI
 
                 if (e.Error != null)
                 {
-                    if (OnStateSynced != null)
-                        OnStateSynced(this, new StateSyncedEventArgs() { Successfully = false });
+                    OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
                     return;
                 }
                 if (e.UserState == null)
@@ -557,8 +554,7 @@ namespace vMixAPI
         //public event EventHandler Updated;
         private void RaisePropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 

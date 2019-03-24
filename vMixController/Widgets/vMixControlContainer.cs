@@ -129,14 +129,13 @@ namespace vMixController.Widgets
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
             base.SetProperties(viewModel);
-
-            MainWindowSettings _tmp;
             var fp = (viewModel.WidgetPropertiesControls.OfType<FilePathControl>().First()).Value;
 
             if (!string.IsNullOrWhiteSpace(fp))
             {
                 _controls.Clear();
-                foreach (var item in Utils.LoadController(fp, null, out _tmp).OrderBy(x=>x.Top))
+
+                foreach (var item in Utils.LoadController(fp, null, out MainWindowSettings _tmp).OrderBy(x => x.Top))
                 {
                     item.Width = Width - 2;
                     item.State = State;

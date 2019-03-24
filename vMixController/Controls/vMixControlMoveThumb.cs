@@ -32,14 +32,12 @@ namespace vMixController.Controls
 
         private void VMixControlMoveThumb_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            var ctrl = (e.NewValue as Widgets.vMixControl) as vMixController.Widgets.vMixControl;
-            if (ctrl != null)
+            if (e.NewValue is vMixControl ctrl)
             {
                 Locked = ctrl.Locked;
                 ctrl.PropertyChanged += Ctrl_PropertyChanged;
             }
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs("Locked"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Locked"));
         }
 
         private void Ctrl_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -59,9 +57,8 @@ namespace vMixController.Controls
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
 
-            if (item != null && !item.Locked)
+            if (this.DataContext is vMixController.Widgets.vMixControl item && !item.Locked)
             {
                 item.Left = Math.Round(item.Left + e.HorizontalChange);
                 item.Top = Math.Round(item.Top + e.VerticalChange);
@@ -70,7 +67,7 @@ namespace vMixController.Controls
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<Triple<vMixControl, double, double>>(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
             }
 
-            
+
         }
 
     }

@@ -372,10 +372,7 @@ namespace NewTek.NDI.WPF
 
         private void NotifyPropertyChanged(String info)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
         }
 
         public void Dispose()
@@ -434,8 +431,7 @@ namespace NewTek.NDI.WPF
         // when the ConnectedSource changes, connect to it.
         private static void OnConnectedSourceChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ReceiveView s = sender as ReceiveView;
-            if (s == null)
+            if (!(sender is ReceiveView s))
                 return;
 
             s.Connect(s.ConnectedSource);
@@ -677,9 +673,11 @@ namespace NewTek.NDI.WPF
                     // set up our audio buffer if needed
                     if (_bufferedProvider == null || formatChanged)
                     {
-                        _bufferedProvider = new BufferedWaveProvider(_waveFormat);
-                        _bufferedProvider.DiscardOnBufferOverflow = true;
-                    }
+                            _bufferedProvider = new BufferedWaveProvider(_waveFormat)
+                            {
+                                DiscardOnBufferOverflow = true
+                            };
+                        }
 
                     // set up our multiplexer used to mix down to 2 output channels)
                     if (_multiplexProvider == null || formatChanged)

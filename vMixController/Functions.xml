@@ -631,8 +631,9 @@
   <vMixFunctionReference>
     <Description>DataSourceSelectRow</Description>
     <Function>DataSourceSelectRow</Function>
-    <FormatString>Function=DataSourceSelectRow&amp;Value={2}</FormatString>
+    <FormatString>Function=DataSourceSelectRow&amp;Value={2},{1}</FormatString>
     <StringDescription>Data Source</StringDescription>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

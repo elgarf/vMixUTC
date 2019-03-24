@@ -255,14 +255,15 @@ namespace vMixController.Widgets
                 _updating = true;
 
                 BindingOperations.ClearBinding(this, TextProperty);
-                MultiBinding binding = new MultiBinding();
+                MultiBinding binding = new MultiBinding
+                {
+                    Converter = ConverterSelector(),
 
-                binding.Converter = ConverterSelector();
-
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.Default;
-                binding.NotifyOnSourceUpdated = true;
-                binding.NotifyOnTargetUpdated = true;
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Default,
+                    NotifyOnSourceUpdated = true,
+                    NotifyOnTargetUpdated = true
+                };
                 //binding.Delay = 10;
 
 
@@ -293,10 +294,12 @@ namespace vMixController.Widgets
                                 }
                             }
 
-                            Binding b = new Binding(val is InputImage ? MappedImageProperty : MappedTextProperty);
-                            b.Source = val;
-                            b.Mode = BindingMode.TwoWay;
-                            b.UpdateSourceTrigger = UpdateSourceTrigger.Default;
+                            Binding b = new Binding(val is InputImage ? MappedImageProperty : MappedTextProperty)
+                            {
+                                Source = val,
+                                Mode = BindingMode.TwoWay,
+                                UpdateSourceTrigger = UpdateSourceTrigger.Default
+                            };
                             binding.Bindings.Add(b);
                         }
                     }
@@ -380,8 +383,10 @@ namespace vMixController.Widgets
                     ?? (_selectPathCommand = new RelayCommand(
                     () =>
                     {
-                        var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        dialog.Filter = "All files (*.*)|*.*";
+                        var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = "All files (*.*)|*.*"
+                        };
                         var result = dialog.ShowDialog();
                         if (result.HasValue && result.Value)
                             Text = dialog.FileName;

@@ -70,8 +70,7 @@ namespace vMixController.Widgets
 
         public override void ExecuteHotkey(int index)
         {
-            int i = 0;
-            int.TryParse(Text, out i);
+            int.TryParse(Text, out int i);
             switch (index)
             {
                 case 0:
@@ -114,8 +113,7 @@ namespace vMixController.Widgets
                     ?? (_addScoreCommand = new RelayCommand<ControlIntParameter>(
                     p =>
                     {
-                        int _out = 0;
-                        int.TryParse(p.A.Text, out _out);
+                        int.TryParse(p.A.Text, out int _out);
                         _out += p.B;
                         p.A.Text = _out.ToString();
                     }));
@@ -149,11 +147,13 @@ namespace vMixController.Widgets
 
             var ctrl = GetPropertyControl<ComboBoxControl>();
             ctrl.Title = Extensions.LocalizationManager.Get("Style");
-            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>();
-            ctrl.Items.Add("Basic");
-            ctrl.Items.Add("Basketball");
-            ctrl.Items.Add("Rugby");
-            ctrl.Items.Add("American Football");
+            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            {
+                "Basic",
+                "Basketball",
+                "Rugby",
+                "American Football"
+            };
             ctrl.Value = Style;
 
             return (new UserControl[] { ctrl }).Concat(props).ToArray();

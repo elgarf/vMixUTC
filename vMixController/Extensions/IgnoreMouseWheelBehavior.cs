@@ -45,15 +45,14 @@ namespace vMixController.Extensions
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                T childType = child as T;
-                if (childType == null)
+                if (!(child is T childType))
                     // recursively drill down the tree
                     foundChilds = foundChilds.Union(FindChild<T>(child)).ToList();
                 else
                 {
                     // child element found.
                     foundChilds.Add((T)child);
-                    
+
                 }
             }
             return foundChilds;
@@ -77,8 +76,10 @@ namespace vMixController.Extensions
             if (popup.Count(x=>x.IsOpen) == 0 && !IgnoreBehavior)
             {
                 e.Handled = true;
-                var e2 = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
-                e2.RoutedEvent = UIElement.MouseWheelEvent;
+                var e2 = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                {
+                    RoutedEvent = UIElement.MouseWheelEvent
+                };
                 AssociatedObject.RaiseEvent(e2);
             }
         }

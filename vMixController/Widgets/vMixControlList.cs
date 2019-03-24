@@ -79,9 +79,11 @@ namespace vMixController.Widgets
 
             ListControl control = GetPropertyControl<ListControl>();
             BindingOperations.ClearAllBindings(control);
-            var binding = new Binding("Active");
-            binding.Converter = new NonVisibilityConverter();
-            binding.Source = control2;
+            var binding = new Binding("Active")
+            {
+                Converter = new NonVisibilityConverter(),
+                Source = control2
+            };
             BindingOperations.SetBinding(control, ListControl.VisibilityProperty, binding);
 
             control.Items.Clear();
@@ -168,15 +170,30 @@ namespace vMixController.Widgets
             BindingOperations.ClearBinding(this, TextProperty);
 
             if (Items == null) Items = new ObservableCollection<string>();
-            Items.Clear();
-            foreach (var item in (_controls.OfType<ListControl>().First()).Items)
-                Items.Add(item.Value);
-            UpdateBinding();
 
-            DataSource = new Triple<string, string, bool>();
-            DataSource.A = _controls.OfType<DataSourceControl>().First().DataSource;
-            DataSource.B = _controls.OfType<DataSourceControl>().First().DataProperty;
-            DataSource.C = _controls.OfType<DataSourceControl>().First().Active;
+            //Update Items instead of clearing
+            var newItems = (_controls.OfType<ListControl>().First()).Items;
+            for (int i = 0; i < Math.Max(Items.Count, newItems.Count); i++)
+            {
+                if (i < Math.Min(Items.Count, newItems.Count))
+                {
+                    if (Items[i] != newItems[i].Value)
+                        Items[i] = newItems[i].Value;
+                }
+                else if (Items.Count < newItems.Count)
+                    Items.Add(newItems[i].Value);
+            }
+            while (Items.Count > newItems.Count)
+                Items.RemoveAt(Items.Count - 1);
+
+            //UpdateBinding();
+
+            DataSource = new Triple<string, string, bool>
+            {
+                A = _controls.OfType<DataSourceControl>().First().DataSource,
+                B = _controls.OfType<DataSourceControl>().First().DataProperty,
+                C = _controls.OfType<DataSourceControl>().First().Active
+            };
             UpdateBinding();
 
             if (tb != null)
@@ -189,9 +206,11 @@ namespace vMixController.Widgets
         {
             BindingOperations.ClearBinding(this, ItemsProperty);
             if (DataSource == null || !DataSource.C) return;
-            Binding b = new Binding(DataSource.B);
-            b.Converter = new StringToCollectionConverter();
-            b.Source = Singleton<SharedData>.Instance.GetDataSource(DataSource.A);
+            Binding b = new Binding(DataSource.B)
+            {
+                Converter = new StringToCollectionConverter(),
+                Source = Singleton<SharedData>.Instance.GetDataSource(DataSource.A)
+            };
             BindingOperations.SetBinding(this, ItemsProperty, b);
         }
 

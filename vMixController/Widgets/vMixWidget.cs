@@ -58,8 +58,10 @@ namespace vMixController.Widgets
         public vMixControl()
         {
 
-            _shadowUpdate = new DispatcherTimer();
-            _shadowUpdate.Interval = TimeSpan.FromSeconds(1);
+            _shadowUpdate = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
             _shadowUpdate.Tick += _shadowUpdate_Tick;
             _shadowUpdate.Start();
             WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
@@ -912,9 +914,7 @@ namespace vMixController.Widgets
 
         protected object GetValueByPath(object obj, string path)
         {
-            System.Reflection.PropertyInfo found_prop = null;
-            object found;
-            var items = GetValueAndPropertyInfo(obj, path, out found_prop, out found);
+            var items = GetValueAndPropertyInfo(obj, path, out PropertyInfo found_prop, out object found);
             if (items != null && items.Length > 1 && found != null)
                 return GetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y));
             return found;
@@ -922,9 +922,7 @@ namespace vMixController.Widgets
 
         protected void SetValueByPath(object obj, string path, object value)
         {
-            object found = null;
-            System.Reflection.PropertyInfo found_prop = null;
-            var items = GetValueAndPropertyInfo(obj, path, out found_prop, out found);
+            var items = GetValueAndPropertyInfo(obj, path, out PropertyInfo found_prop, out object found);
 
             if (items != null && items.Length > 1 && found != null)
                 SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
