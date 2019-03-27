@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ignore="http://www.galasoft.ch/ignore"
              StartupUri="MainWindow.xaml"
-             mc:Ignorable="d ignore">
+             mc:Ignorable="d ignore" Startup="Application_Startup">
     
     <Application.Resources>
         <Style TargetType="MenuItem">

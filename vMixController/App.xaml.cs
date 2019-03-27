@@ -48,5 +48,18 @@ namespace vMixController
 
             _logger.Error((Exception)e.ExceptionObject, "Current domain unhandled exception.");
         }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            foreach (var item in e.Args)
+            {
+                if (Path.GetExtension(item) == ".vmc")
+                {
+                    App.Current.Resources["CommandLine"] = item;
+                    break;
+                }
+            }
+            
+        }
     }
 }

@@ -1133,36 +1133,41 @@ namespace vMixController.ViewModel
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
                         {
-                            var state = WindowSettings.State;
-                            var left = WindowSettings.Left;
-                            var top = WindowSettings.Top;
-                            var width = WindowSettings.Width;
-                            var height = WindowSettings.Height;
-                            foreach (var item in _widgets)
-                                item.Dispose();
-                            _widgets.Clear();
-
-                            LIVE = true;
-
-                            foreach (var item in Utils.LoadController(opendlg.FileName, Functions, out _windowSettings))
-                                _widgets.Add(item);
-
-                            foreach (var item in _widgets)
-                                item.Update();
-
-                            RaisePropertyChanged("WindowSettings");
-                            _logger.Info("Configuring API.");
-
-                            _connectTimer_Tick(null, new EventArgs());
-
-                            vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
-
-                            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
-
-                            SyncTovMixState();
+                            LoadControllerFromFile(opendlg.FileName);
                         }
                     }));
             }
+        }
+
+        private void LoadControllerFromFile(string opendlg)
+        {
+            var state = WindowSettings.State;
+            var left = WindowSettings.Left;
+            var top = WindowSettings.Top;
+            var width = WindowSettings.Width;
+            var height = WindowSettings.Height;
+            foreach (var item in _widgets)
+                item.Dispose();
+            _widgets.Clear();
+
+            LIVE = true;
+
+            foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
+                _widgets.Add(item);
+
+            foreach (var item in _widgets)
+                item.Update();
+
+            RaisePropertyChanged("WindowSettings");
+            _logger.Info("Configuring API.");
+
+            _connectTimer_Tick(null, new EventArgs());
+
+            vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
+
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+
+            SyncTovMixState();
         }
 
         private RelayCommand _saveControllerCommand;
@@ -1442,6 +1447,8 @@ namespace vMixController.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            //Fix changing current directory on opening .vmc from external folder
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
             vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
 
@@ -1670,6 +1677,17 @@ namespace vMixController.ViewModel
                     break;
             }*/
             Properties.Settings.Default.Save();
+
+            if (!string.IsNullOrWhiteSpace((string)App.Current.Resources["CommandLine"]))
+                try
+                {
+                    _logger.Info("Trying to load {0}.", (string)App.Current.Resources["CommandLine"]);
+                    LoadControllerFromFile((string)App.Current.Resources["CommandLine"]);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Error loading controller. {0}");
+                }
 
         }
 
