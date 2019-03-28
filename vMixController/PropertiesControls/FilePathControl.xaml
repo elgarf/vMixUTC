@@ -14,9 +14,15 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-        <TextBlock Style="{StaticResource PropertyName}" Text="{Binding Title, ElementName=Me}"/>
-        <Grid>
+    <Grid Margin="{StaticResource TopBottomStdMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Background="{StaticResource Main.Gradient}">
+            <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}" Text="{Binding Title, ElementName=Me}"/>
+        </Grid>
+        <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
@@ -35,5 +41,5 @@
             </TextBox>
             <Button ToolTip="Select File" Style="{StaticResource TitleButton}"  Grid.Column="1" Margin="2,0,0,0" Command="{Binding SelectFilePathCommand, ElementName=Me}">&#xF259;</Button>
         </Grid>
-    </StackPanel>
+    </Grid>
 </UserControl>

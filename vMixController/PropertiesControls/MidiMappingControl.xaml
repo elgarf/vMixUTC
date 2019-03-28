@@ -28,72 +28,76 @@
     <i:Interaction.Behaviors>
         <e:IgnoreMouseWheelBehavior/>
     </i:Interaction.Behaviors>
-    <StackPanel Visibility="{Binding PathMappingVisibility}" Margin="0,0,0,2">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Midi Mapping}"/></TextBlock>
-            <Button ToolTip="{e:Localize Add midi mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+    <Border BorderBrush="#F754FF" BorderThickness="1" Background="#F525D9" Margin="{StaticResource TopBottomStdMargin}">
+        <StackPanel Visibility="{Binding PathMappingVisibility}" Margin="{StaticResource StdMargin}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" VerticalAlignment="Center">
+                    <Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf001;</Run>
+                    <Run Text="{e:Localize Midi Mapping}"/></TextBlock>
+                <Button ToolTip="{e:Localize Add midi mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+            </StackPanel>
+            <ListView BorderThickness="0" ItemsSource="{Binding Midis, ElementName=Me}" HorizontalContentAlignment="Stretch">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <GridViewRowPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="{e:Localize Channel}" Width="50">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding A}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{e:Localize Control}" Width="50">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding B}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{e:Localize Execution Link}" Width="150">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding C}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{e:Localize MIDI Event Type}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox SelectedValue="{Binding D, Mode=TwoWay}" ItemsSource="{Binding Source={StaticResource MidiValues}}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding LearnMidiKey, ElementName=Me}" CommandParameter="{Binding}">Learn</Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </StackPanel>
-        <ListView BorderThickness="0,0,0,1" ItemsSource="{Binding Midis, ElementName=Me}" HorizontalContentAlignment="Stretch">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <GridViewRowPresenter/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="{e:Localize Channel}" Width="50">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBox Text="{Binding A}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="{e:Localize Control}" Width="50">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBox Text="{Binding B}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="{e:Localize Execution Link}" Width="150">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBox Text="{Binding C}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="{e:Localize MIDI Event Type}">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <ComboBox SelectedValue="{Binding D, Mode=TwoWay}" ItemsSource="{Binding Source={StaticResource MidiValues}}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Command="{Binding LearnMidiKey, ElementName=Me}" CommandParameter="{Binding}">Learn</Button>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </StackPanel>
+    </Border>
 </UserControl>

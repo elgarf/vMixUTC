@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:vMixController.PropertiesControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             x:Name="Me">
+             x:Name="Me"
+             Foreground="White">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,8 +15,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-    <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
-        <Border BorderThickness="0,1,0,0" BorderBrush="White"/>
-    </StackPanel>
+    <Grid Margin="{StaticResource StdMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
+        <Border  BorderBrush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" VerticalAlignment="Center"  Grid.Column="1" BorderThickness="0,2,0,0"/>
+    </Grid>
 </UserControl>

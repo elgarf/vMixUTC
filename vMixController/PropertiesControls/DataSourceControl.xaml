@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="{StaticResource TopBottomStdMargin}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
@@ -25,8 +25,8 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource PropertyName}" Grid.Column="1">Data Source</TextBlock>
-        <TextBlock Style="{StaticResource PropertyName}" Grid.Column="3">Property</TextBlock>
+        <TextBlock Style="{StaticResource PropertyName}" Grid.Column="1" HorizontalAlignment="Center">Data Source</TextBlock>
+        <TextBlock Style="{StaticResource PropertyName}" Grid.Column="3" HorizontalAlignment="Center">Property</TextBlock>
         <CheckBox IsChecked="{Binding Active, ElementName=Me}" Grid.Row="1" VerticalAlignment="Center"/>
         <ComboBox IsEnabled="{Binding Active, ElementName=Me}" ItemsSource="{Binding Sources, ElementName=Me}" SelectedValue="{Binding DataSource, ElementName=Me}" Grid.Row="1" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
         <ComboBox IsEnabled="{Binding Active, ElementName=Me}" ItemsSource="{Binding Properties, ElementName=Me}" SelectedValue="{Binding DataProperty, ElementName=Me}" Grid.Row="1" Grid.Column="3"/>

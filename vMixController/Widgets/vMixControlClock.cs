@@ -16,6 +16,8 @@ namespace vMixController.Widgets
         public override string Type => "Clock";
         public override int MaxCount => 1;
 
+        private string _lastExecuted = null;
+
         [NonSerialized]
         private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Background);
 
@@ -85,9 +87,9 @@ namespace vMixController.Widgets
             _timer.Tick += _timer_Tick;
         }
 
-        private bool ExecuteToday(DateTime date)
+        private bool ExecuteToday(DateTime date, DateTime now)
         {
-            switch (DateTime.Now.DayOfWeek)
+            switch (now.DayOfWeek)
             {
                 case DayOfWeek.Monday:
                     return (date.Millisecond & 1) == 1;
@@ -107,24 +109,51 @@ namespace vMixController.Widgets
             return false;
         }
 
+        private string GetDayOfWeek(DateTime date)
+        {
+            
+            int d = (int)date.DayOfWeek - 1;
+            if (d < 0)
+                d = 6;
+            return new string[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Never" }[d];
+        }
+
         private void _timer_Tick(object sender, EventArgs e)
         {
             var now = DateTime.Now;
             foreach (var item in _events)
             {
-                if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A))
+                //prevent executing one item twice
+                if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A, DateTime.Now) && _lastExecuted != item.A.ToShortDateString() + item.B)
+                {
+                    _lastExecuted = item.A.ToShortDateString() + item.B;
                     Messenger.Default.Send(item.B);
+                }
             }
-            NextEventAt = GetNextEvent(now);
+
+            var day = GetNextEvent(now);
+            DateTime lastDate = now;
+            if (day == null)
+            {
+                var date = DateTime.Now.Date;
+                for (int i = 1; i < 7 && day == null; i++)
+                    day = GetNextEvent(lastDate = date.AddDays(i));
+            }
+            if (day == null)
+                NextEventAt = LocalizationManager.Get("No new events scheduled");
+            else
+                NextEventAt = String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}, {4}", day.A, day.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"), GetDayOfWeek(lastDate) == GetDayOfWeek(now) ? "Today" : GetDayOfWeek(lastDate));
         }
 
-        private string GetNextEvent(DateTime now)
+        private Pair<DateTime, string> GetNextEvent(DateTime now)
         {
             foreach (var item in _events)
-                if (item.A.Hour + item.A.Minute / 60.0 + item.A.Second / 3600.0 > now.Hour + now.Minute / 60.0 + now.Second / 3600.0 && ExecuteToday(item.A))
-                    return String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}", item.A, item.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"));
-
-            return LocalizationManager.Get("No Events Scheduled");
+            {
+                var day = GetDayOfWeek(item.A);
+                if (item.A.Hour + item.A.Minute / 60.0 + item.A.Second / 3600.0 > now.Hour + now.Minute / 60.0 + now.Second / 3600.0 && (ExecuteToday(item.A, now)))
+                    return item;//String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}, {4}", item.A, item.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"), day);
+            }
+            return null;
         }
 
         public override UserControl[] GetPropertiesControls()

@@ -14,8 +14,14 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-        <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}" /></TextBlock>
-        <TextBox Text="{Binding Value, Mode=TwoWay, ElementName=Me}" AcceptsReturn="{Binding AcceptReturn, ElementName=Me}"/>
-    </StackPanel>
+    <Grid Margin="{StaticResource TopBottomStdMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Background="{StaticResource Main.Gradient}">
+            <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}" /></TextBlock>
+        </Grid>
+        <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay, ElementName=Me}" AcceptsReturn="{Binding AcceptReturn, ElementName=Me}"/>
+    </Grid>
 </UserControl>

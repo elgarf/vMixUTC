@@ -20,39 +20,41 @@
     <i:Interaction.Behaviors>
         <e:IgnoreMouseWheelBehavior/>
     </i:Interaction.Behaviors>
-    <StackPanel Margin="0,0,0,2">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource PropertyName}"><Run Text="{e:Localize Title Mapping}"/></TextBlock>
-            <Button ToolTip="{e:Localize Add title mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+    <Border BorderBrush="#1A3CB1" BorderThickness="1" Background="#18488C" Margin="{StaticResource TopBottomStdMargin}">
+        <StackPanel Margin="{StaticResource StdMargin}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" VerticalAlignment="Center"><Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf039;</Run><Run Text=" "/><Run Text="{e:Localize Title Mapping}"/></TextBlock>
+                <Button ToolTip="{e:Localize Add title mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+            </StackPanel>
+            <ListView Background="Transparent" BorderThickness="0" ItemsSource="{Binding Titles, ElementName=Me}" HorizontalContentAlignment="Stretch">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" HorizontalAlignment="Right">
+                                <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
+                            </StackPanel>
+                            <ctrl:vMixPathSelector Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" InputKey="{Binding A, Mode=TwoWay}" TitleName="{Binding B, Mode=TwoWay}" Width="Auto" HorizontalAlignment="Stretch"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border Margin="2" HorizontalAlignment="Stretch">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
         </StackPanel>
-        <ListView BorderThickness="0,0,0,1" ItemsSource="{Binding Titles, ElementName=Me}" HorizontalContentAlignment="Stretch">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" HorizontalAlignment="Right">
-                            <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
-                        </StackPanel>
-                        <ctrl:vMixPathSelector Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" InputKey="{Binding A, Mode=TwoWay}" TitleName="{Binding B, Mode=TwoWay}" Width="Auto" HorizontalAlignment="Stretch"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListViewItem">
-                                <Border Margin="2" HorizontalAlignment="Stretch">
-                                    <ContentPresenter/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-    </StackPanel>
+    </Border>
 </UserControl>

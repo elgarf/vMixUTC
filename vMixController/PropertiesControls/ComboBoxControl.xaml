@@ -14,10 +14,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-        <TextBlock Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
-        <ComboBox SelectedValue="{Binding Value, ElementName=Me}" ItemsSource="{Binding Items, ElementName=Me}">
+    <Grid Margin="{StaticResource TopBottomStdMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Background="{StaticResource Main.Gradient}">
+            <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
+        </Grid>
+        <ComboBox Grid.Column="1" SelectedValue="{Binding Value, ElementName=Me}" ItemsSource="{Binding Items, ElementName=Me}">
 
         </ComboBox>
-    </StackPanel>
+    </Grid>
 </UserControl>
