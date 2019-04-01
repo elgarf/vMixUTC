@@ -124,9 +124,9 @@ namespace vMixController.Widgets
             foreach (var item in _events)
             {
                 //prevent executing one item twice
-                if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A, DateTime.Now) && _lastExecuted != item.A.ToShortDateString() + item.B)
+                if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A, DateTime.Now) /*&& _lastExecuted != item.A.ToShortDateString() + item.B*/)
                 {
-                    _lastExecuted = item.A.ToShortDateString() + item.B;
+                    //_lastExecuted = item.A.ToShortDateString() + item.B;
                     Messenger.Default.Send(item.B);
                 }
             }

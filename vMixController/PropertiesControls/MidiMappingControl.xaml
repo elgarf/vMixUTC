@@ -29,7 +29,7 @@
         <e:IgnoreMouseWheelBehavior/>
     </i:Interaction.Behaviors>
     <Border BorderBrush="#F754FF" BorderThickness="1" Background="#F525D9" Margin="{StaticResource TopBottomStdMargin}">
-        <StackPanel Visibility="{Binding PathMappingVisibility}" Margin="{StaticResource StdMargin}">
+        <StackPanel Margin="{StaticResource StdMargin}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" VerticalAlignment="Center">
                     <Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf001;</Run>

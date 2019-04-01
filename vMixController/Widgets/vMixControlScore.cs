@@ -161,7 +161,7 @@ namespace vMixController.Widgets
 
         public override void SetProperties(UserControl[] _controls)
         {
-            Style = ((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
+            Style = (string)((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
             base.SetProperties(_controls);
         }
     }

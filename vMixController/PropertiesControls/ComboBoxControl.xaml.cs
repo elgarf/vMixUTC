@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -44,28 +45,28 @@ namespace vMixController.PropertiesControls
 
 
 
-        public string Value
+        public object Value
         {
-            get { return (string)GetValue(ValueProperty); }
+            get { return (object)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(string), typeof(ComboBoxControl), new PropertyMetadata(""));
+            DependencyProperty.Register("Value", typeof(object), typeof(ComboBoxControl), new PropertyMetadata(null));
 
 
 
 
-        public ObservableCollection<string> Items
+        public IEnumerable Items
         {
-            get { return (ObservableCollection<string>)GetValue(ItemsProperty); }
+            get { return (IEnumerable)GetValue(ItemsProperty); }
             set { SetValue(ItemsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Items.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<string>), typeof(ComboBoxControl), new PropertyMetadata(null));
+            DependencyProperty.Register("Items", typeof(IEnumerable), typeof(ComboBoxControl), new PropertyMetadata(null));
 
 
 

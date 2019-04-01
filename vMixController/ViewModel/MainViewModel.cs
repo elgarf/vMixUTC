@@ -682,7 +682,10 @@ namespace vMixController.ViewModel
             //var first = _widgets.Select((item, index) => new { itm = item, idx = index }).OrderBy(i => i.itm.ZIndex).FirstOrDefault();
             //if (first != null)
             //{
+            if (widget.ZIndex < 0)
                 _widgets.Insert(0, widget);
+            else
+                _widgets.Add(widget);
             //}
             //else
             //    _widgets.Add(widget);

@@ -46,10 +46,10 @@
             </CompositeCollection>
             <Rectangle x:Key="DynamicIcon" x:Shared="False"  Width="16" Height="16" StrokeThickness="1">
                 <Rectangle.Fill>
-                    <SolidColorBrush Color="{Binding B.Color}"/>
+                    <SolidColorBrush Color="{Binding B.Color, FallbackValue=Black}"/>
                 </Rectangle.Fill>
                 <Rectangle.Stroke>
-                    <SolidColorBrush Color="{Binding B.BorderColor}"/>
+                    <SolidColorBrush Color="{Binding B.BorderColor, FallbackValue=Black}"/>
                 </Rectangle.Stroke>
             </Rectangle>
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
@@ -131,16 +131,7 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem x:Name="Templates" Header="{e:Localize Templates}" ItemsSource="{Binding WidgetTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
-                    <MenuItem.Icon>
-                        <Rectangle Width="16" Height="16" StrokeThickness="1">
-                            <Rectangle.Fill>
-                                <SolidColorBrush Color="{Binding B.Color}"/>
-                            </Rectangle.Fill>
-                            <Rectangle.Stroke>
-                                <SolidColorBrush Color="{Binding B.BorderColor}"/>
-                            </Rectangle.Stroke>
-                        </Rectangle>
-                    </MenuItem.Icon>
+
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <TextBlock><Run Text="["/><InlineUIContainer>

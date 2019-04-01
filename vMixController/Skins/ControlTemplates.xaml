@@ -119,7 +119,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0, TargetNullValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -133,7 +133,6 @@
             </i:Interaction.Triggers>
         </toolkit:IntegerUpDown>
         <ContentPresenter Grid.Column="2" Content="{Binding}">
-
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">

@@ -651,8 +651,8 @@ namespace vMixController.Widgets
 
         private void Exp_EvaluateParameter(string name, NCalc.ParameterArgs args)
         {
-            //Avoid non-defined parameters
-            args.Result = 0;
+            //Avoid non-defined parameters with their names
+            args.Result = name;
         }
 
         private T CalculateExpression<T>(string s)

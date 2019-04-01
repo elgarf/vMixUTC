@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixController", "vMixController\vMixController.csproj", "{84AB3528-B120-4E4F-AB37-223475747FA8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -131,5 +131,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B4D40E3-FBA6-430B-9834-FFFAFAE95B36}
 	EndGlobalSection
 EndGlobal

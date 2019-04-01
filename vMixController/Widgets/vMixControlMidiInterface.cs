@@ -172,20 +172,17 @@ namespace vMixController.Widgets
 
             }
 
-            var lbl = GetPropertyControl<LabelControl>();
-            lbl.Title = "Devices";
-
-            var midiDeviceSelector = new ComboBox
-            {
-                ItemsSource = MidiDevices,
-                SelectedValue = Device
-            };
-
-            Binding bnd = new Binding("DeviceCaps")
+            var midiDeviceSelector = GetPropertyControl<ComboBoxControl>();
+            midiDeviceSelector.Title = "Device";
+            midiDeviceSelector.Items = MidiDevices;
+            midiDeviceSelector.Tag = "DeviceSelector";
+            /*Binding bnd = new Binding("DeviceCaps")
             {
                 Source = this
             };
-            BindingOperations.SetBinding(midiDeviceSelector, ComboBox.SelectedValueProperty, bnd);
+            BindingOperations.SetBinding(midiDeviceSelector, ComboBoxControl.ValueProperty, bnd);*/
+            midiDeviceSelector.Value = Device != null ? InputDevice.GetDeviceCapabilities(Device.DeviceID).name : "";
+
 
             var midiMappingCtrl = GetPropertyControl<MidiMappingControl>();
             midiMappingCtrl.LearnFunction = Learn;
@@ -199,7 +196,7 @@ namespace vMixController.Widgets
             /*Binding bnd = new Binding("Device");
             bnd.Source = this;
             BindingOperations.SetBinding(midiDeviceSelector, ComboBox.SelectedValueProperty, bnd);*/
-            return base.GetPropertiesControls().Union(new UserControl[] { lbl, new UserControl() { Tag = "DeviceSelector", Content = midiDeviceSelector }, midiMappingCtrl }).ToArray();
+            return base.GetPropertiesControls().Union(new UserControl[] { midiDeviceSelector, midiMappingCtrl }).ToArray();
         }
 
         private MidiInterfaceKey Learn()
@@ -220,7 +217,8 @@ namespace vMixController.Widgets
 
         public override void SetProperties(UserControl[] _controls)
         {
-            MidiDeviceName = (string)(_controls.Where(x => (string)x.Tag == "DeviceSelector").First().Content as ComboBox).SelectedValue;
+            MidiDeviceName = (string)(_controls.Where(x => (string)x.Tag == "DeviceSelector").First() as ComboBoxControl).Value;
+            DeviceCaps = MidiDeviceName;
             var ctrl = _controls.OfType<MidiMappingControl>().First();
             Midis.Clear();
             foreach (var item in ctrl.Midis)
