@@ -732,7 +732,8 @@ namespace vMixController.Widgets
                                 _pointer = CalculateExpression<int>(cmd.Parameter) - 1;
                                 break;
                             case NativeFunctions.EXECLINK:
-                                Dispatcher.Invoke(() => Messenger.Default.Send<string>(cmd.StringParameter));
+                                //Calculating expressions into EXECLINKS
+                                Dispatcher.Invoke(() => Messenger.Default.Send<string>(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString()));
                                 break;
                             case NativeFunctions.LIVETOGGLE:
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 2 }));

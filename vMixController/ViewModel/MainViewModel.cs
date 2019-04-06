@@ -383,6 +383,37 @@ namespace vMixController.ViewModel
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="ExecLinks" /> property's name.
+        /// </summary>
+        public const string ExecLinksPropertyName = "ExecLinks";
+
+        private ObservableCollection<Triple<vMixControl, vMixControl, string>> _execLinks  = new ObservableCollection<Triple<vMixControl, vMixControl, string>>();
+
+        /// <summary>
+        /// Sets and gets the ExecLinks property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<Triple<vMixControl, vMixControl, string>> ExecLinks
+        {
+            get
+            {
+                return _execLinks;
+            }
+
+            set
+            {
+                if (_execLinks == value)
+                {
+                    return;
+                }
+
+                _execLinks = value;
+                RaisePropertyChanged(ExecLinksPropertyName);
+            }
+        }
+
         /// <summary>
         /// The <see cref="WidgetTemplates" /> property's name.
         /// </summary>
@@ -1171,6 +1202,42 @@ namespace vMixController.ViewModel
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
             SyncTovMixState();
+            UpdateExecLinks();
+        }
+
+
+        private void UpdateExecLinks()
+        {
+            ExecLinks.Clear();
+            foreach (var item in _widgets)
+            {
+                var active = item.Hotkey.Where(x => !string.IsNullOrWhiteSpace(x.Link)).Select(x => x.Link).ToArray();
+                foreach (var item1 in _widgets)
+                {
+                    switch (item1)
+                    {
+                        case vMixControlButton b:
+                            foreach (var cmd in b.Commands)
+                            {
+                                if (cmd.Action.Function == "ExecLink" && active.Contains(cmd.StringParameter))
+                                    ExecLinks.Add(new Triple<vMixControl, vMixControl, string>() { A = item, B = item1, C = cmd.StringParameter });
+                            }
+                            break;
+                        case vMixControlTimer t:
+                            foreach (var l in t.Links.Where(x=>active.Contains(x)))
+                                ExecLinks.Add(new Triple<vMixControl, vMixControl, string>() { A = item, B = item1, C = l });
+                            break;
+                        case vMixControlMidiInterface m:
+                            foreach (var l in m.Midis.Where(x => active.Contains(x.C)))
+                                ExecLinks.Add(new Triple<vMixControl, vMixControl, string>() { A = item, B = item1, C = l.C });
+                            break;
+                        case vMixControlClock c:
+                            foreach (var l in c.Events.Where(x => active.Contains(x.B)))
+                                ExecLinks.Add(new Triple<vMixControl, vMixControl, string>() { A = item, B = item1, C = l.B });
+                            break;
+                    }
+                }
+            }
         }
 
         private RelayCommand _saveControllerCommand;

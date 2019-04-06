@@ -37,6 +37,7 @@
             <c:MarginMultiConverter x:Key="MarginMultiConverter"/>
             <c:NotConverter x:Key="NotConverter"/>
             <c:BoolToBrushConverter x:Key="BoolToBrush"/>
+            <c:ControlToPointConverter x:Key="ControlToPoint"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
                 <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Add Widget}" Command="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
@@ -256,103 +257,122 @@
             </MenuItem>
         </Menu>
         <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-            <ListView ItemsSource="{Binding Widgets}" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
-                <ListView.ContextMenu>
-                    <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
-                        <ContextMenu.Resources>
-                            <cls:BindingProxy x:Key="proxy" Data="{Binding}" />
-                        </ContextMenu.Resources>
-                        <ContextMenu.ItemContainerStyleSelector>
-                            <cls:MenuStyleSelector>
-                                <cls:MenuStyleSelector.MenuItem>
-                                    <Style TargetType="MenuItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
-                                    </Style>
-                                </cls:MenuStyleSelector.MenuItem>
-                            </cls:MenuStyleSelector>
-                        </ContextMenu.ItemContainerStyleSelector>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-                <ListView.Resources>
-                    <ResourceDictionary>
-                        <ResourceDictionary.MergedDictionaries>
-                            <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
-                        </ResourceDictionary.MergedDictionaries>
-                    </ResourceDictionary>
-                </ListView.Resources>
+            <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+                <ListView BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
+                    <ListView.ContextMenu>
+                        <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
+                            <ContextMenu.Resources>
+                                <cls:BindingProxy x:Key="proxy" Data="{Binding}" />
+                            </ContextMenu.Resources>
+                            <ContextMenu.ItemContainerStyleSelector>
+                                <cls:MenuStyleSelector>
+                                    <cls:MenuStyleSelector.MenuItem>
+                                        <Style TargetType="MenuItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
+                                        </Style>
+                                    </cls:MenuStyleSelector.MenuItem>
+                                </cls:MenuStyleSelector>
+                            </ContextMenu.ItemContainerStyleSelector>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ListView.Resources>
 
-                <ListView.Cursor>
-                    <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
-                </ListView.Cursor>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="ContextMenuOpening">
-                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="ContextMenuClosing">
-                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseMove">
-                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <i:Interaction.Behaviors>
-                    <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
-                </i:Interaction.Behaviors>
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <Grid.LayoutTransform>
-                                <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
-                            </Grid.LayoutTransform>
-                        </Grid>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplateSelector>
-                    <ctrls:TypeTemplateSelector/>
-                </ListView.ItemTemplateSelector>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Margin">
-                            <Setter.Value>
-                                <MultiBinding Converter="{StaticResource MarginMultiConverter}">
-                                    <Binding Path="Left"/>
-                                    <Binding Path="Top"/>
-                                </MultiBinding>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="HorizontalAlignment" Value="Left"/>
-                        <Setter Property="VerticalAlignment" Value="Top"/>
-                        <!--</Setter> Value="{Binding Left}"/>
+                    <ListView.Cursor>
+                        <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
+                    </ListView.Cursor>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="ContextMenuOpening">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="ContextMenuClosing">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseMove">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <i:Interaction.Behaviors>
+                        <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
+                    </i:Interaction.Behaviors>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Grid.LayoutTransform>
+                                    <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
+                                </Grid.LayoutTransform>
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplateSelector>
+                        <ctrls:TypeTemplateSelector/>
+                    </ListView.ItemTemplateSelector>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Margin">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource MarginMultiConverter}">
+                                        <Binding Path="Left"/>
+                                        <Binding Path="Top"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                            <!--</Setter> Value="{Binding Left}"/>
                     <Setter Property="Canvas.Top" Value="{Binding Top}"/>-->
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.Style>
-                    <Style TargetType="{x:Type ListView}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                <!--<ItemsControl ItemsSource="{Binding ExecLinks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Line X1="{Binding A, Converter={StaticResource ControlToPoint}, Mode=TwoWay}"
+                                  Y1="{Binding A, Converter={StaticResource ControlToPoint}, ConverterParameter=1, Mode=TwoWay}"
+                                  X2="{Binding B, Converter={StaticResource ControlToPoint}, Mode=TwoWay}"
+                                  Y2="{Binding B, Converter={StaticResource ControlToPoint}, ConverterParameter=1, Mode=TwoWay}"
+                                  Stroke="Red"
+                                  StrokeThickness="2" StrokeStartLineCap="Triangle" StrokeEndLineCap="Square" StrokeDashArray="5 5"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>-->
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
                         <Setter Property="Background">
                             <Setter.Value>
                                 <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
-                            <Trigger Property="Cursor" Value="Hand">
+                            <!--<Trigger Property="Cursor" Value="Hand">
                                 <Setter Property="BorderThickness" Value="2"/>
                                 <Setter Property="BorderBrush" Value="Red"/>
-                            </Trigger>
+                            </Trigger>-->
                             <Trigger Property="Tag">
                                 <Trigger.Value>
                                     <sys:Boolean>True</sys:Boolean>
@@ -361,8 +381,8 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                </ListView.Style>
-            </ListView>
+                </Grid.Style>
+            </Grid>
         </ScrollViewer>
         <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SelectorPosition}" Width="{Binding SelectorWidth}" Height="{Binding SelectorHeight}" Visibility="{Binding SelectorEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" Background="#7F00FFFF"/>
         <StatusBar Grid.Row="2">

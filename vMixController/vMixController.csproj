@@ -201,6 +201,7 @@
     <Compile Include="Converters\BrightnessToColorConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
+    <Compile Include="Converters\ControlToPointConverter.cs" />
     <Compile Include="Converters\DateTimeToDayOfWeek.cs" />
     <Compile Include="Converters\EscapeAt.cs" />
     <Compile Include="Converters\ListToStringConverter.cs" />

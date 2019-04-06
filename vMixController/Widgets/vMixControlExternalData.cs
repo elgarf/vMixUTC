@@ -38,8 +38,6 @@ namespace vMixController.Widgets
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data", typeof(ObservableCollection<string>), typeof(vMixControlExternalData), new PropertyMetadata(null));
 
-
-
         /// <summary>
         /// The <see cref="Enabled" /> property's name.
         /// </summary>
