@@ -77,8 +77,7 @@ namespace vMixController.PropertiesControls
         public event PropertyChangedEventHandler PropertyChanged;
         internal void RaisePropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         /// <summary>
@@ -96,6 +95,36 @@ namespace vMixController.PropertiesControls
                     }));
             }
         }
+
+        /*/// <summary>
+        /// The <see cref="IsGUIDTargeted" /> property's name.
+        /// </summary>
+        public const string IsGUIDTargetedPropertyName = "IsGUIDTargeted";
+
+        private bool _isGUIDTargeted = true;
+
+        /// <summary>
+        /// Sets and gets the IsGUIDTargeted property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsGUIDTargeted
+        {
+            get
+            {
+                return _isGUIDTargeted;
+            }
+
+            set
+            {
+                if (_isGUIDTargeted == value)
+                {
+                    return; 
+                }
+
+                _isGUIDTargeted = value;
+                RaisePropertyChanged(IsGUIDTargetedPropertyName);
+            }
+        }*/
 
         public TitleMappingControl()
         {

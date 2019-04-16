@@ -814,7 +814,7 @@ namespace vMixController.Widgets
                 {
                     //If it's array of Inputs just look to the right key
                     if (array is List<Input>)
-                        found = (array as List<Input>).Where(x => x.Key == propindex[1] || x.Title == propindex[1]).FirstOrDefault();
+                        found = (array as List<Input>).Where(x => x.Key == propindex[1] || x.Title == propindex[1]).FirstOrDefault() ?? (_regexInt.IsMatch(propindex[1]) ? (array as List<Input>).Where(x=>x.Number == Convert.ToInt32(propindex[1])).FirstOrDefault() : null);
                     else
                     {
                         

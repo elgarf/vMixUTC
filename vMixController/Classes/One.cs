@@ -23,9 +23,18 @@ namespace vMixController.Classes
 
             set
             {
+                if (a is ObservableObject)
+                    (a as ObservableObject).PropertyChanged -= One_PropertyChanged;
                 a = value;
+                if (value is ObservableObject)
+                    (value as ObservableObject).PropertyChanged += One_PropertyChanged;
                 RaisePropertyChanged("A");
             }
+        }
+
+        private void One_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("A");
         }
     }
 

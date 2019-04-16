@@ -14,6 +14,14 @@ namespace vMixAPI
     public class Input : DependencyObject, INotifyPropertyChanged
     {
         [XmlIgnore]
+        public int Index
+        {
+            get
+            {
+                return Number + 1;
+            }
+        }
+        [XmlIgnore]
         public int ID
         {
             get
@@ -178,6 +186,9 @@ namespace vMixAPI
             XmlElement(typeof(InputPosition), ElementName = "position"),
             XmlElement(typeof(InputImage), ElementName = "image")]
         public ObservableCollection<InputBase> Elements { get; set; }
+
+        [XmlArray("list"), XmlArrayItem(ElementName = "item")]
+        public ObservableCollection<string> Items { get; set; }
 
         public Input()
         {

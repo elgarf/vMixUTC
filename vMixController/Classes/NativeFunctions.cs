@@ -20,6 +20,7 @@ namespace vMixController.Classes
         public const string LIVETOGGLE = "LIVEToggle";
         public const string LIVEOFF = "LIVEOff";
         public const string LIVEON = "LIVEOn";
+        public const string API = "API";
 
     }
 }

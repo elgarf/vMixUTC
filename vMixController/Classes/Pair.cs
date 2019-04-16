@@ -25,9 +25,23 @@ namespace vMixController.Classes
 
             set
             {
+                if (a is ObservableObject)
+                    (a as ObservableObject).PropertyChanged -= AChanged;
                 a = value;
+                if (value is ObservableObject)
+                    (value as ObservableObject).PropertyChanged += AChanged;
                 RaisePropertyChanged("A");
             }
+        }
+
+        private void AChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("A");
+        }
+
+        private void BChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("B");
         }
 
         public T B
@@ -39,7 +53,11 @@ namespace vMixController.Classes
 
             set
             {
+                if (b is ObservableObject)
+                    (b as ObservableObject).PropertyChanged -= BChanged;
                 b = value;
+                if (value is ObservableObject)
+                    (value as ObservableObject).PropertyChanged += BChanged;
                 RaisePropertyChanged("B");
             }
         }

@@ -172,6 +172,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsMappedToGUID" /> property's name.
+        /// </summary>
+        public const string IsMappedToGUIDPropertyName = "IsMappedToGUID";
+
+        private bool _isMappedToGUID = true;
+
+        /// <summary>
+        /// Sets and gets the IsMappedToGUID property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsMappedToGUID
+        {
+            get
+            {
+                return _isMappedToGUID;
+            }
+
+            set
+            {
+                if (_isMappedToGUID == value)
+                {
+                    return;
+                }
+
+                _isMappedToGUID = value;
+                RaisePropertyChanged(IsMappedToGUIDPropertyName);
+            }
+        }
+
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
@@ -403,6 +433,7 @@ namespace vMixController.Widgets
                 _paths.Add(new Pair<string, string>(item.A, item.B));
 
             _isTable = _controls.OfType<BoolControl>().First().Value;
+            //_isMappedToGUID = _controls.OfType<TitleMappingControl>().First().IsGUIDTargeted;
 
             UpdateText(_paths);
         }

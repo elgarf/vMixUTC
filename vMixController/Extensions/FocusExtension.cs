@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace vMixController.Extensions
 {
@@ -32,6 +34,9 @@ namespace vMixController.Extensions
             if ((bool)e.NewValue)
             {
                 uie.Focus(); // Don't care about false values.
+                //Select all text
+                if (d is TextBoxBase block)
+                    block.SelectAll();
             }
         }
     }

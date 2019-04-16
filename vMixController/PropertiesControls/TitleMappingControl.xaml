@@ -25,6 +25,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" VerticalAlignment="Center"><Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf039;</Run><Run Text=" "/><Run Text="{e:Localize Title Mapping}"/></TextBlock>
                 <Button ToolTip="{e:Localize Add title mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+               <!--<CheckBox Visibility="Hidden" Style="{StaticResource CheckBox}" IsChecked="{Binding IsGUIDTargeted, ElementName=Me}" VerticalAlignment="Center">Map To GUID</CheckBox>-->
             </StackPanel>
             <ListView Background="Transparent" BorderThickness="0" ItemsSource="{Binding Titles, ElementName=Me}" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
@@ -37,7 +38,7 @@
                             <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" HorizontalAlignment="Right">
                                 <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
                             </StackPanel>
-                            <ctrl:vMixPathSelector Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" InputKey="{Binding A, Mode=TwoWay}" TitleName="{Binding B, Mode=TwoWay}" Width="Auto" HorizontalAlignment="Stretch"/>
+                            <ctrl:vMixPathSelector x:Name="element" Tag="Key" Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" InputKey="{Binding A, Mode=TwoWay}" TitleName="{Binding B, Mode=TwoWay}" Width="Auto" HorizontalAlignment="Stretch"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
