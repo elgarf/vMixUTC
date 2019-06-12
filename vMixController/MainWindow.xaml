@@ -214,7 +214,7 @@
                 </MenuItem.ItemContainerStyle>
 
             </MenuItem>
-            <MenuItem ToolTip="{e:Localize Lock widgets}" Header="{Binding WindowSettings.Locked}" Command="{Binding ToggleLockCommand}">
+            <MenuItem ToolTip="{e:Localize Click \= Lock widgets\, Shift+Click \= Lock with password}" Header="{Binding WindowSettings.Locked}" Command="{Binding ToggleLockCommand}">
                 <MenuItem.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">

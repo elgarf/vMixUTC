@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using vMixController.Classes;
 
 namespace vMixController.Widgets
@@ -221,6 +222,36 @@ namespace vMixController.Widgets
                 _collapsed = value;
                 RaisePropertyChanged(CollapsedPropertyName);
                 RaisePropertyChanged(AdditionalParametersPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Ident" /> property's name.
+        /// </summary>
+        public const string IdentPropertyName = "Ident";
+        [NonSerialized]
+        private Thickness _ident = new Thickness(0);
+
+        /// <summary>
+        /// Sets and gets the Collapsed property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public Thickness Ident
+        {
+            get
+            {
+                return _ident;
+            }
+
+            set
+            {
+                if (_ident == value)
+                {
+                    return;
+                }
+
+                _ident = value;
+                RaisePropertyChanged(IdentPropertyName);
             }
         }
 

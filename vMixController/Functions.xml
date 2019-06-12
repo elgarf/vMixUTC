@@ -21,7 +21,8 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Condition</Description>
+    <Description>Check condition, functions below this one executes only if condition is TRUE.
+This is block function, block ends at ConditionEnd function.</Description>
     <Function>Condition</Function>
     <HasInputProperty>true</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -41,7 +42,26 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Condition end</Description>
+    <Description>Check if value of expression changed from previous check, functions below this one executes only if value was changed.
+This is block function, block ends at ConditionEnd function.</Description>
+    <Function>ValueChanged</Function>
+    <InputDescription>Input</InputDescription>
+    <IntDescription>N/A</IntDescription>
+    <StringDescription>Expression</StringDescription>
+    <HasInputProperty>true</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>true</HasStringProperty>
+    <Color>
+      <A>255</A>
+      <R>255</R>
+      <G>0</G>
+      <B>0</B>
+    </Color>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>Close Condition block.</Description>
     <Function>ConditionEnd</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -59,7 +79,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Execute link</Description>
+    <Description>Execute ExecLink (any named hotkey).</Description>
     <Function>ExecLink</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -71,7 +91,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Go to command</Description>
+    <Description>Jump to function in script.</Description>
     <Function>GoTo</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
@@ -83,7 +103,8 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Has variable</Description>
+    <Description>Check if variable exist, functions below this one executes only if variable exist.
+This is block function, block ends at ConditionEnd function.</Description>
     <Function>HasVariable</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
@@ -101,7 +122,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Set variable</Description>
+    <Description>Set variable at index.</Description>
     <Function>SetVariable</Function>
     <HasInputProperty>true</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
@@ -113,7 +134,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Wait some time in milliseconds</Description>
+    <Description>Wait some time in milliseconds.</Description>
     <Function>Timer</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
@@ -125,7 +146,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Update vMix state</Description>
+    <Description>Update vMix state.</Description>
     <Function>UpdateState</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -137,7 +158,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Toggle LIVE switch</Description>
+    <Description>Toggle LIVE switch.</Description>
     <Function>LIVEToggle</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -149,7 +170,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Toggle LIVE switch On</Description>
+    <Description>Toggle LIVE switch On.</Description>
     <Function>LIVEOn</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -161,7 +182,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Toggle LIVE switch Off</Description>
+    <Description>Toggle LIVE switch Off.</Description>
     <Function>LIVEOff</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -173,7 +194,7 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Update internal UTC button vMix state</Description>
+    <Description>Update internal button vMix state/</Description>
     <Function>UpdateInternalButtonState</Function>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -190,7 +211,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set active input</Description>
+    <Description>Set active input.</Description>
     <Function>ActiveInput</Function>
     <FormatString>Function=ActiveInput&amp;Input={0}</FormatString>
     <ActiveStatePath>Active</ActiveStatePath>
@@ -198,19 +219,19 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Cut Direct</Description>
+    <Description>Cut Direct.</Description>
     <Function>CutDirect</Function>
     <FormatString>Function=CutDirect&amp;Input={0}</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>CutPlayFade</Description>
+    <Description>Cut Play Fade.</Description>
     <Function>CutPlayFade</Function>
     <FormatString>Function=QuickPlay&amp;Input={0}</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>FadeToBlack</Description>
+    <Description>Fade To Black.</Description>
     <Function>FadeToBlack</Function>
     <FormatString>Function=FadeToBlack</FormatString>
     <ActiveStatePath>FadeToBlack</ActiveStatePath>
@@ -218,13 +239,13 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Quick play</Description>
+    <Description>Quick Play.</Description>
     <Function>QuickPlay</Function>
     <FormatString>Function=QuickPlay</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set preview input</Description>
+    <Description>Set preview input.</Description>
     <Function>PreviewInput</Function>
     <FormatString>Function=PreviewInput&amp;Input={0}</FormatString>
     <ActiveStatePath>Preview</ActiveStatePath>
@@ -232,7 +253,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Transition using stinger</Description>
+    <Description>Transition using stinger.</Description>
     <Function>Stinger</Function>
     <FormatString>Function=Stinger{1}</FormatString>
     <IntDescription>Number</IntDescription>
@@ -243,7 +264,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Use transition</Description>
+    <Description>Use transition.</Description>
     <Function>Transition</Function>
     <FormatString>Function=Transition{1}</FormatString>
     <IntDescription>Effect Number</IntDescription>
@@ -262,7 +283,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Pause</Description>
+    <Description>Pause.</Description>
     <Function>Pause</Function>
     <FormatString>Function=Pause&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
@@ -270,7 +291,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Play</Description>
+    <Description>Play.</Description>
     <Function>Play</Function>
     <FormatString>Function=Play&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
@@ -278,7 +299,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Restart</Description>
+    <Description>Restart.</Description>
     <Function>Restart</Function>
     <FormatString>Function=Restart&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
@@ -292,7 +313,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopExternal</Description>
+    <Description>External Toggle.</Description>
     <Function>StartStopExternal</Function>
     <FormatString>Function=StartStopExternal</FormatString>
     <ActiveStatePath>External</ActiveStatePath>
@@ -300,15 +321,15 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopFullscreen</Description>
-    <Function>Fullscreen Toggle</Function>
+    <Description>Fullscreen Toggle.</Description>
+    <Function>StartStopFullscreen</Function>
     <FormatString>Function=Fullscreen</FormatString>
     <ActiveStatePath>Fullscreen</ActiveStatePath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopMultiCorder</Description>
+    <Description>MultiCorder Toggle.</Description>
     <Function>StartStopMultiCorder</Function>
     <FormatString>Function=StartStopMultiCorder</FormatString>
     <ActiveStatePath>MultiCorder</ActiveStatePath>
@@ -316,7 +337,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopRecording</Description>
+    <Description>Recording Toggle.</Description>
     <Function>StartStopRecording</Function>
     <FormatString>Function=StartStopRecording</FormatString>
     <ActiveStatePath>Recording</ActiveStatePath>
@@ -324,7 +345,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartRecording</Description>
+    <Description>Start Recording.</Description>
     <Function>StartRecording</Function>
     <FormatString>Function=StartRecording</FormatString>
     <ActiveStatePath>Recording</ActiveStatePath>
@@ -332,7 +353,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StopRecording</Description>
+    <Description>Stop Recording.</Description>
     <Function>StopRecording</Function>
     <FormatString>Function=StopRecording</FormatString>
     <ActiveStatePath>Recording</ActiveStatePath>
@@ -340,7 +361,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStopStreaming</Description>
+    <Description>Streaming Toggle.</Description>
     <Function>StartStopStreaming</Function>
     <FormatString>Function=StartStopStreaming&amp;Value={1}</FormatString>
     <ActiveStatePath>Streaming</ActiveStatePath>
@@ -354,7 +375,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartStreaming</Description>
+    <Description>Start Streaming.</Description>
     <Function>StartStreaming</Function>
     <FormatString>Function=StartStreaming&amp;Value={1}</FormatString>
     <ActiveStatePath>Streaming</ActiveStatePath>
@@ -368,7 +389,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StopStreaming</Description>
+    <Description>Stop Streaming.</Description>
     <Function>StopStreaming</Function>
     <FormatString>Function=StopStreaming&amp;Value={1}</FormatString>
       <ActiveStatePath>Streaming</ActiveStatePath>
@@ -388,7 +409,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set Output External2</Description>
+    <Description>Set Output External2.</Description>
     <Function>SetOutputExternal2</Function>
     <FormatString>Function=SetOutputExternal2&amp;Value={2}&amp;Input={0}</FormatString>
     <StringDescription>Type</StringDescription>
@@ -408,14 +429,14 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>ReplayMarkInOutLive</Description>
+    <Description>Mark In Out Live.</Description>
     <Function>ReplayMarkInOutLive</Function>
     <FormatString>Function=ReplayMarkInOutLive&amp;Value={1}</FormatString>
     <IntDescription>Time</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>ReplayPlayLastEventToOutput</Description>
+    <Description>Play Last Event To Output.</Description>
     <Function>ReplayPlayLastEventToOutput</Function>
     <FormatString>Function=ReplayPlayLastEventToOutput</FormatString>
   </vMixFunctionReference>
@@ -427,7 +448,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Fade in input as overlay</Description>
+    <Description>Fade in input as overlay.</Description>
     <Function>OverlayInputIn</Function>
     <FormatString>Function=OverlayInput{1}In&amp;Input={0}</FormatString>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
@@ -442,7 +463,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Switch overlay off</Description>
+    <Description>Switch overlay off.</Description>
     <Function>OverlayInputOff</Function>
     <FormatString>Function=OverlayInput{1}Off</FormatString>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
@@ -458,7 +479,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Fade out overlay</Description>
+    <Description>Fade out overlay.</Description>
     <Function>OverlayInputOut</Function>
     <FormatString>Function=OverlayInput{1}Out</FormatString>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
@@ -474,7 +495,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Toggle overlay</Description>
+    <Description>Toggle overlay.</Description>
     <Function>OverlayInputToggle</Function>
     <FormatString>Function=OverlayInput{1}&amp;Input={0}</FormatString>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
@@ -490,7 +511,7 @@
   </vMixFunctionReference>
   
   <vMixFunctionReference>
-    <Description>Preview Overlay</Description>
+    <Description>Preview overlay.</Description>
     <Function>PreviewOverlay</Function>
     <FormatString>Function=PreviewOverlayInput{1}&amp;Input={0}</FormatString>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
@@ -511,7 +532,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set countdown format hh:mm:ss</Description>
+    <Description>Set countdown format hh:mm:ss.</Description>
     <Function>SetCountdown</Function>
     <FormatString>Function=SetCountdown&amp;Input={0}&amp;Value={2}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Title</IntDescription>
@@ -519,21 +540,21 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Start countdown</Description>
+    <Description>Start countdown.</Description>
     <Function>StartCountdown</Function>
     <FormatString>Function=StartCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Title</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Stop countdown</Description>
+    <Description>Stop countdown.</Description>
     <Function>StopCountdown</Function>
     <FormatString>Function=StopCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Title</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Pause countdown</Description>
+    <Description>Pause countdown.</Description>
     <Function>PauseCountdown</Function>
     <FormatString>Function=PauseCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Title</IntDescription>
@@ -546,7 +567,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>KeyPress</Description>
+    <Description>Key Press.</Description>
     <Function>KeyPress</Function>
     <FormatString>Function=KeyPress&amp;Value={2}</FormatString>
     <StringDescription>Key</StringDescription>
@@ -559,7 +580,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set Image path</Description>
+    <Description>Set image path.</Description>
     <Function>SetImage</Function>
     <FormatString>Function=SetImage&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
     <ActiveStatePath>Inputs[{0}].Elements[{1}].Image</ActiveStatePath>
@@ -572,7 +593,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set image path with native indexes</Description>
+    <Description>Set image path with native indexes.</Description>
     <Function>SetImageNative</Function>
     <FormatString>Function=SetImage&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
     <ActiveStatePath>Inputs[{0}].Elements[InputImage/Index/{1}].Image</ActiveStatePath>
@@ -585,7 +606,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set title text</Description>
+    <Description>Set title text.</Description>
     <Function>SetText</Function>
     <FormatString>Function=SetText&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
     <ActiveStatePath>Inputs[{0}].Elements[{1}].Text</ActiveStatePath>
@@ -598,7 +619,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set title text with native indexes</Description>
+    <Description>Set title text with native indexes.</Description>
     <Function>SetTextNative</Function>
     <FormatString>Function=SetText&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
     <ActiveStatePath>Inputs[{0}].Elements[InputText/Index/{1}].Text</ActiveStatePath>
@@ -617,21 +638,21 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>DataSourceNextRow</Description>
+    <Description>Next Row.</Description>
     <Function>DataSourceNextRow</Function>
     <FormatString>Function=DataSourceNextRow&amp;Value={2}</FormatString>
     <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>DataSourcePreviousRow</Description>
+    <Description>Previous Row.</Description>
     <Function>DataSourcePreviousRow</Function>
     <FormatString>Function=DataSourcePreviousRow&amp;Value={2}</FormatString>
     <StringDescription>Data Source</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>DataSourceSelectRow</Description>
+    <Description>Select Row.</Description>
     <Function>DataSourceSelectRow</Function>
     <FormatString>Function=DataSourceSelectRow&amp;Value={2},{1}</FormatString>
     <StringDescription>Data Source</StringDescription>
@@ -645,7 +666,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Move MultiView Overlay</Description>
+    <Description>Move MultiView Overlay.</Description>
     <Function>MoveMultiViewOverlay</Function>
     <FormatString>Function=MoveMultiViewOverlay&amp;Input={0}&amp;Value={1},{2}</FormatString>
     <IntDescription>Overlay Number</IntDescription>
@@ -677,7 +698,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>MultiView Overlay Toggle</Description>
+    <Description>MultiView Overlay Toggle.</Description>
     <Function>MultiViewOverlayToggle</Function>
     <FormatString>Function=MultiViewOverlay&amp;Input={0}&amp;Value={1}</FormatString>
     <IntDescription>Overlay number</IntDescription>
@@ -697,7 +718,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Set MultiView Overlay</Description>
+    <Description>Set MultiView Overlay.</Description>
     <Function>SetMultiViewOverlay</Function>
     <FormatString>Function=SetMultiViewOverlay&amp;Input={0}&amp;Value={1},{2}</FormatString>
     <IntDescription>Overlay Number</IntDescription>
@@ -720,7 +741,7 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Select Zoom Index in VirtualSets</Description>
+    <Description>Select Zoom Index in VirtualSets.</Description>
     <Function>SelectZoomIndex/VirtualSets</Function>
     <FormatString>Function=SelectIndex&amp;Input={0}&amp;Value={1}</FormatString>
     <IntDescription>Zoom Index</IntDescription>
@@ -740,38 +761,38 @@
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>SelectPlayList</Description>
+    <Description>Select PlayList.</Description>
     <Function>SelectPlayList</Function>
     <FormatString>Function=SelectPlayList&amp;Value={2}</FormatString>
     <StringDescription>Name</StringDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StartPlayList</Description>
+    <Description>Start PlayList.</Description>
     <Function>StartPlayList</Function>
     <FormatString>Function=StartPlayList</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>StopPlayList</Description>
+    <Description>Stop PlayList.</Description>
     <Function>StopPlayList</Function>
     <FormatString>Function=StopPlayList</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>PreviousPlayListEntry</Description>
+    <Description>Previous PlayList Entry.</Description>
     <Function>PreviousPlayListEntry</Function>
     <FormatString>Function=PreviousPlayListEntry</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>NextPlayListEntry</Description>
+    <Description>Next PlayList Entry.</Description>
     <Function>NextPlayListEntry</Function>
     <FormatString>Function=NextPlayListEntry</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Select Index in Photos and Lists Inputs</Description>
+    <Description>Select Index in Photos and Lists Inputs.</Description>
     <Function>SelectIndex/Photos</Function>
     <FormatString>Function=SelectIndex&amp;Input={0}&amp;Value={1}</FormatString>
     <IntDescription>Media Input Index</IntDescription>

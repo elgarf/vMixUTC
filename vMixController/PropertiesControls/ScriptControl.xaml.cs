@@ -28,8 +28,34 @@ namespace vMixController.PropertiesControls
         public ScriptControl()
         {
             InitializeComponent();
+            Commands.CollectionChanged += Commands_CollectionChanged;
         }
 
+        private void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RearrangeCommnads();
+        }
+
+        private void RearrangeCommnads()
+        {
+            var ident = 0;
+            foreach (var icmd in Commands)
+            {
+                if ((new string[] { NativeFunctions.CONDITION, NativeFunctions.HASVARIABLE, NativeFunctions.VALUECHANGED }).Contains(icmd.Action.Function))
+                {
+                    icmd.Ident = new Thickness(ident, 0, 0, 0);
+                    ident += 8;
+                    continue;
+                }
+                if (icmd.Action.Function == NativeFunctions.CONDITIONEND)
+                    ident -= 8;
+
+                if (ident < 0) ident = 0;
+
+                icmd.Ident = new Thickness(ident, 0, 0, 0);
+
+            }
+        }
 
 
         /// <summary>
@@ -77,6 +103,7 @@ namespace vMixController.PropertiesControls
                     p =>
                     {
                         Commands.Remove(p);
+                        RearrangeCommnads();
                         //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                     }));
             }
@@ -99,6 +126,7 @@ namespace vMixController.PropertiesControls
                         for (int i = 0; i < 10; i++)
                             cmd.AdditionalParameters.Add(new One<string>() { A = "" });
                         Commands.Add(cmd);
+                        RearrangeCommnads();
                         //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                     }));
             }
@@ -120,6 +148,7 @@ namespace vMixController.PropertiesControls
                         var idx = Commands.IndexOf(p);
                         Commands.Move(idx, idx - 1 >= 0 ? idx - 1 : idx);
                         CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
+                        RearrangeCommnads();
                     }));
             }
         }
@@ -145,6 +174,7 @@ namespace vMixController.PropertiesControls
                     {
                         var idx = Commands.IndexOf(p);
                         Commands.Move(idx, idx + 1 < Commands.Count ? idx + 1 : idx);
+                        RearrangeCommnads();
                     }));
             }
         }

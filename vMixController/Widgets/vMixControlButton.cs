@@ -22,6 +22,7 @@ using System.Xml;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
+using System.Collections;
 
 namespace vMixController.Widgets
 {
@@ -42,6 +43,8 @@ namespace vMixController.Widgets
         DispatcherTimer _blinker;
         [NonSerialized]
         Color _defaultBorderColor;
+        [NonSerialized]
+        Dictionary<string, object> _trackedValues = new Dictionary<string, object>();
 
         [NonSerialized]
         bool _stopThread = false;
@@ -398,6 +401,7 @@ namespace vMixController.Widgets
                         if (_executionWorker != null && _executionWorker.IsBusy)
                             _executionWorker.CancelAsync();
 
+                        _trackedValues.Clear();
                         _conditions.Clear();
                         Enabled = true;
                     }));
@@ -660,7 +664,7 @@ namespace vMixController.Widgets
             var result = CalculateExpression(s);
             if (result is T)
                 return (T)result;
-            return default(T);
+            return default;
         }
 
         private object EscapeString(object o)
@@ -679,11 +683,9 @@ namespace vMixController.Widgets
         {
             if (cmd.AdditionalParameters == null || cmd.AdditionalParameters.Count == 0)
                 return false;
-            object part1 = null;
-            object part2 = null;
 
-            part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
-            part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
+            object part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
+            object part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
 
             Thread.CurrentThread.CurrentCulture = _culture;
             Thread.CurrentThread.CurrentUICulture = _culture;
@@ -761,6 +763,12 @@ namespace vMixController.Widgets
                                 {
                                     Dispatcher.Invoke(() => _variables[idx].B = CalculateObjectParameter(cmd));
                                 }
+                                break;
+                            case NativeFunctions.VALUECHANGED:
+                                var obj = CalculateObjectParameter(cmd);
+                                var key = (string.Format(cmd.StringParameter, cmd.InputKey) + cmd.InputKey);
+                                _conditions.Push(_trackedValues.ContainsKey(key) ? obj != _trackedValues[key] : false);
+                                _trackedValues[cmd.StringParameter] = obj;
                                 break;
                         }
                     else if (state != null)

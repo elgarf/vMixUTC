@@ -37,7 +37,7 @@
             <ListView Background="Transparent" BorderThickness="0" x:Name="script" AlternationCount="{Binding Commands.Count, ElementName=Me}" ItemsSource="{Binding Commands, ElementName=Me}" SelectedIndex="0" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Background="{StaticResource Main.Background}">
+                        <Grid Background="{StaticResource Main.Background}" Margin="{Binding Ident}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
@@ -91,6 +91,7 @@
                                                 <Style.Setters>
                                                     <Setter Property="Foreground" Value="{Binding Color, Converter={StaticResource ColorToBrush}}"/>
                                                     <Setter Property="ContentTemplateSelector" Value="{x:Null}"/>
+                                                    <Setter Property="ToolTip" Value="{Binding Description}"/>
                                                 </Style.Setters>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding ="{Binding IsGroup}" Value="True">
@@ -102,13 +103,13 @@
                                         </ComboBox.ItemContainerStyle>
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock x:Name="txt" Text="{Binding Function}"/>
+                                                <TextBlock x:Name="text" Text="{Binding Function}"/>
                                                 <DataTemplate.Triggers>
                                                     <DataTrigger Binding="{Binding IsGroup}" Value="False">
-                                                        <Setter TargetName="txt" Property="Margin" Value="8,0,0,0"/>
+                                                        <Setter TargetName="text" Property="Margin" Value="8,0,0,0"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding IsGroup}" Value="True">
-                                                        <Setter TargetName="txt" Property="FontWeight" Value="Bold"/>
+                                                        <Setter TargetName="text" Property="FontWeight" Value="Bold"/>
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>

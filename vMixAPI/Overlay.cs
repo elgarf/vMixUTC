@@ -14,6 +14,9 @@ namespace vMixAPI
     {
         [XmlAttribute("number")]
         public int Number { get; set; }
+
+        [XmlAttribute("preview")]
+        public bool Preview { get; set; }
         [XmlText()]
         public string ActiveInput
         {
