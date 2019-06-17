@@ -896,8 +896,8 @@ namespace vMixController.Widgets
                 if (_executionWorker != null && _executionWorker.IsBusy)
                 {
                     _executionWorker.CancelAsync();
-                    while (_executionWorker.CancellationPending)
-                        Thread.Sleep(100);
+                    //while (_executionWorker.CancellationPending)
+                    //    Thread.Sleep(100);
                     _executionWorker.Dispose();
                 }
 

@@ -54,6 +54,7 @@ namespace vMixController.Classes
 
         public string CommandType { get; set; }
         public int HideParameters { get; set; }
+        public bool IsBlock { get; set; }
 
         public System.Windows.Media.Color Color { get; set; }
 

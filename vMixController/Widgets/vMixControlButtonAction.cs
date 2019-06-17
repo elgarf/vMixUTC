@@ -169,13 +169,13 @@ namespace vMixController.Widgets
         /// </summary>
         public const string AdditionalParametersPropertyName = "AdditionalParameters";
 
-        private ObservableCollection<One<string>> _additionalParameters = new ObservableCollection<One<string>>();
+        private List<One<string>> _additionalParameters = new List<One<string>>();
 
         /// <summary>
         /// Sets and gets the AdditionalParameters property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public ObservableCollection<One<string>> AdditionalParameters
+        public List<One<string>> AdditionalParameters
         {
             get
             {
@@ -258,6 +258,7 @@ namespace vMixController.Widgets
         public vMixControlButtonCommand()
         {
             _action = new vMixFunctionReference();
+            
             /*if (_additionalParameters.Count < 10)
                 for (int i = 0; i < 10; i++)
                     _additionalParameters.Add("");*/

@@ -31,6 +31,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <InputDescription>Input</InputDescription>
     <StringDescription>N/A</StringDescription>
     <CommandType>Condition</CommandType>
+    <IsBlock>true</IsBlock>
     <HideParameters>3</HideParameters>
     <Color>
       <A>255</A>
@@ -45,6 +46,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Check if value of expression changed from previous check, functions below this one executes only if value was changed.
 This is block function, block ends at ConditionEnd function.</Description>
     <Function>ValueChanged</Function>
+    <IsBlock>true</IsBlock>
     <InputDescription>Input</InputDescription>
     <IntDescription>N/A</IntDescription>
     <StringDescription>Expression</StringDescription>
@@ -106,6 +108,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Check if variable exist, functions below this one executes only if variable exist.
 This is block function, block ends at ConditionEnd function.</Description>
     <Function>HasVariable</Function>
+    <IsBlock>true</IsBlock>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>true</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>

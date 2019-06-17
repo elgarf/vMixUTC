@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using vMixController.Classes;
 using vMixController.Widgets;
 
@@ -41,7 +43,7 @@ namespace vMixController.PropertiesControls
             var ident = 0;
             foreach (var icmd in Commands)
             {
-                if ((new string[] { NativeFunctions.CONDITION, NativeFunctions.HASVARIABLE, NativeFunctions.VALUECHANGED }).Contains(icmd.Action.Function))
+                if (icmd.Action.IsBlock)
                 {
                     icmd.Ident = new Thickness(ident, 0, 0, 0);
                     ident += 8;
@@ -128,6 +130,94 @@ namespace vMixController.PropertiesControls
                         Commands.Add(cmd);
                         RearrangeCommnads();
                         //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
+                    }));
+            }
+        }
+
+
+        private RelayCommand _exportScriptCommand;
+
+        /// <summary>
+        /// Gets the ExportScriptCommand.
+        /// </summary>
+        public RelayCommand ExportScriptCommand
+        {
+            get
+            {
+                return _exportScriptCommand
+                    ?? (_exportScriptCommand = new RelayCommand(
+                    () =>
+                    {
+                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
+                        opendlg.Filter = "UTC Script File|*.usf";
+                        opendlg.DefaultExt = "usf";
+                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
+                        if (result.HasValue && result.Value)
+                        {
+                            XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
+                            using (var fs = new FileStream(opendlg.FileName, FileMode.Create))
+                                s.Serialize(fs, Commands);
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand _importScriptCommand;
+
+        /// <summary>
+        /// Gets the ImportScriptCommand.
+        /// </summary>
+        public RelayCommand ImportScriptCommand
+        {
+            get
+            {
+                return _importScriptCommand
+                    ?? (_importScriptCommand = new RelayCommand(
+                    () =>
+                    {
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
+                        opendlg.Filter = "UTC Script File|*.usf";
+                        opendlg.DefaultExt = "usf";
+                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
+                        if (result.HasValue && result.Value)
+                        {
+                            try
+                            {
+                                XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
+                                using (var fs = new FileStream(opendlg.FileName, FileMode.Open))
+                                {
+                                    var temp = (ObservableCollection<vMixControlButtonCommand>)s.Deserialize(fs);
+                                    Commands.Clear();
+                                    foreach (var item in temp)
+                                    {
+                                        Commands.Add(item);
+                                    }
+                                }
+                                RearrangeCommnads();
+                            }
+                            catch (Exception e)
+                            {
+                                
+                            }
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand _clearScriptCommand;
+
+        /// <summary>
+        /// Gets the ClearScriptCommand.
+        /// </summary>
+        public RelayCommand ClearScriptCommand
+        {
+            get
+            {
+                return _clearScriptCommand
+                    ?? (_clearScriptCommand = new RelayCommand(
+                    () =>
+                    {
+                        Commands.Clear();
                     }));
             }
         }
