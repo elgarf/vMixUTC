@@ -44,7 +44,7 @@ namespace vMixController.Widgets
         [NonSerialized]
         Color _defaultBorderColor;
         [NonSerialized]
-        Dictionary<string, object> _trackedValues = new Dictionary<string, object>();
+        Dictionary<string, string> _trackedValues = new Dictionary<string, string>();
 
         [NonSerialized]
         bool _stopThread = false;
@@ -193,6 +193,36 @@ namespace vMixController.Widgets
 
                 _commands = value;
                 RaisePropertyChanged(CommandsPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="AutoStart" /> property's name.
+        /// </summary>
+        public const string AutoStartPropertyName = "AutoStart";
+
+        private bool _autoStart = false;
+
+        /// <summary>
+        /// Sets and gets the AutoStart property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool AutoStart
+        {
+            get
+            {
+                return _autoStart;
+            }
+
+            set
+            {
+                if (_autoStart == value)
+                {
+                    return;
+                }
+
+                _autoStart = value;
+                RaisePropertyChanged(AutoStartPropertyName);
             }
         }
 
@@ -418,11 +448,11 @@ namespace vMixController.Widgets
         public vMixControlButton()
         {
             _activeStateUpdateWorker = new BackgroundWorker();
-            _activeStateUpdateWorker.RunWorkerCompleted += _worker_RunWorkerCompleted;
-            _activeStateUpdateWorker.DoWork += _activeStateUpdateWorker_DoWork;
+            _activeStateUpdateWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            _activeStateUpdateWorker.DoWork += ActiveStateUpdateWorker_DoWork;
 
             _executionWorker = new BackgroundWorker();
-            _executionWorker.DoWork += _executionWorker_DoWork;
+            _executionWorker.DoWork += ExecutionWorker_DoWork;
             _executionWorker.WorkerSupportsCancellation = true;
 
             _enabled = true;
@@ -432,12 +462,12 @@ namespace vMixController.Widgets
 
 
             _blinker = new DispatcherTimer();
-            _blinker.Tick += _blinker_Tick;
+            _blinker.Tick += Blinker_Tick;
             _blinker.Interval = TimeSpan.FromSeconds(1);
             _blinker.Start();
         }
 
-        private void _blinker_Tick(object sender, EventArgs e)
+        private void Blinker_Tick(object sender, EventArgs e)
         {
             if (_defaultBorderColor.A == 0)
                 _defaultBorderColor = BorderColor;
@@ -452,12 +482,12 @@ namespace vMixController.Widgets
                 BlinkBorderColor = BorderColor;
         }
 
-        private void _executionWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             ExecutionThread((State)e.Argument);
         }
 
-        private void _activeStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void ActiveStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             lock (_locker)
             {
@@ -515,7 +545,7 @@ namespace vMixController.Widgets
             }
         }
 
-        private void _worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
             Active = (bool)(e.Result ?? false);
@@ -647,7 +677,7 @@ namespace vMixController.Widgets
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Calculating expression failde");
+                    _logger.Error(ex, "Calculating expression failed");
                     return s;
                 }
             }
@@ -662,9 +692,14 @@ namespace vMixController.Widgets
         private T CalculateExpression<T>(string s)
         {
             var result = CalculateExpression(s);
-            if (result is T)
-                return (T)result;
-            return default;
+            try
+            {
+                return (T)Convert.ChangeType(result, typeof(T));
+            }
+            catch
+            {
+                return default;
+            }
         }
 
         private object EscapeString(object o)
@@ -765,10 +800,11 @@ namespace vMixController.Widgets
                                 }
                                 break;
                             case NativeFunctions.VALUECHANGED:
-                                var obj = CalculateObjectParameter(cmd);
-                                var key = (string.Format(cmd.StringParameter, cmd.InputKey) + cmd.InputKey);
-                                _conditions.Push(_trackedValues.ContainsKey(key) ? obj != _trackedValues[key] : false);
-                                _trackedValues[cmd.StringParameter] = obj;
+                                var obj = CalculateObjectParameter(cmd).ToString();
+                                var key = (string.Format(cmd.StringParameter, cmd.InputKey));
+                                var hasKey = _trackedValues.ContainsKey(key);
+                                _conditions.Push(hasKey ? obj != _trackedValues[key] : false);
+                                _trackedValues[key] = obj;
                                 break;
                         }
                     else if (state != null)
@@ -831,6 +867,7 @@ namespace vMixController.Widgets
         {
             FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
+            BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             control.Commands.Clear();
@@ -841,7 +878,7 @@ namespace vMixController.Widgets
                         item.AdditionalParameters.Add(new One<string>());
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
-            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, boolctrl1, control }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
@@ -860,6 +897,7 @@ namespace vMixController.Widgets
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
+            AutoStart = _controls.OfType<BoolControl>().Last().Value;
             var u = _controls.OfType<FilePathControl>().First().Value;
             if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
             {
@@ -878,7 +916,8 @@ namespace vMixController.Widgets
         public override void Update()
         {
             base.Update();
-            
+            if (AutoStart)
+                ExecuteScriptCommand.Execute(null);
             RealUpdateActiveProperty();
         }
 

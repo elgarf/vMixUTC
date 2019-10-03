@@ -42,7 +42,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlMultiState)),
         XmlInclude(typeof(vMixControlMidiInterface)),
         XmlInclude(typeof(vMixControlClock)),
-        XmlInclude(typeof(vMixControlRegion))]
+        XmlInclude(typeof(vMixControlRegion)),
+        XmlInclude(typeof(vMixControlSlider))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
@@ -62,12 +63,12 @@ namespace vMixController.Widgets
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            _shadowUpdate.Tick += _shadowUpdate_Tick;
+            _shadowUpdate.Tick += ShadowUpdate_Tick;
             _shadowUpdate.Start();
             WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
         }
 
-        private void _shadowUpdate_Tick(object sender, EventArgs e)
+        private void ShadowUpdate_Tick(object sender, EventArgs e)
         {
             ShadowUpdate();
         }
@@ -112,6 +113,36 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="IsPasswordLockable" /> property's name.
+        /// </summary>
+        public const string IsPasswordLockablePropertyName = "IsPasswordLockable";
+
+        private bool _isPasswordLockable = true;
+
+        /// <summary>
+        /// Sets and gets the IsPasswordLockable property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsPasswordLockable
+        {
+            get
+            {
+                return _isPasswordLockable;
+            }
+
+            set
+            {
+                if (_isPasswordLockable == value)
+                {
+                    return;
+                }
+
+                _isPasswordLockable = value;
+                RaisePropertyChanged(IsPasswordLockablePropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="IsPasswordLocked" /> property's name.
@@ -712,7 +743,10 @@ namespace vMixController.Widgets
                 else if (value == null)
                     _internalState = null;
                 else
+                {
                     _internalState?.Configure(value.Ip, value.Port);
+                    _internalState?.UpdateAsync();
+                }
             }
         }
 
@@ -763,7 +797,7 @@ namespace vMixController.Widgets
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected PropertyInfo GetPropertyOrNull(Type type, string name)
+        protected static PropertyInfo GetPropertyOrNull(Type type, string name)
         {
             return type.GetProperties().Where(x => x.Name == name).FirstOrDefault();
         }
@@ -935,7 +969,7 @@ namespace vMixController.Widgets
             return (T)GetValueByPath(obj, path);
         }
 
-        protected T GetPropertyControl<T>() where T : UserControl
+        protected static T GetPropertyControl<T>() where T : UserControl
         {
             if (ControlsStore.ContainsKey(typeof(T)) && !ControlsStoreUsage.Contains(ControlsStore[typeof(T)]))
             {
@@ -945,7 +979,7 @@ namespace vMixController.Widgets
             }
             else
             {
-                var c = (T)typeof(T).GetConstructor(new Type[0]).Invoke(new object[0]);
+                var c = (T)typeof(T).GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
                 c.Tag = null;
                 if (!ControlsStore.ContainsKey(typeof(T)))
                 {
@@ -995,12 +1029,12 @@ namespace vMixController.Widgets
 
         public virtual Hotkey[] GetHotkeys()
         {
-            return new Hotkey[] { };
+            return Array.Empty<Hotkey>();
         }
 
         public virtual UserControl[] GetPropertiesControls()
         {
-            return new UserControl[0];
+            return Array.Empty<UserControl>();
         }
 
         public virtual void SetProperties(ViewModel.vMixWidgetSettingsViewModel viewModel)

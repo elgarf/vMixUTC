@@ -111,9 +111,11 @@ namespace vMixController.PropertiesControls
                     ?? (_saveItemsListCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
-                        opendlg.Filter = "Text Files|*.txt";
-                        opendlg.DefaultExt = "txt";
+                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
+                        {
+                            Filter = "Text Files|*.txt",
+                            DefaultExt = "txt"
+                        };
                         var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                             File.WriteAllLines(opendlg.FileName, Items.Select(x => x.Value).ToArray());
@@ -127,8 +129,7 @@ namespace vMixController.PropertiesControls
 
         internal void RaisePropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         /// <summary>
@@ -142,9 +143,11 @@ namespace vMixController.PropertiesControls
                     ?? (_loadItemsListCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        opendlg.Filter = "Text Files|*.txt";
-                        opendlg.DefaultExt = "txt";
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = "Text Files|*.txt",
+                            DefaultExt = "txt"
+                        };
                         var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                         {

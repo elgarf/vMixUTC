@@ -142,6 +142,18 @@ namespace vMixController.Controls
         public static readonly DependencyProperty ToggleCaptionCommandProperty =
             DependencyProperty.Register("ToggleCaptionCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
+        public RelayCommand<Widgets.vMixControl> SwitchPasswordLockableCommand
+        {
+            get { return (RelayCommand<Widgets.vMixControl>)GetValue(SwitchPasswordLockableCommandProperty); }
+            set { SetValue(SwitchPasswordLockableCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CopyCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SwitchPasswordLockableCommandProperty =
+            DependencyProperty.Register("SwitchPasswordLockableCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+
+
+        
 
         public object MainContent
         {

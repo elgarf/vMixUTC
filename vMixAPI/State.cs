@@ -508,6 +508,11 @@ namespace vMixAPI
         public List<Overlay> Overlays { get; set; }
         [XmlArray("transitions"), XmlArrayItem(ElementName = "transition")]
         public List<Transition> Transitions { get; set; }
+        [XmlArray("audio"),
+            XmlArrayItem("master", typeof(Master)),
+            XmlArrayItem("busA", typeof(BusA)),
+            XmlArrayItem("busB", typeof(BusB))]
+        public List<Master> Audio { get; set; }
 
         public static bool IsInitializing { get; set; }
 

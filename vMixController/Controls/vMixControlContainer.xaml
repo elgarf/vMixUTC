@@ -64,6 +64,31 @@
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf150;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Command="{Binding SwitchPasswordLockableCommand}" CommandParameter="{Binding Control}" Header="Password Lockable">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Control.IsPasswordLockable}" Value="True">
+                                        <Setter Property="Icon">
+                                            <Setter.Value>
+                                                <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf14a;</TextBlock>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Control.IsPasswordLockable}" Value="False">
+                                        <Setter Property="Icon">
+                                            <Setter.Value>
+                                                <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf0c8;</TextBlock>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Control.Locked}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                     <Separator></Separator>
                     <MenuItem Header="Scale Up" Command="{Binding ScaleUpCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
                         <MenuItem.Icon>

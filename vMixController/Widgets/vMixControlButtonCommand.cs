@@ -226,6 +226,36 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
+        /// The <see cref="NoInputAssigned" /> property's name.
+        /// </summary>
+        public const string NoInputAssignedPropertyName = "NoInputAssigned";
+
+        private bool _noInputAssigned = false;
+
+        /// <summary>
+        /// Sets and gets the NoInputAssigned property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool NoInputAssigned
+        {
+            get
+            {
+                return _noInputAssigned;
+            }
+
+            set
+            {
+                if (_noInputAssigned == value)
+                {
+                    return;
+                }
+
+                _noInputAssigned = value;
+                RaisePropertyChanged(NoInputAssignedPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Ident" /> property's name.
         /// </summary>
         public const string IdentPropertyName = "Ident";

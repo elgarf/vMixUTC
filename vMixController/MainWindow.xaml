@@ -80,6 +80,11 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF005;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem x:Name="Slider" Command="{Binding CreateWidgetCommand}" CommandParameter="Slider" Header="{e:Localize Slider}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1DE;</TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem x:Name="TextField" Command="{Binding CreateWidgetCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF60E;</TextBlock>
@@ -90,6 +95,11 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF51B;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
+                <!--<MenuItem x:Name="Timecode" Command="{Binding CreateWidgetCommand}" CommandParameter="Timecode" Header="{e:Localize Timecode}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>-->
                 <MenuItem x:Name="Clock" Command="{Binding CreateWidgetCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>

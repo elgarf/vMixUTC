@@ -43,6 +43,9 @@ namespace vMixController.PropertiesControls
             var ident = 0;
             foreach (var icmd in Commands)
             {
+                icmd.PropertyChanged -= Icmd_PropertyChanged;
+                icmd.PropertyChanged += Icmd_PropertyChanged;
+                IsInputExist(icmd);
                 if (icmd.Action.IsBlock)
                 {
                     icmd.Ident = new Thickness(ident, 0, 0, 0);
@@ -57,6 +60,23 @@ namespace vMixController.PropertiesControls
                 icmd.Ident = new Thickness(ident, 0, 0, 0);
 
             }
+        }
+
+        private void Icmd_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "InputKey")
+            {
+                var s = (sender as vMixControlButtonCommand);
+                IsInputExist(s);
+            }
+        }
+
+        private void IsInputExist(vMixControlButtonCommand s)
+        {
+            var key = s.InputKey;
+            var l = (ViewModel.ViewModelLocator)TryFindResource("Locator");
+            var check = !l.WidgetSettings.Model?.Inputs.Select(x => x.Key).Contains(key);
+            s.NoInputAssigned = check ?? true;
         }
 
 
@@ -148,9 +168,11 @@ namespace vMixController.PropertiesControls
                     ?? (_exportScriptCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
-                        opendlg.Filter = "UTC Script File|*.usf";
-                        opendlg.DefaultExt = "usf";
+                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
+                        {
+                            Filter = "UTC Script File|*.usf",
+                            DefaultExt = "usf"
+                        };
                         var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                         {
@@ -175,9 +197,11 @@ namespace vMixController.PropertiesControls
                     ?? (_importScriptCommand = new RelayCommand(
                     () =>
                     {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        opendlg.Filter = "UTC Script File|*.usf";
-                        opendlg.DefaultExt = "usf";
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = "UTC Script File|*.usf",
+                            DefaultExt = "usf"
+                        };
                         var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
                         if (result.HasValue && result.Value)
                         {
@@ -248,8 +272,7 @@ namespace vMixController.PropertiesControls
         public event PropertyChangedEventHandler PropertyChanged;
         internal void RaisePropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
         /// <summary>
         /// Gets the MoveCommandDownCommand.

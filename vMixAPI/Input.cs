@@ -143,26 +143,47 @@ namespace vMixAPI
 
 
         [XmlAttribute("meterF1")]
-        public float MeterF1
+        public double MeterF1
         {
-            get { return (float)GetValue(MeterF1Property); }
+            get { return (double)GetValue(MeterF1Property); }
             set { SetValue(MeterF1Property, value); }
         }
 
         // Using a DependencyProperty as the backing store for MeterF1.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MeterF1Property =
-            DependencyProperty.Register("MeterF1", typeof(float), typeof(Input), new PropertyMetadata(default(float)));
+            DependencyProperty.Register("MeterF1", typeof(double), typeof(Input), new PropertyMetadata(default(double)));
 
         [XmlAttribute("meterF2")]
-        public float MeterF2
+        public double MeterF2
         {
-            get { return (float)GetValue(MeterF2Property); }
+            get { return (double)GetValue(MeterF2Property); }
             set { SetValue(MeterF2Property, value); }
+        }
+
+
+        // Using a DependencyProperty as the backing store for MeterF1.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VolumeProperty =
+            DependencyProperty.Register("Volume", typeof(double), typeof(Input), new PropertyMetadata(default(double)));
+
+
+
+        [XmlAttribute("volume")]
+        public double Volume
+        {
+            get { return (double)GetValue(VolumeProperty); }
+            set {
+
+                /*ControlledState?.SendFunction("Function", "SetVolume",
+                "Value", ((int)value).ToString(),
+                "Input", Key);*/
+
+                SetValue(VolumeProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for MeterF1.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MeterF2Property =
-            DependencyProperty.Register("MeterF2", typeof(float), typeof(Input), new PropertyMetadata(default(float)));
+            DependencyProperty.Register("MeterF2", typeof(double), typeof(Input), new PropertyMetadata(default(double)));
 
 
 

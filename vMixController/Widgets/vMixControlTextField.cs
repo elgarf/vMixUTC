@@ -24,7 +24,7 @@ namespace vMixController.Widgets
     public class vMixControlTextField : vMixControl
     {
 
-        private static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
+        protected static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
         private static DispatcherTimer DelayedUpdateTimer = new DispatcherTimer();
 
         static vMixControlTextField()
@@ -104,7 +104,7 @@ namespace vMixController.Widgets
         /// </summary>
         public const string IsLivePropertyName = "IsLive";
 
-        private bool _isLive = true;
+        protected bool _isLive = true;
 
         /// <summary>
         /// Sets and gets the IsLive property.
@@ -212,7 +212,7 @@ namespace vMixController.Widgets
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(vMixControlTextField), new PropertyMetadata("", InternalPropertyChanged));
 
-        private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        protected static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (!((vMixControlTextField)d).IsLive)
                 return;

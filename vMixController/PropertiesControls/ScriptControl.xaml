@@ -49,11 +49,16 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Label>
-                                    <TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock ToolTip="No Input Assigned To This Function!" VerticalAlignment="Center" x:Name="NoInputAssigned" Foreground="Yellow" Visibility="Collapsed" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF071;</TextBlock>
+                                        <Border Width="8"/>
+                                        <TextBlock VerticalAlignment="Center">
+                                        
                                 <Run>#</Run>
                                 <Run Text="{Binding (ItemsControl.AlternationIndex),
        RelativeSource={RelativeSource AncestorType=ListViewItem}, Mode=OneWay}"/>
-                                    </TextBlock>
+                                        </TextBlock>
+                                    </StackPanel>
                                 </Label>
                                 <Grid Grid.Column="1">
                                     <Grid.ColumnDefinitions>
@@ -198,6 +203,15 @@
                             </Grid>
                         </Grid>
                         <DataTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedValue.HasInputProperty, ElementName=Func}" Value="True"/>
+                                    <Condition Binding="{Binding NoInputAssigned}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" TargetName="NoInputAssigned"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
                             <DataTrigger Binding="{Binding SelectedValue.CommandType, ElementName=Func}" Value="Condition">
                                 <Setter TargetName="In2Label" Property="Margin" Value="0,-8,0,0"/>
                                 <Setter TargetName="In2Label" Property="Visibility" Value="Visible"/>

@@ -7,6 +7,7 @@ using vMixController.Classes;
 using System.Windows.Controls;
 using vMixController.Extensions;
 using GalaSoft.MvvmLight.CommandWpf;
+using System.Collections.Generic;
 
 namespace vMixController.Widgets
 {
@@ -16,10 +17,12 @@ namespace vMixController.Widgets
         public override string Type => "Clock";
         public override int MaxCount => 1;
 
-        private string _lastExecuted = null;
+        //private string _lastExecuted = null;
 
         [NonSerialized]
         private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Background);
+        [NonSerialized]
+        private Triple<DateTime, string, bool> _currentEvent;
 
         /// <summary>
         /// The <see cref="Events" /> property's name.
@@ -83,8 +86,8 @@ namespace vMixController.Widgets
 
         public vMixControlClock()
         {
-            _timer.Interval = TimeSpan.FromSeconds(1);
-            _timer.Tick += _timer_Tick;
+            _timer.Interval = TimeSpan.FromSeconds(0.5);
+            _timer.Tick += Timer_Tick;
         }
 
         private bool ExecuteToday(DateTime date, DateTime now)
@@ -118,7 +121,7 @@ namespace vMixController.Widgets
             return new string[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Never" }[d];
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             var now = DateTime.Now;
             foreach (var item in _events)
@@ -127,7 +130,12 @@ namespace vMixController.Widgets
                 if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A, DateTime.Now) /*&& _lastExecuted != item.A.ToShortDateString() + item.B*/)
                 {
                     //_lastExecuted = item.A.ToShortDateString() + item.B;
-                    Messenger.Default.Send(item.B);
+                    if (_currentEvent != null && !_currentEvent.C)
+                    {
+                        Messenger.Default.Send(item.B);
+                        _currentEvent.C = true;
+                    }
+                        
                 }
             }
 
@@ -143,11 +151,25 @@ namespace vMixController.Widgets
                 NextEventAt = LocalizationManager.Get("No new events scheduled");
             else
                 NextEventAt = String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}, {4}", day.A, day.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"), GetDayOfWeek(lastDate) == GetDayOfWeek(now) ? "Today" : GetDayOfWeek(lastDate));
+
+            //Wait until event really fired
+            if (_currentEvent != null && !_currentEvent.C) return;
+
+            if (_currentEvent != null && (_currentEvent.A != day.A || _currentEvent.B != day.B) && !_currentEvent.C)
+                Messenger.Default.Send(_currentEvent.B);
+            if (day != null)
+            {
+                if (_currentEvent == null || _currentEvent.A != day.A || _currentEvent.B != day.B)
+                    _currentEvent = new Triple<DateTime, string, bool>(day.A, day.B, false);
+            }
+            else
+                _currentEvent = null;
+
         }
 
         private Pair<DateTime, string> GetNextEvent(DateTime now)
         {
-            foreach (var item in _events)
+            foreach (var item in _events.OrderBy(x => new TimeSpan(0, x.A.Hour, x.A.Minute, x.A.Second, 0)))
             {
                 var day = GetDayOfWeek(item.A);
                 if (item.A.Hour + item.A.Minute / 60.0 + item.A.Second / 3600.0 > now.Hour + now.Minute / 60.0 + now.Second / 3600.0 && (ExecuteToday(item.A, now)))
@@ -156,9 +178,17 @@ namespace vMixController.Widgets
             return null;
         }
 
+        public override void Update()
+        {
+            if (!_timer.IsEnabled)
+                _timer.Start();
+            base.Update();
+        }
+
         public override UserControl[] GetPropertiesControls()
         {
             _timer.Stop();
+
             var ctrl = GetPropertyControl<PropertiesControls.SchedulerControl>();
             ctrl.Events.Clear();
             foreach (var item in _events)
@@ -173,7 +203,7 @@ namespace vMixController.Widgets
             base.SetProperties(_controls);
             var ctrl = _controls.OfType<PropertiesControls.SchedulerControl>().First();
             _events.Clear();
-            foreach (var item in ctrl.Events.OrderBy(x => x.A.Ticks))
+            foreach (var item in ctrl.Events.OrderBy(x => new TimeSpan(0, x.A.Hour, x.A.Minute, x.A.Second, 0)))
             {
                 _events.Add(item);
             }

@@ -40,9 +40,6 @@ namespace vMixController.ViewModel
         /// </summary>
         public const string ModelPropertyName = "Model";
 
-
-
-        object _moveSource = null;
         Point _clickPoint;
         Point _relativeClickPoint;
         Thickness _rawSelectorPosition = new Thickness();
@@ -320,7 +317,7 @@ namespace vMixController.ViewModel
                     return;
                 }
                 if (_windowSettings != null)
-                    _windowSettings.PropertyChanged -= _windowSettings_PropertyChanged;
+                    _windowSettings.PropertyChanged -= WindowSettings_PropertyChanged;
                 _windowSettings = value;
 
 
@@ -335,17 +332,17 @@ namespace vMixController.ViewModel
                         NLog.LogManager.DisableLogging();
                 }
 
-                _windowSettings.PropertyChanged += _windowSettings_PropertyChanged;
+                _windowSettings.PropertyChanged += WindowSettings_PropertyChanged;
                 RaisePropertyChanged(WindowSettingsPropertyName);
             }
         }
 
-        private void _windowSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void WindowSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem((x) =>
             {
                 if (e.PropertyName == "IP" || e.PropertyName == "Port")
-                    _connectTimer_Tick(null, new EventArgs());
+                    ConnectTimer_Tick(null, new EventArgs());
             });
 
         }
@@ -607,7 +604,7 @@ namespace vMixController.ViewModel
 
         // http://msdn.microsoft.com/en-us/library/ms680313
 #pragma warning disable CS0649
-        struct _IMAGE_FILE_HEADER
+        struct IMAGE_FILE_HEADER
         {
             public ushort Machinev;
             public ushort NumberOfSections;
@@ -624,7 +621,7 @@ namespace vMixController.ViewModel
             var path = assembly.Location;
             if (File.Exists(path))
             {
-                var buffer = new byte[Math.Max(Marshal.SizeOf(typeof(_IMAGE_FILE_HEADER)), 4)];
+                var buffer = new byte[Math.Max(Marshal.SizeOf(typeof(IMAGE_FILE_HEADER)), 4)];
                 using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
                     fileStream.Position = 0x3C;
@@ -636,7 +633,7 @@ namespace vMixController.ViewModel
                 var pinnedBuffer = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                 try
                 {
-                    var coffHeader = (_IMAGE_FILE_HEADER)Marshal.PtrToStructure(pinnedBuffer.AddrOfPinnedObject(), typeof(_IMAGE_FILE_HEADER));
+                    var coffHeader = (IMAGE_FILE_HEADER)Marshal.PtrToStructure(pinnedBuffer.AddrOfPinnedObject(), typeof(IMAGE_FILE_HEADER));
 
                     return TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond));
                 }
@@ -737,6 +734,7 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         p.Locked = !p.Locked;
+                        p.IsPasswordLocked = p.IsPasswordLockable && p.Locked && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
                     }));
             }
         }
@@ -1001,8 +999,7 @@ namespace vMixController.ViewModel
                     ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
                     p =>
                     {
-
-                        _moveSource = p.Source;
+                        //_moveSource = p.Source;
 
                     }));
             }
@@ -1175,11 +1172,6 @@ namespace vMixController.ViewModel
 
         private void LoadControllerFromFile(string opendlg)
         {
-            var state = WindowSettings.State;
-            var left = WindowSettings.Left;
-            var top = WindowSettings.Top;
-            var width = WindowSettings.Width;
-            var height = WindowSettings.Height;
             foreach (var item in _widgets)
                 item.Dispose();
             _widgets.Clear();
@@ -1192,10 +1184,10 @@ namespace vMixController.ViewModel
             foreach (var item in _widgets)
                 item.Update();
 
-            RaisePropertyChanged("WindowSettings");
+            RaisePropertyChanged(nameof(WindowSettings));
             _logger.Info("Configuring API.");
 
-            _connectTimer_Tick(null, new EventArgs());
+            ConnectTimer_Tick(null, new EventArgs());
 
             vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
 
@@ -1340,8 +1332,27 @@ namespace vMixController.ViewModel
                         foreach (var item in _widgets)
                         {
                             item.Locked = WindowSettings.Locked;
-                            item.IsPasswordLocked = !string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password);
+                            item.IsPasswordLocked = item.IsPasswordLockable && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
                         }
+                    }));
+            }
+        }
+
+        private RelayCommand<vMixController.Widgets.vMixControl> _switchPasswordLockableCommand;
+
+        /// <summary>
+        /// Gets the SwitchPasswordLockableCommand.
+        /// </summary>
+        public RelayCommand<vMixController.Widgets.vMixControl> SwitchPasswordLockableCommand
+        {
+            get
+            {
+                return _switchPasswordLockableCommand
+                    ?? ( _switchPasswordLockableCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
+                    (p) =>
+                    {
+                        p.IsPasswordLockable = !p.IsPasswordLockable;
+                        //p.IsPasswordLocked = (p.Locked && p.IsPasswordLockable && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password)));
                     }));
             }
         }
@@ -1409,7 +1420,7 @@ namespace vMixController.ViewModel
                 item.State = Model;
             if (Model != null)
                 Model.OnStateSynced += Model_OnStateUpdated;
-            _connectTimer_Tick(null, new EventArgs());
+            ConnectTimer_Tick(null, new EventArgs());
         }
 
         private void Model_OnStateUpdated(object sender, vMixAPI.StateSyncedEventArgs e)
@@ -1504,6 +1515,16 @@ namespace vMixController.ViewModel
                         s = new XmlSerializer(typeof(MainWindowSettings));
                         using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Create))
                             s.Serialize(fs, _windowSettings);
+
+                        //Dispose external data providers
+                        foreach (var item in ExternalDataProviders)
+                        {
+                            item.B.Dispose();
+                        }
+                        foreach (var item in _widgetTemplates)
+                        {
+                            item.B.Dispose();
+                        }
                     }));
             }
         }
@@ -1523,7 +1544,7 @@ namespace vMixController.ViewModel
             vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
 
             _connectTimer.Interval = TimeSpan.FromSeconds(20);
-            _connectTimer.Tick += _connectTimer_Tick;
+            _connectTimer.Tick += ConnectTimer_Tick;
             _connectTimer.Start();
 
             _logger.Info("Loading mapped functions.");
@@ -1704,7 +1725,11 @@ namespace vMixController.ViewModel
 
             if (!IsInDesignMode)
             {
+#if DEBUG
+                var globalEvents = Gma.System.MouseKeyHook.Hook.AppEvents();
+#else
                 var globalEvents = Gma.System.MouseKeyHook.Hook.GlobalEvents();
+#endif
 
                 globalEvents.MouseMove += MainViewModel_MouseMove;
                 globalEvents.MouseUp += MainViewModel_MouseUp;
@@ -1712,40 +1737,6 @@ namespace vMixController.ViewModel
 
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
 
-
-            /*Accord.Video.DirectShow.FilterInfoCollection filters = new Accord.Video.DirectShow.FilterInfoCollection(new Guid("{083863F1-70DE-11D0-BD40-00A0C911CE86}"));
-            foreach (var item in filters)
-                if (item.Name.Contains("NewTek NDI Source"))
-                {
-                    IsFiltersRegistered = true;
-                    return;
-                }
-
-            if (Properties.Settings.Default.NDIFiltersRegistered) return;
-
-            Ookii.Dialogs.Wpf.TaskDialog dialog = new Ookii.Dialogs.Wpf.TaskDialog();
-            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Yes));
-            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.No));
-            dialog.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Cancel));
-            dialog.Buttons[0].ElevationRequired = true;
-            dialog.WindowTitle = Extensions.LocalizationManager.Get("Register NDI filters");
-            dialog.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Warning;
-            dialog.MainInstruction = Extensions.LocalizationManager.Get("NDI filters not recognized in your system. Register them?");
-            var dialogresult = dialog.ShowDialog(Application.Current.MainWindow);
-            switch (dialogresult.ButtonType)
-            {
-
-                case Ookii.Dialogs.Wpf.ButtonType.Yes:
-                    Process p = new Process
-                    {
-                        StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() }
-                    };
-                    p.Start();
-                    break;
-                case Ookii.Dialogs.Wpf.ButtonType.Cancel:
-                    Properties.Settings.Default.NDIFiltersRegistered = true;
-                    break;
-            }*/
             Properties.Settings.Default.Save();
 
             if (!string.IsNullOrWhiteSpace((string)App.Current.Resources["CommandLine"]))
@@ -1797,7 +1788,6 @@ namespace vMixController.ViewModel
 
 
             var pos = new Point(e.X, e.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
-            var pos1 = Mouse.PrimaryDevice.GetPosition(null);
             var w = -(_rawSelectorPosition.Left - pos.X);
             var h = -(_rawSelectorPosition.Top - pos.Y);
 
@@ -1808,7 +1798,7 @@ namespace vMixController.ViewModel
 
         WebClient _client = new vMixAPI.vMixWebClient();
 
-        private void _connectTimer_Tick(object sender, EventArgs e)
+        private void ConnectTimer_Tick(object sender, EventArgs e)
         {
             if (IsInDesignMode) return;
 
@@ -1816,13 +1806,13 @@ namespace vMixController.ViewModel
             if (!IsUrlValid)
                 return;
 
-            _client.DownloadStringCompleted += _client_DownloadStringCompleted;
+            _client.DownloadStringCompleted += Client_DownloadStringCompleted;
             _client.CancelAsync();
             while (_client.IsBusy) Thread.Sleep(100);
             _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
         }
 
-        private void _client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             _logger.Info("Checking vMix server.");
             if (e.Error != null)

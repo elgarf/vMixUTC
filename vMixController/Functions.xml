@@ -802,4 +802,26 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>N/A</StringDescription>
   </vMixFunctionReference>
 
+  <vMixFunctionReference>
+    <Description></Description>
+    <Function>Audio</Function>
+    <IsGroup>true</IsGroup>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Set input volume.</Description>
+    <Function>SetVolume</Function>
+    <FormatString>Function=SetVolume&amp;Input={0}&amp;Value={1}</FormatString>
+    <IntDescription>Volume</IntDescription>
+    <StringDescription>N/A</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Set master volume.</Description>
+    <Function>SetMasterVolume</Function>
+    <FormatString>Function=SetMasterVolume&amp;Value={1}</FormatString>
+    <IntDescription>Volume</IntDescription>
+    <StringDescription>N/A</StringDescription>
+  </vMixFunctionReference>
+
 </ArrayOfVMixFunctionReference>
