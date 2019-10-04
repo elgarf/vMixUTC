@@ -33,6 +33,7 @@ namespace vMixController.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase, IDisposable
     {
+        //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
         vMixWidgetSettingsView _settings = null;// new vMixWidgetSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
@@ -981,6 +982,9 @@ namespace vMixController.ViewModel
                         SelectorWidth = 0;
                         SelectorHeight = 0;
 
+                        /*Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove += MainViewModel_MouseMove;
+                        Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp += MainViewModel_MouseUp;*/
+
                     }));
             }
         }
@@ -1724,13 +1728,8 @@ namespace vMixController.ViewModel
             });
 
             if (!IsInDesignMode)
-            {
-#if DEBUG
+            {   
                 var globalEvents = Gma.System.MouseKeyHook.Hook.AppEvents();
-#else
-                var globalEvents = Gma.System.MouseKeyHook.Hook.GlobalEvents();
-#endif
-
                 globalEvents.MouseMove += MainViewModel_MouseMove;
                 globalEvents.MouseUp += MainViewModel_MouseUp;
             }
@@ -1849,33 +1848,43 @@ namespace vMixController.ViewModel
             //throw new NotImplementedException();
         }
 
-        /*private RelayCommand _registerNDIFilters;
+        private RelayCommand<MouseEventArgs> _previewMouseUp;
 
         /// <summary>
-        /// Gets the RegisterNDIFilters.
+        /// Gets the PreviewMouseUp.
         /// </summary>
-        public RelayCommand RegisterNDIFilters
+        public RelayCommand<MouseEventArgs> PreviewMouseUp
         {
             get
             {
-                return _registerNDIFilters
-                    ?? (_registerNDIFilters = new RelayCommand(
-                    () =>
+                return _previewMouseUp
+                    ?? (_previewMouseUp = new RelayCommand<MouseEventArgs>(
+                    p =>
                     {
-                        Process p = new Process
-                        {
-                            StartInfo = new ProcessStartInfo(Path.Combine(Directory.GetCurrentDirectory(), "RegisterFilters.cmd")) { CreateNoWindow = true, Verb = "runas", Arguments = Directory.GetCurrentDirectory() }
-                        };
-                        try
-                        {
-                            p.Start();
-                        }
-                        catch (Exception) { }
-                        _isFiltersRegistered = true;
-                    },
-                    () => !IsFiltersRegistered));
+                        //mouseHook.UninstallHook();
+                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
+                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
+                    }));
             }
-        }*/
+        }
+
+        private RelayCommand<MouseEventArgs> _previewMouseDown;
+
+        /// <summary>
+        /// Gets the PreviewMouseDown.
+        /// </summary>
+        public RelayCommand<MouseEventArgs> PreviewMouseDown
+        {
+            get
+            {
+                return _previewMouseDown
+                    ?? (_previewMouseDown = new RelayCommand<MouseEventArgs>(
+                    p =>
+                    {
+                       //mouseHook.InstallHook();
+                    }));
+            }
+        }
 
 
         private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
