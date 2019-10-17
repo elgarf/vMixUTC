@@ -203,6 +203,7 @@
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
     <Compile Include="Converters\BrightnessToColorConverter.cs" />
+    <Compile Include="Converters\ColorDarkConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
     <Compile Include="Converters\ControlToPointConverter.cs" />

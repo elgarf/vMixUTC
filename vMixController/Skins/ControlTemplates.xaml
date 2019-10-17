@@ -23,6 +23,7 @@
     <c:RelativeToAbsoluteConverter x:Key="RelativeToAbsolute"/>
     <c:BrightnessToColorConverter x:Key="BrightnessToColor"/>
     <c:LogarithmicConverter x:Key="LogConverter"/>
+    <c:ColorDarkConverter x:Key="ColorDarkener"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -46,17 +47,91 @@
 
     <!--Inner Controls-->
 
-    <Button HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
+    <Button Tag="{Binding IsColorized}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Ellipse Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
-
-            <TextBlock HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}, ConverterParameter=true}"/>
+            <Ellipse Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <!--Foreground="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}"-->
+            <TextBlock Foreground="{Binding Background.Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}, ConverterParameter=true}"/>
             <Image Grid.Column="1" MinWidth="16" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}}" Source="{Binding Image, Converter={StaticResource RelativeToAbsolute}}"/>
         </Grid>
+        <Button.Style>
+            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Style.Setters>
+                    
+                </Style.Setters>
+                <Style.Triggers>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="Tag">
+                                <Condition.Value>
+                                    <sys:Boolean>True</sys:Boolean>
+                                </Condition.Value>
+                            </Condition>
+                            <Condition Property="IsMouseOver" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Color}"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding BorderColor}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="Tag">
+                                <Condition.Value>
+                                    <sys:Boolean>True</sys:Boolean>
+                                </Condition.Value>
+                            </Condition>
+                            <Condition Property="IsMouseOver" Value="True"/>
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding BorderColor}"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Color}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="Tag">
+                                <Condition.Value>
+                                    <sys:Boolean>True</sys:Boolean>
+                                </Condition.Value>
+                            </Condition>
+                            <Condition Property="IsPressed" Value="True"/>
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorDarkener}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorDarkener}}"/>
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <!--<Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorDarkener}}"/>
+                        <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorDarkener}}"/>
+                    </Trigger>-->
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
     </Button>
 
     <Grid x:Shared="false" x:Key="TextFieldWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
@@ -229,7 +304,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0, TargetNullValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>

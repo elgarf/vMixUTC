@@ -30,6 +30,8 @@ namespace vMixController.Widgets
     public class vMixControlButton : vMixControl
     {
         [NonSerialized]
+        static Queue<Exception> _loggedExceptions = new Queue<Exception>();
+        [NonSerialized]
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
         static DateTime _lastShadowUpdate = DateTime.Now;
@@ -319,6 +321,35 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsColorized" /> property's name.
+        /// </summary>
+        public const string IsColorizedPropertyName = "IsColorized";
+
+        private bool _isColorized = false;
+
+        /// <summary>
+        /// Sets and gets the IsColorized property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsColorized
+        {
+            get
+            {
+                return _isColorized;
+            }
+
+            set
+            {
+                if (_isColorized == value)
+                {
+                    return;
+                }
+
+                _isColorized = value;
+                RaisePropertyChanged(IsColorizedPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="Image" /> property's name.
@@ -655,7 +686,13 @@ namespace vMixController.Widgets
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Calculating expression failde");
+                    /*if (_loggedExceptions.Where(x => x.HResult == ex.HResult && x.Message == ex.Message).Count() == 0)
+                    {
+                        _logger.Error(ex, "Calculating expression failde");
+                        _loggedExceptions.Enqueue(ex);
+                        if (_loggedExceptions.Count > 10)
+                            _loggedExceptions.Dequeue();
+                    }*/
                     return false;
                 }
         }
@@ -677,7 +714,13 @@ namespace vMixController.Widgets
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "Calculating expression failed");
+                    /*if (_loggedExceptions.Where(x=>x.HResult == ex.HResult && x.Message == ex.Message).Count() == 0)
+                    {
+                        _logger.Error(ex, "Calculating expression failde");
+                        _loggedExceptions.Enqueue(ex);
+                        if (_loggedExceptions.Count > 10)
+                            _loggedExceptions.Dequeue();
+                    }*/
                     return s;
                 }
             }
@@ -868,6 +911,7 @@ namespace vMixController.Widgets
             FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
             BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible };
+            BoolControl boolctrl2 = new BoolControl() { Title = LocalizationManager.Get("Colorize Button"), Value = IsColorized, Visibility = System.Windows.Visibility.Visible };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             control.Commands.Clear();
@@ -878,7 +922,7 @@ namespace vMixController.Widgets
                         item.AdditionalParameters.Add(new One<string>());
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
-            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, boolctrl1, control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
@@ -897,7 +941,9 @@ namespace vMixController.Widgets
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
-            AutoStart = _controls.OfType<BoolControl>().Last().Value;
+            AutoStart = _controls.OfType<BoolControl>().ElementAt(1).Value;
+            IsColorized = _controls.OfType<BoolControl>().ElementAt(2).Value;
+
             var u = _controls.OfType<FilePathControl>().First().Value;
             if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
             {

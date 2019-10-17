@@ -218,7 +218,7 @@ namespace vMixController.Widgets
             {
                 _updating = true;
 
-                BindingOperations.ClearBinding(this, ValueProperty);
+                //BindingOperations.ClearBinding(this, ValueProperty);
 
                 //update text
                 if (State != null)
