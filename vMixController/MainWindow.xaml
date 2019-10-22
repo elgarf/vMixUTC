@@ -214,11 +214,11 @@
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{Binding ReportBugCommand}" Header="{e:Localize Report a bug}">
+                <!--<MenuItem Command="{Binding ReportBugCommand}" Header="{e:Localize Report a bug}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF188;</TextBlock>
                     </MenuItem.Icon>
-                </MenuItem>
+                </MenuItem>-->
                 <Separator/>
                 <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
                     <MenuItem.Icon>

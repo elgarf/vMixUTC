@@ -21,6 +21,15 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
+    <Description>Draft API call</Description>
+    <Function>API</Function>
+    <StringDescription>http://</StringDescription>
+    <FormatString>http://{2}</FormatString>
+  </vMixFunctionReference>
+
+
+  <vMixFunctionReference>
+    <Native>true</Native>
     <Description>Check condition, functions below this one executes only if condition is TRUE.
 This is block function, block ends at ConditionEnd function.</Description>
     <Function>Condition</Function>

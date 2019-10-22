@@ -51,7 +51,7 @@ namespace vMixAPI
             {
                 case "Image":
                     //StateExtensions.InputSelectIndex((d as InputText).InputNumber, );
-                    (d as InputImage).ControlledState.TitleSetImage((d as InputImage).InputKey, (string)e.NewValue, (d as InputImage).Index);
+                    (d as InputImage).ControlledState.TitleSetImage((d as InputImage).InputKey, Environment.ExpandEnvironmentVariables((string)e.NewValue), (d as InputImage).Index);
                     break;
             }
         }

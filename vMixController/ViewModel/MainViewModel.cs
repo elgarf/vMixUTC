@@ -904,6 +904,7 @@ namespace vMixController.ViewModel
                         EditorCursor = CursorType.Hand.ToString();
                         _createWidget = new Action<Point>(x =>
                         {
+                            
                             var widget = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
 
                             var count = _widgets.Where(y => y.GetType() == widget.GetType()).Count();

@@ -105,6 +105,7 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
@@ -126,6 +127,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -185,7 +189,6 @@
     <Compile Include="Classes\Quadriple.cs" />
     <Compile Include="Classes\SharedData.cs" />
     <Compile Include="Classes\Singleton.cs" />
-    <Compile Include="Classes\SMPTEReader.cs" />
     <Compile Include="Classes\Triple.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />

@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows;
 using System.IO;
 using System.Collections;
+using System.Net;
 
 namespace vMixController.Widgets
 {
@@ -642,6 +643,13 @@ namespace vMixController.Widgets
                             args.Result = Dispatcher.Invoke<object>(() => GetValueByPath(State, p[0].ToString()));
                     }
                     break;
+                case "expandvariables":
+                    if (p.Length > 0)
+                    {
+                        args.HasResult = true;
+                        args.Result = Environment.ExpandEnvironmentVariables(p[0].ToString());
+                    }
+                    break;
                 //string functions
                 case "split":
                     if (p.Length > 1 && p[0] is string && p[1] is string)
@@ -799,6 +807,11 @@ namespace vMixController.Widgets
                     if (cmd.Action.Native)
                         switch (cmd.Action.Function)
                         {
+                            case NativeFunctions.API:
+                                WebClient _webClient = new vMixWebClient();
+                                _webClient.DownloadStringAsync(new Uri(CalculateObjectParameter(cmd).ToString()), null);
+
+                                break;
                             case NativeFunctions.TIMER:
                                 Thread.Sleep(CalculateExpression<int>(cmd.Parameter));
                                 break;
