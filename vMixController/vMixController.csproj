@@ -284,11 +284,11 @@
     <Compile Include="PropertiesControls\TitleMappingControl.xaml.cs">
       <DependentUpon>TitleMappingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\GlobalVariablesViewModel.cs" />
     <Compile Include="vMixControlUtils.cs" />
     <Compile Include="Widgets\IvMixAutoUpdateWidget.cs" />
     <Compile Include="Classes\MainWindowSettings.cs" />
     <Compile Include="Widgets\vMixControlSlider.cs" />
-    <Compile Include="Widgets\vMixControlTimecode.cs" />
     <Compile Include="Widgets\vMixControlClock.cs" />
     <Compile Include="Widgets\vMixControlContainer.cs" />
     <Compile Include="Widgets\vMixControlButton.cs" />

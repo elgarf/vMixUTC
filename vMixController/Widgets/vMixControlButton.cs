@@ -809,8 +809,7 @@ namespace vMixController.Widgets
                         {
                             case NativeFunctions.API:
                                 WebClient _webClient = new vMixWebClient();
-                                _webClient.DownloadStringAsync(new Uri(CalculateObjectParameter(cmd).ToString()), null);
-
+                                _webClient.DownloadStringAsync(new Uri(string.Format("http://{0}", CalculateObjectParameter(cmd).ToString())), null);
                                 break;
                             case NativeFunctions.TIMER:
                                 Thread.Sleep(CalculateExpression<int>(cmd.Parameter));
