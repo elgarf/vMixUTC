@@ -644,6 +644,13 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
+    <Description>Play animation.</Description>
+    <Function>TitleBeginAnimation</Function>
+    <FormatString>Function=TitleBeginAnimation&amp;Input={0}&amp;Value={2}</FormatString>
+    <StringDescription>Animation</StringDescription>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description></Description>
     <Function>vMix DataSource Controls</Function>
     <IsGroup>true</IsGroup>
