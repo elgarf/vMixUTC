@@ -40,7 +40,7 @@
                             <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemoveItemCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF374;"/>
                             </StackPanel>
-                            <TextBox Text="{Binding Value}"/>
+                            <TextBox CaretBrush="White" Background="Transparent" Foreground="White" BorderThickness="0,0,0,1" Text="{Binding Value}"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

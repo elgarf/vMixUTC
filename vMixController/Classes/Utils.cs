@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
 using vMixController.Classes;
+using vMixController.ViewModel;
 using vMixController.Widgets;
 
 namespace vMixController.Classes
@@ -53,6 +54,26 @@ namespace vMixController.Classes
                     windowSettings = settings;
 
                     reader.ReadEndElement();
+
+                    if (reader.IsStartElement())
+                    {
+                        reader.ReadStartElement();
+
+                        s = new XmlSerializer(typeof(ObservableCollection<Pair<string, string>>));
+                        var globals = (ObservableCollection<Pair<string, string>>)s.Deserialize(reader);
+                        //Add or update global variable, according to controller variables
+                        foreach (var item in globals)
+                        {
+                            if (GlobalVariablesViewModel._variables.Count(x => x.A == item.A) == 0)
+                                GlobalVariablesViewModel._variables.Add(item);
+                            else
+                                GlobalVariablesViewModel._variables.Where(x => x.A == item.A).First().B = item.B;
+                        }
+                        
+
+                        reader.ReadEndElement();
+                    }
+
                     reader.ReadEndElement();
 
                     _logger.Info("Configuring API.");
@@ -81,6 +102,13 @@ namespace vMixController.Classes
                     _logger.Info("Writing window settings.");
                     s.Serialize(writer, _windowSettings);
                     writer.WriteEndElement();
+
+                    writer.WriteStartElement("GlobalVariables");
+                    s = new XmlSerializer(typeof(ObservableCollection<Pair<string, string>>));
+                    _logger.Info("Writing global variables.");
+                    s.Serialize(writer, GlobalVariablesViewModel._variables);
+                    writer.WriteEndElement();
+
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                     writer.Flush();

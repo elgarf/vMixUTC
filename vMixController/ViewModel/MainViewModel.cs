@@ -1521,6 +1521,11 @@ namespace vMixController.ViewModel
                         using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Create))
                             s.Serialize(fs, _windowSettings);
 
+                        _logger.Info("Saving variables.");
+                        s = new XmlSerializer(typeof(ObservableCollection<Pair<string, string>>));
+                        using (var fs = new FileStream(Path.Combine(_documentsPath, "Variables.xml"), FileMode.Create))
+                            s.Serialize(fs, GlobalVariablesViewModel._variables);
+
                         //Dispose external data providers
                         foreach (var item in ExternalDataProviders)
                         {
@@ -1647,6 +1652,20 @@ namespace vMixController.ViewModel
             catch (Exception)
             {
                 _windowSettings = new MainWindowSettings();
+            }
+
+            try
+            {
+                _logger.Info("Loading variables.");
+                s = new XmlSerializer(typeof(ObservableCollection<Pair<string, string>>));
+                if (File.Exists(Path.Combine(_documentsPath, "Variables.xml")))
+                    using (var fs = new FileStream(Path.Combine(_documentsPath, "Variables.xml"), FileMode.Open))
+                        GlobalVariablesViewModel._variables = (ObservableCollection<Pair<string, string>>)s.Deserialize(fs);
+
+            }
+            catch (Exception)
+            {
+                
             }
 
             if (Model == null)
@@ -1995,6 +2014,26 @@ namespace vMixController.ViewModel
                             Process.Start(new ProcessStartInfo("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WT9QZ2XH97HMN&lc=US&item_name=vMix%20Universal%20Title%20Controller&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
 
 
+                    }));
+            }
+
+        }
+
+        private RelayCommand _globalVariablesCommand;
+
+        /// <summary>
+        /// Gets the GlobalVariablesCommand.
+        /// </summary>
+        public RelayCommand GlobalVariablesCommand
+        {
+            get
+            {
+                return _globalVariablesCommand
+                    ?? (_globalVariablesCommand = new RelayCommand(
+                    () =>
+                    {
+                        var sv = new GlobalVariablesView();
+                        sv.ShowDialog();
                     }));
             }
         }

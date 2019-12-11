@@ -624,6 +624,12 @@ namespace vMixController.Widgets
                 var x = Dispatcher.Invoke(() => new { item.A, item.B });
                 exp.Parameters.Add(string.Format("{0}{1}", VARIABLEPREFIX, x.A), x.B);
             }
+            foreach (var item in GlobalVariablesViewModel._variables)
+            {
+                var x = Dispatcher.Invoke(() => new { item.A, item.B });
+                if (!exp.Parameters.ContainsKey(x.A))
+                exp.Parameters.Add(x.A, x.B);
+            }
             exp.EvaluateFunction += Exp_EvaluateFunction;
         }
 

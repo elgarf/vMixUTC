@@ -285,6 +285,9 @@
       <DependentUpon>TitleMappingControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\GlobalVariablesViewModel.cs" />
+    <Compile Include="GlobalVariablesView.xaml.cs">
+      <DependentUpon>GlobalVariablesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="vMixControlUtils.cs" />
     <Compile Include="Widgets\IvMixAutoUpdateWidget.cs" />
     <Compile Include="Classes\MainWindowSettings.cs" />
@@ -392,6 +395,10 @@
     <Page Include="Skins\ControlTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GlobalVariablesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="vMixControlSettingsView.xaml">
       <SubType>Form</SubType>

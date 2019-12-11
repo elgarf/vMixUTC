@@ -209,6 +209,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
+                <MenuItem Command="{Binding GlobalVariablesCommand}" Header="{e:Localize Global Variables}">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02D;</TextBlock>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Command="{Binding AboutCommand}" Header="{e:Localize About}">
                     <MenuItem.Icon>
                         <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>

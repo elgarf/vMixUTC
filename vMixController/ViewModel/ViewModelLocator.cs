@@ -39,6 +39,7 @@ namespace vMixController.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
+            SimpleIoc.Default.Register<vMixController.ViewModel.GlobalVariablesViewModel>();
         }
 
         /// <summary>
@@ -67,6 +68,21 @@ namespace vMixController.ViewModel
                 return ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
             }
         }
+
+        /// <summary>
+        /// Gets the WidgetSettings property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public vMixController.ViewModel.GlobalVariablesViewModel GlobalSettings
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<vMixController.ViewModel.GlobalVariablesViewModel>();
+            }
+        }
+
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>
