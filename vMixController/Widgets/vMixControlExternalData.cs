@@ -321,7 +321,8 @@ namespace vMixController.Widgets
                 DataProvider = (IvMixDataProvider)assembly.CreateInstance(type.FullName);
             }
 
-            DataProvider.SetProperties(_dataProviderProperties);
+            if (_dataProviderProperties != null)
+                DataProvider.SetProperties(_dataProviderProperties);
 
             UpdateText(Paths);
         }

@@ -1980,7 +1980,7 @@ namespace vMixController.ViewModel
         }
 
         private RelayCommand _aboutCommand;
-
+        
         /// <summary>
         /// Gets the AboutCommand.
         /// </summary>

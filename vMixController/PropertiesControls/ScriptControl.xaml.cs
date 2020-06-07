@@ -27,6 +27,7 @@ namespace vMixController.PropertiesControls
     /// </summary>
     public partial class ScriptControl : UserControl, INotifyPropertyChanged
     {
+        private int _prevIndex = 0;
         public ScriptControl()
         {
             InitializeComponent();
@@ -36,6 +37,17 @@ namespace vMixController.PropertiesControls
         private void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             RearrangeCommnads();
+        }
+
+        private void GenerateCode()
+        {
+            List<string> code = new List<string>();
+            foreach (var item in Commands)
+                code.Add(item.ToString());
+            if (code.Count > 0)
+                TextCode = code.Aggregate((x, y) => x + "\r\n" + y);
+            else
+                TextCode = "";
         }
 
         private void RearrangeCommnads()
@@ -58,6 +70,7 @@ namespace vMixController.PropertiesControls
                 if (ident < 0) ident = 0;
 
                 icmd.Ident = new Thickness(ident, 0, 0, 0);
+                GenerateCode();
 
             }
         }
@@ -79,6 +92,37 @@ namespace vMixController.PropertiesControls
             s.NoInputAssigned = check ?? true;
         }
 
+
+        /// <summary>
+        /// The <see cref="TextCode" /> property's name.
+        /// </summary>
+        public const string TextCodePropertyName = "TextCode";
+
+        private string _textCode = "";
+
+        /// <summary>
+        /// Sets and gets the TextCode property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string TextCode
+        {
+            get
+            {
+                return _textCode;
+            }
+
+            set
+            {
+                if (_textCode == value)
+                {
+                    return;
+                }
+
+                _textCode = value;
+
+                RaisePropertyChanged(TextCodePropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="Commands" /> property's name.
@@ -180,6 +224,7 @@ namespace vMixController.PropertiesControls
                             using (var fs = new FileStream(opendlg.FileName, FileMode.Create))
                                 s.Serialize(fs, Commands);
                         }
+
                     }));
             }
         }
@@ -221,7 +266,7 @@ namespace vMixController.PropertiesControls
                             }
                             catch (Exception e)
                             {
-                                
+
                             }
                         }
                     }));
@@ -290,6 +335,31 @@ namespace vMixController.PropertiesControls
                         RearrangeCommnads();
                     }));
             }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as TabControl).SelectedIndex == 1)
+            {
+                GenerateCode();
+            }
+        }
+
+        private void BindableAvalonEditor_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(TextCode))
+            {
+                var code = TextCode.Split('\r', '\n').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                Commands.Clear();
+                foreach (var line in code)
+                    Commands.Add(vMixControlButtonCommand.FromString(line));
+                //_prevIndex = 0;
+            }
+        }
+
+        private void BindableAvalonEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //_prevIndex++;
         }
     }
 }

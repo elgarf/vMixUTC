@@ -212,6 +212,8 @@ namespace vMixGenericXmlDataProvider
         /// <param name="props"></param>
         public void SetProperties(List<object> props)
         {
+            if (props == null || props.Count == 0)
+                return;
             Url = (string)props[0];
             XPath = (string)props[1];
             if (props.Count > 2)

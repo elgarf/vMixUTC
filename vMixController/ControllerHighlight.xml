@@ -1,0 +1,29 @@
+﻿<SyntaxDefinition name="C#"
+        xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="String" foreground="#4557de" />
+
+  <!-- This is the main ruleset. -->
+  <RuleSet>
+
+    <Span color="String">
+      <Begin>'</Begin>
+      <End>'</End>
+      <RuleSet>
+        <!-- nested span for escape sequences -->
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+
+    <Keywords fontWeight="bold" foreground="#1a97e6">
+      <Word>if</Word>
+      <Word>else</Word>
+      <!-- ... -->
+    </Keywords>
+
+    <!-- Digits -->
+    <Rule foreground="#bfb2b0">
+      \b(?im)[{(]?[0-9A-F]{8}[-]?(?:[0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?  # guid
+      |\b[0-9]+
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

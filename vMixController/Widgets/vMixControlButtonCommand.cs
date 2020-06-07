@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using vMixController.Classes;
+using vMixController.ViewModel;
 
 namespace vMixController.Widgets
 {
@@ -285,10 +288,141 @@ namespace vMixController.Widgets
             }
         }
 
+        public override string ToString()
+        {
+            var result = new String('\t', (int)(Ident.Left / 8));
+            if (Collapsed)
+                result += ">";
+
+            result += Action.Function + "(";
+            if (Action.HasInputProperty)
+                result += InputKey + ", ";
+            if (Action.HasIntProperty)
+                result += Parameter + ", ";
+            if (Action.HasStringProperty)
+                result += StringParameter + ", ";
+
+            var lastMean = 0;
+            for (int i = 0; i < AdditionalParameters.Count; i++)
+                if (!string.IsNullOrWhiteSpace(AdditionalParameters[i].A))
+                    lastMean = i;
+
+            foreach (var item in AdditionalParameters)
+                if (!string.IsNullOrWhiteSpace(item.A) || --lastMean > 0)
+                    result += item.A + ", ";
+
+            if (result.EndsWith(", "))
+                result = result.Substring(0, result.Length - 2);
+
+            result += ")";
+
+            return result;
+        }
+
+        public static vMixControlButtonCommand FromString(string s)
+        {
+            var result = new vMixControlButtonCommand();
+
+            for (int i = 0; i < 10; i++)
+                result.AdditionalParameters.Add(new One<string>() { A = "" });
+
+            var functions = SimpleIoc.Default.GetInstance<MainViewModel>().Functions;
+            var bracketIndex = s.IndexOf('(');
+            if (bracketIndex <= 0)
+            {
+                result.Action = functions.Where(x => x.Function == "None").FirstOrDefault();
+                return result;
+            }
+            var act = functions.Where(x => x.Function == s.Substring(0, bracketIndex).Trim().TrimStart('>')).FirstOrDefault();
+            if (act == null)
+                return result;
+            int ident = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                bool brk = false;
+                switch (s[i])
+                {
+                    case '\t':
+                        ident += 8;
+                        break;
+                    case '>':
+                        result.Collapsed = true;
+                        break;
+                    default:
+                        brk = true;
+                        break;
+                }
+                if (brk) break;
+            }
+            result.Ident = new Thickness(ident, 0, 0, 0);
+            s = s.Substring(bracketIndex + 1, s.Length - bracketIndex - 2);
+
+            List<string> arguments = new List<string>();
+
+            var arg = "";
+            var br = 0;
+            var bc = 0;
+            var str = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                switch (s[i])
+                {
+                    case '\'':
+                        str++;
+                        break;
+                    case '(':
+                        br++;
+                        break;
+                    case ')':
+                        br--;
+                        break;
+                    case '[':
+                        bc++;
+                        break;
+                    case ']':
+                        bc--;
+                        break;
+                    case ',':
+                        arguments.Add(arg.Trim());
+                        arg = "";
+                        continue;
+                    default:
+                        break;
+                }
+                arg += s[i];
+            }
+            arguments.Add(arg.Trim());
+
+            result.Action = act;
+            if (act.HasInputProperty)
+            {
+                result.InputKey = arguments[0];
+                arguments.RemoveAt(0);
+            }
+            if (act.HasIntProperty)
+            {
+                result.Parameter = arguments[0];
+                arguments.RemoveAt(0);
+            }
+            if (act.HasStringProperty)
+            {
+                result.StringParameter = arguments[0];
+                arguments.RemoveAt(0);
+            }
+            var parameter = 0;
+
+            while (arguments.Count > 0)
+            {
+                result.AdditionalParameters[parameter++].A = arguments[0];
+                arguments.RemoveAt(0);
+            }
+            return result;
+        }
+
         public vMixControlButtonCommand()
         {
             _action = new vMixFunctionReference();
-            
+
             /*if (_additionalParameters.Count < 10)
                 for (int i = 0; i < 10; i++)
                     _additionalParameters.Add("");*/
