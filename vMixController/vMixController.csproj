@@ -434,6 +434,8 @@
     <Content Include="ControllerHighlight.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\Function.png" />
+    <Resource Include="Images\Input.png" />
     <Content Include="Processing.NDI.Lib.x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -498,7 +500,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Grid.png" />
+    <Resource Include="Grid.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Functions.xml">

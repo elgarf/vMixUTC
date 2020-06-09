@@ -42,6 +42,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <CommandType>Condition</CommandType>
     <IsBlock>true</IsBlock>
     <HideParameters>3</HideParameters>
+    <AdditionalCount>4</AdditionalCount>
     <Color>
       <A>255</A>
       <R>255</R>
@@ -382,7 +383,6 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>0</int>
       <int>1</int>
       <int>2</int>
-      <int>3</int>
     </IntValues>
   </vMixFunctionReference>
 
@@ -396,7 +396,6 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>0</int>
       <int>1</int>
       <int>2</int>
-      <int>3</int>
     </IntValues>
   </vMixFunctionReference>
 
@@ -410,7 +409,6 @@ This is block function, block ends at ConditionEnd function.</Description>
         <int>0</int>
         <int>1</int>
         <int>2</int>
-        <int>3</int>
       </IntValues>
     </vMixFunctionReference>
 
@@ -761,7 +759,7 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Description>Select Zoom Index in VirtualSets.</Description>
-    <Function>SelectZoomIndex/VirtualSets</Function>
+    <Function>SelectZoomIndexOrVirtualSets</Function>
     <FormatString>Function=SelectIndex&amp;Input={0}&amp;Value={1}</FormatString>
     <IntDescription>Zoom Index</IntDescription>
     <StringDescription>N/A</StringDescription>

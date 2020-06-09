@@ -308,8 +308,11 @@ namespace vMixController.Widgets
                     lastMean = i;
 
             foreach (var item in AdditionalParameters)
-                if (!string.IsNullOrWhiteSpace(item.A) || --lastMean > 0)
+            {
+                lastMean--;
+                if (!string.IsNullOrWhiteSpace(item.A) || lastMean - 1 > 0)
                     result += item.A + ", ";
+            }
 
             if (result.EndsWith(", "))
                 result = result.Substring(0, result.Length - 2);

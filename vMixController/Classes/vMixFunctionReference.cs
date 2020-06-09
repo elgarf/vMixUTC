@@ -55,6 +55,7 @@ namespace vMixController.Classes
         public string CommandType { get; set; }
         public int HideParameters { get; set; }
         public bool IsBlock { get; set; }
+        public int AdditionalCount { get; set; } = 0;
 
         public System.Windows.Media.Color Color { get; set; }
 
@@ -77,6 +78,22 @@ namespace vMixController.Classes
             IntDescription = "Integer";
             StringDescription = "String";
             Color = System.Windows.Media.Colors.Black;
+        }
+
+        public string GetSignature()
+        {
+            string result = Function + "(";
+            if (HasInputProperty)
+                result += string.Format("#{0}, ", InputDescription);
+            if (HasIntProperty)
+                result += string.Format("#{0}, ", IntDescription);
+            if (HasStringProperty)
+                result += string.Format("#{0}, ", StringDescription);
+            for (int i = 0; i < AdditionalCount; i++)
+                result += string.Format("#par{0}, ", i + 1);
+            if (result.EndsWith(", "))
+                result = result.Substring(0, result.Length - 2);
+            return result + ")";
         }
 
     }

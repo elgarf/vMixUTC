@@ -48,6 +48,8 @@ namespace vMixController.PropertiesControls
                 TextCode = code.Aggregate((x, y) => x + "\r\n" + y);
             else
                 TextCode = "";
+
+            Code.Document.Text = TextCode;
         }
 
         private void RearrangeCommnads()
@@ -342,11 +344,13 @@ namespace vMixController.PropertiesControls
             if ((sender as TabControl).SelectedIndex == 1)
             {
                 GenerateCode();
+                Code.Select(0, 0);
             }
         }
 
         private void BindableAvalonEditor_LostFocus(object sender, RoutedEventArgs e)
         {
+            TextCode = Code.Document.Text;
             if (!string.IsNullOrWhiteSpace(TextCode))
             {
                 var code = TextCode.Split('\r', '\n').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();

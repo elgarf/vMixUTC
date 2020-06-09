@@ -174,7 +174,7 @@
                                                         <ColumnDefinition Width="64"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBox Text="{Binding AdditionalParameters[1].A, Mode=TwoWay}"></TextBox>
+                                                    <TextBox Text="{Binding AdditionalParameters[1].A, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                                     <ComboBox SelectedValue="{Binding AdditionalParameters[2].A, Mode=TwoWay}" Grid.Column="1">
                                                         <c:String>&gt;</c:String>
                                                         <c:String>&lt;</c:String>
@@ -184,7 +184,7 @@
                                                         <c:String>!=</c:String>
                                                         <!--<c:String>contains</c:String>-->
                                                     </ComboBox>
-                                                    <TextBox Text="{Binding AdditionalParameters[3].A, Mode=TwoWay}" Grid.Column="2"></TextBox>
+                                                    <TextBox Text="{Binding AdditionalParameters[3].A, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2"></TextBox>
                                                 </Grid>
 
                                                 <!--<Grid.RowDefinitions>
@@ -268,9 +268,16 @@
                     </ListView>
                 </TabItem>
                 <TabItem Template="{StaticResource TabItemStyle}" Foreground="White" Header="Code">
-                    <cls:BindableAvalonEditor Background="{StaticResource Button.Static.Background}" Foreground="White" ShowLineNumbers="True" Text="{Binding TextCode, ElementName=Me, UpdateSourceTrigger=PropertyChanged}" LostFocus="BindableAvalonEditor_LostFocus" GotFocus="BindableAvalonEditor_GotFocus">
+                    <!--Text="{Binding TextCode, ElementName=Me, UpdateSourceTrigger=PropertyChanged}"-->
+                    <StackPanel VerticalAlignment="Stretch">
+                        <StackPanel Margin="4">
+                        <TextBlock><Run FontWeight="Bold">Ctrl+Space</Run> -- completion window</TextBlock>
+                        <TextBlock><Run FontWeight="Bold">Tab</Run> -- loop through # parameters</TextBlock>
+                        </StackPanel>
+                        <cls:BindableAvalonEditor MinHeight="200px" x:Name="Code" Background="{StaticResource Button.Static.Background}" Foreground="White" ShowLineNumbers="True" LostFocus="BindableAvalonEditor_LostFocus" GotFocus="BindableAvalonEditor_GotFocus">
 
-                    </cls:BindableAvalonEditor>
+                        </cls:BindableAvalonEditor>
+                    </StackPanel>
                 </TabItem>
             </TabControl>
         </StackPanel>
