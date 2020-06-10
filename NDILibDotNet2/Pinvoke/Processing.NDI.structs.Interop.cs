@@ -1,3 +1,24 @@
+// NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
+// for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
+// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at http://ndi.tv/
+//
+//*************************************************************************************************************************************
+// 
+// Copyright(c) 2014-2020, NewTek, inc.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
+// files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
+// merge, publish, distribute, sublicense, and / or sell copies of the Software, and to permit persons to whom the Software is 
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -30,9 +51,9 @@ namespace NewTek
 			FourCC_type_UYVY = 0x59565955,
 
             // 4:2:0 formats
-            NDIlib_FourCC_type_YV12 = 0x32315659,
-            NDIlib_FourCC_type_NV12 = 0x3231564E,
-            NDIlib_FourCC_type_I420 = 0x30323449,
+            NDIlib_FourCC_video_type_YV12 = 0x32315659,
+            NDIlib_FourCC_video_type_NV12 = 0x3231564E,
+            NDIlib_FourCC_video_type_I420 = 0x30323449,
 
 			// BGRA
 			FourCC_type_BGRA = 0x41524742,
@@ -75,7 +96,7 @@ namespace NewTek
 			public IntPtr	p_ndi_name;
 
             // A UTF8 string that provides the actual network address and any parameters. 
-            // This is not meant to be application readable and might well change in teh future.
+            // This is not meant to be application readable and might well change in the future.
             // This can be nullptr if you do not know it and the API internally will instantiate
             // a finder that is used to discover it even if it is not yet available on the network.
             public IntPtr p_url_address;
@@ -196,7 +217,7 @@ namespace NewTek
 		// If you specify a timecode at a particular frame (audio or video), then ask for all subsequent
 		// ones to be synthesized. The subsequent ones will be generated to continue this sequency
 		// maintining the correct relationship both the between streams and samples generated, avoiding
-		// them deviating in time from teh timecode that you specified in any meanginfful way.
+		// them deviating in time from the timecode that you specified in any meanginfful way.
 		//
 		// If you specify timecodes on one stream (e.g. video) and ask for the other stream (audio) to
 		// be sythesized, the correct timecodes will be generated for the other stream and will be synthesize

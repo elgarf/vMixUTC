@@ -24,6 +24,7 @@
     <c:BrightnessToColorConverter x:Key="BrightnessToColor"/>
     <c:LogarithmicConverter x:Key="LogConverter"/>
     <c:ColorDarkConverter x:Key="ColorDarkener"/>
+    <c:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -61,7 +62,7 @@
         <Button.Style>
             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Style.Setters>
-                    
+                    <Setter Property="DataContext" Value="{Binding}"/>
                 </Style.Setters>
                 <Style.Triggers>
                     <MultiTrigger>
@@ -74,16 +75,8 @@
                             <Condition Property="IsMouseOver" Value="False"/>
                         </MultiTrigger.Conditions>
                         <MultiTrigger.Setters>
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{Binding Color}"/>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{Binding BorderColor}"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{Binding Color, Converter={StaticResource ColorToSolidBrush}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding BorderColor, Converter={StaticResource ColorToSolidBrush}}"/>
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -97,16 +90,8 @@
                             <Condition Property="IsMouseOver" Value="True"/>
                         </MultiTrigger.Conditions>
                         <MultiTrigger.Setters>
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{Binding BorderColor}"/>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{Binding Color}"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorToSolidBrush}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorToSolidBrush}}"/>
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -164,26 +149,27 @@
 
 
 
-    <Grid x:Shared="false" x:Key="SliderWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
+    <Grid x:Shared="false" x:Key="VolumeWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
         <ContentPresenter Content="{Binding}">
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>
-                    <!--<StackPanel x:Name="Stack" Orientation="Vertical">-->
-                    <Slider TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LogConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
+                    <StackPanel x:Name="Stack" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <Slider Visibility="{Binding ShowSlider, Converter={StaticResource BoolToVis}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LogConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
 
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Slider>
-                    <!--<Border x:Name="Border" HorizontalAlignment="Stretch">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewKeyUp">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Slider>
+                        <!--Left-->
+                        <Border x:Name="Border" HorizontalAlignment="Stretch" Margin="1">
                             <Border.Tag>
                                 <PointCollection>
                                     <Point X="0" Y="0"/>
@@ -207,7 +193,8 @@
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
-                        <Border x:Name="Border1" HorizontalAlignment="Stretch">
+                        <!--Right-->
+                        <Border x:Name="Border1" HorizontalAlignment="Stretch" Margin="1">
                             <Border.Tag>
                                 <PointCollection>
                                     <Point X="0" Y="0"/>
@@ -230,15 +217,15 @@
                                     <GradientStop Color="Red" Offset="0.98"/>
                                 </LinearGradientBrush>
                             </Border.Background>
-                        </Border>-->
-                    <!--</StackPanel>-->
+                        </Border>
+                    </StackPanel>
                     <DataTemplate.Triggers>
-                        <!--<DataTrigger Binding="{Binding Style}" Value="Horizontal">
+                        <DataTrigger Binding="{Binding Style}" Value="Horizontal">
                             <Setter TargetName="Border" Property="Height" Value="5"/>
                             <Setter TargetName="Border1" Property="Height" Value="5"/>
-                        </DataTrigger>-->
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Style}" Value="Vertical">
-                            <!--<Setter TargetName="Stack" Property="Orientation" Value="Horizontal"/>
+                            <Setter TargetName="Stack" Property="Orientation" Value="Horizontal"/>
                             <Setter TargetName="Border" Property="VerticalAlignment" Value="Stretch"/>
                             <Setter TargetName="Border" Property="Width" Value="5"/>
                             <Setter TargetName="Border" Property="Tag">
@@ -259,11 +246,11 @@
                                         <Point X="0" Y="0"/>
                                     </PointCollection>
                                 </Setter.Value>
-                            </Setter>-->
+                            </Setter>
 
                             <Setter TargetName="Slider" Property="Orientation" Value="Vertical"/>
-                            <Setter TargetName="Slider" Property="HorizontalAlignment" Value="Center"/>
-                            <Setter TargetName="Slider" Property="VerticalAlignment" Value="Stretch"/>
+                            <Setter TargetName="Stack" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="Stack" Property="VerticalAlignment" Value="Stretch"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -304,7 +291,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <toolkit:IntegerUpDown Grid.Column="1" Value="{Binding Text, UpdateSourceTrigger=PropertyChanged, FallbackValue=0, TargetNullValue=0}" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -515,7 +502,7 @@
             </ctrls:vMixControlContainerDummy.MainContent>
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
-    <DataTemplate x:Key="vMixControlSlider">
+    <DataTemplate x:Key="vMixControlVolume">
         <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <Grid Height="{Binding Height}">
@@ -523,7 +510,7 @@
                         <SolidColorBrush Color="{Binding BorderColor}"/>
                     </Grid.Background>
                     <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>-->
-                    <ContentControl Content="{StaticResource SliderWidgetControl}"/>
+                    <ContentControl Content="{StaticResource VolumeWidgetControl}"/>
                     <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">

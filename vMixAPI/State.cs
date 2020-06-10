@@ -219,6 +219,7 @@ namespace vMixAPI
                 foreach (XmlNode item in nodes)
                 {
                     var node = curr.SelectSingleNode(".//inputs/input[@key=\"" + item.Attributes["key"].InnerText + "\"]");
+                    if (node == null) continue;
                     if (item.InnerXml.GetHashCode() != node.InnerXml.GetHashCode())
                         _changedinputs.Add(item.Attributes["key"].InnerText);
                     _keys.Add(item.Attributes["number"].InnerText, item.Attributes["key"].InnerText);
@@ -230,6 +231,7 @@ namespace vMixAPI
                     nodes = prev.SelectNodes(".//overlays/overlay").OfType<XmlNode>().Concat(curr.SelectNodes(".//overlays/overlay").OfType<XmlNode>());
                     foreach (XmlNode item in nodes)
                     {
+                        if (item == null) continue;
                         if (string.IsNullOrWhiteSpace(item.InnerText)) continue;
                         if (!_changedinputs.Contains(_keys[item.InnerText]))
                             _changedinputs.Add(_keys[item.InnerText]);
@@ -317,7 +319,10 @@ namespace vMixAPI
                 Diff(this, _temp);
 
                 _logger.Info("Updating inputs.");
-
+                if (Inputs == null)
+                    Inputs = new List<Input>();
+                if (Overlays == null)
+                    Overlays = new List<Overlay>();
                 Inputs.Clear();
                 foreach (var item in _temp.Inputs)
                     Inputs.Add(item);
@@ -511,7 +516,12 @@ namespace vMixAPI
         [XmlArray("audio"),
             XmlArrayItem("master", typeof(Master)),
             XmlArrayItem("busA", typeof(BusA)),
-            XmlArrayItem("busB", typeof(BusB))]
+            XmlArrayItem("busB", typeof(BusB)),
+            XmlArrayItem("busC", typeof(BusC)),
+            XmlArrayItem("busD", typeof(BusD)),
+            XmlArrayItem("busE", typeof(BusE)),
+            XmlArrayItem("busF", typeof(BusF)),
+            XmlArrayItem("busG", typeof(BusG))]
         public List<Master> Audio { get; set; }
 
         public static bool IsInitializing { get; set; }

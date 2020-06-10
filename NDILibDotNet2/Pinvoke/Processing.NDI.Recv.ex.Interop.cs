@@ -1,3 +1,24 @@
+// NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
+// for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
+// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at http://ndi.tv/
+//
+//*************************************************************************************************************************************
+// 
+// Copyright(c) 2014-2020, NewTek, inc.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
+// files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
+// merge, publish, distribute, sublicense, and / or sell copies of the Software, and to permit persons to whom the Software is 
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -20,7 +41,7 @@ namespace NewTek
 			public Int64 start_time,	last_time;
 		}
 
-		//**************************************************************************************************************************************************************
+		//****************************************************************************************************************************************************
 		// Has this receiver got PTZ control. Note that it might take a second or two after the connection for this value to be set.
 		// To avoid the need to poll this function, you can know when the value of this function might have changed when the
 		// NDILib_recv_capture* call would return NDIlib_frame_type_status_change
@@ -43,7 +64,7 @@ namespace NewTek
 				return  UnsafeNativeMethods.recv_recording_is_supported_32( p_instance);
 		}
 
-		//**************************************************************************************************************************************************************
+		//****************************************************************************************************************************************************
 		// PTZ Controls
 		// Zoom to an absolute value.
 		// zoom_value = 0.0 (zoomed in) ... 1.0 (zoomed out)
@@ -203,7 +224,7 @@ namespace NewTek
 				return  UnsafeNativeMethods.recv_ptz_exposure_manual_32( p_instance,  exposure_level);
 		}
 
-		//**************************************************************************************************************************************************************
+		//****************************************************************************************************************************************************
 		// Recording control
 		// This will start recording.If the recorder was already recording then the message is ignored.A filename is passed in as a "hint".Since the recorder might
 		// already be recording(or might not allow complete flexibility over its filename), the filename might or might not be used.If the filename is empty, or

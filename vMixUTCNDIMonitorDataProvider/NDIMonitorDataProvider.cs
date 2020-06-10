@@ -89,6 +89,38 @@ namespace vMixUTCNDIMonitorDataProvider
 
 
         /// <summary>
+        /// The <see cref="AudioEnabled" /> property's name.
+        /// </summary>
+        public const string AudioEnabledPropertyName = "AudioEnabled";
+
+        private bool _audioEnabled = false;
+
+        /// <summary>
+        /// Sets and gets the AudioEnabled property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool AudioEnabled
+        {
+            get
+            {
+                return _audioEnabled;
+            }
+
+            set
+            {
+                if (_audioEnabled == value)
+                {
+                    return;
+                }
+
+                _ui.Preview.IsAudioEnabled = value;
+
+                _audioEnabled = value;
+                RaisePropertyChanged(AudioEnabledPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="MultiViewLayout" /> property's name.
         /// </summary>
         public const string MultiViewLayoutPropertyName = "MultiViewLayout";
@@ -242,7 +274,7 @@ namespace vMixUTCNDIMonitorDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object>() { NDISource?.Name, null, MultiViewLayout, AspectRatio };
+            return new List<object>() { NDISource?.Name, null, MultiViewLayout, AspectRatio, AudioEnabled };
         }
 
         public void SetProperties(List<object> props)
@@ -253,6 +285,9 @@ namespace vMixUTCNDIMonitorDataProvider
                     if (src.Name == (string)props[0])
                         Source = src;*/
                 Source = (string)props[0];
+
+                if (props.Count >= 5)
+                    AudioEnabled = (bool)props[4];
                 //NDISource = new NewTek.NDI.Source((string)props[0]);//_finder.Sources.Where(x => x.Name == (string)props[0] && x.IpAddress == (string)props[1]).FirstOrDefault();
                 //8in, 14in, legacy
                 if (props.Count >= 3)

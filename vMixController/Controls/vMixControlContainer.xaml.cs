@@ -15,13 +15,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using System.ComponentModel;
+using System.Windows.Forms;
+using System.Windows.Media.Animation;
 
 namespace vMixController.Controls
 {
     /// <summary>
     /// Логика взаимодействия для vMixControlContainer.xaml
     /// </summary>
-    public partial class vMixControlContainer : UserControl, INotifyPropertyChanged
+    public partial class vMixControlContainer : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
         public Action<object, SizeChangedEventArgs> OnSizeChanged { get; set; }
 
@@ -77,10 +79,28 @@ namespace vMixController.Controls
             e.Handled = true;
         }
 
-        private void CC_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void CC_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             moveThumb.Visibility = Keyboard.IsKeyDown(Key.LeftAlt) ? Visibility.Visible : Visibility.Collapsed;
 
+        }
+
+        private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var sb = ((Storyboard)Resources["OpacityOn"]);
+            sb.Begin(RightButtons);
+            RightButtons.IsHitTestVisible = true;
+        }
+
+        private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var sb = ((Storyboard)Resources["OpacityOff"]);
+            if (RightButtons.Opacity == 1)
+                sb.BeginTime = TimeSpan.FromSeconds(2);
+            else
+                sb.BeginTime = TimeSpan.Zero;
+            sb.Begin(RightButtons);
+            RightButtons.IsHitTestVisible = false;
         }
     }
 

@@ -38,9 +38,15 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Storyboard x:Key="OpacityOn">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.5" To="1"/>
+            </Storyboard>
+            <Storyboard x:Key="OpacityOff">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.5" To="0"/>
+            </Storyboard>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={StaticResource NotConverter}}">
+    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={StaticResource NotConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={StaticResource ColorToBrush}}"/>
@@ -117,7 +123,7 @@
                     </MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <StackPanel Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
+            <StackPanel x:Name="Buttons" Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
                 <Grid Visibility="{Binding ParentContainer.Control.IsCaptionOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource ColorToBrush}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -146,7 +152,7 @@
                         </local:vMixControlMoveThumb.ToolTip>
                     </local:vMixControlMoveThumb>
 
-                    <StackPanel Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
+                    <StackPanel Opacity="0" x:Name="RightButtons" Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
                         <ContentControl Content="{Binding ParentContainer.CaptionContent, ElementName=CC}"/>
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale up}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleUpCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf062;</Button>
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale down}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleDownCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf063;</Button>
@@ -168,5 +174,4 @@
             <local:vMixControlMoveThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
         </Grid>
     </Border>
-
 </UserControl>

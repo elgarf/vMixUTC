@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -140,6 +141,134 @@ namespace NewTek.NDI.WPF
             }
         }
 
+        [Category("NewTek NDI"),
+        Description("If you need partial transparency, set this to true. If not, set to false and save some CPU cycles.")]
+        public bool SendSystemAudio
+        {
+            get { return sendSystemAudio; }
+            set
+            {
+                if (value != sendSystemAudio)
+                {
+                    if (value)
+                    {
+                        audioCap = new WasapiLoopbackCapture();
+                        audioCap.StartRecording();
+                        audioSampleRate = audioCap.WaveFormat.SampleRate;
+                        audioSampleSizeInBytes = audioCap.WaveFormat.BitsPerSample / 8;
+                        audioNumChannels = audioCap.WaveFormat.Channels;
+
+                        audioCap.DataAvailable += AudioCap_DataAvailable;
+                    }
+                    else
+                    {
+                        if (audioCap != null)
+                        {
+                            if (audioCap.CaptureState == NAudio.CoreAudioApi.CaptureState.Capturing)
+                            {
+                                audioCap.StopRecording();
+
+                                while (audioCap.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
+                                {
+                                    Thread.Sleep(10);
+                                }
+                            }
+
+                            audioCap.Dispose();
+                            audioCap = null;
+                        }
+                    }
+
+                    sendSystemAudio = value;
+                    NotifyPropertyChanged("SendSystemAudio");
+                }
+            }
+        }
+
+        private void AudioCap_DataAvailable(object sender, WaveInEventArgs e)
+        {
+            if (isPausedValue || sendInstancePtr == IntPtr.Zero)
+                return;
+
+            // how many samples?
+            int numSamples = (e.BytesRecorded / (audioNumChannels * audioSampleSizeInBytes));
+
+            // how much float buffer will this need?
+            int bufferSizeNeeded = numSamples * audioNumChannels * sizeof(float);
+
+            // is our audio frame big enough? too big is fine
+            if (audioBufferSize < bufferSizeNeeded || audioFrame.p_data == IntPtr.Zero)
+            {
+                if (audioFrame.p_data != null)
+                {
+                    Marshal.FreeHGlobal(audioFrame.p_data);
+
+                    audioFrame.p_data = IntPtr.Zero;
+                }
+
+                audioFrame.p_data = Marshal.AllocHGlobal(bufferSizeNeeded);
+
+                audioBufferSize = bufferSizeNeeded;
+            }
+
+            // set these every time because why not?
+            audioFrame.sample_rate = audioSampleRate;
+            audioFrame.no_channels = audioNumChannels;
+            audioFrame.no_samples = numSamples;
+
+            // pin the byte[] audio received and get a GC handle to it
+            GCHandle interleavedHandle = GCHandle.Alloc(e.Buffer, GCHandleType.Pinned);
+
+            if (audioSampleSizeInBytes == 2)
+            {
+                // make an temporary interleaved NDI audio frame around the received samples
+                NDIlib.audio_frame_interleaved_16s_t interleavedShortFrame = new NDIlib.audio_frame_interleaved_16s_t()
+                {
+                    sample_rate = audioSampleRate,
+                    no_channels = audioNumChannels,
+                    no_samples = numSamples,
+                    p_data = interleavedHandle.AddrOfPinnedObject()
+                };
+
+                // Convert from s16 interleaved to float planar audio
+                NDIlib.util_audio_from_interleaved_16s_v2(ref interleavedShortFrame, ref audioFrame);
+            }
+            else if (audioSampleSizeInBytes == 4)
+            {
+                // make an temporary interleaved NDI audio frame around the received samples
+                NDIlib.audio_frame_interleaved_32f_t interleavedFloatFrame = new NDIlib.audio_frame_interleaved_32f_t()
+                {
+                    sample_rate = audioSampleRate,
+                    no_channels = audioNumChannels,
+                    no_samples = numSamples,
+                    p_data = interleavedHandle.AddrOfPinnedObject()
+                };
+
+                // Convert from float interleaved to float planar audio
+                NDIlib.util_audio_from_interleaved_32f_v2(ref interleavedFloatFrame, ref audioFrame);
+            }
+            else
+            {
+                System.Diagnostics.Debug.Assert(false, "Unexpected audio sample size.");
+            }
+
+            // release the GC pinning of the byte[]'s
+            interleavedHandle.Free();
+
+            Monitor.Enter(sendInstanceLock);
+
+            // send the planar frame
+            if (sendInstancePtr != IntPtr.Zero)
+            {
+                if (!IsSendPaused)
+                {
+                    NDIlib.send_send_audio_v2(sendInstancePtr, ref audioFrame);
+                }
+            }
+
+            Monitor.Exit(sendInstanceLock);
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(String info)
@@ -186,6 +315,28 @@ namespace NewTek.NDI.WPF
         {
             if (!_disposed)
             {
+                // clean up the audio capture if needed
+                if (audioCap != null)
+                {
+                    audioCap.StopRecording();
+
+                    // have to let it stop
+                    while (audioCap.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
+                    {
+                        Thread.Sleep(10);
+                    }
+
+                    audioCap.Dispose();
+                    audioCap = null;
+                }
+
+                // free allocated frame if needed
+                if (audioFrame.p_data != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(audioFrame.p_data);
+                    audioFrame.p_data = IntPtr.Zero;
+                }
+
                 if (disposing)
                 {
                     // tell the thread to exit
@@ -231,6 +382,9 @@ namespace NewTek.NDI.WPF
         
         private void OnCompositionTargetRendering(object sender, EventArgs e)
         {
+            if (IsSendPaused)
+                return;
+
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 return;
 
@@ -511,5 +665,32 @@ namespace NewTek.NDI.WPF
 
         // a safe value at the expense of CPU cycles
         bool unPremultiply = true;
+
+        // should we send system audio with the video?
+        bool sendSystemAudio = false;
+
+        // a capture device to grab system audio
+        WasapiLoopbackCapture audioCap = null;
+
+        // basic description of the audio stream
+        int audioSampleRate = 48000;
+        int audioSampleSizeInBytes = 4;
+        int audioNumChannels = 2;
+
+        // an audio frame to reuse
+        NDIlib.audio_frame_v2_t audioFrame = new NDIlib.audio_frame_v2_t()
+        {
+            sample_rate = 48000,
+            no_channels = 2,
+            no_samples = 0,
+            timecode = NDIlib.send_timecode_synthesize,
+            p_data = IntPtr.Zero,
+            channel_stride_in_bytes = 0,
+            p_metadata = IntPtr.Zero,
+            timestamp = 0
+        };
+
+        // the size of the allocated audioFrame.p_data
+        int audioBufferSize = 0;
     }
 }

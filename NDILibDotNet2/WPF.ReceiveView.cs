@@ -372,7 +372,10 @@ namespace NewTek.NDI.WPF
 
         private void NotifyPropertyChanged(String info)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
         }
 
         public void Dispose()
@@ -431,7 +434,8 @@ namespace NewTek.NDI.WPF
         // when the ConnectedSource changes, connect to it.
         private static void OnConnectedSourceChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (!(sender is ReceiveView s))
+            ReceiveView s = sender as ReceiveView;
+            if (s == null)
                 return;
 
             s.Connect(s.ConnectedSource);
@@ -443,7 +447,7 @@ namespace NewTek.NDI.WPF
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 return;
 
-            if (String.IsNullOrEmpty(ReceiverName))
+            if(String.IsNullOrEmpty(ReceiverName))
                 throw new ArgumentException("sourceName can not be null or empty.", ReceiverName);
 
             // just in case we're already connected
@@ -554,9 +558,6 @@ namespace NewTek.NDI.WPF
             }
         }
 
-        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
-        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
-
         // the receive thread runs though this loop until told to exit
         void ReceiveThreadProc()
         {
@@ -640,22 +641,17 @@ namespace NewTek.NDI.WPF
                             VideoSurface.Source = VideoBitmap;
                         }
 
-                        VideoBitmap.Lock();
                         // update the writeable bitmap
-                        VideoBitmap.WritePixels(new Int32Rect(0, 0, xres, yres), videoFrame.p_data, bufferSize, stride, 0, 0);
-                        VideoBitmap.Unlock();
-                        //GC.Collect(1);
+                        VideoBitmap.WritePixels(new Int32Rect(0, 0, xres, yres), videoFrame.p_data, bufferSize, stride);
 
                         // free frames that were received AFTER use!
                         // This writepixels call is dispatched, so we must do it inside this scope.
                         NDIlib.recv_free_video_v2(_recvInstancePtr, ref videoFrame);
-                        
                     }));
 
                     break;
 
                 // audio is beyond the scope of this example
-                //ignore audio
                 case NDIlib.frame_type_e.frame_type_audio:
 
                     // if no audio or disabled, nothing to do
@@ -684,11 +680,9 @@ namespace NewTek.NDI.WPF
                     // set up our audio buffer if needed
                     if (_bufferedProvider == null || formatChanged)
                     {
-                            _bufferedProvider = new BufferedWaveProvider(_waveFormat)
-                            {
-                                DiscardOnBufferOverflow = true
-                            };
-                        }
+                        _bufferedProvider = new BufferedWaveProvider(_waveFormat);
+                        _bufferedProvider.DiscardOnBufferOverflow = true;
+                    }
 
                     // set up our multiplexer used to mix down to 2 output channels)
                     if (_multiplexProvider == null || formatChanged)

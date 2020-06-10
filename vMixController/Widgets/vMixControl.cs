@@ -43,7 +43,7 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlMidiInterface)),
         XmlInclude(typeof(vMixControlClock)),
         XmlInclude(typeof(vMixControlRegion)),
-        XmlInclude(typeof(vMixControlSlider))]
+        XmlInclude(typeof(vMixControlVolume))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
@@ -58,13 +58,15 @@ namespace vMixController.Widgets
 
         public vMixControl()
         {
-
-            _shadowUpdate = new DispatcherTimer
+            if (_shadowUpdate == null)
             {
-                Interval = TimeSpan.FromSeconds(1)
-            };
+                _shadowUpdate = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                _shadowUpdate.Start();
+            }
             _shadowUpdate.Tick += ShadowUpdate_Tick;
-            _shadowUpdate.Start();
             WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
         }
 
