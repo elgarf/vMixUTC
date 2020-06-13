@@ -296,6 +296,7 @@
     <Compile Include="vMixControlUtils.cs" />
     <Compile Include="Widgets\IvMixAutoUpdateWidget.cs" />
     <Compile Include="Classes\MainWindowSettings.cs" />
+    <Compile Include="Widgets\vMixControlSlider.cs" />
     <Compile Include="Widgets\vMixControlVolume.cs" />
     <Compile Include="Widgets\vMixControlClock.cs" />
     <Compile Include="Widgets\vMixControlContainer.cs" />

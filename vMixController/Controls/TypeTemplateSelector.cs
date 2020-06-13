@@ -15,7 +15,14 @@ namespace vMixController.Controls
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             FrameworkElement element = container as FrameworkElement;
-            return (DataTemplate)element.FindResource(item.GetType().Name);
+            try
+            {
+                return (DataTemplate)element.FindResource(item.GetType().Name);
+            }
+            catch (ResourceReferenceKeyNotFoundException)
+            {
+                return (DataTemplate)element.FindResource(item.GetType().BaseType.Name);
+            }
         }
     }
 }

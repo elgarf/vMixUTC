@@ -43,7 +43,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlMidiInterface)),
         XmlInclude(typeof(vMixControlClock)),
         XmlInclude(typeof(vMixControlRegion)),
-        XmlInclude(typeof(vMixControlVolume))]
+        XmlInclude(typeof(vMixControlVolume)),
+        XmlInclude(typeof(vMixControlSlider))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 

@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using vMixController.Converters;
+using Microsoft.VisualBasic.Devices;
 
 namespace vMixController.Widgets
 {
@@ -359,7 +360,10 @@ namespace vMixController.Widgets
                     busses.Add(bus);
                 else
                     busses.Remove(bus);
-                AudioBusses = busses.Aggregate((x, y) => x + "," + y);
+                if (busses.Count > 0)
+                    AudioBusses = busses.Aggregate((x, y) => x + "," + y);
+                else
+                    AudioBusses = "";
 
             }
         }
