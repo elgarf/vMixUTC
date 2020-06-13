@@ -117,10 +117,29 @@
                     <Grid Margin="{StaticResource StdMargin}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{e:Localize Hotkeys}"/></TextBlock>
-                        <Border VerticalAlignment="Center"  Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="White"/>
+                        <CheckBox Margin="0,0,8,0" VerticalAlignment="Center" IsChecked="{Binding IsHotkeysVisible}" Foreground="LightGray" Background="Transparent">
+                            <CheckBox.Template>
+                                <ControlTemplate TargetType="CheckBox">
+                                    <Border Width="16" Height="16" Background="{TemplateBinding Background}">
+                                        <TextBlock x:Name="Text" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{TemplateBinding Foreground}" Text="&#xf06e;"></TextBlock>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="Background" Value="White"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter TargetName="Text" Property="Text" Value="&#xf070;"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </CheckBox.Template>
+                        </CheckBox>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{e:Localize Hotkeys}"/></TextBlock>
+                        <Border VerticalAlignment="Center"  Grid.Column="2" BorderThickness="0,2,0,0" BorderBrush="White"/>
                     </Grid>
                     <Grid>
                         <!--<TextBlock Style="{StaticResource PropertyName}" HorizontalAlignment="Center" Text="{e:Localize No hotkeys available for this widget}"></TextBlock>-->
@@ -141,7 +160,7 @@
                                 <TextBlock Grid.Column="4" Style="{StaticResource PropertyName}" Text="{e:Localize Key}"></TextBlock>
                                 <TextBlock Grid.Column="5" Style="{StaticResource PropertyName}" Text="{e:Localize Link}"></TextBlock>
                             </Grid>-->
-                            <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding Hotkey}">
+                            <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding Hotkey}" Visibility="{Binding IsHotkeysVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <i:Interaction.Behaviors>
                                     <e:IgnoreMouseWheelBehavior/>
                                 </i:Interaction.Behaviors>

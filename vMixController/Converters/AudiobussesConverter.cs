@@ -8,16 +8,18 @@ using System.Windows.Data;
 
 namespace vMixController.Converters
 {
-    public class NotConverter : IValueConverter
+    public class AudiobussesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool)value;
+            if (value != null && parameter != null && ((string)value).IndexOf((string)parameter) >= 0)
+                return true;
+            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool)value;
+            throw new NotImplementedException();
         }
     }
 }

@@ -25,7 +25,6 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlVolume : vMixControlTextField
     {
-        static string _lastState = null;
         static bool _updating = false;
         static DateTime _prevoiusUpdate = DateTime.Now;
         //[NonSerialized]
@@ -39,11 +38,11 @@ namespace vMixController.Widgets
         {
             if (_meterTimer == null)
             {
-                _meterTimer = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromSeconds(0.1) };
+                _meterTimer = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AudioMeterPollTime) };
                 _meterTimer.Start();
             }
 
-            Height = 48;
+            Height = 64;
 
             _meterTimer.Tick += _meterTimer_Tick;
         }
@@ -94,6 +93,28 @@ namespace vMixController.Widgets
                 F1 = Math.Pow((double)f1.GetValue(input), 1d / 4d);
                 F2 = Math.Pow((double)f2.GetValue(input), 1d / 4d);
                 //Debug.WriteLine("F1:{0}, F2:{1}", F1, F2);
+            }
+        }
+
+        [NonSerialized]
+        private RelayCommand<object> _updateBusses;
+
+        /// <summary>
+        /// Gets the UpdateBusses.
+        /// </summary>
+        public RelayCommand<object> UpdateBusses
+        {
+            get
+            {
+                return _updateBusses
+                    ?? (_updateBusses = new RelayCommand<object>(
+                    p =>
+                    {
+                        var args = (RoutedEventArgs)p;
+                        var cb = ((CheckBox)args.Source);
+                        UpdateBus(cb.IsChecked.Value, (string)cb.Tag);
+                        return;
+                    }));
             }
         }
 
@@ -311,6 +332,38 @@ namespace vMixController.Widgets
                 "Input", InputKey);
         }
 
+        private void UpdateBus(bool state, string bus)
+        {
+            var func = "Audio" + (bus == "Mute" ? "" : "Bus") + (state ? "On" : "Off");
+            if (bus == "Mute")
+            {
+                if (Target == "Input")
+                    State?.SendFunction("Function", func,
+                        "Input", InputKey);
+                else if (Target == "Master")
+                    State?.SendFunction("Function", Target + func);
+                else
+                    State?.SendFunction("Function", "BusX" + func,
+                        "Value",
+                        Target.Replace("Bus ", ""));
+                IsMuted = !state;
+            }
+            else
+            {
+                State?.SendFunction("Function", func,
+                    "Value", bus,
+                    "Input", InputKey);
+
+                var busses = new List<string>(AudioBusses.Split(','));
+                if (state)
+                    busses.Add(bus);
+                else
+                    busses.Remove(bus);
+                AudioBusses = busses.Aggregate((x, y) => x + "," + y);
+
+            }
+        }
+
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(double), typeof(vMixControlVolume), new PropertyMetadata(default(double), InternalSliderPropertyChanged));
@@ -343,13 +396,53 @@ namespace vMixController.Widgets
             set { SetValue(F2Property, value); }
         }
 
+
+
+        public string AudioBusses
+        {
+            get { return (string)GetValue(AudioBussesProperty); }
+            set { SetValue(AudioBussesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AudioBusses.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AudioBussesProperty =
+            DependencyProperty.Register("AudioBusses", typeof(string), typeof(vMixControlVolume), new PropertyMetadata("M"));
+
+
+
+        public bool IsMuted
+        {
+            get { return (bool)GetValue(IsMutedProperty); }
+            set { SetValue(IsMutedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsMuted.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsMutedProperty =
+            DependencyProperty.Register("IsMuted", typeof(bool), typeof(vMixControlVolume), new PropertyMetadata(false));
+
+
+
         public override Hotkey[] GetHotkeys()
         {
-            return new Classes.Hotkey[] { };
+            return new Classes.Hotkey[] {
+            new Hotkey() { Name = "Toggle Bus M" },
+            new Hotkey() { Name = "Toggle Bus A" },
+            new Hotkey() { Name = "Toggle Bus B" },
+            new Hotkey() { Name = "Toggle Bus C" },
+            new Hotkey() { Name = "Toggle Bus D" },
+            new Hotkey() { Name = "Toggle Bus E" },
+            new Hotkey() { Name = "Toggle Bus F" },
+            new Hotkey() { Name = "Toggle Bus G" },
+            new Hotkey() { Name = "Toggle Muted" }};
         }
 
         public override void ExecuteHotkey(int index)
         {
+            string[] b = new string[] { "M", "A", "B", "C", "D", "E", "F", "G", "Mute" };
+            if (b[index] != "Mute")
+                UpdateBus(!AudioBusses.Contains(b[index]), b[index]);
+            else
+                UpdateBus(IsMuted, b[index]);
 
         }
 
@@ -388,6 +481,25 @@ namespace vMixController.Widgets
                             UpdateSourceTrigger = UpdateSourceTrigger.Default
                         };
                         BindingOperations.SetBinding(this, ValueProperty, b);
+
+                        if (input is Input)
+                        {
+                            Binding b1 = new Binding("Audiobusses")
+                            {
+                                Source = input,
+                                Mode = BindingMode.TwoWay,
+                                UpdateSourceTrigger = UpdateSourceTrigger.Default
+                            };
+                            BindingOperations.SetBinding(this, AudioBussesProperty, b1);
+                        }
+
+                        Binding b2 = new Binding("Muted")
+                        {
+                            Source = input,
+                            Mode = BindingMode.TwoWay,
+                            UpdateSourceTrigger = UpdateSourceTrigger.Default
+                        };
+                        BindingOperations.SetBinding(this, IsMutedProperty, b2);
                     }
                 }
                 _updating = false;
@@ -458,6 +570,7 @@ namespace vMixController.Widgets
         {
             Height++;
             Height--;
+
             base.Update();
         }
 
@@ -470,6 +583,7 @@ namespace vMixController.Widgets
             InputKey = (string)((InputSelectorControl)_controls.Where(x => x is InputSelectorControl).FirstOrDefault()).Value;
             ShowMeters = (bool)((BoolControl)_controls.Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Meters")).FirstOrDefault()).Value;
             ShowSlider = (bool)((BoolControl)_controls.Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Slider")).FirstOrDefault()).Value;
+
             base.SetProperties(_controls);
             UpdateText(null);
         }

@@ -10,7 +10,7 @@ namespace vMixAPI
     public class Master
     {
         [XmlIgnore]
-        public string Name { get { return "Master"; } }
+        public virtual string Name { get { return "Master"; } }
         [XmlAttribute("headphonesVolume")]
         public double HeadphonesVolume { get; set; }
         [XmlAttribute("volume")]

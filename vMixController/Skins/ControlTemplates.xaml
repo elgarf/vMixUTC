@@ -12,7 +12,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <c:NotConverter x:Key="NotConverter1"/>
+    <!--<c:NotConverter x:Key="NotConverter1"/>-->
     <c:NotConverter x:Key="NotConverter"/>
     <c:NonVisibilityConverter x:Key="NonVis"/>
     <c:BoolToBrushConverter x:Key="BoolToBrush"/>
@@ -25,6 +25,8 @@
     <c:LogarithmicConverter x:Key="LogConverter"/>
     <c:ColorDarkConverter x:Key="ColorDarkener"/>
     <c:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
+    <c:AudiobussesConverter x:Key="AudioBussesConverter"/>
+    <c:AudiobusToVisibilityConverter x:Key="ABToVisibility"/>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -154,6 +156,103 @@
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>
                     <StackPanel x:Name="Stack" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <StackPanel x:Name="Busses" Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style TargetType="CheckBox">
+                                    <Style.Setters>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Background" Value="#D01818"/>
+                                        <Setter Property="BorderBrush" Value="#8B0000"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="{StaticResource StdMargin}"/>
+                                        <Setter Property="LayoutTransform" Value="{Binding Path=LayoutTransform, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="CheckBox">
+                                                    <Border Width="16" Height="16" Background="{TemplateBinding Background}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter Property="Background" Value="#189618"/>
+                                                            <Setter Property="BorderBrush" Value="#006400"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style.Setters>
+                                </Style>
+                            </StackPanel.Resources>
+
+
+                            <CheckBox IsChecked="{Binding IsMuted, Mode=TwoWay, Converter={StaticResource NotConverter}}" Tag="Mute" Content="&#xf028;" FontFamily="/vMixControllerSkin;Component/#FontAwesome">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+
+                            <CheckBox x:Name="BusM" Visibility="Collapsed" Content="M" Tag="M" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=M, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusA" Visibility="Collapsed" Content="A" Tag="A" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=A, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusB" Visibility="Collapsed" Content="B" Tag="B" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=B, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusC" Visibility="Collapsed" Content="C" Tag="C" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=C, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusD" Visibility="Collapsed" Content="D" Tag="D" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=D, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusE" Visibility="Collapsed" Content="E" Tag="E" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=E, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusF" Visibility="Collapsed" Content="F" Tag="F" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=F, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox x:Name="BusG" Visibility="Collapsed" Content="G" Tag="G" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=G, Mode=OneWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                        </StackPanel>
                         <Slider Visibility="{Binding ShowSlider, Converter={StaticResource BoolToVis}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LogConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
 
                             <i:Interaction.Triggers>
@@ -186,9 +285,9 @@
                             <Border.Background>
                                 <LinearGradientBrush x:Name="GradientBrush" EndPoint="{Binding Tag[1], ElementName=Border}" StartPoint="{Binding Tag[0], ElementName=Border}">
                                     <GradientStop Color="Green"/>
-                                    <GradientStop Color="Lime" Offset="0.5"/>
-                                    <GradientStop Color="Yellow" Offset="0.75"/>
-                                    <GradientStop Color="Yellow" Offset="0.9"/>
+                                    <GradientStop Color="Lime" Offset="0.8"/>
+                                    <GradientStop Color="Yellow" Offset="0.85"/>
+                                    <GradientStop Color="Yellow" Offset="0.95"/>
                                     <GradientStop Color="Red" Offset="0.98"/>
                                 </LinearGradientBrush>
                             </Border.Background>
@@ -211,9 +310,9 @@
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="{Binding Tag[1], ElementName=Border}" StartPoint="{Binding Tag[0], ElementName=Border}">
                                     <GradientStop Color="Green"/>
-                                    <GradientStop Color="Lime" Offset="0.5"/>
-                                    <GradientStop Color="Yellow" Offset="0.75"/>
-                                    <GradientStop Color="Yellow" Offset="0.9"/>
+                                    <GradientStop Color="Lime" Offset="0.8"/>
+                                    <GradientStop Color="Yellow" Offset="0.85"/>
+                                    <GradientStop Color="Yellow" Offset="0.95"/>
                                     <GradientStop Color="Red" Offset="0.98"/>
                                 </LinearGradientBrush>
                             </Border.Background>
@@ -225,7 +324,14 @@
                             <Setter TargetName="Border1" Property="Height" Value="5"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Style}" Value="Vertical">
+                            <Setter TargetName="Busses" Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter TargetName="Busses" Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
                             <Setter TargetName="Stack" Property="Orientation" Value="Horizontal"/>
+                            <Setter TargetName="Busses" Property="Orientation" Value="Vertical"/>
                             <Setter TargetName="Border" Property="VerticalAlignment" Value="Stretch"/>
                             <Setter TargetName="Border" Property="Width" Value="5"/>
                             <Setter TargetName="Border" Property="Tag">
@@ -251,6 +357,16 @@
                             <Setter TargetName="Slider" Property="Orientation" Value="Vertical"/>
                             <Setter TargetName="Stack" Property="HorizontalAlignment" Value="Center"/>
                             <Setter TargetName="Stack" Property="VerticalAlignment" Value="Stretch"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Target}" Value="Input">
+                            <Setter TargetName="BusM" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=Master}"/>
+                            <Setter TargetName="BusA" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusA}"/>
+                            <Setter TargetName="BusB" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusB}"/>
+                            <Setter TargetName="BusC" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusC}"/>
+                            <Setter TargetName="BusD" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusD}"/>
+                            <Setter TargetName="BusE" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusE}"/>
+                            <Setter TargetName="BusF" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusF}"/>
+                            <Setter TargetName="BusG" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusG}"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

@@ -222,6 +222,36 @@ namespace vMixController.ViewModel
         }
 
         /// <summary>
+        /// The <see cref="IsHotkeysVisible" /> property's name.
+        /// </summary>
+        public const string IsHotkeysVisiblePropertyName = "IsHotkeysVisible";
+
+        private bool _isHotkeysVisible = true;
+
+        /// <summary>
+        /// Sets and gets the IsHotkeysVisible property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsHotkeysVisible
+        {
+            get
+            {
+                return _isHotkeysVisible;
+            }
+
+            set
+            {
+                if (_isHotkeysVisible == value)
+                {
+                    return;
+                }
+
+                _isHotkeysVisible = value;
+                RaisePropertyChanged(IsHotkeysVisiblePropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Period" /> property's name.
         /// </summary>
         public const string PeriodPropertyName = "Period";

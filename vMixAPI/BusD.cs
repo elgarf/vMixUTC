@@ -10,6 +10,6 @@ namespace vMixAPI
     public class BusD: Master
     {
         [XmlIgnore]
-        public new string Name { get { return "BusD"; } }
+        public override string Name { get { return "BusD"; } }
     }
 }

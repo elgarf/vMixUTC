@@ -330,15 +330,22 @@ namespace vMixController.Widgets
                 result.AdditionalParameters.Add(new One<string>() { A = "" });
 
             var functions = SimpleIoc.Default.GetInstance<MainViewModel>().Functions;
+            result.Action = functions.Where(x => x.Function == "None").FirstOrDefault();
+
+            
             var bracketIndex = s.IndexOf('(');
             if (bracketIndex <= 0)
             {
-                result.Action = functions.Where(x => x.Function == "None").FirstOrDefault();
+                var action = functions.Where(x => x.Function == s.Substring(0, s.Length).Trim().TrimStart('>')).FirstOrDefault();
+                if (action != null)
+                    result.Action = action;
                 return result;
             }
             var act = functions.Where(x => x.Function == s.Substring(0, bracketIndex).Trim().TrimStart('>')).FirstOrDefault();
             if (act == null)
                 return result;
+            else
+                result.Action = act;
             int ident = 0;
             for (int i = 0; i < s.Length; i++)
             {
@@ -358,7 +365,10 @@ namespace vMixController.Widgets
                 if (brk) break;
             }
             result.Ident = new Thickness(ident, 0, 0, 0);
-            s = s.Substring(bracketIndex + 1, s.Length - bracketIndex - 2);
+            if (s.Length - bracketIndex - 2 > 0)
+                s = s.Substring(bracketIndex + 1, s.Length - bracketIndex - 2);
+            else
+                return result;
 
             List<string> arguments = new List<string>();
 
@@ -396,7 +406,6 @@ namespace vMixController.Widgets
             }
             arguments.Add(arg.Trim());
 
-            result.Action = act;
             if (act.HasInputProperty)
             {
                 result.InputKey = arguments[0];
