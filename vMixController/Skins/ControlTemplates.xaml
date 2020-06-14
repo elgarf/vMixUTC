@@ -525,7 +525,7 @@
         <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Default Time}"/>
         <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Text="{e:Localize Current Time}"/>
         <TextBlock Grid.Column="2" Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
-        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Margin="{StaticResource RightStdMargin}" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Margin="{StaticResource RightStdMargin}" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -538,7 +538,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </toolkit:TimeSpanUpDown>
-        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}">
+        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -551,12 +551,12 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </toolkit:TimeSpanUpDown>
-        <CheckBox Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}">
+        <CheckBox Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
             <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
         </CheckBox>
 
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
-            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter1}}" ToolTip="Start">&#xF40A;</Button>
+            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ToolTip="Start">&#xF40A;</Button>
             <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#xF3E4;</Button>
             <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#xF4DB;</Button>
             <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>

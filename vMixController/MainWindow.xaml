@@ -195,39 +195,84 @@
             <MenuItem Header="{e:Localize File}">
                 <MenuItem Command="{Binding NewControllerCommand}" Header="{e:Localize New}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF016;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF016;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding LoadControllerCommand}" Header="{e:Localize Open}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF07C;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF07C;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{Binding SaveControllerCommand}"  Header="{e:Localize Save}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0C7;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0C7;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding GlobalVariablesCommand}" Header="{e:Localize Global Variables}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02D;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02D;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding DownloadUpdateCommand}">
+                    <MenuItem.Header>
+                        <TextBlock FontWeight="Bold">Download [<Run Text="{Binding AvailableVersion, StringFormat=MM/dd/yyy}"/>] Update</TextBlock>
+                    </MenuItem.Header>
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF019;</TextBlock>
+                        </Border>
+                    </MenuItem.Icon>
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UpdateLink}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
+                </MenuItem>
+                <MenuItem Command="{Binding ViewChangelogCommand}">
+                    <MenuItem.Header>
+                        <TextBlock FontWeight="Bold">View Changelog</TextBlock>
+                    </MenuItem.Header>
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF15C;</TextBlock>
+                        </Border>
+                    </MenuItem.Icon>
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UpdateLink}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
                 </MenuItem>
                 <MenuItem Command="{Binding AboutCommand}" Header="{e:Localize About}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF05A;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<MenuItem Command="{Binding ReportBugCommand}" Header="{e:Localize Report a bug}">
-                    <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF188;</TextBlock>
-                    </MenuItem.Icon>
-                </MenuItem>-->
                 <Separator/>
                 <MenuItem Command="{Binding ExitCommand}"  Header="{e:Localize Exit}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF08B;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF08B;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
