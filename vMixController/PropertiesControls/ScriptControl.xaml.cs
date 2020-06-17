@@ -127,6 +127,36 @@ namespace vMixController.PropertiesControls
         }
 
         /// <summary>
+        /// The <see cref="Log" /> property's name.
+        /// </summary>
+        public const string LogPropertyName = "Log";
+
+        private string _log = "";
+
+        /// <summary>
+        /// Sets and gets the Log property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string Log
+        {
+            get
+            {
+                return _log;
+            }
+
+            set
+            {
+                if (_log == value)
+                {
+                    return;
+                }
+
+                _log = value;
+                RaisePropertyChanged(LogPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Commands" /> property's name.
         /// </summary>
         public const string CommandsPropertyName = "Commands";

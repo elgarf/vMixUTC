@@ -817,12 +817,31 @@ namespace vMixController.Widgets
             if (cmd.AdditionalParameters == null || cmd.AdditionalParameters.Count == 0)
                 return false;
 
-            object part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
-            object part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
+            var part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString() ?? "";
+            var part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString() ?? "";
             Thread.CurrentThread.CurrentCulture = _culture;
             Thread.CurrentThread.CurrentUICulture = _culture;
-            string expression = string.Format("{0}{1}{2}", part1?.ToString() ?? "", cmd.AdditionalParameters[2].A, part2?.ToString() ?? "");
-            AddLog("Condition check {0}", expression);
+
+            var expr1 = CalculateExpression(part1);
+            var expr2 = CalculateExpression(part2);
+
+            var idx1 = GetVariableIndex(65534);
+            var idx2 = GetVariableIndex(65535);
+
+            if (idx1 < 0 || idx2 < 0)
+            {
+                Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = 65534, B = expr1 }));
+                Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = 65535, B = expr2 }));
+            }
+            else
+            {
+                Dispatcher.Invoke(() => _variables[idx1].B = expr1);
+                Dispatcher.Invoke(() => _variables[idx2].B = expr2);
+            }
+
+            string expression = string.Format("{0}{1}{2}", "_var65534", cmd.AdditionalParameters[2].A, "_var65535");
+            AddLog("Condition check {0}{1}{2}", expr1, cmd.AdditionalParameters[2].A, expr2);
+            //AddLog("Condition check {0}", expression);
             return Calculate(expression);
         }
 
@@ -841,6 +860,7 @@ namespace vMixController.Widgets
             vMixAPI.State state = (vMixAPI.State)_state;
             Stack<bool?> _conditions = new Stack<bool?>();
             int _waitBeforeUpdate = -1;
+            int _jumpCount = 0;
             ClearLog();
             for (int _pointer = 0; _pointer < _commands.Count; _pointer++)
             {
@@ -865,61 +885,66 @@ namespace vMixController.Widgets
                                 break;
                             case NativeFunctions.TIMER:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
-                                AddLog("Timer {0} [{1}]", cmd.Parameter, parameter);
+                                AddLog("{2}) Timer {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
                                 Thread.Sleep(parameter);
                                 break;
                             case NativeFunctions.UPDATESTATE:
-                                AddLog("State Updating");
+                                AddLog("{0}) State Updating", _pointer + 1);
                                 Dispatcher.Invoke(() => state?.UpdateAsync());
                                 break;
                             case NativeFunctions.UPDATEINTERNALBUTTONSTATE:
-                                AddLog("Internal Button State Updating");
+                                AddLog("{0}) Internal Button State Updating", _pointer + 1);
                                 Dispatcher.Invoke(() => _internalState?.UpdateAsync());
                                 break;
                             case NativeFunctions.GOTO:
-                                ClearLog();
+                                if (_jumpCount >= 5)
+                                {
+                                    ClearLog();
+                                    _jumpCount = 0;
+                                }
                                 parameter = CalculateExpression<int>(cmd.Parameter);
-                                AddLog("GoTo {0} [{1}]", cmd.Parameter, parameter);
+                                AddLog("{2}) GoTo {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
                                 _pointer = parameter - 1;
+                                _jumpCount++;
                                 break;
                             case NativeFunctions.EXECLINK:
                                 //Calculating expressions into EXECLINKS
                                 strparameter = Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString();
-                                AddLog("ExecLink {0} [{1}]", cmd.StringParameter, strparameter);
+                                AddLog("{2}) ExecLink {0} [{1}]", cmd.StringParameter, strparameter, _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<string>(strparameter));
                                 break;
                             case NativeFunctions.LIVETOGGLE:
-                                AddLog("LIVEToggle");
+                                AddLog("{0}) LIVEToggle", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 2 }));
                                 break;
                             case NativeFunctions.LIVEOFF:
-                                AddLog("LIVEOff");
+                                AddLog("{0}) LIVEOff", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 0 }));
                                 break;
                             case NativeFunctions.LIVEON:
-                                AddLog("LIVEOn");
+                                AddLog("{0}) LIVEOn", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 1 }));
                                 break;
                             case NativeFunctions.CONDITION:
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null;
-                                AddLog("Condition is {0}", conditionResult);
+                                AddLog("{1}) Condition IS {0}", conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.HASVARIABLE:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(GetVariableIndex(parameter) != -1) : null;
-                                AddLog("HasVariable {0} is {1}", parameter, conditionResult);
+                                AddLog("{2}) HasVariable {0} IS {1}", parameter, conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.CONDITIONEND:
-                                AddLog("ConditionEnd");
+                                AddLog("{0}) ConditionEnd", _pointer + 1);
                                 _conditions.Pop();
                                 break;
                             case NativeFunctions.SETVARIABLE:
                                 
                                 var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
                                 var tobj = CalculateObjectParameter(cmd);
-                                AddLog("SetVariable {0} to {1}", idx, tobj);
+                                AddLog("{2}) SetVariable {0} TO {1}", idx, tobj, _pointer + 1);
                                 if (idx == -1)
                                     Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = tobj }));
                                 else
@@ -932,7 +957,7 @@ namespace vMixController.Widgets
                                 var obj = CalculateObjectParameter(cmd).ToString();
                                 var key = (string.Format(cmd.StringParameter, cmd.InputKey));
                                 var hasKey = _trackedValues.ContainsKey(key);
-                                AddLog("ValueChanged {0} is {1}", obj, hasKey);
+                                AddLog("{2}) ValueChanged {0} IS {1}", obj, hasKey, _pointer + 1);
                                 _conditions.Push(hasKey ? obj != _trackedValues[key] : false);
                                 _trackedValues[key] = obj;
                                 break;
@@ -942,16 +967,14 @@ namespace vMixController.Widgets
                         var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
                         var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
 
-
-
                         if (!cmd.Action.StateDirect)
-                            AddLog("Send {0} with result {1}", command, state.SendFunction(command, false));
+                            AddLog("{2}) Send {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
                         else
                         {
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
                             
-                            AddLog("Set {0} to {1}", path, value);
+                            AddLog("{2}) Set {0} TO {1}", path, value, _pointer + 1);
 
                             SetValueByPath(state, path, value);
                             int flag = 0;
@@ -1015,6 +1038,7 @@ namespace vMixController.Widgets
                         item.AdditionalParameters.Add(new One<string>());
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
+            control.Log = Log;
             return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
         }
 

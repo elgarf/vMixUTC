@@ -267,6 +267,9 @@
                         </cls:BindableAvalonEditor>
                     </StackPanel>
                 </TabItem>
+                <TabItem Style="{StaticResource TabItemStyle}" Header="Log">
+                    <TextBox Text="{Binding Log, ElementName=Me, FallbackValue=No Log Available}" TextWrapping="Wrap" IsReadOnly="True"></TextBox>
+                </TabItem>
                 <TabItem Style="{StaticResource TabItemStyle}" Header="Help">
                     <ScrollViewer MaxHeight="256">
                         <StackPanel>

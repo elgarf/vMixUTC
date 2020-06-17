@@ -110,7 +110,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Control">
-                    <Border BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="White" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                    <Border BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="White" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="8">
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{TemplateBinding Foreground}">?</TextBlock>
                     </Border>
                 </ControlTemplate>

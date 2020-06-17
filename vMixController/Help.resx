@@ -152,7 +152,7 @@ Link parameter is for calling events from scripts.</value>
 Start with one command or create complex scripts with conditions.</value>
   </data>
   <data name="StaticVariables_Default" xml:space="preserve">
-    <value>Here you can create static variables, accesiable from scripts.</value>
+    <value>Here you can create static variables, accessible from scripts.</value>
   </data>
   <data name="TextField_Table" xml:space="preserve">
     <value>If checked, text field of this widget will be working in `table` mode.

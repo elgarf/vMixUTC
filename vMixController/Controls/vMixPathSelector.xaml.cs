@@ -76,7 +76,11 @@ namespace vMixController.Controls
                 /*if (e.Property.Name == "InputIndex")
                     self.InputKey = self.Model.Inputs[(int)e.NewValue].Key;*/
                 if (e.Property.Name == "InputKey")
+                {
+                    if (self.Model == null)
+                        return;
                     self.InputIndex = self.Model.Inputs.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.Key == (string)e.NewValue).First().idx;
+                }
             }
             catch (Exception)
             {
