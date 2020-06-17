@@ -329,7 +329,7 @@
             </MenuItem>
         </Menu>
         <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Background="Black">
-            <TabControl SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" BorderThickness="0" Background="#FF1E2328">
+            <TabControl SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" BorderThickness="0" Background="#1e2328">
                 <TabItem Style="{StaticResource GrayItemStyle}" Header="Settings" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}">
                     <StackPanel Margin="{StaticResource StdMargin}">
                         <Grid Margin="{StaticResource TopBottomStdMargin}">
@@ -366,7 +366,7 @@
                                             <ColumnDefinition Width="2*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid Background="{StaticResource Main.Gradient}">
-                                            <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Tag}"/></TextBlock>
+                                            <TextBlock Margin="8,0,0,0" Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Tag}"/></TextBlock>
                                         </Grid>
                                         <ContentPresenter Grid.Column="1" Content="{Binding}"/>
                                     </Grid>
@@ -464,7 +464,7 @@
                         </Grid>
                     </StackPanel>
                 </TabItem>
-                <TabItem IsSelected="True" Background="#FF1E2328" Style="{StaticResource GrayItemStyle}" Foreground="White" Header="Layout">
+                <TabItem IsSelected="True" Style="{StaticResource GrayItemStyle}" Foreground="White" Header="Layout">
                     <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
                         <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
                             <ListView.ContextMenu>
@@ -635,7 +635,7 @@
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="0,0,8,0">
-                        http://<Run Text="{Binding WindowSettings.IP}"/>:<Run Text="{Binding WindowSettings.Port}"/>
+                        HTTP://<Run FontWeight="Bold" Text="{Binding WindowSettings.IP}"/>:<Run FontWeight="Bold" Text="{Binding WindowSettings.Port}"/>
                     </TextBlock>
                     <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}" Stroke="Black">
                         <Ellipse.Fill>

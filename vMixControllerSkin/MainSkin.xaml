@@ -71,8 +71,8 @@
     <Style x:Key="GrayItemStyle" TargetType="TabItem">
         <Style.Setters>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#3E4854"/>
-            <Setter Property="BorderBrush" Value="#293038"/>
+            <Setter Property="Background" Value="#293038"/>
+            <Setter Property="BorderBrush" Value="#1e2328"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -85,7 +85,9 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Panel" Property="Background" Value="#293038" />
+                                <Setter TargetName="Panel" Property="Background" Value="#1e2328" />
+                                <Setter TargetName="Panel" Property="BorderBrush" Value="#293038" />
+                                <Setter Property="FontWeight" Value="Bold" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Foreground" Value="Gray"/>
