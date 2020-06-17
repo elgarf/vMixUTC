@@ -25,24 +25,6 @@
             <conv:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
             <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
             <!-- BorderBrush="#D01818" Background="#8B0000"-->
-            <ControlTemplate x:Key="TabItemStyle" TargetType="TabItem">
-                <Border Name="Panel" BorderThickness="1,1,1,0">
-                    <ContentPresenter x:Name="ContentSite"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        Margin="10,2"/>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter TargetName="Panel" Property="Background" Value="#D01818" />
-                    </Trigger>
-                    <Trigger Property="IsSelected" Value="False">
-                        <Setter TargetName="Panel" Property="Background" Value="#8B0000" />
-                        <Setter TargetName="Panel" Property="BorderBrush" Value="#D01818" />
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
@@ -60,7 +42,7 @@
             </StackPanel>
 
             <TabControl SelectionChanged="TabControl_SelectionChanged" BorderBrush="#D01818" Background="#8B0000">
-                <TabItem Template="{StaticResource TabItemStyle}" Foreground="White" Header="Constructor">
+                <TabItem Style="{StaticResource TabItemStyle}" Header="Constructor">
                     <ListView Background="Transparent" BorderThickness="0" x:Name="script" AlternationCount="{Binding Commands.Count, ElementName=Me}" ItemsSource="{Binding Commands, ElementName=Me}" SelectedIndex="0" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -267,7 +249,7 @@
                         </ListView.ItemContainerStyle>
                     </ListView>
                 </TabItem>
-                <TabItem Template="{StaticResource TabItemStyle}" Foreground="White" Header="Code">
+                <TabItem Style="{StaticResource TabItemStyle}" Header="Code">
                     <!--Text="{Binding TextCode, ElementName=Me, UpdateSourceTrigger=PropertyChanged}"-->
                     <StackPanel VerticalAlignment="Stretch">
                         <StackPanel Margin="4">

@@ -235,12 +235,16 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Cut Direct.</Description>
     <Function>CutDirect</Function>
     <FormatString>Function=CutDirect&amp;Input={0}</FormatString>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
     <Description>Cut Play Fade.</Description>
     <Function>CutPlayFade</Function>
     <FormatString>Function=QuickPlay&amp;Input={0}</FormatString>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -255,6 +259,8 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Quick Play.</Description>
     <Function>QuickPlay</Function>
     <FormatString>Function=QuickPlay</FormatString>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -296,27 +302,33 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Pause.</Description>
+    <Description>Pause input.</Description>
     <Function>Pause</Function>
     <FormatString>Function=Pause&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
     <StringDescription>N/A</StringDescription>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateValue>Paused</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Play.</Description>
+    <Description>Play input.</Description>
     <Function>Play</Function>
     <FormatString>Function=Play&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
     <StringDescription>N/A</StringDescription>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateValue>Running</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
-    <Description>Restart.</Description>
+    <Description>Restart input.</Description>
     <Function>Restart</Function>
     <FormatString>Function=Restart&amp;Input={0}</FormatString>
     <IntDescription>N/A</IntDescription>
     <StringDescription>N/A</StringDescription>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateValue>*</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

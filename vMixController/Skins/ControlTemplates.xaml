@@ -57,6 +57,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Ellipse Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <!--<Border Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Background="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" VerticalAlignment="Stretch"/>-->
             <!--Foreground="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}"-->
             <TextBlock Foreground="{Binding Background.Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}, ConverterParameter=true}"/>
             <Image Grid.Column="1" MinWidth="16" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}}" Source="{Binding Image, Converter={StaticResource RelativeToAbsolute}}"/>
@@ -67,6 +68,10 @@
                     <Setter Property="DataContext" Value="{Binding}"/>
                 </Style.Setters>
                 <Style.Triggers>
+                    <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
+                        
+                    </DataTrigger>
+                    
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="Tag">

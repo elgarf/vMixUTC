@@ -39,9 +39,63 @@
     <SolidColorBrush x:Key="Main.Border" Color="#FF404B56"/>
     <LinearGradientBrush x:Key="Main.Gradient" EndPoint="1,1" StartPoint="0,0">
         <GradientStop Color="#FF243B53" Offset="0"/>
-        <GradientStop Color="Black" Offset="1"/>
+        <GradientStop Color="#00000000" Offset="1"/>
     </LinearGradientBrush>
 
+    <Style x:Key="TabItemStyle" TargetType="TabItem">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#8B0000"/>
+            <Setter Property="BorderBrush" Value="#D01818"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Panel" BorderThickness="1,1,1,0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="#D01818" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="GrayItemStyle" TargetType="TabItem">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#3E4854"/>
+            <Setter Property="BorderBrush" Value="#293038"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Panel" BorderThickness="1,1,1,0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="#293038" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
 
     <!--Slider.-->
     <SolidColorBrush x:Key="SliderThumb.Static.Foreground" Color="White"/>

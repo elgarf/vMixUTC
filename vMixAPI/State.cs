@@ -63,9 +63,12 @@ namespace vMixAPI
             return GetUrl(_ip, _port);
         }
 
-        public static bool IsUrlValid(string url)
+        public static bool IsUrlValid(string ip, string port)
         {
-            return _regex.IsMatch(url);
+            int iport = 0;
+            bool isPortOk = int.TryParse(port, out iport);
+            isPortOk = isPortOk && iport >= 0 && iport <= 65535;
+            return _regex.IsMatch(GetUrl(ip, port)) && isPortOk;
         }
 
         public static string GetUrl(string _ip, string _port)
@@ -122,8 +125,6 @@ namespace vMixAPI
 
             IsInitializing = true;
             _logger.Info("Creating vMix state form {0}.", textstate);
-
-
 
             try
             {
@@ -200,7 +201,7 @@ namespace vMixAPI
         public event EventHandler<FunctionSendArgs> OnFunctionSend;
         public event EventHandler<StateSyncedEventArgs> OnStateSynced;
 
-        private void UpdateChangedInputs(string _a, string _b)
+        /*private void UpdateChangedInputs(string _a, string _b)
         {
             if (_changedCounter++ > _changedCounterConst)
             {
@@ -239,7 +240,7 @@ namespace vMixAPI
                 }
             }
             catch (Exception) { }
-        }
+        }*/
 
         private void Diff(object a, object b, bool lists = false)
         {
@@ -278,7 +279,7 @@ namespace vMixAPI
                 Overlays.Add(item);
 
             
-            UpdateChangedInputs(_currentStateText, _temp._currentStateText);
+            //UpdateChangedInputs(_currentStateText, _temp._currentStateText);
             if (_currentStateText != _temp._currentStateText)
                 _currentStateText = _temp._currentStateText;
 
@@ -330,9 +331,7 @@ namespace vMixAPI
                 foreach (var item in _temp.Overlays)
                     Overlays.Add(item);
 
-                /*_previousStateText = _currentStateText;
-                _currentStateText = _temp.CurrentStateText;*/
-                UpdateChangedInputs(_currentStateText, _temp._currentStateText);
+
                 if (_currentStateText != _temp._currentStateText)
                     _currentStateText = _temp._currentStateText;
 
@@ -354,7 +353,7 @@ namespace vMixAPI
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
             var url = address + textParameters;
 
-            if (!StateFabrique.IsUrlValid(address))
+            if (!StateFabrique.IsUrlValid(_ip, _port))
             {
                 _logger.Error("Function URL is not valid <{0}>.", url);
                 return "";
@@ -523,6 +522,8 @@ namespace vMixAPI
             XmlArrayItem("busF", typeof(BusF)),
             XmlArrayItem("busG", typeof(BusG))]
         public List<Master> Audio { get; set; }
+        [XmlElement("mix", typeof(Mix))]
+        public List<Mix> Mixes { get; set; }
 
         public static bool IsInitializing { get; set; }
 

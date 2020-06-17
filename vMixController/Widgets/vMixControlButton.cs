@@ -567,7 +567,7 @@ namespace vMixController.Widgets
                             (aval == "*") ||
                             (val != null && !(val is string) && aval == val.ToString()) ||
                             (val is string && (string)val == aval);
-                        if (!string.IsNullOrWhiteSpace(aval) && aval[0] == '!')
+                        if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
                             mult = !mult;
                         result = result && mult;
                     }

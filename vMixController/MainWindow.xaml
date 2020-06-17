@@ -1,5 +1,6 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:ccl="clr-namespace:CustomChromeLibrary;assembly=CustomChromeLibrary"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -24,7 +25,7 @@
         Height="{Binding WindowSettings.Height, Mode=TwoWay}"
         WindowState="{Binding WindowSettings.State, Mode=TwoWay}"
         Title="{Binding Title}"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="CanResizeWithGrip" d:DesignWidth="1016.552"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -215,13 +216,13 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Command="{Binding GlobalVariablesCommand}" Header="{e:Localize Global Variables}">
+                <!--<MenuItem Command="{Binding GlobalVariablesCommand}" Header="{e:Localize Global Variables}">
                     <MenuItem.Icon>
                         <Border Width="16" Height="16">
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02D;</TextBlock>
                         </Border>
                     </MenuItem.Icon>
-                </MenuItem>
+                </MenuItem>-->
                 <MenuItem Command="{Binding DownloadUpdateCommand}">
                     <MenuItem.Header>
                         <TextBlock FontWeight="Bold">Download [<Run Text="{Binding AvailableVersion, StringFormat=MM/dd/yyy}"/>] Update</TextBlock>
@@ -327,95 +328,256 @@
                 </MenuItem.Style>
             </MenuItem>
         </Menu>
-        <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-            <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
-                <ListView BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
-                    <ListView.ContextMenu>
-                        <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
-                            <ContextMenu.Resources>
-                                <cls:BindingProxy x:Key="proxy" Data="{Binding}" />
-                            </ContextMenu.Resources>
-                            <ContextMenu.ItemContainerStyleSelector>
-                                <cls:MenuStyleSelector>
-                                    <cls:MenuStyleSelector.MenuItem>
-                                        <Style TargetType="MenuItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
-                                        </Style>
-                                    </cls:MenuStyleSelector.MenuItem>
-                                </cls:MenuStyleSelector>
-                            </ContextMenu.ItemContainerStyleSelector>
-                        </ContextMenu>
-                    </ListView.ContextMenu>
-                    <ListView.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.MergedDictionaries>
-                                <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
-                            </ResourceDictionary.MergedDictionaries>
-                        </ResourceDictionary>
-                    </ListView.Resources>
+        <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Background="Black">
+            <TabControl SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" BorderThickness="0" Background="#FF1E2328">
+                <TabItem Style="{StaticResource GrayItemStyle}" Header="Settings" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}">
+                    <StackPanel Margin="{StaticResource StdMargin}">
+                        <Grid Margin="{StaticResource TopBottomStdMargin}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" FontSize="16"><Run Text="Window Properties"/></TextBlock>
+                            <Border VerticalAlignment="Center" Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="White"/>
+                        </Grid>
 
-                    <ListView.Cursor>
-                        <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
-                    </ListView.Cursor>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="ContextMenuOpening">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="ContextMenuClosing">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="MouseLeftButtonDown">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="MouseMove">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <i:Interaction.Behaviors>
-                        <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
-                    </i:Interaction.Behaviors>
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <Grid.LayoutTransform>
-                                    <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
-                                </Grid.LayoutTransform>
+                        <ListView HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel HorizontalAlignment="Stretch"/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <ContentPresenter/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="{StaticResource StdMargin}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Background="{StaticResource Main.Gradient}">
+                                            <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Tag}"/></TextBlock>
+                                        </Grid>
+                                        <ContentPresenter Grid.Column="1" Content="{Binding}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}"/>
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}"/>
+                            <Grid Tag="Scaling">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto" MinWidth="64"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
+                                <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
                             </Grid>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListView.ItemTemplateSelector>
-                        <ctrls:TypeTemplateSelector/>
-                    </ListView.ItemTemplateSelector>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Margin">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource MarginMultiConverter}">
-                                        <Binding Path="Left"/>
-                                        <Binding Path="Top"/>
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="VerticalAlignment" Value="Top"/>
-                            <!--</Setter> Value="{Binding Left}"/>
+                            <CheckBox Tag="Is Topmost" IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}"/>
+                            <CheckBox Tag="Enable Log" IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}"/>
+                        </ListView>
+                        <Grid Background="Transparent" DataContext="{Binding GlobalSettings, Source={StaticResource Locator}}">
+                            <Grid.Resources>
+                                <Style TargetType="{x:Type ListView}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <Border Background="#1E2328" BorderBrush="#18488C" x:Name="Border" Margin="0,0,0,4" Padding="1" BorderThickness="1" DataContext="{Binding Source={StaticResource Locator}}">
+                                                    <ContentPresenter />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Grid Margin="{StaticResource TopBottomStdMargin}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" Text="{e:Localize Static Global Variables}" FontSize="16"/>
+                                        <Button ToolTip="{e:Localize Add Variable}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand}" Content="&#xF415;" Grid.Column="1"/>
+                                        <Border VerticalAlignment="Center" Grid.Column="3" BorderThickness="0,2,0,0" BorderBrush="White"/>
+                                    </Grid>
+                                    <ListView BorderBrush="Transparent" ItemsSource="{Binding Variables}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Background="{StaticResource Main.Gradient}">
+                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A}" BorderThickness="0,0,0,1">
+                                                            <TextBox.Style>
+                                                                <Style TargetType="TextBox">
+                                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                                    <Setter Property="Background" Value="Transparent"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </Style>
+                                                            </TextBox.Style>
+                                                        </TextBox>
+                                                    </Border>
+                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="1" Text="{Binding B}"></TextBox>
+                                                    <Button ToolTip="{e:Localize Remove Variable}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding GlobalSettings.RemoveItemCommand, Source={StaticResource Locator}}" Content="&#xF374;" Grid.Column="2"/>
+                                                </Grid>
+
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListViewItem">
+                                                            <Border Margin="0,2">
+                                                                <ContentPresenter/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem IsSelected="True" Background="#FF1E2328" Style="{StaticResource GrayItemStyle}" Foreground="White" Header="Layout">
+                    <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+                        <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
+                            <ListView.ContextMenu>
+                                <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
+                                    <ContextMenu.Resources>
+                                        <cls:BindingProxy x:Key="proxy" Data="{Binding}" />
+                                    </ContextMenu.Resources>
+                                    <ContextMenu.ItemContainerStyleSelector>
+                                        <cls:MenuStyleSelector>
+                                            <cls:MenuStyleSelector.MenuItem>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                    <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
+                                                </Style>
+                                            </cls:MenuStyleSelector.MenuItem>
+                                        </cls:MenuStyleSelector>
+                                    </ContextMenu.ItemContainerStyleSelector>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="Skins/ControlTemplates.xaml"/>
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </ListView.Resources>
+
+                            <ListView.Cursor>
+                                <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
+                            </ListView.Cursor>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="ContextMenuOpening">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="ContextMenuClosing">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseMove">
+                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <i:Interaction.Behaviors>
+                                <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
+                            </i:Interaction.Behaviors>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <Grid.LayoutTransform>
+                                            <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
+                                        </Grid.LayoutTransform>
+                                    </Grid>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplateSelector>
+                                <ctrls:TypeTemplateSelector/>
+                            </ListView.ItemTemplateSelector>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Margin">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource MarginMultiConverter}">
+                                                <Binding Path="Left"/>
+                                                <Binding Path="Top"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    <Setter Property="VerticalAlignment" Value="Top"/>
+                                    <!--</Setter> Value="{Binding Left}"/>
                     <Setter Property="Canvas.Top" Value="{Binding Top}"/>-->
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <ContentPresenter />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-                <!--<ItemsControl ItemsSource="{Binding ExecLinks}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                        <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SelectorPosition}" Width="{Binding SelectorWidth}" Height="{Binding SelectorHeight}" Visibility="{Binding SelectorEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" Background="#7F00FFFF"/>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <!--<Trigger Property="Cursor" Value="Hand">
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="BorderBrush" Value="Red"/>
+                            </Trigger>-->
+                                    <Trigger Property="Tag">
+                                        <Trigger.Value>
+                                            <sys:Boolean>True</sys:Boolean>
+                                        </Trigger.Value>
+                                        <Setter Property="Background" Value="#FF1E2328"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+            <!--<ItemsControl ItemsSource="{Binding ExecLinks}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas/>
@@ -432,32 +594,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>-->
-                <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <ImageBrush ImageSource="Grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 8 8"/>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <!--<Trigger Property="Cursor" Value="Hand">
-                                <Setter Property="BorderThickness" Value="2"/>
-                                <Setter Property="BorderBrush" Value="Red"/>
-                            </Trigger>-->
-                            <Trigger Property="Tag">
-                                <Trigger.Value>
-                                    <sys:Boolean>True</sys:Boolean>
-                                </Trigger.Value>
-                                <Setter Property="Background" Value="#FF1E2328"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-            </Grid>
         </ScrollViewer>
-        <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SelectorPosition}" Width="{Binding SelectorWidth}" Height="{Binding SelectorHeight}" Visibility="{Binding SelectorEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" Background="#7F00FFFF"/>
         <StatusBar Grid.Row="2">
-            <StatusBarItem>
+            <!--<StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
                     <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
@@ -492,9 +631,12 @@
                         </i:Interaction.Triggers>
                     </TextBox>
                 </StackPanel>
-            </StatusBarItem>
+            </StatusBarItem>-->
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="0,0,8,0">
+                        http://<Run Text="{Binding WindowSettings.IP}"/>:<Run Text="{Binding WindowSettings.Port}"/>
+                    </TextBlock>
                     <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}" Stroke="Black">
                         <Ellipse.Fill>
                             <SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
@@ -504,19 +646,19 @@
                 </StackPanel>
             </StatusBarItem>
             <Separator/>
-            <StatusBarItem>
+            <!--<StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="{StaticResource RightStdMargin}" Text="{e:Localize Scaling}"></TextBlock>
                     <Slider Width="128" Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
                     <TextBlock Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
                 </StackPanel>
-            </StatusBarItem>
-            <Separator/>
-            <!--<StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
-                <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}">LIVE</CheckBox>
-            </StatusBarItem>-->
+            </StatusBarItem>-
+            <Separator/>-->
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
-                <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}" FontWeight="Bold">LIVE
+                <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}" FontWeight="Bold" Width="64" HorizontalContentAlignment="Center">
+                    <CheckBox.Content>
+                        <TextBlock HorizontalAlignment="Center">LIVE</TextBlock>
+                    </CheckBox.Content>
                     <CheckBox.Style>
                         <Style TargetType="CheckBox">
                             <Style.Setters>
@@ -543,12 +685,12 @@
                 </CheckBox>
             </StatusBarItem>
 
-            <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
+            <!--<StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}">Is Topmost</CheckBox>
             </StatusBarItem>
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}">Enable Log</CheckBox>
-            </StatusBarItem>
+            </StatusBarItem>-->
             <StatusBarItem HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="Make top layer transparent" IsEnabled="{Binding WindowSettings.Locked, Mode=OneWay, Converter={StaticResource NotConverter}}">

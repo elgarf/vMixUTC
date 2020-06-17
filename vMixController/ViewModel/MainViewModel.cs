@@ -774,6 +774,37 @@ namespace vMixController.ViewModel
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="SelectedTab" /> property's name.
+        /// </summary>
+        public const string SelectedTabPropertyName = "SelectedTab";
+
+        private int _selectedTab = 1;
+
+        /// <summary>
+        /// Sets and gets the SelectedTab property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int SelectedTab
+        {
+            get
+            {
+                return _selectedTab;
+            }
+
+            set
+            {
+                if (_selectedTab == value)
+                {
+                    return;
+                }
+
+                _selectedTab = value;
+                RaisePropertyChanged(SelectedTabPropertyName);
+            }
+        }
+
         private void InsertWidgetByZIndex(vMixControl widget)
         {
             widget.IsGhosted = widget.ZIndex >= 0 && IsGhosted;
@@ -1044,7 +1075,8 @@ namespace vMixController.ViewModel
                     {
                         if (WindowSettings.Locked)
                             return;
-                        var pos = p.MouseDevice.GetPosition((IInputElement)p.Source);
+
+                        var pos = Mouse.GetPosition((IInputElement)p.Source);
                         _relativeClickPoint = pos;
                         SelectorEnabled = true;
                         _rawSelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
@@ -1265,7 +1297,7 @@ namespace vMixController.ViewModel
 
             vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
 
-            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
 
             SyncTovMixState();
             UpdateExecLinks();
@@ -1370,6 +1402,7 @@ namespace vMixController.ViewModel
                                     WindowSettings.UserName = ToMD5Hash(cred.UserName);
                                 }
                             }
+                            SelectedTab = 1;
                         }
                         else
                         if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
@@ -1825,7 +1858,7 @@ namespace vMixController.ViewModel
                 globalEvents.MouseUp += MainViewModel_MouseUp;
             }
 
-            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
 
             Properties.Settings.Default.Save();
 
@@ -1904,312 +1937,294 @@ namespace vMixController.ViewModel
                 {
                     _logger.Error(e, "Error while checking updates. {0}");
                 }
-                //needUpdate = false;
             });
         }
 
-    private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
-    {
-
-        if (SelectorWidth != 0 && SelectorHeight != 0)
+        private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
 
-            var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
-            foreach (var item in _widgets)
+            if (SelectorWidth != 0 && SelectorHeight != 0)
             {
-                var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
-                item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
+
+                var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
+                foreach (var item in _widgets)
+                {
+                    var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
+                    item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
+                }
+                SelectorWidth = 0;
+                SelectorHeight = 0;
+                SelectorEnabled = false;
+                return;
             }
-            SelectorWidth = 0;
-            SelectorHeight = 0;
             SelectorEnabled = false;
-            return;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                foreach (var item in _widgets)
+                {
+                    item.Selected = false;
+                }
+
         }
-        SelectorEnabled = false;
-        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-            foreach (var item in _widgets)
+
+        private void MainViewModel_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            var ipos = new Point(e.X, e.Y);
+            if (!SelectorEnabled)
             {
-                item.Selected = false;
+
+                _clickPoint = new Point(ipos.X, ipos.Y);
+                return;
             }
 
-    }
 
-    private void MainViewModel_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-    {
-        if (!SelectorEnabled)
+            var pos = new Point(ipos.X, ipos.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
+            var w = -(_rawSelectorPosition.Left - pos.X);
+            var h = -(_rawSelectorPosition.Top - pos.Y);
+
+            SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
+            SelectorWidth = Math.Abs(w);
+            SelectorHeight = Math.Abs(h);
+        }
+
+        WebClient _client = new vMixAPI.vMixWebClient();
+
+        private void ConnectTimer_Tick(object sender, EventArgs e)
         {
-            _clickPoint = new Point(e.X, e.Y);
-            return;
+            if (IsInDesignMode) return;
+
+            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+            if (!IsUrlValid)
+                return;
+
+            _client.DownloadStringCompleted += Client_DownloadStringCompleted;
+            _client.CancelAsync();
+            while (_client.IsBusy) Thread.Sleep(100);
+            _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
+        }
+
+        private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        {
+            _logger.Info("Checking vMix server.");
+            if (e.Error != null)
+            {
+                _logger.Error(e.Error, "Error while connecting vMix server.");
+                Status = "Offline";
+                return;
+            }
+            if (Model != null && (Model.Ip == WindowSettings.IP && Model.Port == WindowSettings.Port))
+                Status = "Online";
+            else
+                Status = "Sync";
+        }
+
+        public override void Cleanup()
+        {
+            // Clean up if needed
+            foreach (var item in Widgets.OfType<IDisposable>())
+            {
+                item.Dispose();
+            }
+            base.Cleanup();
+        }
+
+        protected virtual void Dispose(bool managed)
+        {
+            if (_client != null)
+                _client.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            //throw new NotImplementedException();
         }
 
 
-        var pos = new Point(e.X, e.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
-        var w = -(_rawSelectorPosition.Left - pos.X);
-        var h = -(_rawSelectorPosition.Top - pos.Y);
+        private RelayCommand _downloadUpdateCommand;
 
-        SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
-        SelectorWidth = Math.Abs(w);
-        SelectorHeight = Math.Abs(h);
-    }
-
-    WebClient _client = new vMixAPI.vMixWebClient();
-
-    private void ConnectTimer_Tick(object sender, EventArgs e)
-    {
-        if (IsInDesignMode) return;
-
-        IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
-        if (!IsUrlValid)
-            return;
-
-        _client.DownloadStringCompleted += Client_DownloadStringCompleted;
-        _client.CancelAsync();
-        while (_client.IsBusy) Thread.Sleep(100);
-        _client.DownloadStringAsync(new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port)));
-    }
-
-    private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-    {
-        _logger.Info("Checking vMix server.");
-        if (e.Error != null)
+        /// <summary>
+        /// Gets the DownloadUpdateCommand.
+        /// </summary>
+        public RelayCommand DownloadUpdateCommand
         {
-            _logger.Error(e.Error, "Error while connecting vMix server.");
-            Status = "Offline";
-            return;
-        }
-        if (Model != null && (Model.Ip == WindowSettings.IP && Model.Port == WindowSettings.Port))
-            Status = "Online";
-        else
-            Status = "Sync";
-    }
-
-    public override void Cleanup()
-    {
-        // Clean up if needed
-        foreach (var item in Widgets.OfType<IDisposable>())
-        {
-            item.Dispose();
-        }
-        base.Cleanup();
-    }
-
-    protected virtual void Dispose(bool managed)
-    {
-        if (_client != null)
-            _client.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        //throw new NotImplementedException();
-    }
-
-
-    private RelayCommand _downloadUpdateCommand;
-
-    /// <summary>
-    /// Gets the DownloadUpdateCommand.
-    /// </summary>
-    public RelayCommand DownloadUpdateCommand
-    {
-        get
-        {
-            return _downloadUpdateCommand
-                ?? (_downloadUpdateCommand = new RelayCommand(
-                () =>
-                {
-                    Process.Start(new ProcessStartInfo(UpdateLink));
-                }));
-        }
-    }
-
-    private RelayCommand _viewChangelogCommand;
-
-    /// <summary>
-    /// Gets the MyCommand.
-    /// </summary>
-    public RelayCommand ViewChangelogCommand
-    {
-        get
-        {
-            return _viewChangelogCommand
-                ?? (_viewChangelogCommand = new RelayCommand(
-                () =>
-                {
-                    Process.Start(Path.Combine(_documentsPath, "Changelog.html"));
-                }));
-        }
-    }
-
-    private RelayCommand<MouseEventArgs> _previewMouseUp;
-
-    /// <summary>
-    /// Gets the PreviewMouseUp.
-    /// </summary>
-    public RelayCommand<MouseEventArgs> PreviewMouseUp
-    {
-        get
-        {
-            return _previewMouseUp
-                ?? (_previewMouseUp = new RelayCommand<MouseEventArgs>(
-                p =>
-                {
-                        //mouseHook.UninstallHook();
-                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
-                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
-                    }));
-        }
-    }
-
-    private RelayCommand<MouseEventArgs> _previewMouseDown;
-
-    /// <summary>
-    /// Gets the PreviewMouseDown.
-    /// </summary>
-    public RelayCommand<MouseEventArgs> PreviewMouseDown
-    {
-        get
-        {
-            return _previewMouseDown
-                ?? (_previewMouseDown = new RelayCommand<MouseEventArgs>(
-                p =>
-                {
-                        //mouseHook.InstallHook();
-                    }));
-        }
-    }
-
-
-    private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
-
-    /// <summary>
-    /// Gets the MyCommand.
-    /// </summary>
-    public RelayCommand<System.Windows.Input.KeyEventArgs> TextBoxPreviewKeyUp
-    {
-        get
-        {
-            return _textBoxPreviewKeyUp
-                ?? (_textBoxPreviewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
-                p =>
-                {
-                    if (p.Key == System.Windows.Input.Key.Return || p.Key == Key.Escape)
+            get
+            {
+                return _downloadUpdateCommand
+                    ?? (_downloadUpdateCommand = new RelayCommand(
+                    () =>
                     {
+                        Process.Start(new ProcessStartInfo(UpdateLink));
+                    }));
+            }
+        }
 
-                        DependencyObject parent = ((FrameworkElement)p.Source).Parent;
-                        while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
-                            parent = ((FrameworkElement)parent).Parent;
-                        while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
-                            parent = VisualTreeHelper.GetParent(parent);
-                        Keyboard.ClearFocus();
-                        FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                            //MoveFocus
-                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+        private RelayCommand _viewChangelogCommand;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand ViewChangelogCommand
+        {
+            get
+            {
+                return _viewChangelogCommand
+                    ?? (_viewChangelogCommand = new RelayCommand(
+                    () =>
+                    {
+                        Process.Start(Path.Combine(_documentsPath, "Changelog.html"));
+                    }));
+            }
+        }
+
+        private RelayCommand<MouseEventArgs> _previewMouseUp;
+
+        /// <summary>
+        /// Gets the PreviewMouseUp.
+        /// </summary>
+        public RelayCommand<MouseEventArgs> PreviewMouseUp
+        {
+            get
+            {
+                return _previewMouseUp
+                    ?? (_previewMouseUp = new RelayCommand<MouseEventArgs>(
+                    p =>
+                    {
+                    //mouseHook.UninstallHook();
+                    //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
+                    //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
+                }));
+            }
+        }
+
+        private RelayCommand<MouseEventArgs> _previewMouseDown;
+
+        /// <summary>
+        /// Gets the PreviewMouseDown.
+        /// </summary>
+        public RelayCommand<MouseEventArgs> PreviewMouseDown
+        {
+            get
+            {
+                return _previewMouseDown
+                    ?? (_previewMouseDown = new RelayCommand<MouseEventArgs>(
+                    p =>
+                    {
+                    //mouseHook.InstallHook();
+                }));
+            }
+        }
+
+
+        private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<System.Windows.Input.KeyEventArgs> TextBoxPreviewKeyUp
+        {
+            get
+            {
+                return _textBoxPreviewKeyUp
+                    ?? (_textBoxPreviewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
+                    p =>
+                    {
+                        if (p.Key == System.Windows.Input.Key.Return || p.Key == Key.Escape)
+                        {
+
+                            DependencyObject parent = ((FrameworkElement)p.Source).Parent;
+                            while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                                parent = ((FrameworkElement)parent).Parent;
+                            while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                                parent = VisualTreeHelper.GetParent(parent);
+                            Keyboard.ClearFocus();
+                            FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                        //MoveFocus
+                        ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
 
 
 
+                            IsHotkeysEnabled = true;
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand<RoutedEventArgs> _textBoxGotFocus;
+
+        /// <summary>
+        /// Gets the GotFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> TextBoxGotFocus
+        {
+            get
+            {
+                return _textBoxGotFocus
+                    ?? (_textBoxGotFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
+                        IsHotkeysEnabled = false;
+                    // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
+                }));
+            }
+        }
+
+        private RelayCommand<RoutedEventArgs> _textBoxLostFocus;
+
+        /// <summary>
+        /// Gets the LostFocus.
+        /// </summary>
+        public RelayCommand<RoutedEventArgs> TextBoxLostFocus
+        {
+            get
+            {
+                return _textBoxLostFocus
+                    ?? (_textBoxLostFocus = new RelayCommand<RoutedEventArgs>(
+                    p =>
+                    {
                         IsHotkeysEnabled = true;
-                    }
+                    //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
                 }));
+            }
         }
-    }
 
-    private RelayCommand<RoutedEventArgs> _textBoxGotFocus;
+        private RelayCommand _aboutCommand;
 
-    /// <summary>
-    /// Gets the GotFocus.
-    /// </summary>
-    public RelayCommand<RoutedEventArgs> TextBoxGotFocus
-    {
-        get
+        /// <summary>
+        /// Gets the AboutCommand.
+        /// </summary>
+        public RelayCommand AboutCommand
         {
-            return _textBoxGotFocus
-                ?? (_textBoxGotFocus = new RelayCommand<RoutedEventArgs>(
-                p =>
-                {
-                    IsHotkeysEnabled = false;
-                        // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
-                    }));
-        }
-    }
-
-    private RelayCommand<RoutedEventArgs> _textBoxLostFocus;
-
-    /// <summary>
-    /// Gets the LostFocus.
-    /// </summary>
-    public RelayCommand<RoutedEventArgs> TextBoxLostFocus
-    {
-        get
-        {
-            return _textBoxLostFocus
-                ?? (_textBoxLostFocus = new RelayCommand<RoutedEventArgs>(
-                p =>
-                {
-                    IsHotkeysEnabled = true;
-                        //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
-                    }));
-        }
-    }
-
-    private RelayCommand _aboutCommand;
-
-    /// <summary>
-    /// Gets the AboutCommand.
-    /// </summary>
-    public RelayCommand AboutCommand
-    {
-        get
-        {
-            return _aboutCommand
-                ?? (_aboutCommand = new RelayCommand(
-                () =>
-                {
-                    Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog
+            get
+            {
+                return _aboutCommand
+                    ?? (_aboutCommand = new RelayCommand(
+                    () =>
                     {
-                        WindowTitle = "About",
+                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog
+                        {
+                            WindowTitle = "About",
 
-                        MainInstruction = "One controller to rule them all.",
-                        MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information,
-                        Footer = Title
-                    };
+                            MainInstruction = "One controller to rule them all.",
+                            MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information,
+                            Footer = Title
+                        };
 
-                    var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "vMix Forum" };
-                    var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "Donate" };
-                    td.Buttons.Add(forumbtn);
-                    td.Buttons.Add(donatebtn);
-                    td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true });
+                        var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "vMix Forum" };
+                        var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = "Donate" };
+                        td.Buttons.Add(forumbtn);
+                        td.Buttons.Add(donatebtn);
+                        td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true });
 
-                    var btn = td.ShowDialog();
-                    if (btn == forumbtn)
-                        Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
-                    else if (btn == donatebtn)
-                        Process.Start(new ProcessStartInfo("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WT9QZ2XH97HMN&lc=US&item_name=vMix%20Universal%20Title%20Controller&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
+                        var btn = td.ShowDialog();
+                        if (btn == forumbtn)
+                            Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
+                        else if (btn == donatebtn)
+                            Process.Start(new ProcessStartInfo("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WT9QZ2XH97HMN&lc=US&item_name=vMix%20Universal%20Title%20Controller&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
 
 
-                }));
-        }
+                    }));
+            }
 
-    }
-
-    private RelayCommand _globalVariablesCommand;
-
-    /// <summary>
-    /// Gets the GlobalVariablesCommand.
-    /// </summary>
-    public RelayCommand GlobalVariablesCommand
-    {
-        get
-        {
-            return _globalVariablesCommand
-                ?? (_globalVariablesCommand = new RelayCommand(
-                () =>
-                {
-                    var sv = new GlobalVariablesView();
-                    sv.ShowDialog();
-                }));
         }
     }
-}
 }
