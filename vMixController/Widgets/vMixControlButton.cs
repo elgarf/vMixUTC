@@ -5,9 +5,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Serialization;
@@ -18,11 +16,8 @@ using vMixController.PropertiesControls;
 using vMixController.ViewModel;
 using System.Globalization;
 using System.ComponentModel;
-using System.Xml;
 using System.Windows.Media;
-using System.Windows;
 using System.IO;
-using System.Collections;
 using System.Net;
 
 namespace vMixController.Widgets
@@ -741,13 +736,6 @@ namespace vMixController.Widgets
                 }
                 catch (Exception ex)
                 {
-                    /*if (_loggedExceptions.Where(x => x.HResult == ex.HResult && x.Message == ex.Message).Count() == 0)
-                    {
-                        _logger.Error(ex, "Calculating expression failde");
-                        _loggedExceptions.Enqueue(ex);
-                        if (_loggedExceptions.Count > 10)
-                            _loggedExceptions.Dequeue();
-                    }*/
                     return false;
                 }
         }
@@ -767,15 +755,8 @@ namespace vMixController.Widgets
                 {
                     return exp.Evaluate();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    /*if (_loggedExceptions.Where(x=>x.HResult == ex.HResult && x.Message == ex.Message).Count() == 0)
-                    {
-                        _logger.Error(ex, "Calculating expression failde");
-                        _loggedExceptions.Enqueue(ex);
-                        if (_loggedExceptions.Count > 10)
-                            _loggedExceptions.Dequeue();
-                    }*/
                     return s;
                 }
             }
@@ -825,6 +806,7 @@ namespace vMixController.Widgets
             var expr1 = CalculateExpression(part1);
             var expr2 = CalculateExpression(part2);
 
+            //put expressions into variables for comparing
             var idx1 = GetVariableIndex(65534);
             var idx2 = GetVariableIndex(65535);
 
@@ -841,7 +823,6 @@ namespace vMixController.Widgets
 
             string expression = string.Format("{0}{1}{2}", "_var65534", cmd.AdditionalParameters[2].A, "_var65535");
             AddLog("Condition check {0}{1}{2}", expr1, cmd.AdditionalParameters[2].A, expr2);
-            //AddLog("Condition check {0}", expression);
             return Calculate(expression);
         }
 
@@ -881,7 +862,15 @@ namespace vMixController.Widgets
                         {
                             case NativeFunctions.API:
                                 WebClient _webClient = new vMixWebClient();
-                                _webClient.DownloadStringAsync(new Uri(string.Format("http://{0}", CalculateObjectParameter(cmd).ToString())), null);
+                                strparameter = string.Format("http://{0}", CalculateObjectParameter(cmd).ToString());
+                                Uri uri;
+                                if (Uri.TryCreate(strparameter, UriKind.Absolute, out uri))
+                                {
+                                    _webClient.DownloadStringAsync(uri, null);
+                                    AddLog("{1}) API {0}", strparameter, _pointer + 1);
+                                }
+                                else
+                                    AddLog("{1}) API WRONG URL = {0}", strparameter, _pointer + 1);
                                 break;
                             case NativeFunctions.TIMER:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
