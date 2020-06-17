@@ -666,6 +666,7 @@
         <Setter Property="FontFamily" Value="/vMixControllerSkin;Component/#Material Design Icons"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="1,1,1,1"/>
+        <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>

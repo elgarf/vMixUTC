@@ -172,6 +172,7 @@
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         <Setter Property="Margin" Value="{StaticResource StdMargin}"/>
+                                        <Setter Property="FontWeight" Value="Normal"/>
                                         <Setter Property="LayoutTransform" Value="{Binding Path=LayoutTransform, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}"/>
                                         <Setter Property="Template">
                                             <Setter.Value>

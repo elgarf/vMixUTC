@@ -822,7 +822,7 @@ namespace vMixController.Widgets
             }
 
             string expression = string.Format("{0}{1}{2}", "_var65534", cmd.AdditionalParameters[2].A, "_var65535");
-            AddLog("Condition check {0}{1}{2}", expr1, cmd.AdditionalParameters[2].A, expr2);
+            AddLog("CONDITION CHECK {0}{1}{2}", expr1, cmd.AdditionalParameters[2].A, expr2);
             return Calculate(expression);
         }
 
@@ -874,15 +874,15 @@ namespace vMixController.Widgets
                                 break;
                             case NativeFunctions.TIMER:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
-                                AddLog("{2}) Timer {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
+                                AddLog("{2}) TIMER {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
                                 Thread.Sleep(parameter);
                                 break;
                             case NativeFunctions.UPDATESTATE:
-                                AddLog("{0}) State Updating", _pointer + 1);
+                                AddLog("{0}) STATE UPDATING", _pointer + 1);
                                 Dispatcher.Invoke(() => state?.UpdateAsync());
                                 break;
                             case NativeFunctions.UPDATEINTERNALBUTTONSTATE:
-                                AddLog("{0}) Internal Button State Updating", _pointer + 1);
+                                AddLog("{0}) INTERNAL BUTTON STATE UPDATING", _pointer + 1);
                                 Dispatcher.Invoke(() => _internalState?.UpdateAsync());
                                 break;
                             case NativeFunctions.GOTO:
@@ -892,48 +892,48 @@ namespace vMixController.Widgets
                                     _jumpCount = 0;
                                 }
                                 parameter = CalculateExpression<int>(cmd.Parameter);
-                                AddLog("{2}) GoTo {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
+                                AddLog("{2}) GOTO {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
                                 _pointer = parameter - 1;
                                 _jumpCount++;
                                 break;
                             case NativeFunctions.EXECLINK:
                                 //Calculating expressions into EXECLINKS
                                 strparameter = Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString();
-                                AddLog("{2}) ExecLink {0} [{1}]", cmd.StringParameter, strparameter, _pointer + 1);
+                                AddLog("{2}) EXECLINK {0} [{1}]", cmd.StringParameter, strparameter, _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<string>(strparameter));
                                 break;
                             case NativeFunctions.LIVETOGGLE:
-                                AddLog("{0}) LIVEToggle", _pointer + 1);
+                                AddLog("{0}) LIVETOGGLE", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 2 }));
                                 break;
                             case NativeFunctions.LIVEOFF:
-                                AddLog("{0}) LIVEOff", _pointer + 1);
+                                AddLog("{0}) LIVEOFF", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 0 }));
                                 break;
                             case NativeFunctions.LIVEON:
-                                AddLog("{0}) LIVEOn", _pointer + 1);
+                                AddLog("{0}) LIVEON", _pointer + 1);
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 1 }));
                                 break;
                             case NativeFunctions.CONDITION:
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null;
-                                AddLog("{1}) Condition IS {0}", conditionResult, _pointer + 1);
+                                AddLog("{1}) CONDITION IS {0}", conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.HASVARIABLE:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(GetVariableIndex(parameter) != -1) : null;
-                                AddLog("{2}) HasVariable {0} IS {1}", parameter, conditionResult, _pointer + 1);
+                                AddLog("{2}) HASVARIABLE {0} IS {1}", parameter, conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.CONDITIONEND:
-                                AddLog("{0}) ConditionEnd", _pointer + 1);
+                                AddLog("{0}) CONDITIONEND", _pointer + 1);
                                 _conditions.Pop();
                                 break;
                             case NativeFunctions.SETVARIABLE:
                                 
                                 var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
                                 var tobj = CalculateObjectParameter(cmd);
-                                AddLog("{2}) SetVariable {0} TO {1}", idx, tobj, _pointer + 1);
+                                AddLog("{2}) SETVARIABLE {0} TO {1}", idx, tobj, _pointer + 1);
                                 if (idx == -1)
                                     Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = tobj }));
                                 else
@@ -946,7 +946,7 @@ namespace vMixController.Widgets
                                 var obj = CalculateObjectParameter(cmd).ToString();
                                 var key = (string.Format(cmd.StringParameter, cmd.InputKey));
                                 var hasKey = _trackedValues.ContainsKey(key);
-                                AddLog("{2}) ValueChanged {0} IS {1}", obj, hasKey, _pointer + 1);
+                                AddLog("{2}) VALUECHANGED {0} IS {1}", obj, hasKey, _pointer + 1);
                                 _conditions.Push(hasKey ? obj != _trackedValues[key] : false);
                                 _trackedValues[key] = obj;
                                 break;
@@ -957,13 +957,13 @@ namespace vMixController.Widgets
                         var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
 
                         if (!cmd.Action.StateDirect)
-                            AddLog("{2}) Send {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
+                            AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
                         else
                         {
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
                             
-                            AddLog("{2}) Set {0} TO {1}", path, value, _pointer + 1);
+                            AddLog("{2}) SET {0} TO {1}", path, value, _pointer + 1);
 
                             SetValueByPath(state, path, value);
                             int flag = 0;
