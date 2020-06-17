@@ -99,6 +99,24 @@
         </Style.Setters>
     </Style>
 
+
+    <Style TargetType="Control" x:Key="HelpBorder">
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Margin" Value="{StaticResource LeftStdMargin}"/>
+        <Setter Property="Background" Value="#16FFFFFF"/>
+        <Setter Property="ToolTipService.ShowDuration" Value="10000"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    <Border BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="White" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{TemplateBinding Foreground}">?</TextBlock>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!--Slider.-->
     <SolidColorBrush x:Key="SliderThumb.Static.Foreground" Color="White"/>
     <SolidColorBrush x:Key="SliderThumb.MouseOver.Background" Color="#79A0C1"/>

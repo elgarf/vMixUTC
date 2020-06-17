@@ -13,7 +13,9 @@ namespace vMixController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)value != 0) ? Visibility.Visible : Visibility.Collapsed;
+            var condition = (int)value != 0;
+            if (parameter != null) condition = !condition;
+            return (condition) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

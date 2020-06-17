@@ -13,6 +13,7 @@
         xmlns:e="clr-namespace:vMixController.Extensions"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:this="clr-namespace:vMixController"
     xmlns:pctrl="clr-namespace:vMixController.PropertiesControls"
         mc:Ignorable="d ignore"
         Title="{e:Localize Properties}"
@@ -37,6 +38,7 @@
                     <x:Type TypeName="Key"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <this:Help x:Key="Help"/>
             <Style TargetType="{x:Type ListView}">
                 <Setter Property="Background" Value="Black"/>
             </Style>
@@ -118,6 +120,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <CheckBox Margin="0,0,8,0" VerticalAlignment="Center" IsChecked="{Binding IsHotkeysVisible}" Foreground="LightGray" Background="Transparent">
@@ -138,8 +141,9 @@
                                 </ControlTemplate>
                             </CheckBox.Template>
                         </CheckBox>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{e:Localize Hotkeys}"/></TextBlock>
-                        <Border VerticalAlignment="Center"  Grid.Column="2" BorderThickness="0,2,0,0" BorderBrush="White"/>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,0,0"><Run Text="{e:Localize Hotkeys}"/></TextBlock>
+                        <Control Grid.Column="2" Style="{StaticResource HelpBorder}" ToolTip="{Binding Hotkeys_Default, Source={StaticResource Help}}" Margin="{StaticResource LeftRightStdMargin}"/>
+                        <Border VerticalAlignment="Center"  Grid.Column="3" BorderThickness="0,2,0,0" BorderBrush="White"/>
                     </Grid>
                     <Grid>
                         <!--<TextBlock Style="{StaticResource PropertyName}" HorizontalAlignment="Center" Text="{e:Localize No hotkeys available for this widget}"></TextBlock>-->
@@ -320,7 +324,7 @@
             </StackPanel>
         </ScrollViewer>
         <StackPanel Margin="2" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1">
-            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Widget.IsTemplate, Converter={StaticResource NotConverter}}"/>
+            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Widget.IsTemplate, Converter={StaticResource NotConverter}}" ToolTip="{Binding SaveTemplate_Default, Source={StaticResource Help}}"/>
             <Button Margin="0,0,4,0" Command="{Binding CancelCommand}" IsCancel="True" Content="{e:Localize Cancel}"/>
             <Button Command="{Binding OkCommand}" Content="{e:Localize Ok}" IsDefault="True"/>
         </StackPanel>

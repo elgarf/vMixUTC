@@ -52,6 +52,7 @@ namespace vMixController.Widgets
         [NonSerialized]
         bool _stopThread = false;
 
+
         /// <summary>
         /// The <see cref="HasScriptErrors" /> property's name.
         /// </summary>
@@ -103,6 +104,46 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="Log" /> property's name.
+        /// </summary>
+        public const string LogPropertyName = "Log";
+
+        private string _log = "";
+
+        /// <summary>
+        /// Sets and gets the Log property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        [XmlIgnore]
+        public string Log
+        {
+            get
+            {
+                return _log.TrimStart();
+            }
+
+            set
+            {
+                if (_log == value)
+                {
+                    return;
+                }
+
+                _log = value;
+                RaisePropertyChanged(LogPropertyName);
+            }
+        }
+
+        private void AddLog(string s, params object[] p)
+        {
+            Log += "\r\n" + string.Format(s, p);
+        }
+
+        private void ClearLog()
+        {
+            Log = "";
+        }
 
         /// <summary>
         /// The <see cref="BlinkBorderColor" /> property's name.
@@ -778,10 +819,11 @@ namespace vMixController.Widgets
 
             object part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
             object part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A);
-
             Thread.CurrentThread.CurrentCulture = _culture;
             Thread.CurrentThread.CurrentUICulture = _culture;
-            return Calculate(string.Format("{0}{1}{2}", part1?.ToString() ?? "", cmd.AdditionalParameters[2].A, part2?.ToString() ?? ""));
+            string expression = string.Format("{0}{1}{2}", part1?.ToString() ?? "", cmd.AdditionalParameters[2].A, part2?.ToString() ?? "");
+            AddLog("Condition check {0}", expression);
+            return Calculate(expression);
         }
 
         private int GetVariableIndex(int number)
@@ -799,8 +841,12 @@ namespace vMixController.Widgets
             vMixAPI.State state = (vMixAPI.State)_state;
             Stack<bool?> _conditions = new Stack<bool?>();
             int _waitBeforeUpdate = -1;
+            ClearLog();
             for (int _pointer = 0; _pointer < _commands.Count; _pointer++)
             {
+                int parameter = 0;
+                string strparameter = "";
+                bool? conditionResult = null;
                 if (_stopThread) return;
                 var cmd = _commands[_pointer];
                 var cond = new bool?(true);
@@ -818,52 +864,75 @@ namespace vMixController.Widgets
                                 _webClient.DownloadStringAsync(new Uri(string.Format("http://{0}", CalculateObjectParameter(cmd).ToString())), null);
                                 break;
                             case NativeFunctions.TIMER:
-                                Thread.Sleep(CalculateExpression<int>(cmd.Parameter));
+                                parameter = CalculateExpression<int>(cmd.Parameter);
+                                AddLog("Timer {0} [{1}]", cmd.Parameter, parameter);
+                                Thread.Sleep(parameter);
                                 break;
                             case NativeFunctions.UPDATESTATE:
+                                AddLog("State Updating");
                                 Dispatcher.Invoke(() => state?.UpdateAsync());
                                 break;
                             case NativeFunctions.UPDATEINTERNALBUTTONSTATE:
+                                AddLog("Internal Button State Updating");
                                 Dispatcher.Invoke(() => _internalState?.UpdateAsync());
                                 break;
                             case NativeFunctions.GOTO:
-                                _pointer = CalculateExpression<int>(cmd.Parameter) - 1;
+                                ClearLog();
+                                parameter = CalculateExpression<int>(cmd.Parameter);
+                                AddLog("GoTo {0} [{1}]", cmd.Parameter, parameter);
+                                _pointer = parameter - 1;
                                 break;
                             case NativeFunctions.EXECLINK:
                                 //Calculating expressions into EXECLINKS
-                                Dispatcher.Invoke(() => Messenger.Default.Send<string>(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString()));
+                                strparameter = Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString();
+                                AddLog("ExecLink {0} [{1}]", cmd.StringParameter, strparameter);
+                                Dispatcher.Invoke(() => Messenger.Default.Send<string>(strparameter));
                                 break;
                             case NativeFunctions.LIVETOGGLE:
+                                AddLog("LIVEToggle");
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 2 }));
                                 break;
                             case NativeFunctions.LIVEOFF:
+                                AddLog("LIVEOff");
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 0 }));
                                 break;
                             case NativeFunctions.LIVEON:
+                                AddLog("LIVEOn");
                                 Dispatcher.Invoke(() => Messenger.Default.Send<LIVEToggleMessage>(new LIVEToggleMessage() { State = 1 }));
                                 break;
                             case NativeFunctions.CONDITION:
-                                _conditions.Push(cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null);
+                                conditionResult = cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null;
+                                AddLog("Condition is {0}", conditionResult);
+                                _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.HASVARIABLE:
-                                _conditions.Push(cond.HasValue && cond.Value ? new bool?(GetVariableIndex(CalculateExpression<int>(cmd.Parameter)) != -1) : null);
+                                parameter = CalculateExpression<int>(cmd.Parameter);
+                                conditionResult = cond.HasValue && cond.Value ? new bool?(GetVariableIndex(parameter) != -1) : null;
+                                AddLog("HasVariable {0} is {1}", parameter, conditionResult);
+                                _conditions.Push(conditionResult);
                                 break;
                             case NativeFunctions.CONDITIONEND:
+                                AddLog("ConditionEnd");
                                 _conditions.Pop();
                                 break;
                             case NativeFunctions.SETVARIABLE:
+                                
                                 var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
+                                var tobj = CalculateObjectParameter(cmd);
+                                AddLog("SetVariable {0} to {1}", idx, tobj);
                                 if (idx == -1)
-                                    Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = CalculateObjectParameter(cmd) }));
+                                    Dispatcher.Invoke(() => _variables.Add(new Pair<int, object>() { A = CalculateExpression<int>(cmd.Parameter), B = tobj }));
                                 else
                                 {
-                                    Dispatcher.Invoke(() => _variables[idx].B = CalculateObjectParameter(cmd));
+                                    Dispatcher.Invoke(() => _variables[idx].B = tobj);
                                 }
                                 break;
                             case NativeFunctions.VALUECHANGED:
+
                                 var obj = CalculateObjectParameter(cmd).ToString();
                                 var key = (string.Format(cmd.StringParameter, cmd.InputKey));
                                 var hasKey = _trackedValues.ContainsKey(key);
+                                AddLog("ValueChanged {0} is {1}", obj, hasKey);
                                 _conditions.Push(hasKey ? obj != _trackedValues[key] : false);
                                 _trackedValues[key] = obj;
                                 break;
@@ -871,13 +940,19 @@ namespace vMixController.Widgets
                     else if (state != null)
                     {
                         var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
+                        var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
+
+
 
                         if (!cmd.Action.StateDirect)
-                            state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0), false);
+                            AddLog("Send {0} with result {1}", command, state.SendFunction(command, false));
                         else
                         {
                             var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
                             var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
+                            
+                            AddLog("Set {0} to {1}", path, value);
+
                             SetValueByPath(state, path, value);
                             int flag = 0;
                             while (GetValueByPath(state, path) != value)
@@ -927,9 +1002,9 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
             FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
-            BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible };
-            BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible };
-            BoolControl boolctrl2 = new BoolControl() { Title = LocalizationManager.Get("Colorize Button"), Value = IsColorized, Visibility = System.Windows.Visibility.Visible };
+            BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_StateDependent };
+            BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_ExecuteAfterLoad };
+            BoolControl boolctrl2 = new BoolControl() { Title = LocalizationManager.Get("Colorize Button"), Value = IsColorized, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_Colorize };
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             control.Commands.Clear();

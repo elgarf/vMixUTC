@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixController.PropertiesControls"
+             xmlns:c="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="Me">
@@ -12,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <c:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="{StaticResource TopBottomStdMargin}">
@@ -20,7 +22,12 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Background="{StaticResource Main.Gradient}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <TextBlock Padding="{StaticResource StdMargin}" VerticalAlignment="Center" Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
+            <Control Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource HelpBorder}" ToolTip="{Binding Help, ElementName=Me}" Visibility="{Binding Help.Length, ElementName=Me, FallbackValue=0, Converter={StaticResource IntegerToVisibilityConverter}}"/>
         </Grid>
         <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding Value, Mode=TwoWay, ElementName=Me}">
 

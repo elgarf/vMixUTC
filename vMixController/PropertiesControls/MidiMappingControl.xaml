@@ -2,12 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:vMixController.PropertiesControls"
-             xmlns:ctrl="clr-namespace:vMixController.Controls"
+             xmlns:this="clr-namespace:vMixController"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:wdgts="clr-namespace:vMixController.Widgets"
              xmlns:sanford="clr-namespace:Sanford.Multimedia.Midi;assembly=Sanford.Multimedia.Midi"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
@@ -23,6 +21,7 @@
                     <x:Type TypeName="sanford:ChannelCommand"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <this:Help x:Key="Help"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
@@ -35,6 +34,7 @@
                     <Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf001;</Run>
                     <Run Text="{e:Localize Midi Mapping}"/></TextBlock>
                 <Button ToolTip="{e:Localize Add midi mapping}" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="&#xF415;"/>
+                <Control Style="{StaticResource HelpBorder}" ToolTip="{Binding Midi_Default, Source={StaticResource Help}}"/>
             </StackPanel>
             <ListView BorderThickness="0" ItemsSource="{Binding Midis, ElementName=Me}" HorizontalContentAlignment="Stretch">
                 <ListView.ItemContainerStyle>
@@ -98,6 +98,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Button Width="Auto" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="Add MIDI Mapping"/>
         </StackPanel>
     </Border>
 </UserControl>

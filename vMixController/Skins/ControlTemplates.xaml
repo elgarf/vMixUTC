@@ -583,6 +583,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Ellipse x:Name="hasErrors" Width="4" Height="4" Margin="{StaticResource RightStdMargin}"/>
                     <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={StaticResource NotConverter}, Mode=OneWay}">&#xF4DB;</Button>
+                    <Control Style="{StaticResource HelpBorder}" ToolTip="{Binding Log}"/>
                 </StackPanel>
             </ctrls:vMixControlContainerDummy.CaptionContent>
             <ctrls:vMixControlContainerDummy.MainContent>

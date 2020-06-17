@@ -388,6 +388,7 @@ namespace vMixController.Widgets
             control1.Visibility = Visibility.Visible;
             control1.Value = IsTable;
             control1.Title = LocalizationManager.Get("Table");
+            control1.Help = Help.TextField_Table;
 
             return base.GetPropertiesControls().Concat(new UserControl[] { control1, control }).ToArray();
         }
