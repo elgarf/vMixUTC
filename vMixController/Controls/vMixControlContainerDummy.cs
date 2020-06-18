@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+﻿using CommonServiceLocator;
+using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using vMixController.Converters;
+using vMixController.ViewModel;
 
 namespace vMixController.Controls
 {
@@ -73,7 +76,19 @@ namespace vMixController.Controls
 
         // Using a DependencyProperty as the backing store for Control.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControlProperty =
-            DependencyProperty.Register("Control", typeof(vMixController.Widgets.vMixControl), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("Control", typeof(vMixController.Widgets.vMixControl), typeof(vMixControlContainerDummy), new PropertyMetadata(null, _controlChanged));
+
+        private static void _controlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            BindingOperations.ClearBinding(d, VisibilityProperty);
+
+            MultiBinding b = new MultiBinding() { Converter = new IntegersToVisibilityConverter() };
+            b.Bindings.Add(new Binding("Page") { Source = e.NewValue });
+            b.Bindings.Add(new Binding("PageIndex") { Source = ServiceLocator.Current.GetInstance<MainViewModel>() });
+            BindingOperations.SetBinding(d, VisibilityProperty, b);
+            
+            //throw new NotImplementedException();
+        }
 
         public RelayCommand<Widgets.vMixControl> CloseCommand
         {

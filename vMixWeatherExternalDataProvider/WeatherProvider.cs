@@ -6,10 +6,14 @@ using System.Xml;
 using vMixControllerDataProvider;
 using System.Windows;
 
-namespace vMixWeatherExternalDataProvider
+namespace WeatherExternalDataProvider
 {
     public class WeatherProvider : DependencyObject, IvMixDataProvider
     {
+        public object PreviewKeyUp { get; set; }
+        public object GotFocus { get; set; }
+        public object LostFocus { get; set; }
+
         List<string> data = new List<string>();
         bool _retrivingData = false;
 

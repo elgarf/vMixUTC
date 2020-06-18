@@ -41,6 +41,7 @@
             <c:NotConverter x:Key="NotConverter"/>
             <c:BoolToBrushConverter x:Key="BoolToBrush"/>
             <c:ControlToPointConverter x:Key="ControlToPoint"/>
+            <c:WidgetsCountConverter x:Key="WidgetsCountConverter"/>
             <this:Help x:Key="Help"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
@@ -471,7 +472,22 @@
                         </Grid>
                     </StackPanel>
                 </TabItem>
-                <TabItem IsSelected="True" Style="{StaticResource GrayItemStyle}" Foreground="White" Header="Layout">
+                <TabItem IsSelected="True" Style="{StaticResource GrayItemStyle}" Foreground="White">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock VerticalAlignment="Center">Layout</TextBlock>
+                            <ComboBox SelectedIndex="{Binding PageIndex, Mode=TwoWay}" IsEditable="False" MinWidth="128" Margin="8,0,0,0" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}">
+                                <ComboBox.Resources>
+                                    <sys:Int32 x:Key="Zero">0</sys:Int32>
+                                    <sys:Int32 x:Key="One">1</sys:Int32>
+                                </ComboBox.Resources>
+                                <ComboBox.Items>
+                                    <Run Foreground="Black" Text="{Binding Widgets, Converter={StaticResource WidgetsCountConverter}, ConverterParameter={StaticResource Zero}}"></Run>
+                                    <Run Foreground="Black" Text="{Binding Widgets, Converter={StaticResource WidgetsCountConverter}, ConverterParameter={StaticResource One}}"></Run>
+                                </ComboBox.Items>
+                            </ComboBox>
+                        </StackPanel>
+                    </TabItem.Header>
                     <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
                         <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
                             <ListView.ContextMenu>
@@ -499,6 +515,27 @@
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </ListView.Resources>
+                            <ListView.Style>
+                                <Style TargetType="ListView">
+                                    <Setter Property="ItemTemplateSelector">
+                                        <Setter.Value>
+                                            <ctrls:TypeTemplateSelector Page="0"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <!--<Style.Triggers>
+                                        <DataTrigger Binding="{Binding PageIndex}">
+                                            <DataTrigger.Value>
+                                                <sys:Int32>1</sys:Int32>
+                                            </DataTrigger.Value>
+                                            <Setter Property="ItemTemplateSelector">
+                                                <Setter.Value>
+                                                    <ctrls:TypeTemplateSelector Page="1"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>-->
+                                </Style>
+                            </ListView.Style>
 
                             <ListView.Cursor>
                                 <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
@@ -532,9 +569,6 @@
                                     </Grid>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
-                            <ListView.ItemTemplateSelector>
-                                <ctrls:TypeTemplateSelector/>
-                            </ListView.ItemTemplateSelector>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="Margin">

@@ -7,8 +7,8 @@
     <ProjectGuid>{E08E6704-10BF-4CF2-89EC-7AEB063C9219}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>vMixUTCNDIMonitorDataProvider</RootNamespace>
-    <AssemblyName>vMixUTCNDIMonitorDataProvider</AssemblyName>
+    <RootNamespace>NdiMonitorDataProvider</RootNamespace>
+    <AssemblyName>NdiMonitorDataProvider</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\SizeObserver.cs" />
-    <Compile Include="NDIMonitorDataProvider.cs" />
+    <Compile Include="NdiMonitorDataProvider.cs" />
     <Compile Include="OnWidgetUI.xaml.cs">
       <DependentUpon>OnWidgetUI.xaml</DependentUpon>
     </Compile>

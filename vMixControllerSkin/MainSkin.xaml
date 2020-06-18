@@ -686,6 +686,7 @@
                 <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
                 <Setter Property="Background" Value="{StaticResource Main.Background}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+                <Setter Property="FontWeight" Value="Normal"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -719,6 +720,7 @@
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="4,0,0,0"/>
+        <Setter Property="FontWeight" Value="Normal"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="Silver"/>
@@ -972,6 +974,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}"/>

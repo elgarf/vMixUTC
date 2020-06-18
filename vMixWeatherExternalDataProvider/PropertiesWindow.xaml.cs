@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace vMixWeatherExternalDataProvider
+namespace WeatherExternalDataProvider
 {
     /// <summary>
     /// Description for PropertiesWindow.

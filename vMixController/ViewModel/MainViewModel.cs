@@ -805,6 +805,36 @@ namespace vMixController.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="PageIndex" /> property's name.
+        /// </summary>
+        public const string PageIndexPropertyName = "PageIndex";
+
+        private int _pageIndex = 0;
+
+        /// <summary>
+        /// Sets and gets the PageIndex property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int PageIndex
+        {
+            get
+            {
+                return _pageIndex;
+            }
+
+            set
+            {
+                if (_pageIndex == value)
+                {
+                    return;
+                }
+
+                _pageIndex = value;
+                RaisePropertyChanged(PageIndexPropertyName);
+            }
+        }
+
         private void InsertWidgetByZIndex(vMixControl widget)
         {
             widget.IsGhosted = widget.ZIndex >= 0 && IsGhosted;
@@ -815,6 +845,7 @@ namespace vMixController.ViewModel
                 _widgets.Insert(0, widget);
             else
                 _widgets.Add(widget);
+            RaisePropertyChanged(WidgetsPropertyName);
             //}
             //else
             //    _widgets.Add(widget);
@@ -1014,6 +1045,7 @@ namespace vMixController.ViewModel
                                 widget.State = Model;
                                 widget.Top = x.Y;
                                 widget.Left = x.X;
+                                widget.Page = PageIndex;
                                 widget.AlignByGrid();
                                 if (widget is vMixControlTextField)
                                     ((vMixControlTextField)widget).IsLive = LIVE;
@@ -1178,6 +1210,7 @@ namespace vMixController.ViewModel
                             ctrl.Top = x.Y;
                             ctrl.IsTemplate = false;
                             ctrl.State = Model;
+                            ctrl.Page = PageIndex;
                             ctrl.AlignByGrid();
                             ctrl.Update();
                             _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
@@ -1403,6 +1436,7 @@ namespace vMixController.ViewModel
                                 }
                             }
                             SelectedTab = 1;
+                            PageIndex = 0;
                         }
                         else
                         if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
@@ -1950,7 +1984,7 @@ namespace vMixController.ViewModel
                 foreach (var item in _widgets)
                 {
                     var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
-                    item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked;
+                    item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked && item.Page == PageIndex;
                 }
                 SelectorWidth = 0;
                 SelectorHeight = 0;

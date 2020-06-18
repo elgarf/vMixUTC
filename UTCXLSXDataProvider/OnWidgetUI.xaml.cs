@@ -13,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace XmlDataProviderNs
+namespace UTCExcelDataProvider
 {
     /// <summary>
-    /// Логика взаимодействия для PropertiesWindow.xaml
+    /// Логика взаимодействия для OnWidgetUI.xaml
     /// </summary>
-    public partial class PropertiesWindow : Window
+    public partial class OnWidgetUI : UserControl
     {
-        public PropertiesWindow()
+        public OnWidgetUI()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
         }
     }
 }

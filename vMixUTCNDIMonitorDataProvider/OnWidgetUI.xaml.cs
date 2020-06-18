@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using vMixUTCNDIMonitorDataProvider.Extensions;
+using UTCNDIMonitorDataProvider.Extensions;
 
-namespace vMixUTCNDIMonitorDataProvider
+namespace UTCNDIMonitorDataProvider
 {
     /// <summary>
     /// Логика взаимодействия для OnWidgetUI.xaml

@@ -17,10 +17,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace vMixUTCNDIMonitorDataProvider
+namespace UTCNDIMonitorDataProvider
 {
     public class NDIMonitorDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProvider, IDisposable, INotifyPropertyChanged
     {
+        public object PreviewKeyUp { get; set; }
+        public object GotFocus { get; set; }
+        public object LostFocus { get; set; }
+
         private OnWidgetUI _ui;
         private static Random _random = new Random();
         private static Finder _finder;

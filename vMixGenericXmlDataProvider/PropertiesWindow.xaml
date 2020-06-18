@@ -1,9 +1,9 @@
-﻿<Window x:Class="vMixGenericXmlDataProvider.PropertiesWindow"
+﻿<Window x:Class="XmlDataProviderNs.PropertiesWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:vMixGenericXmlDataProvider"
+             xmlns:local="clr-namespace:XmlDataProviderNs"
              mc:Ignorable="d" 
             Background="Black"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -27,7 +27,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource PropertyName}">Additional Namespaces</TextBlock>
-        <TextBox Grid.Row="1" AcceptsReturn="True" Text="{Binding NameSpaces}" />
+        <TextBox Style="{StaticResource WidgetTextBox}"  Grid.Row="1" AcceptsReturn="True" Text="{Binding NameSpaces}" />
         <StackPanel Grid.Row="2" Margin="0,2,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Margin="2,0" IsCancel="True">Cancel</Button>
             <Button IsDefault="True" Click="Button_Click">Ok</Button>

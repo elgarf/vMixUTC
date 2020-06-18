@@ -64,6 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PropertiesListView.xaml.cs">
+      <DependentUpon>PropertiesListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +83,12 @@
     <Resource Include="Material Design Icons.ttf" />
     <Resource Include="FontAwesome.ttf" />
     <None Include="Linearicons-Free.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="PropertiesListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

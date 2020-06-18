@@ -36,5 +36,9 @@ namespace vMixControllerDataProvider
         /// </summary>
         /// <param name="props">List of properties, provided by GetProperties method.</param>
         void SetProperties(List<object> props);
+
+        object PreviewKeyUp { get; set; }
+        object GotFocus { get; set; }
+        object LostFocus { get; set; }
     }
 }

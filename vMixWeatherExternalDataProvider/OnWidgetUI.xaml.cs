@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace vMixWeatherExternalDataProvider
+namespace WeatherExternalDataProvider
 {
     /// <summary>
     /// Логика взаимодействия для OnWidgetUI.xaml

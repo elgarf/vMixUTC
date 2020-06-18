@@ -9,7 +9,7 @@ using System.Windows;
 using System.Xml;
 using vMixControllerDataProvider;
 
-namespace vMixGenericXmlDataProvider
+namespace XmlDataProviderNs
 {
     public class XmlDataProvider : DependencyObject, IvMixDataProvider, INotifyPropertyChanged
     {
@@ -54,15 +54,19 @@ namespace vMixGenericXmlDataProvider
 
                 try
                 {
-                    if (_cahce.ContainsKey(_url) && (DateTime.Now - _cahce[_url].LastUpdated).TotalMilliseconds < Period)
+                    if (_cahce.ContainsKey(_url ?? "") && (DateTime.Now - _cahce[_url ?? ""].LastUpdated).TotalMilliseconds < Period)
                     {
                         UpdateData(_cahce[_url].Document);
                     }
                     else
                     {
-                        WebRequest req = WebRequest.Create(_url);
-                        if (!_retrivingData)
-                            req.BeginGetResponse(new AsyncCallback(BeginGetResponseCallback), req);
+                        Uri uri = null;
+                        if (Uri.TryCreate(_url, UriKind.Absolute, out uri))
+                        {
+                            WebRequest req = WebRequest.Create(uri);
+                            if (!_retrivingData)
+                                req.BeginGetResponse(new AsyncCallback(BeginGetResponseCallback), req);
+                        }
                     }
                 }
                 catch (Exception)
@@ -190,6 +194,10 @@ namespace vMixGenericXmlDataProvider
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Data"));
             }
         }
+
+        public object PreviewKeyUp { get; set; }
+        public object GotFocus { get; set; }
+        public object LostFocus { get; set; }
 
         // Using a DependencyProperty as the backing store for XPath.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty XPathProperty =

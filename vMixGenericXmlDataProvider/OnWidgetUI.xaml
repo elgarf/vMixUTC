@@ -1,11 +1,15 @@
-﻿<UserControl x:Class="vMixGenericXmlDataProvider.OnWidgetUI"
+﻿<UserControl x:Class="XmlDataProviderNs.OnWidgetUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:vMixGenericXmlDataProvider"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+             xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
+             xmlns:local="clr-namespace:XmlDataProviderNs"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="_xmlUi">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,12 +17,40 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel  Margin="{StaticResource StdMargin}">
-        <TextBlock Style="{StaticResource PropertyName}">Url</TextBlock>
-        <TextBox Text="{Binding Url}"></TextBox>
-        <TextBlock Style="{StaticResource PropertyName}">XPath</TextBlock>
-        <TextBox Text="{Binding XPath}"></TextBox>
+    <StackPanel>
+        <Grid>
+            <skin:PropertiesListView>
+                <CompositeCollection>
+                    <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Url}" Tag="URL">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding XPath}" Tag="XPath">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                </CompositeCollection>
+            </skin:PropertiesListView>
+        </Grid>
         <Separator/>
-        <TextBlock Style="{StaticResource PropertyName}">Loaded <Run Text="{Binding Data.Count, Mode=OneWay}"></Run> row(s)</TextBlock>
+        <TextBlock Margin="{StaticResource StdMargin}" Style="{StaticResource PropertyName}">Loaded <Run Text="{Binding Data.Count, Mode=OneWay}"></Run> row(s)</TextBlock>
     </StackPanel>
 </UserControl>

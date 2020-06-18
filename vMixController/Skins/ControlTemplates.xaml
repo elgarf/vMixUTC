@@ -69,9 +69,9 @@
                 </Style.Setters>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
-                        
+
                     </DataTrigger>
-                    
+
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="Tag">
@@ -203,7 +203,7 @@
                             </CheckBox>
 
                             <CheckBox x:Name="BusM" Visibility="Collapsed" Content="M" Tag="M" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=M, Mode=OneWay}">
-                            <i:Interaction.Triggers>
+                                <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
@@ -587,7 +587,8 @@
     </Grid>
 
     <!--Inner Controls End-->
-
+    <DataTemplate x:Key="Dummy"/>
+    <c:IntegersToVisibilityConverter x:Key="IntegersToVisibilityConverter"/>
     <DataTemplate x:Key="vMixControlButton">
         <ctrls:vMixControlContainerDummy BorderColorProxy="{Binding BlinkBorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>

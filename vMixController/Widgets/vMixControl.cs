@@ -770,6 +770,37 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="Page" /> property's name.
+        /// </summary>
+        public const string PagePropertyName = "Page";
+
+        private int _page = 0;
+
+        /// <summary>
+        /// Sets and gets the Page property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int Page
+        {
+            get
+            {
+                return _page;
+            }
+
+            set
+            {
+                if (_page == value)
+                {
+                    return;
+                }
+
+                _page = value;
+                RaisePropertyChanged(PagePropertyName);
+            }
+        }
+
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateProperty =
             DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixControl), new PropertyMetadata(null, InternalPropertyChanged));
@@ -1114,9 +1145,18 @@ namespace vMixController.Widgets
                             while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
                                 parent = VisualTreeHelper.GetParent(parent);
                             Keyboard.ClearFocus();
-                            FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                            //MoveFocus
-                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            if (parent != null)
+                            {
+                                FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                                //MoveFocus
+                                ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            }
+                            else
+                            {
+                                FocusManager.SetFocusedElement(Application.Current.MainWindow, Application.Current.MainWindow);
+                                //MoveFocus
+                                Application.Current.MainWindow.MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            }
 
 
 

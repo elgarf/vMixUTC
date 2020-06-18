@@ -322,7 +322,12 @@ namespace vMixController.Widgets
             }
 
             if (_dataProviderProperties != null)
+            {
                 DataProvider.SetProperties(_dataProviderProperties);
+                DataProvider.PreviewKeyUp = PreviewKeyUp;
+                DataProvider.GotFocus = GotFocus;
+                DataProvider.LostFocus = LostFocus;
+            }
 
             UpdateText(Paths);
         }
