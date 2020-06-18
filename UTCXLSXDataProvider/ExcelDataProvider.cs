@@ -58,8 +58,12 @@ namespace UTCExcelDataProvider
                                             {
                                                 string line = "";
                                                 for (int i = StartCol; i < (EndCol >= 0 ? Math.Min(reader.FieldCount, EndCol) : reader.FieldCount); i++)
-                                                    line += "|" + reader.GetValue(i).ToString();
-                                                results.Add(line.TrimStart('|'));
+                                                    if (IsTable)
+                                                        line += "|" + reader.GetValue(i).ToString();
+                                                    else
+                                                        results.Add(reader.GetValue(i).ToString());
+                                                if (IsTable)
+                                                    results.Add(line.TrimStart('|'));
                                             }
                                             row++;
                                             if (EndRow >= 0 && row >= EndRow)
@@ -278,6 +282,37 @@ namespace UTCExcelDataProvider
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsTable" /> property's name.
+        /// </summary>
+        public const string IsTablePropertyName = "IsTable";
+
+        private bool _isTable = true;
+
+        /// <summary>
+        /// Sets and gets the IsTable property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsTable
+        {
+            get
+            {
+                return _isTable;
+            }
+
+            set
+            {
+                if (_isTable == value)
+                {
+                    return;
+                }
+
+                _isTable = value;
+                _lastModified = DateTime.MinValue;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IsTablePropertyName));
+            }
+        }
+
         public string Error => throw new NotImplementedException();
 
         public string this[string columnName]
@@ -300,7 +335,7 @@ namespace UTCExcelDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object> { FilePath, StartRow, EndRow, StartCol, EndCol, SheetIndex };
+            return new List<object> { FilePath, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable };
             //throw new NotImplementedException();
         }
 
@@ -312,6 +347,7 @@ namespace UTCExcelDataProvider
             StartCol = (int?)props?.ElementAt(3) ?? 0;
             EndCol = (int?)props?.ElementAt(4) ?? -1;
             SheetIndex = (int?)props?.ElementAt(5) ?? 0;
+            IsTable = (bool?)props?.ElementAt(6) ?? true;
             //throw new NotImplementedException();
         }
 

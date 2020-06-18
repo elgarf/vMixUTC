@@ -130,6 +130,9 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBox>
+                <CheckBox IsChecked="{Binding IsTable}" Tag="Row Is Table" VerticalAlignment="Center">
+                    <Control Style="{StaticResource HelpBorder}" ToolTip="If checked, data from row treat as UTC table: column1|column2|column3|etc..."/>
+                </CheckBox>
             </CompositeCollection>
         </skin:PropertiesListView>
     </Grid>

@@ -439,6 +439,12 @@ namespace vMixController.Widgets
             UpdateText(_paths);
         }
 
+        protected override void Dispose(bool managed)
+        {
+            //BindingOperations.ClearAllBindings(this);
+            base.Dispose(managed);
+        }
+
         public override void Update()
         {
             UpdateText(Paths);

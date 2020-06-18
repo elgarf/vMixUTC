@@ -1218,6 +1218,7 @@ namespace vMixController.Widgets
 
         public void Dispose()
         {
+            BindingOperations.ClearAllBindings(this);
             Dispose(true);
             //throw new NotImplementedException();
         }
