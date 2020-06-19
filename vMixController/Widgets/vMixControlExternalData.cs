@@ -324,9 +324,12 @@ namespace vMixController.Widgets
             if (_dataProviderProperties != null)
             {
                 DataProvider.SetProperties(_dataProviderProperties);
-                DataProvider.PreviewKeyUp = PreviewKeyUp;
-                DataProvider.GotFocus = GotFocus;
-                DataProvider.LostFocus = LostFocus;
+                if (DataProvider is IvMixDataProviderTextInput)
+                {
+                    ((IvMixDataProviderTextInput)DataProvider).PreviewKeyUp = PreviewKeyUp;
+                    ((IvMixDataProviderTextInput)DataProvider).GotFocus = GotFocus;
+                    ((IvMixDataProviderTextInput)DataProvider).LostFocus = LostFocus;
+                }
             }
 
             UpdateText(Paths);

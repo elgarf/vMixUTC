@@ -11,7 +11,7 @@ using System.Windows.Navigation;
 
 namespace UTCExcelDataProvider
 {
-    public class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProvider, INotifyPropertyChanged, IDataErrorInfo
+    public class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
     {
         public object PreviewKeyUp { get; set; }
 

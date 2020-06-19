@@ -11,7 +11,7 @@ using vMixControllerDataProvider;
 
 namespace XmlDataProviderNs
 {
-    public class XmlDataProvider : DependencyObject, IvMixDataProvider, INotifyPropertyChanged
+    public class XmlDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
     {
         //Internal variables for caching xml results
         private static int _maxid = 0;
