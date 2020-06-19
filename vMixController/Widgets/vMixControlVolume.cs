@@ -34,6 +34,7 @@ namespace vMixController.Widgets
         private static vMixAPI.State _meterState;
         private static DateTime _lastMetering;
         private bool _subscribed = false;
+        private bool _disposing = false;
 
         public vMixControlVolume() : base()
         {
@@ -121,12 +122,19 @@ namespace vMixController.Widgets
 
         protected override void Dispose(bool managed)
         {
+
             base.Dispose(managed);
             if (_meterTimer != null)
                 _meterTimer.Tick -= _meterTimer_Tick;
             if (_meterState != null)
                 _meterState.OnStateCreated -= _meterState_OnStateCreated;
 
+        }
+
+        public override void Dispose()
+        {
+            _disposing = true;
+            base.Dispose();
         }
 
         public override bool IsResizeableVertical => true;
@@ -298,7 +306,7 @@ namespace vMixController.Widgets
         {
             if (!((vMixControlTextField)d).IsLive)
                 return;
-            if (e.Property.Name == "Value")
+            if (e.Property.Name == "Value" && !((vMixControlVolume)d)._disposing)
             {
                 try
                 {
@@ -591,5 +599,7 @@ namespace vMixController.Widgets
             base.SetProperties(_controls);
             UpdateText(null);
         }
+
+        
     }
 }
