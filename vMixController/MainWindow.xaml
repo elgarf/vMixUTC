@@ -41,6 +41,7 @@
             <c:BoolToBrushConverter x:Key="BoolToBrush"/>
             <c:ControlToPointConverter x:Key="ControlToPoint"/>
             <c:WidgetsCountConverter x:Key="WidgetsCountConverter"/>
+            <c:ObjectToBoolConverter x:Key="ObjectToBoolConverter"/>
             <this:Help x:Key="Help"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
@@ -60,38 +61,52 @@
             <CompositeCollection x:Key="CreateItems" x:Shared="False">
                 <MenuItem x:Name="Button" Command="{Binding CreateWidgetCommand}" CommandParameter="Button" Header="{e:Localize Button}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF131;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF131;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="Label" Command="{Binding CreateWidgetCommand}" CommandParameter="Label" Header="{e:Localize Label}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02B;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF02B;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="Region" Command="{Binding CreateWidgetCommand}" CommandParameter="Region" Header="{e:Localize Region}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF2D0;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF2D0;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!--<MenuItem Command="{Binding CreateWidgetCommand}" CommandParameter="Image" Header="Image"/>-->
                 <MenuItem x:Name="List" Command="{Binding CreateWidgetCommand}" CommandParameter="List" Header="{e:Localize List}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF03A;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF03A;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="Score" Command="{Binding CreateWidgetCommand}" CommandParameter="Score" Header="{e:Localize Score}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF005;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF005;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="TextField" Command="{Binding CreateWidgetCommand}" CommandParameter="TextField" Header="{e:Localize Text Field}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF60E;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF60E;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="Timer" Command="{Binding CreateWidgetCommand}" CommandParameter="Timer" Header="{e:Localize Timer}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF51B;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF51B;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!--<MenuItem x:Name="Timecode" Command="{Binding CreateWidgetCommand}" CommandParameter="Timecode" Header="{e:Localize Timecode}">
@@ -101,23 +116,38 @@
                 </MenuItem>-->
                 <MenuItem x:Name="Clock" Command="{Binding CreateWidgetCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="Volume" Command="{Binding CreateWidgetCommand}" CommandParameter="Volume" Header="{e:Localize Volume}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1DE;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1DE;</TextBlock>
+                        </Border>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="TBar" Command="{Binding CreateWidgetCommand}" CommandParameter="TBar" Header="{e:Localize T-Bar}">
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">T</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
                 <MenuItem x:Name="Container" Command="{Binding CreateWidgetCommand}" CommandParameter="Container" Header="{e:Localize Container}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1B2;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1B2;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="ExternalData" Command="{Binding CreateWidgetCommand}" ItemsSource="{Binding ExternalDataProviders}" CommandParameter="ExternalData" Header="{e:Localize External Data}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1C0;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF1C0;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
@@ -136,12 +166,16 @@
                 </MenuItem>
                 <MenuItem x:Name="MidiInterface" Command="{Binding CreateWidgetCommand}" CommandParameter="MidiInterface" Header="{e:Localize MIDI Device}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0E7;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0E7;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="MultiState" Command="{Binding CreateWidgetCommand}" CommandParameter="MultiState" Header="{e:Localize Multi State}">
                     <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF233;</TextBlock>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF233;</TextBlock>
+                        </Border>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
@@ -276,6 +310,21 @@
                     <MenuItem.Icon>
                         <Border Width="16" Height="16">
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF08B;</TextBlock>
+                        </Border>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Header="{e:Localize Edit}">
+                <MenuItem IsEnabled="{Binding UndoState, Converter={StaticResource ObjectToBoolConverter}}" Command="{Binding UndoCommand}">
+                    <MenuItem.Header>
+                        <StackPanel>
+                            <TextBlock Text="{e:Localize Undo}"/>
+                            <TextBlock Foreground="Gray" FontSize="10" Text="{Binding UndoReason}" Visibility="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=MenuItem, Mode=FindAncestor}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF0E2;</TextBlock>
                         </Border>
                     </MenuItem.Icon>
                 </MenuItem>

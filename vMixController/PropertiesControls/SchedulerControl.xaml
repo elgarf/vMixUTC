@@ -122,6 +122,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Button Width="Auto" Style="{StaticResource TitleButton}" Command="{Binding AddPathCommand, ElementName=Me}" Content="Append Event"/>
         </StackPanel>
     </Border>
 </UserControl>

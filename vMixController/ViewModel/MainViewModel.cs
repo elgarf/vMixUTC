@@ -535,6 +535,65 @@ namespace vMixController.ViewModel
             }
         }
 
+        /// <summary>
+        /// The <see cref="UndoState" /> property's name.
+        /// </summary>
+        public const string UndoStatePropertyName = "UndoState";
+
+        private MemoryStream _undoState = null;
+
+        /// <summary>
+        /// Sets and gets the UndoState property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public MemoryStream UndoState
+        {
+            get
+            {
+                return _undoState;
+            }
+
+            set
+            {
+                if (_undoState == value)
+                {
+                    return;
+                }
+
+                _undoState = value;
+                RaisePropertyChanged(UndoStatePropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="UndoReason" /> property's name.
+        /// </summary>
+        public const string UndoReasonPropertyName = "UndoReason";
+
+        private string _undoReason = "";
+
+        /// <summary>
+        /// Sets and gets the UndoReason property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string UndoReason
+        {
+            get
+            {
+                return _undoReason;
+            }
+
+            set
+            {
+                if (_undoReason == value)
+                {
+                    return;
+                }
+
+                _undoReason = value;
+                RaisePropertyChanged(UndoReasonPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="EditorCursor" /> property's name.
@@ -852,6 +911,53 @@ namespace vMixController.ViewModel
         }
 
 
+        private void SaveUndo(string reason = "")
+        {
+            if (UndoState != null)
+                UndoState.Close();
+            UndoReason = reason;
+            UndoState = new MemoryStream();
+            Utils.SaveController(UndoState, Widgets, WindowSettings);
+        }
+
+        private void LoadUndo()
+        {
+            if (UndoState != null)
+            {
+                UndoState.Seek(0, SeekOrigin.Begin);
+                MainWindowSettings s;
+
+                foreach (var item in _widgets)
+                    item.Dispose();
+                _widgets.Clear();
+
+                var live = LIVE;
+
+                LIVE = true;
+
+                foreach (var item in Utils.LoadController(UndoState, Functions, out s))
+                    _widgets.Add(item);
+
+                foreach (var item in _widgets)
+                    item.Update();
+
+                ConnectTimer_Tick(null, new EventArgs());
+
+                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
+
+                IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+
+                SyncTovMixState();
+                UpdateExecLinks();
+
+                LIVE = live;
+
+                UndoState.Close();
+                UndoState = null;
+
+            }
+        }
+
         private RelayCommand<vMixController.Widgets.vMixControl> _switchLockCommand;
 
         /// <summary>
@@ -884,6 +990,7 @@ namespace vMixController.ViewModel
                     ?? (_removeWidgetCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
                     p =>
                     {
+                        SaveUndo(string.Format("Widget {1}[{0}] removed", p.Type, p.Name));
                         p.Dispose();
                         Widgets.Remove(p);
                     }));
@@ -1006,9 +1113,13 @@ namespace vMixController.ViewModel
                         {
                             Owner = App.Current.MainWindow
                         };
+
                         var result = _settings.ShowDialog();
                         if (result.HasValue && result.Value)
+                        {
+                            SaveUndo(string.Format("Widget {1}[{0}] properties changed", p.Type, p.Name));
                             p.SetProperties(viewModel);
+                        }
                         _logger.Info("Properties updated.");
                         _settings = null;
 
@@ -1050,10 +1161,26 @@ namespace vMixController.ViewModel
                                 if (widget is vMixControlTextField)
                                     ((vMixControlTextField)widget).IsLive = LIVE;
                                 widget.Update();
-                                InsertWidgetByZIndex(widget);
-                                _logger.Info("New {0} widget added.", widget.Type.ToLower());
 
-                                OpenPropertiesCommand.Execute(widget);
+                                SaveUndo(string.Format("Widget [{0}] created", widget.Type));
+                                UndoState.Seek(0, SeekOrigin.Begin);
+                                using (var beforeCreated = new MemoryStream())
+                                {
+                                    UndoState.CopyTo(beforeCreated);
+
+                                    InsertWidgetByZIndex(widget);
+                                    _logger.Info("New {0} widget added.", widget.Type.ToLower());
+
+                                    OpenPropertiesCommand.Execute(widget);
+                                    if (UndoState != null)
+                                        UndoState.Close();
+                                    UndoState = new MemoryStream();
+                                    beforeCreated.Seek(0, SeekOrigin.Begin);
+                                    beforeCreated.CopyTo(UndoState);
+                                    UndoReason = string.Format("Widget [{0}] created", widget.Type);
+                                }
+
+                                
 
                             }
                             else
@@ -1205,16 +1332,21 @@ namespace vMixController.ViewModel
                         EditorCursor = "Hand";
                         _createWidget = x =>
                         {
-                            var ctrl = p.B.Copy();
-                            ctrl.Left = x.X;
-                            ctrl.Top = x.Y;
-                            ctrl.IsTemplate = false;
-                            ctrl.State = Model;
-                            ctrl.Page = PageIndex;
-                            ctrl.AlignByGrid();
-                            ctrl.Update();
-                            _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
-                            InsertWidgetByZIndex(ctrl);
+                            SaveUndo(string.Format("Widget created from template {0}", p.A));
+                            var count = _widgets.Where(y => y.GetType() == p.B.GetType()).Count();
+                            if (count < p.B.MaxCount)
+                            {
+                                var ctrl = p.B.Copy();
+                                ctrl.Left = x.X;
+                                ctrl.Top = x.Y;
+                                ctrl.IsTemplate = false;
+                                ctrl.State = Model;
+                                ctrl.Page = PageIndex;
+                                ctrl.AlignByGrid();
+                                ctrl.Update();
+                                _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
+                                InsertWidgetByZIndex(ctrl);
+                            }
                             //_widgets.Add(ctrl);
                         };
 
@@ -1271,6 +1403,8 @@ namespace vMixController.ViewModel
                     ?? (_newControllerCommand = new RelayCommand(
                     () =>
                     {
+                        SaveUndo("Controller created");
+
                         foreach (var item in _widgets)
                             item.Dispose();
 
@@ -1303,6 +1437,7 @@ namespace vMixController.ViewModel
                         var result = opendlg.ShowDialog(App.Current.MainWindow);
                         if (result.HasValue && result.Value)
                         {
+                            SaveUndo("Controller loaded");
                             LoadControllerFromFile(opendlg.FileName);
                         }
                     }));
@@ -2123,10 +2258,10 @@ namespace vMixController.ViewModel
                     ?? (_previewMouseUp = new RelayCommand<MouseEventArgs>(
                     p =>
                     {
-                    //mouseHook.UninstallHook();
-                    //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
-                    //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
-                }));
+                        //mouseHook.UninstallHook();
+                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
+                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
+                    }));
             }
         }
 
@@ -2143,8 +2278,8 @@ namespace vMixController.ViewModel
                     ?? (_previewMouseDown = new RelayCommand<MouseEventArgs>(
                     p =>
                     {
-                    //mouseHook.InstallHook();
-                }));
+                        //mouseHook.InstallHook();
+                    }));
             }
         }
 
@@ -2172,8 +2307,8 @@ namespace vMixController.ViewModel
                                 parent = VisualTreeHelper.GetParent(parent);
                             Keyboard.ClearFocus();
                             FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                        //MoveFocus
-                        ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            //MoveFocus
+                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
 
 
 
@@ -2197,8 +2332,8 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         IsHotkeysEnabled = false;
-                    // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
-                }));
+                        // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
+                    }));
             }
         }
 
@@ -2216,8 +2351,8 @@ namespace vMixController.ViewModel
                     p =>
                     {
                         IsHotkeysEnabled = true;
-                    //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
-                }));
+                        //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                    }));
             }
         }
 
@@ -2261,6 +2396,24 @@ namespace vMixController.ViewModel
                     }));
             }
 
+        }
+
+        private RelayCommand _undoCommand;
+
+        /// <summary>
+        /// Gets the UndoCommand.
+        /// </summary>
+        public RelayCommand UndoCommand
+        {
+            get
+            {
+                return _undoCommand
+                    ?? (_undoCommand = new RelayCommand(
+                    () =>
+                    {
+                        LoadUndo();
+                    }));
+            }
         }
     }
 }

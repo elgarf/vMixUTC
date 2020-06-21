@@ -17,6 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <StackPanel>
         <skin:PropertiesListView>
             <CompositeCollection>
                 <TextBox Style="{StaticResource WidgetTextBox}" Tag="File Path">
@@ -135,5 +136,7 @@
                 </CheckBox>
             </CompositeCollection>
         </skin:PropertiesListView>
+            <TextBlock Style="{StaticResource CaptionText}"><Run Text="{Binding RowsCount}"/> row(s) readed</TextBlock>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -59,11 +59,11 @@ namespace UTCExcelDataProvider
                                                 string line = "";
                                                 for (int i = StartCol; i < (EndCol >= 0 ? Math.Min(reader.FieldCount, EndCol) : reader.FieldCount); i++)
                                                     if (IsTable)
-                                                        line += "|" + reader.GetValue(i).ToString();
+                                                        line += "|" + (reader.GetValue(i)?.ToString() ?? "");
                                                     else
-                                                        results.Add(reader.GetValue(i).ToString());
+                                                        results.Add((reader.GetValue(i)?.ToString() ?? ""));
                                                 if (IsTable)
-                                                    results.Add(line.TrimStart('|'));
+                                                    results.Add(line.Substring(1));
                                             }
                                             row++;
                                             if (EndRow >= 0 && row >= EndRow)
@@ -73,12 +73,14 @@ namespace UTCExcelDataProvider
                                 }
                                 while (reader.NextResult());
                                 _cached = results.ToArray();
+                                RowsCount = _cached.Length;
                                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FilePathPropertyName));
                                 return _cached;
                             }
                             catch (ExcelDataReader.Exceptions.ExcelReaderException)
                             {
                                 _hasError = true;
+                                RowsCount = 0;
                                 return Array.Empty<string>();
                             }
                         }
@@ -88,6 +90,7 @@ namespace UTCExcelDataProvider
 
                 }
                 _hasError = true;
+                RowsCount = 0;
                 return Array.Empty<string>();
             }
         }
@@ -310,6 +313,36 @@ namespace UTCExcelDataProvider
                 _isTable = value;
                 _lastModified = DateTime.MinValue;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IsTablePropertyName));
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="RowsCount" /> property's name.
+        /// </summary>
+        public const string RowsCountPropertyName = "RowsCount";
+
+        private int _rowsCount = 0;
+
+        /// <summary>
+        /// Sets and gets the RowsCount property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int RowsCount
+        {
+            get
+            {
+                return _rowsCount;
+            }
+
+            set
+            {
+                if (_rowsCount == value)
+                {
+                    return;
+                }
+
+                _rowsCount = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(RowsCountPropertyName));
             }
         }
 

@@ -8,6 +8,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:ext="clr-namespace:vMixController.Extensions"
+        xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
@@ -27,6 +28,7 @@
     <c:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
     <c:AudiobussesConverter x:Key="AudioBussesConverter"/>
     <c:AudiobusToVisibilityConverter x:Key="ABToVisibility"/>
+    
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <c:IntegerToBooleanConverter x:Key="IntToBool"/>
@@ -154,7 +156,31 @@
         </Button>
     </Grid>
 
+    <Grid x:Shared="false" x:Key="TBarWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
+        <ContentPresenter Content="{Binding}">
+            <ContentPresenter.ContentTemplate>
+                <DataTemplate>
+                    <ctrls:TBarSlider TickPlacement="Both" Ticks="0, 128, 255" Grid.Column="1" x:Name="Bar" Minimum="0" Maximum="255" Value="{Binding Value}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource {x:Type Slider}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <cmd:EventToCommand Command="{Binding ValueChangedCommand}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ctrls:TBarSlider>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Style}" Value="Horizontal">
 
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Style}" Value="Vertical">
+                            <Setter Property="Orientation" TargetName="Bar" Value="Vertical"/>
+                            <Setter Property="HorizontalAlignment" TargetName="Bar" Value="Center"/>
+                            <Setter Property="VerticalAlignment" TargetName="Bar" Value="Stretch"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ContentPresenter.ContentTemplate>
+        </ContentPresenter>
+    </Grid>
 
     <Grid x:Shared="false" x:Key="VolumeWidgetControl" Margin="{StaticResource StdMargin}" Grid.Column="1">
         <ContentPresenter Content="{Binding}">
@@ -538,7 +564,40 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Default Time}"/>
+        <skin:PropertiesListView Grid.ColumnSpan="3">
+            <CompositeCollection>
+                <toolkit:TimeSpanUpDown Tag="Default Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyUp">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="GotFocus">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </toolkit:TimeSpanUpDown>
+                <toolkit:TimeSpanUpDown Tag="Current Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyUp">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="GotFocus">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="LostFocus">
+                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </toolkit:TimeSpanUpDown>
+                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
+                    <!--<TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>-->
+                </CheckBox>
+            </CompositeCollection>
+        </skin:PropertiesListView>
+        <!--<TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Default Time}"/>
         <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Text="{e:Localize Current Time}"/>
         <TextBlock Grid.Column="2" Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
         <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Margin="{StaticResource RightStdMargin}" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
@@ -569,20 +628,20 @@
         </toolkit:TimeSpanUpDown>
         <CheckBox Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
             <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
-        </CheckBox>
+        </CheckBox>-->
 
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
             <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ToolTip="Start">&#xF40A;</Button>
             <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#xF3E4;</Button>
             <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#xF4DB;</Button>
             <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
-            <Button ToolTip="{e:Localize -1 Hour}" Command="{Binding TimerCommand}" CommandParameter="-1 Hour" Content="{e:Localize -1 H}"></Button>
-            <Button ToolTip="{e:Localize -1 Minute}" Command="{Binding TimerCommand}" CommandParameter="-1 Minute" Content="{e:Localize -1 M}"></Button>
-            <Button ToolTip="{e:Localize -1 Second}" Command="{Binding TimerCommand}" CommandParameter="-1 Second" Content="{e:Localize -1 S}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize -1 Hour}" Command="{Binding TimerCommand}" CommandParameter="-1 Hour" Content="{e:Localize -H}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize -1 Minute}" Command="{Binding TimerCommand}" CommandParameter="-1 Minute" Content="{e:Localize -M}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize -1 Second}" Command="{Binding TimerCommand}" CommandParameter="-1 Second" Content="{e:Localize -S}"></Button>
             <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
-            <Button ToolTip="{e:Localize +1 Hour}" Command="{Binding TimerCommand}" CommandParameter="+1 Hour" Content="{e:Localize +1 H}"></Button>
-            <Button ToolTip="{e:Localize +1 Minute}" Command="{Binding TimerCommand}" CommandParameter="+1 Minute" Content="{e:Localize +1 M}"></Button>
-            <Button ToolTip="{e:Localize +1 Second}" Command="{Binding TimerCommand}" CommandParameter="+1 Second" Content="{e:Localize +1 S}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize +1 Hour}" Command="{Binding TimerCommand}" CommandParameter="+1 Hour" Content="{e:Localize +H}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize +1 Minute}" Command="{Binding TimerCommand}" CommandParameter="+1 Minute" Content="{e:Localize +M}"></Button>
+            <Button Width="24" Margin="1" HorizontalContentAlignment="Center" ToolTip="{e:Localize +1 Second}" Command="{Binding TimerCommand}" CommandParameter="+1 Second" Content="{e:Localize +S}"></Button>
         </StackPanel>
     </Grid>
 
@@ -659,6 +718,31 @@
             </ctrls:vMixControlContainerDummy.MainContent>-->
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlTBar">
+        <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <Grid Height="{Binding Height}">
+                    <!--<Grid.Background>
+                        <SolidColorBrush Color="{Binding BorderColor}"/>
+                    </Grid.Background>
+                    <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>-->
+                    <ContentControl Content="{StaticResource TBarWidgetControl}"/>
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                        <ctrls:vMixControlResizeThumb.Template>
+                            <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+                                <Rectangle Fill="Transparent"/>
+                            </ControlTemplate>
+                        </ctrls:vMixControlResizeThumb.Template>
+                    </ctrls:vMixControlResizeThumb>
+                </Grid>
+            </ctrls:vMixControlContainerDummy.MainContent>
+            <!--<ctrls:vMixControlContainerDummy.MainContent>
+                <ContentControl Content="{StaticResource SliderWidgetControl}"/>
+            </ctrls:vMixControlContainerDummy.MainContent>-->
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+
     <DataTemplate x:Key="vMixControlLabel">
         <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}">
         </ctrls:vMixControlContainerDummy>
