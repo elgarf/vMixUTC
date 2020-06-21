@@ -160,12 +160,21 @@ namespace vMixController.Widgets
         {
             if (!_sending)
             {
-                _sending = true;
+                if (State != null)
+                    _sending = true;
                 State?.SendFunction(string.Format("Function=SetFader&Value={0}", value), true, (c) =>
                 {
                     _sending = false;
                 });
             }
+        }
+
+        internal override void OnStateSynced()
+        {
+            Value = 0;
+            _sending = false;
+            _reverse = false;
+            base.OnStateSynced();
         }
 
         private RelayCommand<RoutedEventArgs> _valueChangedCommand;

@@ -913,48 +913,61 @@ namespace vMixController.ViewModel
 
         private void SaveUndo(string reason = "")
         {
-            if (UndoState != null)
-                UndoState.Close();
-            UndoReason = reason;
-            UndoState = new MemoryStream();
-            Utils.SaveController(UndoState, Widgets, WindowSettings);
+            try
+            {
+                if (UndoState != null)
+                    UndoState.Close();
+                UndoReason = reason;
+                UndoState = new MemoryStream();
+                Utils.SaveController(UndoState, Widgets, WindowSettings);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error when saving undo");
+            }
         }
 
         private void LoadUndo()
         {
-            if (UndoState != null)
+            try
             {
-                UndoState.Seek(0, SeekOrigin.Begin);
-                MainWindowSettings s;
+                if (UndoState != null)
+                {
+                    UndoState.Seek(0, SeekOrigin.Begin);
+                    MainWindowSettings s;
 
-                foreach (var item in _widgets)
-                    item.Dispose();
-                _widgets.Clear();
+                    foreach (var item in _widgets)
+                        item.Dispose();
+                    _widgets.Clear();
 
-                var live = LIVE;
+                    var live = LIVE;
 
-                LIVE = true;
+                    LIVE = true;
 
-                foreach (var item in Utils.LoadController(UndoState, Functions, out s))
-                    _widgets.Add(item);
+                    foreach (var item in Utils.LoadController(UndoState, Functions, out s))
+                        _widgets.Add(item);
 
-                foreach (var item in _widgets)
-                    item.Update();
+                    foreach (var item in _widgets)
+                        item.Update();
 
-                ConnectTimer_Tick(null, new EventArgs());
+                    ConnectTimer_Tick(null, new EventArgs());
 
-                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
+                    vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
 
-                IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+                    IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
 
-                SyncTovMixState();
-                UpdateExecLinks();
+                    SyncTovMixState();
+                    UpdateExecLinks();
 
-                LIVE = live;
+                    LIVE = live;
 
-                UndoState.Close();
-                UndoState = null;
-
+                    UndoState.Close();
+                    UndoState = null;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error when applying undo");
             }
         }
 
@@ -1334,7 +1347,7 @@ namespace vMixController.ViewModel
                         {
                             SaveUndo(string.Format("Widget created from template {0}", p.A));
                             var count = _widgets.Where(y => y.GetType() == p.B.GetType()).Count();
-                            if (count < p.B.MaxCount)
+                            if (p.B.MaxCount == -1 || count < p.B.MaxCount)
                             {
                                 var ctrl = p.B.Copy();
                                 ctrl.Left = x.X;
