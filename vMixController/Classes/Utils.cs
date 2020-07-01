@@ -46,7 +46,7 @@ namespace vMixController.Classes
                         var btn = item as vMixControlButton;
                         foreach (var command in btn.Commands)
                         {
-                            var newFunction = functions.Where(x => x.Function == command.Action.Function).FirstOrDefault();
+                            var newFunction = functions.Where(x => x.Function == command.Action.Function || (x.Aliases?.Split(',').Contains(command.Action.Function) ?? false)).FirstOrDefault();
                             if (newFunction != null)
                                 command.Action = newFunction;
                         }

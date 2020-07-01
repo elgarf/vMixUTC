@@ -377,8 +377,39 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="Template" /> property's name.
+        /// </summary>
+        public const string TemplatePropertyName = "Template";
+
+        private bool _template = false;
+
+        /// <summary>
+        /// Sets and gets the Style property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Template
+        {
+            get
+            {
+                return _template;
+            }
+
+            set
+            {
+                if (_template == value)
+                {
+                    return;
+                }
+
+                _template = value;
+                RaisePropertyChanged(TemplatePropertyName);
+            }
+        }
+
         public override UserControl[] GetPropertiesControls()
         {
+
             var control = GetPropertyControl<TitleMappingControl>();
             control.Titles.Clear();
             foreach (var item in _paths)
@@ -389,6 +420,13 @@ namespace vMixController.Widgets
             control1.Value = IsTable;
             control1.Title = LocalizationManager.Get("Table");
             control1.Help = Help.TextField_Table;
+
+            if (this.GetType() == typeof(vMixControlTextField))
+            {
+                var control2 = new ComboBoxControl() { Title = "Template", Value = Template ? "File" : "Text" };
+                control2.Items = new List<string>() { "Text", "File" };
+                return base.GetPropertiesControls().Concat(new UserControl[] { control2, control1, control }).ToArray();
+            }
 
             return base.GetPropertiesControls().Concat(new UserControl[] { control1, control }).ToArray();
         }
@@ -434,6 +472,9 @@ namespace vMixController.Widgets
                 _paths.Add(new Pair<string, string>(item.A, item.B));
 
             _isTable = _controls.OfType<BoolControl>().First().Value;
+
+            if (this.GetType() == typeof(vMixControlTextField))
+                Template = (string)_controls.OfType<ComboBoxControl>().First().Value == "File";
             //_isMappedToGUID = _controls.OfType<TitleMappingControl>().First().IsGUIDTargeted;
 
             UpdateText(_paths);

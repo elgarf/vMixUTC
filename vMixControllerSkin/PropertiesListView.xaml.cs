@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,18 @@ namespace vMixControllerSkin
         public PropertiesListView()
         {
             InitializeComponent();
+
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                var e = new CompositeCollection
+                {
+                    new TextBox() { Tag = "Test 1" },
+                    new TextBox() { Tag = "Test 2" },
+                    new TextBox() { Tag = "Test 3" },
+                    new TextBox() { Tag = "Test 4" }
+                };
+                Items = e;
+            }
         }
 
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -288,19 +289,38 @@ namespace vMixController.Widgets
             }
         }
 
+        private string Enquote(string par)
+        {
+            if (par == null) return par;
+            int commas = 0;
+            int quotes = 0;
+            for (int i = 0; i<par.Length; i++)
+            {
+                if (par[i] == '\'')
+                    quotes++;
+                if (par[i] == ',' && quotes % 2 == 0)
+                    commas++;
+            }
+            if (commas > 0)
+                par = string.Format("'{0}'", par);
+            return par;
+        }
+
         public override string ToString()
         {
             var result = new String('\t', (int)(Ident.Left / 8));
             if (Collapsed)
                 result += ">";
 
+            if (Action == null) return "";
+
             result += Action.Function + "(";
             if (Action.HasInputProperty)
-                result += InputKey + ", ";
+                result += Enquote(InputKey) + ", ";
             if (Action.HasIntProperty)
-                result += Parameter + ", ";
+                result += Enquote(Parameter) + ", ";
             if (Action.HasStringProperty)
-                result += StringParameter + ", ";
+                result += Enquote(StringParameter) + ", ";
 
             var lastMean = 0;
             for (int i = 0; i < AdditionalParameters.Count; i++)
@@ -311,7 +331,7 @@ namespace vMixController.Widgets
             {
                 lastMean--;
                 if (!string.IsNullOrWhiteSpace(item.A) || lastMean - 1 > 0)
-                    result += item.A + ", ";
+                    result += Enquote(item.A) + ", ";
             }
 
             if (result.EndsWith(", "))
@@ -396,9 +416,13 @@ namespace vMixController.Widgets
                         bc--;
                         break;
                     case ',':
-                        arguments.Add(arg.Trim());
-                        arg = "";
-                        continue;
+                        if (str % 2 == 0)
+                        {
+                            arguments.Add(arg.Trim());
+                            arg = "";
+                            continue;
+                        }
+                        break;
                     default:
                         break;
                 }

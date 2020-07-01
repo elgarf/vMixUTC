@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixControllerSkin"
+             xmlns:conv="clr-namespace:vMixControllerSkin.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="propsViewer">
@@ -12,6 +14,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <conv:ObjectToTypeStringConverter x:Key="ObjToType"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <ListView HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" ItemsSource="{Binding Items, ElementName=propsViewer}">
@@ -39,10 +42,21 @@
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <Grid Background="{StaticResource Main.Gradient}">
-                        <TextBlock Margin="8,0,0,0" Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Tag}"/></TextBlock>
+                        <Border Padding="{StaticResource StdMargin}">
+                            <Grid>
+                                <ContentControl x:Name="label" Margin="8,0,0,0" Content="{Binding Tag}"/>
+                                <TextBlock Visibility="Collapsed" x:Name="textLabel" Margin="8,0,0,0" Style="{StaticResource PropertyName}" Text="{Binding Tag}"/>
+                            </Grid>
+                        </Border>
                     </Grid>
                     <ContentPresenter DataContext="{Binding DataContext, ElementName=propsViewer}" Grid.Column="1" Content="{Binding}"/>
                 </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Tag, Converter={StaticResource ObjToType}}" Value="String">
+                        <Setter TargetName="label" Property="Visibility" Value="Collapsed"/>
+                        <Setter TargetName="textLabel" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>

@@ -136,7 +136,7 @@ namespace vMixController.Widgets
             foreach (var item in Midis)
             {
                 if (e.Message.MidiChannel == item.A && e.Message.Data1 == item.B && e.Message.Command == item.D)
-                    Messenger.Default.Send<string>(item.C);
+                    Messenger.Default.Send(new Pair<string, object>(item.C, null));
             }
         }
 

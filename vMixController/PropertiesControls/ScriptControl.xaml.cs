@@ -13,10 +13,12 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
+using vMixAPI;
 using vMixController.Classes;
 using vMixController.Widgets;
 
@@ -32,6 +34,10 @@ namespace vMixController.PropertiesControls
         {
             InitializeComponent();
             Commands.CollectionChanged += Commands_CollectionChanged;
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                Commands.Add(new vMixControlButtonCommand());
+            }
         }
 
         private void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -60,13 +66,13 @@ namespace vMixController.PropertiesControls
                 icmd.PropertyChanged -= Icmd_PropertyChanged;
                 icmd.PropertyChanged += Icmd_PropertyChanged;
                 IsInputExist(icmd);
-                if (icmd.Action.IsBlock)
+                if ((icmd?.Action.IsBlock).GetValueOrDefault(false))
                 {
                     icmd.Ident = new Thickness(ident, 0, 0, 0);
                     ident += 8;
                     continue;
                 }
-                if (icmd.Action.Function == NativeFunctions.CONDITIONEND)
+                if (icmd?.Action.Function == NativeFunctions.CONDITIONEND)
                     ident -= 8;
 
                 if (ident < 0) ident = 0;
@@ -94,6 +100,20 @@ namespace vMixController.PropertiesControls
             s.NoInputAssigned = check ?? true;
         }
 
+
+        private void ShowMovedItem(int moveTo)
+        {
+            script.UpdateLayout();
+            var item = script.ItemContainerGenerator.ContainerFromIndex(moveTo) as ListViewItem;
+            if (item != null)
+            {
+
+                var border = item.Template.FindName("border", item);
+                if (border != null)
+                    ((Storyboard)FindResource("Blink")).Begin((FrameworkElement)border);
+                item.BringIntoView();
+            }
+        }
 
         /// <summary>
         /// The <see cref="TextCode" /> property's name.
@@ -224,8 +244,11 @@ namespace vMixController.PropertiesControls
                         for (int i = 0; i < 10; i++)
                             cmd.AdditionalParameters.Add(new One<string>() { A = "" });
                         Commands.Add(cmd);
+                        var index = Math.Max(Commands.Count - 2, 0);
                         RearrangeCommnads();
-                        //CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
+
+                        bottomMarker.BringIntoView();
+                        
                     }));
             }
         }
@@ -337,9 +360,13 @@ namespace vMixController.PropertiesControls
                     p =>
                     {
                         var idx = Commands.IndexOf(p);
-                        Commands.Move(idx, idx - 1 >= 0 ? idx - 1 : idx);
+                        var moveTo = idx - 1 >= 0 ? idx - 1 : idx;
+                        Commands.Move(idx, moveTo);
                         CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
                         RearrangeCommnads();
+
+                        ShowMovedItem(moveTo);
+
                     }));
             }
         }
@@ -363,8 +390,11 @@ namespace vMixController.PropertiesControls
                     p =>
                     {
                         var idx = Commands.IndexOf(p);
-                        Commands.Move(idx, idx + 1 < Commands.Count ? idx + 1 : idx);
+                        var moveTo = idx + 1 < Commands.Count ? idx + 1 : idx;
+                        Commands.Move(idx, moveTo);
                         RearrangeCommnads();
+
+                        ShowMovedItem(moveTo);
                     }));
             }
         }
@@ -394,6 +424,38 @@ namespace vMixController.PropertiesControls
         private void BindableAvalonEditor_GotFocus(object sender, RoutedEventArgs e)
         {
             //_prevIndex++;
+        }
+
+        private void Func_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                Keyboard.ClearFocus();
+                var parent = ((ComboBox)sender).Parent;
+
+                while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null && !(parent is Grid))
+                    parent = ((FrameworkElement)parent).Parent;
+                while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null && !(parent is Grid))
+                    parent = VisualTreeHelper.GetParent(parent);
+
+                FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                e.Handled = true;
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var value = (int?)(sender as MenuItem).DataContext.GetType().GetProperty("Index")?.GetValue((sender as MenuItem).DataContext);
+            if (value.HasValue)
+                ((sender as MenuItem).Tag as vMixControlButtonCommand).Parameter = value.Value.ToString();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            (sender as Button).ContextMenu.Tag = (sender as Button).Tag;
+            (sender as Button).ContextMenu.DataContext = (sender as Button).DataContext;
+            (sender as Button).ContextMenu.IsOpen = true;
         }
     }
 }

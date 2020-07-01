@@ -30,6 +30,8 @@ namespace vMixController.Widgets
         [NonSerialized]
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
+        const string parameterName = "P";
+        object parameterValue = null;
         static DateTime _lastShadowUpdate = DateTime.Now;
         static object _locker = new object();
         Stack<bool?> _conditions = new Stack<bool?>();
@@ -598,11 +600,16 @@ namespace vMixController.Widgets
                         HasScriptErrors = HasScriptErrors || nval == null;
                         var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input ?? -1);
                         var realval = aval;
-                        aval = aval.TrimStart('!');
+                        aval = aval.TrimStart('!', '~');
+                        //! - not
+                        //~ - contains
+                        //` - not contains
                         bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
                             (aval == "*") ||
                             (val != null && !(val is string) && aval == val.ToString()) ||
-                            (val is string && (string)val == aval);
+                            (val is string && (string)val == aval) ||
+                            (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
+                            (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
                         if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
                             mult = !mult;
                         result = result && mult;
@@ -664,8 +671,9 @@ namespace vMixController.Widgets
             {
                 var x = Dispatcher.Invoke(() => new { item.A, item.B });
                 if (!exp.Parameters.ContainsKey(x.A))
-                exp.Parameters.Add(x.A, x.B);
+                    exp.Parameters.Add(x.A, x.B);
             }
+            exp.Parameters.Add(parameterName, parameterValue);
             exp.EvaluateFunction += Exp_EvaluateFunction;
         }
 
@@ -750,7 +758,7 @@ namespace vMixController.Widgets
                 return s;
             else
             {
-                
+
                 try
                 {
                     return exp.Evaluate();
@@ -858,6 +866,7 @@ namespace vMixController.Widgets
                      cmd.Action.Function == NativeFunctions.CONDITION ||
                      cmd.Action.Function == NativeFunctions.HASVARIABLE))
                     if (cmd.Action.Native)
+                    {
                         switch (cmd.Action.Function)
                         {
                             case NativeFunctions.API:
@@ -900,7 +909,7 @@ namespace vMixController.Widgets
                                 //Calculating expressions into EXECLINKS
                                 strparameter = Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString();
                                 AddLog("{2}) EXECLINK {0} [{1}]", cmd.StringParameter, strparameter, _pointer + 1);
-                                Dispatcher.Invoke(() => Messenger.Default.Send<string>(strparameter));
+                                Dispatcher.Invoke(() => Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(strparameter, null)));
                                 break;
                             case NativeFunctions.LIVETOGGLE:
                                 AddLog("{0}) LIVETOGGLE", _pointer + 1);
@@ -930,7 +939,7 @@ namespace vMixController.Widgets
                                 _conditions.Pop();
                                 break;
                             case NativeFunctions.SETVARIABLE:
-                                
+
                                 var idx = GetVariableIndex(CalculateExpression<int>(cmd.Parameter));
                                 var tobj = CalculateObjectParameter(cmd);
                                 AddLog("{2}) SETVARIABLE {0} TO {1}", idx, tobj, _pointer + 1);
@@ -951,18 +960,31 @@ namespace vMixController.Widgets
                                 _trackedValues[key] = obj;
                                 break;
                         }
+                    }
                     else if (state != null)
                     {
                         var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
-                        var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
+                        var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
 
                         if (!cmd.Action.StateDirect)
                             AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
                         else
                         {
-                            var path = string.Format(cmd.Action.ActiveStatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
-                            var value = cmd.Action.StateValue == "Input" ? (object)cmd.InputKey : (cmd.Action.StateValue == "String" ? Dispatcher.Invoke(() => CalculateObjectParameter(cmd)).ToString() : (object)CalculateExpression<int>(cmd.Parameter));
-                            
+                            var path = string.Format(cmd.Action.StatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
+                            object value;
+                            switch (cmd.Action.StateValue)
+                            {
+                                case "Input":
+                                    value = (object)cmd.InputKey;
+                                    break;
+                                case "String":
+                                    value = Dispatcher.Invoke(() => CalculateObjectParameter(cmd))?.ToString() ?? "";
+                                    break;
+                                default:
+                                    value = (object)CalculateExpression<int>(cmd.Parameter);
+                                    break;
+                            }
+
                             AddLog("{2}) SET {0} TO {1}", path, value, _pointer + 1);
 
                             SetValueByPath(state, path, value);
@@ -978,6 +1000,8 @@ namespace vMixController.Widgets
                         }
                         _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
                     }
+                    else
+                        AddLog("{0}) {1} IS NOT EXECUTED", _pointer + 1, cmd.Action.Function);
             }
             _conditions.Clear();
             ThreadPool.QueueUserWorkItem((x) =>
@@ -1009,6 +1033,13 @@ namespace vMixController.Widgets
                     Variables.Clear();
                     break;
             }
+        }
+
+        public override void ExecuteHotkey(int index, object parameter)
+        {
+            parameterValue = parameter;
+            base.ExecuteHotkey(index, parameter);
+            ExecuteHotkey(index);
         }
 
         public override UserControl[] GetPropertiesControls()
@@ -1053,7 +1084,7 @@ namespace vMixController.Widgets
             var u = _controls.OfType<FilePathControl>().First().Value;
             if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
             {
-                
+
                 var uri = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), u)));
                 var dir = new Uri(Directory.GetCurrentDirectory() + @"\");
                 Image = Uri.UnescapeDataString(dir.MakeRelativeUri(uri).ToString());
@@ -1083,7 +1114,7 @@ namespace vMixController.Widgets
                 if (_internalState != null)
                     _internalState.OnStateSynced -= State_OnStateUpdated;
                 _stopThread = true;
-                
+
                 if (_executionWorker != null && _executionWorker.IsBusy)
                 {
                     _executionWorker.CancelAsync();

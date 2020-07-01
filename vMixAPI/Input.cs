@@ -55,7 +55,17 @@ namespace vMixAPI
         [XmlAttribute("type")]
         public string Type { get; set; }
         [XmlAttribute("title")]
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register("Title", typeof(string), typeof(Input), new PropertyMetadata("", InternalPropertyChanged));
+
+
 
         [XmlText()]
         public string InnerTitle { get; set; }
@@ -79,23 +89,31 @@ namespace vMixAPI
         {
             if (vMixAPI.State.IsInitializing)
                 return;
+            var input = (Input)d;
+            var state = input.ControlledState;
+            
             switch (e.Property.Name)
             {
                 case "Position":
-                    ((Input)d).ControlledState.InputSetPosition(((Input)d).Number, (int)e.NewValue);
+                    state.SendFunction("Function", "Position", "Input", input.Key, "Value", ((int)e.NewValue).ToString());
                     break;
                 case "SelectedIndex":
-                    ((Input)d).ControlledState.InputSelectIndex(((Input)d).Number.ToString(), (int)e.NewValue);
+                    state.SendFunction("Function", "SelectIndex", "Input", input.Key, "Value", ((int)e.NewValue).ToString());
                     break;
                 case "Loop":
                     if ((bool)e.NewValue)
-                        ((Input)d).ControlledState.InputLoopOn(((Input)d).Number);
+                        state.SendFunction("Function", "LoopOn", "Input", input.Key);
                     else
-                        ((Input)d).ControlledState.InputLoopOff(((Input)d).Number);
+                        state.SendFunction("Function", "LoopOff", "Input", input.Key);
                     break;
                 case "Muted":
-                    if (e.NewValue != e.OldValue)
-                        ((Input)d).ControlledState.Audio(((Input)d).Number);
+                    if ((bool)e.NewValue)
+                        state.SendFunction("Function", "AudioOn", "Input", input.Key);
+                    else
+                        state.SendFunction("Function", "AudioOff", "Input", input.Key);
+                    break;
+                case "Title":
+                    state.SendFunction("Function", "SetInputName", "Value", (string)e.NewValue, "Input", input.Key);
                     break;
             }
         }

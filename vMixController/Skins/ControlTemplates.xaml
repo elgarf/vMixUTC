@@ -147,7 +147,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}" Content="...">
+        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}" Content="..." Visibility="{Binding Template, Converter={StaticResource BoolToVis}}">
             <Button.ToolTip>
                 <ToolTip Visibility="{Binding Text, Converter={StaticResource TextIsPathToImage}}">
                     <Image Width="128" Height="128" Source="{Binding Text}"></Image>
@@ -592,44 +592,9 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </toolkit:TimeSpanUpDown>
-                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
-                    <!--<TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>-->
-                </CheckBox>
+                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}"/>
             </CompositeCollection>
         </skin:PropertiesListView>
-        <!--<TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Default Time}"/>
-        <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Text="{e:Localize Current Time}"/>
-        <TextBlock Grid.Column="2" Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
-        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Margin="{StaticResource RightStdMargin}" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewKeyUp">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="GotFocus">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="LostFocus">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </toolkit:TimeSpanUpDown>
-        <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewKeyUp">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="GotFocus">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="LostFocus">
-                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </toolkit:TimeSpanUpDown>
-        <CheckBox Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
-            <TextBlock Style="{StaticResource PropertyName}" Text="{e:Localize Reverse}"/>
-        </CheckBox>-->
-
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
             <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ToolTip="Start">&#xF40A;</Button>
             <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#xF3E4;</Button>
@@ -755,7 +720,7 @@
                     <Grid.Background>
                         <SolidColorBrush Color="{Binding BorderColor}"/>
                     </Grid.Background>
-                    <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>
+                    <TextBlock FontWeight="Normal"  Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>
                     <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">

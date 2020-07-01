@@ -56,6 +56,9 @@ namespace vMixController.Classes
         public int HideParameters { get; set; }
         public bool IsBlock { get; set; }
         public int AdditionalCount { get; set; } = 0;
+        public string Aliases { get; set; }
+
+        public List<vMixFunctionReference> Children { get; set; }
 
         public System.Windows.Media.Color Color { get; set; }
 

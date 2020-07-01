@@ -1753,7 +1753,7 @@ namespace vMixController.ViewModel
             return result;
         }
 
-        void ProcessHotkey(string link)
+        void ProcessHotkey(string link, object parameter = null)
         {
             foreach (var ctrl in _widgets)
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
@@ -1957,9 +1957,9 @@ namespace vMixController.ViewModel
             if (Model == null)
                 vMixAPI.StateFabrique.CreateAsync();
 
-            MessengerInstance.Register<string>(this, (hk) =>
+            MessengerInstance.Register<Pair<string, object>>(this, (hk) =>
             {
-                ProcessHotkey(hk);
+                ProcessHotkey(hk.A, hk.B);
             });
 
 

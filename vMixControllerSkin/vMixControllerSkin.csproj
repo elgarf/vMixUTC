@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ObjectToTypeString.cs" />
     <Compile Include="PropertiesListView.xaml.cs">
       <DependentUpon>PropertiesListView.xaml</DependentUpon>
     </Compile>

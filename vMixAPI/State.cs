@@ -103,7 +103,7 @@ namespace vMixAPI
         {
             _ip = ip.Trim();
             _port = port.Trim();
-            
+
             //_configured = true;
             _logger.Info("Configuring to {0}:{1}.", ip, port);
         }
@@ -152,7 +152,7 @@ namespace vMixAPI
                     state.Inputs.Insert(0, new Input() { Key = "0", Title = "[Preview]" });
                     state.Inputs.Insert(0, new Input() { Key = "-1", Title = "[Active]" });
 
-                    
+
 
                     IsInitializing = false;
                     if (state != null)
@@ -393,8 +393,14 @@ namespace vMixAPI
                 {
                     return _webClient.DownloadString(url);
                 }
-                catch (Exception ex) {
-                    _logger.Error(ex, "Function calling error.");
+                catch (WebException ex)
+                {
+                    string result = "";
+                    if (ex.Response != null)
+                        using (var sr = new StreamReader(ex.Response.GetResponseStream()))
+                            result = sr.ReadToEnd();
+                    _logger.Error(ex, string.Format("Function calling error, result is {0}.", result));
+                    return result;
                 }
             }
             return null;
@@ -404,7 +410,15 @@ namespace vMixAPI
         {
 
             if (e.Error != null)
-                _logger.Error(e.Error, "Error while sending async function.");
+            {
+                string result = "";
+                if (e.Error is WebException && (e.Error as WebException).Response != null)
+                {
+                    using (StreamReader sr = new StreamReader((e.Error as WebException).Response.GetResponseStream()))
+                        result = sr.ReadToEnd();
+                }
+                _logger.Error(e.Error, string.Format("Error while sending async function with result {0}.", result));
+            }
             else
                 _logger.Info("Async function sended, result is \"{0}\".", e.Result);
 

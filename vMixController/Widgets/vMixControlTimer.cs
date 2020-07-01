@@ -104,8 +104,8 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     _timer.Stop();
-                    Messenger.Default.Send<string>(Links[2]);
-                    Messenger.Default.Send<string>(Links[3]);
+                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
+                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[3], null));
                 }
             }
             else
@@ -120,8 +120,8 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     _timer.Stop();
-                    Messenger.Default.Send<string>(Links[2]);
-                    Messenger.Default.Send<string>(Links[3]);
+                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
+                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[3], null));
                 }
             }
         }
@@ -471,7 +471,7 @@ namespace vMixController.Widgets
 
                                 _timer.Start();
 
-                                Messenger.Default.Send<string>(Links[0]);
+                                Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 break;
                             case "Pause":
 
@@ -487,7 +487,7 @@ namespace vMixController.Widgets
                                             Time.Subtract(_stopwatch.Elapsed);
                                         _stopwatch.Stop();
                                         _timer.Stop();
-                                        Messenger.Default.Send<string>(Links[1]);
+                                        Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[1], null));
                                     }
 
                                 }
@@ -497,7 +497,7 @@ namespace vMixController.Widgets
                                     Active = true;
                                     _stopwatch.Start();
                                     _timer.Start();
-                                    Messenger.Default.Send<string>(Links[0]);
+                                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 }
 
                                 break;
@@ -507,7 +507,7 @@ namespace vMixController.Widgets
                                 _stopwatch.Stop();
                                 _timer.Stop();
                                 UpdateTimer();
-                                Messenger.Default.Send<string>(Links[2]);
+                                Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
                                 break;
                             case "+1 Hour":
                                 Time = Time.Add(TimeSpan.FromHours(1));
