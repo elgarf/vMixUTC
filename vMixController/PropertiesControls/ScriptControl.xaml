@@ -62,7 +62,7 @@
                                                     <ColumnDefinition/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label>
+                                                <Label VerticalAlignment="Center">
                                                     <StackPanel Orientation="Vertical">
                                                         <TextBlock VerticalAlignment="Center">
                                         
@@ -153,7 +153,7 @@
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
                                                             <TextBox Style="{StaticResource WidgetTextBox}" Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" Text="{Binding Parameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                            <Button Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" Grid.Column="1" Height="Auto" Tag="{Binding DataContext, ElementName=Element}" Style="{StaticResource TitleButton}" DataContext="{Binding SelectedItem, ElementName=In}" Content="IN" Click="Button_Click">
+                                                            <Button Visibility="{Binding SelectedValue.IntValues, ElementName=Func, Converter={StaticResource ObjectToVisibility}, ConverterParameter=true}" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" Grid.Column="1" Height="Auto" Tag="{Binding DataContext, ElementName=Element}" Style="{StaticResource TitleButton}" DataContext="{Binding SelectedItem, ElementName=In}" Content="T" Click="Button_Click" ToolTip="Fill Title Index" ContextMenuOpening="Button_ContextMenuOpening">
                                                                 <Button.ContextMenu>
                                                                     <ContextMenu ItemsSource="{Binding Elements}">
                                                                         <ContextMenu.ItemTemplate>

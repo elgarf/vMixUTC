@@ -127,7 +127,7 @@
                             <CheckBox.Template>
                                 <ControlTemplate TargetType="CheckBox">
                                     <Border Width="16" Height="16" Background="{TemplateBinding Background}">
-                                        <TextBlock x:Name="Text" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{TemplateBinding Foreground}" Text="&#xf06e;"></TextBlock>
+                                        <TextBlock x:Name="Text" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{TemplateBinding Foreground}" Text="&#xf146;"></TextBlock>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -135,7 +135,7 @@
                                             <Setter Property="Background" Value="White"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="False">
-                                            <Setter TargetName="Text" Property="Text" Value="&#xf070;"/>
+                                            <Setter TargetName="Text" Property="Text" Value="&#xf0fe;"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

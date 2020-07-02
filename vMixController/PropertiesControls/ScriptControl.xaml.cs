@@ -455,7 +455,17 @@ namespace vMixController.PropertiesControls
         {
             (sender as Button).ContextMenu.Tag = (sender as Button).Tag;
             (sender as Button).ContextMenu.DataContext = (sender as Button).DataContext;
-            (sender as Button).ContextMenu.IsOpen = true;
+            if ((sender as Button).ContextMenu.HasItems)
+                (sender as Button).ContextMenu.IsOpen = true;
+        }
+
+        private void Button_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (!(sender as Button).ContextMenu.HasItems)
+            {
+                (sender as Button).ContextMenu.IsOpen = false;
+                e.Handled = true;
+            }
         }
     }
 }
