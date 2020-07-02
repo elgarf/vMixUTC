@@ -539,7 +539,7 @@
                         </StackPanel>
                     </TabItem.Header>
                     <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
-                        <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent">
+                        <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent" ContextMenuOpening="Layout_ContextMenuOpening">
                             <ListView.ContextMenu>
                                 <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
                                     <ContextMenu.Resources>

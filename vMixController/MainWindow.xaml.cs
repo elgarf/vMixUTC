@@ -60,5 +60,14 @@ namespace vMixController
 
             e.Handled = true;
         }
+
+        private void Layout_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if ((sender as ListView).ContextMenu.HasItems)
+            {
+                (sender as ListView).ContextMenu.IsOpen = false;
+                e.Handled = true;
+            }
+        }
     }
 }
