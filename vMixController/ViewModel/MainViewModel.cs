@@ -1962,6 +1962,10 @@ namespace vMixController.ViewModel
                 ProcessHotkey(hk.A, hk.B);
             });
 
+            MessengerInstance.Register<string>(this, (hk) =>
+            {
+                ProcessHotkey(hk, null);
+            });
 
             Singleton<SharedData>.Instance.GetData = (name, property) =>
             {

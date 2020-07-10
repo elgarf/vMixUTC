@@ -132,7 +132,7 @@ namespace vMixController.Widgets
                     //_lastExecuted = item.A.ToShortDateString() + item.B;
                     if (_currentEvent != null && !_currentEvent.C)
                     {
-                        Messenger.Default.Send(item.B);
+                        Messenger.Default.Send(new Pair<string, object>(item.B, null));
                         _currentEvent.C = true;
                     }
                         

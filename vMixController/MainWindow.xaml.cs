@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using GalaSoft.MvvmLight.Ioc;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -63,11 +64,11 @@ namespace vMixController
 
         private void Layout_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if ((sender as ListView).ContextMenu.HasItems)
+            /*if (SimpleIoc.Default.GetInstance<MainViewModel>().WindowSettings.Locked)
             {
                 (sender as ListView).ContextMenu.IsOpen = false;
                 e.Handled = true;
-            }
+            }*/
         }
     }
 }
