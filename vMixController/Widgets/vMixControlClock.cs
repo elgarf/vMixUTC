@@ -21,7 +21,7 @@ namespace vMixController.Widgets
         //private string _lastExecuted = null;
 
         [NonSerialized]
-        private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Background);
+        private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Render);
         /*[NonSerialized]
         private Triple<DateTime, string, bool> _currentEvent;
         [NonSerialized]
