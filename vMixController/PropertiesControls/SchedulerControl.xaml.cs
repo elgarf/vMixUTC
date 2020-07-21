@@ -107,7 +107,6 @@ namespace vMixController.PropertiesControls
                     ?? (_checkT = new RelayCommand<Pair<DateTime, string>>(
                     p =>
                     {
-                        var n = DateTime.Now;
                         p.A = p.A.AddMilliseconds((p.A.Millisecond ^ 1 << 1) - p.A.Millisecond);
                     }));
             }

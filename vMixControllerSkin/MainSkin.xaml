@@ -626,6 +626,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="1"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Height" Value="21"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -687,6 +688,7 @@
                 <Setter Property="Background" Value="{StaticResource Main.Background}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
                 <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="Height" Value="21"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -975,6 +977,7 @@
     </ControlTemplate>
     <Style TargetType="{x:Type ComboBox}">
         <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Height" Value="21"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}"/>

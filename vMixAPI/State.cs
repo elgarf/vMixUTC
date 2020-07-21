@@ -518,7 +518,7 @@ namespace vMixAPI
 
 
         [XmlElement(ElementName = "recording")]
-        public bool Recording { get; set; }
+        public Recording Recording { get; set; }
         [XmlElement(ElementName = "external")]
         public bool External { get; set; }
         [XmlElement(ElementName = "streaming")]

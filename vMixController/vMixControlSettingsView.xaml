@@ -174,19 +174,29 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                    <GridViewRowPresenter/>
+                                                    <Border Background="{TemplateBinding Background}" >
+                                                        <Border BorderThickness="4,0,0,0" BorderBrush="{TemplateBinding BorderBrush}">
+                                                            <GridViewRowPresenter Margin="-4,0,0,0"/>
+                                                        </Border>
+                                                    </Border>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Active}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#FF90ee90"/>
+                                                <Setter Property="Background" Value="{StaticResource Main.Gradient}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
                                     </Style>
                                 </ListView.ItemContainerStyle>
 
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{e:Localize Active}">
+                                        <GridViewColumn Header="{e:Localize A}" Width="Auto">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsChecked="{Binding Active, Mode=TwoWay}"/>
+                                                    <CheckBox IsChecked="{Binding Active, Mode=TwoWay}" Margin="0,0,-6,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -200,42 +210,42 @@
                                         <GridViewColumn Header="Alt">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}" Margin="-5,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="Ctrl">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Ctrl, Mode=TwoWay}"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Ctrl, Mode=TwoWay}" Margin="-5,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="Shift">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Shift, Mode=TwoWay}"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Shift, Mode=TwoWay}" Margin="-5,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="{e:Localize Key}" Width="100">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ComboBox IsEnabled="{Binding Active}" SelectedItem="{Binding Key, Mode=TwoWay}" ItemsSource="{Binding Source={StaticResource KeyValues}}"/>
+                                                    <ComboBox IsEnabled="{Binding Active}" SelectedItem="{Binding Key, Mode=TwoWay}" ItemsSource="{Binding Source={StaticResource KeyValues}}" Margin="-5,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="{e:Localize Link}" Width="100">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBox IsEnabled="{Binding Active}" Text="{Binding Link}"/>
+                                                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding Active}" Text="{Binding Link}" Margin="-5,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Width="50">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <Button IsEnabled="{Binding Active}" Content="{e:Localize Learn}" Command="{Binding WidgetSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                                                    <Button IsEnabled="{Binding Active}" Content="{e:Localize Learn}" Command="{Binding WidgetSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}" Margin="-5,0,-6,0"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>

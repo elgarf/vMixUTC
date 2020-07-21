@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using vMixController.Extensions;
 using GalaSoft.MvvmLight.CommandWpf;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace vMixController.Widgets
 {
@@ -21,8 +22,13 @@ namespace vMixController.Widgets
 
         [NonSerialized]
         private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Background);
-        [NonSerialized]
+        /*[NonSerialized]
         private Triple<DateTime, string, bool> _currentEvent;
+        [NonSerialized]
+        private Triple<DateTime, string, bool> _prevEvent;*/
+        [NonSerialized]
+        Queue<Pair<DateTime, string>> _eventQueue = new Queue<Pair<DateTime, string>>();
+
 
         /// <summary>
         /// The <see cref="Events" /> property's name.
@@ -124,19 +130,11 @@ namespace vMixController.Widgets
         private void Timer_Tick(object sender, EventArgs e)
         {
             var now = DateTime.Now;
-            foreach (var item in _events)
+            if (_eventQueue.Count > 0 &&  _eventQueue.Peek().A.Hour == now.Hour && _eventQueue.Peek().A.Minute == now.Minute && _eventQueue.Peek().A.Second <= now.Second && ExecuteToday(_eventQueue.Peek().A, DateTime.Now))
             {
-                //prevent executing one item twice
-                if (item.A.Hour == now.Hour && item.A.Minute == now.Minute && item.A.Second == now.Second && ExecuteToday(item.A, DateTime.Now) /*&& _lastExecuted != item.A.ToShortDateString() + item.B*/)
-                {
-                    //_lastExecuted = item.A.ToShortDateString() + item.B;
-                    if (_currentEvent != null && !_currentEvent.C)
-                    {
-                        Messenger.Default.Send(new Pair<string, object>(item.B, null));
-                        _currentEvent.C = true;
-                    }
-                        
-                }
+                var ev = _eventQueue.Dequeue();
+                Messenger.Default.Send(new Pair<string, object>(ev.B, null));
+                Debug.Print("{0} is fired", ev.B);
             }
 
             var day = GetNextEvent(now);
@@ -150,20 +148,19 @@ namespace vMixController.Widgets
             if (day == null)
                 NextEventAt = LocalizationManager.Get("No new events scheduled");
             else
-                NextEventAt = String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}, {4}", day.A, day.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"), GetDayOfWeek(lastDate) == GetDayOfWeek(now) ? "Today" : GetDayOfWeek(lastDate));
-
-            //Wait until event really fired
-            if (_currentEvent != null && !_currentEvent.C) return;
-
-            if (_currentEvent != null && (_currentEvent.A != day.A || _currentEvent.B != day.B) && !_currentEvent.C)
-                Messenger.Default.Send(_currentEvent.B);
-            if (day != null)
             {
-                if (_currentEvent == null || _currentEvent.A != day.A || _currentEvent.B != day.B)
-                    _currentEvent = new Triple<DateTime, string, bool>(day.A, day.B, false);
+                NextEventAt = String.Format(@"{2} <{1}> {3} {0:HH\:mm\:ss}, {4}", day.A, day.B, LocalizationManager.Get("Next Event"), LocalizationManager.Get("At"), GetDayOfWeek(lastDate) == GetDayOfWeek(now) ? "Today" : GetDayOfWeek(lastDate));
+                if (_eventQueue.Count > 0)
+                {
+                    var item = _eventQueue.Peek();
+                    if (item.A != day.A || item.B != day.B)
+                        _eventQueue.Enqueue(day);
+                }
+                else
+                {
+                    _eventQueue.Enqueue(day);
+                }
             }
-            else
-                _currentEvent = null;
 
         }
 

@@ -942,7 +942,7 @@ This is block function, block ends at ConditionEnd function.</Description>
 
     <Function>StartStopRecording</Function>
     <FormatString>Function=StartStopRecording</FormatString>
-    <ActiveStatePath>Recording</ActiveStatePath>
+    <ActiveStatePath>Recording.Active</ActiveStatePath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
