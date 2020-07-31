@@ -210,6 +210,9 @@
         <i:EventTrigger EventName="PreviewKeyUp">
             <cmd:EventToCommand Command="{Binding PreviewKeyUpCommand}" PassEventArgsToCommand="True"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="PreviewKeyDown">
+            <cmd:EventToCommand Command="{Binding PreviewKeyDownCommand}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
         <i:EventTrigger EventName="PreviewMouseDown">
             <cmd:EventToCommand Command="{Binding PreviewMouseDown}" PassEventArgsToCommand="True"/>
         </i:EventTrigger>

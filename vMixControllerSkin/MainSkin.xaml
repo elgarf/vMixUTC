@@ -682,13 +682,13 @@
     </Style>
 
     <Style x:Key="WidgetTextBox" TargetType="{x:Type TextBox}">
+        <Setter Property="Height" Value="21"/>
+        <Setter Property="FontWeight" Value="Normal"/>
         <Style.Triggers>
             <Trigger Property="IsKeyboardFocused" Value="False">
                 <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
                 <Setter Property="Background" Value="{StaticResource Main.Background}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="Height" Value="21"/>
             </Trigger>
         </Style.Triggers>
     </Style>

@@ -18,7 +18,7 @@ namespace vMixController.Converters
             var p = string.IsNullOrEmpty((string)parameter);
             if (value is string v)
             {
-                if (File.Exists(v) && _extensions.Contains(Path.GetExtension(v)))
+                if (_extensions.Contains(Path.GetExtension(v)))
                     return p ? Visibility.Visible : Visibility.Collapsed;
             }
             return p ? Visibility.Collapsed : Visibility.Visible;

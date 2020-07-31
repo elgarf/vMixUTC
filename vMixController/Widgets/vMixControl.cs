@@ -64,7 +64,7 @@ namespace vMixController.Widgets
             {
                 _shadowUpdate = new DispatcherTimer
                 {
-                    Interval = TimeSpan.FromSeconds(1)
+                    Interval = TimeSpan.FromMilliseconds(100)
                 };
                 _shadowUpdate.Start();
             }

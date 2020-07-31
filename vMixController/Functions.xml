@@ -57,6 +57,24 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Native>true</Native>
+    <Description>
+      Reverse opened condition, functions below this one executes only if condition is TRUE.
+      This is block function, block ends at ConditionEnd function.
+    </Description>
+    <Function>Else</Function>
+    <HasInputProperty>false</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>false</HasStringProperty>
+    <Color>
+      <A>255</A>
+      <R>255</R>
+      <G>0</G>
+      <B>0</B>
+    </Color>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
     <Description>Check if value of expression changed from previous check, functions below this one executes only if value was changed.
 This is block function, block ends at ConditionEnd function.</Description>
     <Function>ValueChanged</Function>
@@ -74,7 +92,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <B>0</B>
     </Color>
   </vMixFunctionReference>
-
+  
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Close Condition block.</Description>
@@ -129,6 +147,27 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>N/A</StringDescription>
     <InputDescription>N/A</InputDescription>
     <IntDescription>Index</IntDescription>
+    <Color>
+      <A>255</A>
+      <R>255</R>
+      <G>0</G>
+      <B>0</B>
+    </Color>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>
+      Check if button is pushed, functions below this one executes only if button is pushed.
+      This is block function, block ends at ConditionEnd function.
+    </Description>
+    <Function>IsPressed</Function>
+    <IsBlock>true</IsBlock>
+    <HasInputProperty>false</HasInputProperty>
+    <HasIntProperty>false</HasIntProperty>
+    <HasStringProperty>false</HasStringProperty>
+    <StringDescription>N/A</StringDescription>
+    <InputDescription>N/A</InputDescription>
     <Color>
       <A>255</A>
       <R>255</R>

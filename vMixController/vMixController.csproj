@@ -214,6 +214,7 @@
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
     <Compile Include="Converters\ControlIntPairConverter.cs" />
     <Compile Include="Converters\ControlToPointConverter.cs" />
+    <Compile Include="Converters\CropConverter.cs" />
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\DateTimeToDayOfWeek.cs" />
     <Compile Include="Converters\EscapeAt.cs" />

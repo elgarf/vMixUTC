@@ -207,24 +207,31 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Header="Alt">
+                                        <GridViewColumn Header="A" ToolTipService.ToolTip="Alt">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}" Margin="-5,0"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Alt, Mode=TwoWay}" Margin="-5,0" ToolTip="Alt"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Header="Ctrl">
+                                        <GridViewColumn Header="C" ToolTipService.ToolTip="Control">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Ctrl, Mode=TwoWay}" Margin="-5,0"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Ctrl, Mode=TwoWay}" Margin="-5,0" ToolTip="Ctrl"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Header="Shift">
+                                        <GridViewColumn Header="S" ToolTipService.ToolTip="Shift">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Shift, Mode=TwoWay}" Margin="-5,0"/>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding Shift, Mode=TwoWay}" Margin="-5,0" ToolTip="Shift"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="P" ToolTipService.ToolTip="On Press">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsEnabled="{Binding Active}" IsChecked="{Binding OnPress, Mode=TwoWay}" Margin="-5,0" ToolTip="On Press"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>

@@ -68,7 +68,9 @@ namespace vMixAPI
             int iport = 0;
             bool isPortOk = int.TryParse(port, out iport);
             isPortOk = isPortOk && iport >= 0 && iport <= 65535;
-            return _regex.IsMatch(GetUrl(ip, port)) && isPortOk;
+            var url = GetUrl(ip, port);
+            Uri uri;
+            return _regex.IsMatch(url) && Uri.TryCreate(url, UriKind.Absolute, out uri) && isPortOk;
         }
 
         public static string GetUrl(string _ip, string _port)

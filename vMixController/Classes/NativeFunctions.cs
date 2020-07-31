@@ -9,10 +9,12 @@ namespace vMixController.Classes
     public static class NativeFunctions
     {
         public const string CONDITION = "Condition";
+        public const string ELSE = "Else";
         public const string CONDITIONEND = "ConditionEnd";
         public const string EXECLINK = "ExecLink";
         public const string GOTO = "GoTo";
         public const string HASVARIABLE = "HasVariable";
+        public const string ISPRESSED = "IsPressed";
         public const string SETVARIABLE = "SetVariable";
         public const string TIMER = "Timer";
         public const string UPDATEINTERNALBUTTONSTATE = "UpdateInternalButtonState";

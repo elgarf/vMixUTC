@@ -36,6 +36,7 @@ namespace vMixController.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase, IDisposable
     {
+        bool _isPressed = false;
         //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
         vMixWidgetSettingsView _settings = null;// new vMixWidgetSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -76,6 +77,36 @@ namespace vMixController.ViewModel
 
                 _isHotkeysEnabled = value;
                 RaisePropertyChanged(IsHotkeysEnabledPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="ControllerPath" /> property's name.
+        /// </summary>
+        public const string ControllerPathPropertyName = "ControllerPath";
+
+        private string _controllerPath = Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// Sets and gets the ControllerPath property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string ControllerPath
+        {
+            get
+            {
+                return _controllerPath;
+            }
+
+            set
+            {
+                if (_controllerPath == value)
+                {
+                    return;
+                }
+
+                _controllerPath = value;
+                RaisePropertyChanged(ControllerPathPropertyName);
             }
         }
 
@@ -1459,6 +1490,8 @@ namespace vMixController.ViewModel
 
         private void LoadControllerFromFile(string opendlg)
         {
+            ControllerPath = opendlg;
+
             foreach (var item in _widgets)
                 item.Dispose();
             _widgets.Clear();
@@ -1728,7 +1761,7 @@ namespace vMixController.ViewModel
         }
 
 
-        bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers)
+        bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
             var result = false;
             foreach (var ctrl in _widgets)
@@ -1743,7 +1776,7 @@ namespace vMixController.ViewModel
                     if (item.obj.Shift)
                         mod |= ModifierKeys.Shift;
 
-                    if (item.obj.Active && ((item.obj.Key == key) || (key == Key.System && item.obj.Key == systemKey)) && modifiers == mod)
+                    if (item.obj.Active && ((item.obj.Key == key) || (key == Key.System && item.obj.Key == systemKey)) && modifiers == mod && item.obj.OnPress == onPress)
                     {
                         ctrl.ExecuteHotkey(item.idx);
                         result = true;
@@ -1774,10 +1807,32 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
+                        _isPressed = false;
                         if (!IsHotkeysEnabled)
                             return;
-                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers);
+                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
 
+                    }));
+            }
+        }
+
+        private RelayCommand<KeyEventArgs> _previewKeyDownCommand;
+
+        /// <summary>
+        /// Gets the PreviewKeyDownCommand.
+        /// </summary>
+        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand
+        {
+            get
+            {
+                return _previewKeyDownCommand
+                    ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
+                    p =>
+                    {
+                        if (!IsHotkeysEnabled || _isPressed)
+                            return;
+                        _isPressed = true;
+                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, true);
                     }));
             }
         }

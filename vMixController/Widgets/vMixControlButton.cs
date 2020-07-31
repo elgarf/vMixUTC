@@ -19,12 +19,22 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.IO;
 using System.Net;
+using System.Diagnostics;
 
 namespace vMixController.Widgets
 {
     [Serializable]
     public class vMixControlButton : vMixControl
     {
+        public override bool IsResizeableVertical => true;
+
+        private const string MOMENTARY = "Momentary";
+        private const string TOGGLE = "Toggle";
+        private const string PRESS = "Press";
+
+        private const string DEFAULT = "Default";
+        private const string DEFAULTPRESSED = "Default+Pressed";
+
         [NonSerialized]
         static Queue<Exception> _loggedExceptions = new Queue<Exception>();
         [NonSerialized]
@@ -38,7 +48,9 @@ namespace vMixController.Widgets
         [NonSerialized]
         CultureInfo _culture;
         [NonSerialized]
-        BackgroundWorker _activeStateUpdateWorker, _executionWorker;
+        private BackgroundWorker _activeStateUpdateWorker;
+        [NonSerialized]
+        private BackgroundWorker _executionWorker;
         [NonSerialized]
         DispatcherTimer _blinker;
         [NonSerialized]
@@ -175,7 +187,7 @@ namespace vMixController.Widgets
         public override void ShadowUpdate()
         {
 
-            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 5)
+            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 0.1)
             {
                 _internalState.UpdateAsync();
                 _lastShadowUpdate = DateTime.Now;
@@ -324,6 +336,9 @@ namespace vMixController.Widgets
                     return;
                 }
 
+                if (Style == MOMENTARY)
+                    IsPushed = value;
+
                 _active = value;
                 RaisePropertyChanged(ActivePropertyName);
             }
@@ -421,6 +436,66 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
+        /// The <see cref="ImageMax" /> property's name.
+        /// </summary>
+        public const string ImageMaxPropertyName = "ImageMax";
+
+        private int _imageMax = 1;
+
+        /// <summary>
+        /// Sets and gets the ImageMax property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int ImageMax
+        {
+            get
+            {
+                return _imageMax;
+            }
+
+            set
+            {
+                if (_imageMax == value)
+                {
+                    return;
+                }
+
+                _imageMax = value;
+                RaisePropertyChanged(ImageMaxPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="ImageNumber" /> property's name.
+        /// </summary>
+        public const string ImageNumberPropertyName = "ImageNumber";
+
+        private int _imageNumber = 0;
+
+        /// <summary>
+        /// Sets and gets the ImageNumber property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int ImageNumber
+        {
+            get
+            {
+                return _imageNumber;
+            }
+
+            set
+            {
+                if (_imageNumber == value)
+                {
+                    return;
+                }
+
+                _imageNumber = value;
+                RaisePropertyChanged(ImageNumberPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Variables" /> property's name.
         /// </summary>
         public const string VariablesPropertyName = "Variables";
@@ -452,6 +527,71 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="IsPushed" /> property's name.
+        /// </summary>
+        public const string IsPushedPropertyName = "IsPushed";
+
+        private bool _isPushed = false;
+
+        /// <summary>
+        /// Sets and gets the IsPushed property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsPushed
+        {
+            get
+            {
+                return _isPushed;
+            }
+
+            set
+            {
+                if (_isPushed == value)
+                {
+                    return;
+                }
+                if (_imageMax == 2 && value)
+                    ImageNumber = 1;
+
+                if (!value)
+                    ImageNumber = 0;
+
+                _isPushed = value;
+                RaisePropertyChanged(IsPushedPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="Style" /> property's name.
+        /// </summary>
+        public const string StylePropertyName = "Style";
+        private string _style = MOMENTARY;
+
+        /// <summary>
+        /// Sets and gets the Style property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string Style
+        {
+            get
+            {
+                return _style;
+            }
+
+            set
+            {
+                if (_style == value)
+                {
+                    return;
+                }
+
+                _style = value;
+                RaisePropertyChanged(StylePropertyName);
+            }
+        }
+
         [NonSerialized]
         private RelayCommand _executeScriptCommand;
 
@@ -467,16 +607,81 @@ namespace vMixController.Widgets
                     ?? (_executeScriptCommand = new RelayCommand(
                     () =>
                     {
-                        Enabled = false;
-                        if (_executionWorker != null && _executionWorker.IsBusy)
-                        {
-                            _stopThread = true;
-                            _executionWorker.CancelAsync();
-                        }
-                        _stopThread = false;
+                        if (Style == MOMENTARY)
+                            ExecuteScript();
 
-                        if (!_executionWorker.IsBusy)
-                            _executionWorker.RunWorkerAsync(State);
+                    }));
+            }
+        }
+
+        private void ExecuteScript()
+        {
+            Enabled = false;
+            if (_executionWorker != null && _executionWorker.IsBusy)
+            {
+                _stopThread = true;
+                _executionWorker.CancelAsync();
+            }
+            _stopThread = false;
+
+            if (!_executionWorker.IsBusy)
+                _executionWorker.RunWorkerAsync(State);
+        }
+
+        [NonSerialized]
+        private RelayCommand _executePushOn;
+
+        /// <summary>
+        /// Gets the ExecutePushOn.
+        /// </summary>
+        public RelayCommand ExecutePushOn
+        {
+            get
+            {
+                return _executePushOn
+                    ?? (_executePushOn = new RelayCommand(
+                    () =>
+                    {
+                        switch (Style)
+                        {
+                            case PRESS:
+                                IsPushed = true;
+                                ExecuteScript();
+                                break;
+                            case MOMENTARY: if (!IsStateDependent) IsPushed = true; break;
+                            case TOGGLE:
+                                IsPushed = !IsPushed;
+                                ExecuteScript();
+                                break;
+                        }
+
+                    }));
+            }
+        }
+
+        [NonSerialized]
+        private RelayCommand _executePushOff;
+
+        /// <summary>
+        /// Gets the ExecutePushOff.
+        /// </summary>
+        public RelayCommand ExecutePushOff
+        {
+            get
+            {
+                return _executePushOff
+                    ?? (_executePushOff = new RelayCommand(
+                    () =>
+                    {
+                        switch (Style)
+                        {
+                            case PRESS:
+                                IsPushed = false;
+                                ExecuteScript();
+                                break;
+                            case MOMENTARY: if (!IsStateDependent) IsPushed = false; break;
+                            case TOGGLE: break;
+                        }
 
                     }));
             }
@@ -583,10 +788,17 @@ namespace vMixController.Widgets
 
 
                 HasScriptErrors = false;
+                bool hasTimerGoto = false;
+
                 Stack<bool> conds = new Stack<bool>();
                 for (int i = 0; i < _commands.Count; i++)
                 {
                     var item = _commands[i];
+                    /*int p = 0;
+                    if (item.Action.Function == NativeFunctions.TIMER)
+                        hasTimerGoto = true;
+                    if (item.Action.Function == NativeFunctions.GOTO && int.TryParse(item.Parameter, out p) && p < i)
+                        hasTimerGoto = true;*/
 
                     if (conds.Count == 0 || conds.Peek())
                     {
@@ -616,7 +828,7 @@ namespace vMixController.Widgets
                     }
 
                 }
-                e.Result = result;
+                e.Result = result || hasTimerGoto;
             }
         }
 
@@ -629,7 +841,13 @@ namespace vMixController.Widgets
 
         public override Hotkey[] GetHotkeys()
         {
-            return new Classes.Hotkey[] { new Classes.Hotkey() { Name = "Execute" }, new Classes.Hotkey() { Name = "Reset" }, new Classes.Hotkey { Name = "Clear Variables" } };
+            return new Classes.Hotkey[] {
+                new Classes.Hotkey { Name = "Execute" },
+                new Classes.Hotkey { Name = "Reset" },
+                new Classes.Hotkey { Name = "Clear Variables" },
+                new Classes.Hotkey { Name = "Press" },
+                new Classes.Hotkey { Name = "Release" }
+            };
         }
 
         private string GetInputNumber(int input)
@@ -864,7 +1082,9 @@ namespace vMixController.Widgets
                 if ((cond.HasValue && cond.Value) ||
                     (cmd.Action.Function == NativeFunctions.CONDITIONEND ||
                      cmd.Action.Function == NativeFunctions.CONDITION ||
-                     cmd.Action.Function == NativeFunctions.HASVARIABLE))
+                     cmd.Action.Function == NativeFunctions.HASVARIABLE ||
+                     cmd.Action.Function == NativeFunctions.ISPRESSED ||
+                     cmd.Action.Function == NativeFunctions.ELSE))
                     if (cmd.Action.Native)
                     {
                         switch (cmd.Action.Function)
@@ -928,11 +1148,19 @@ namespace vMixController.Widgets
                                 AddLog("{1}) CONDITION IS {0}", conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
                                 break;
+                            case NativeFunctions.ELSE:
+                                AddLog("{0}) ELSE EXECUTED", _pointer + 1);
+                                _conditions.Push(!_conditions.Pop());
+                                break;
                             case NativeFunctions.HASVARIABLE:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(GetVariableIndex(parameter) != -1) : null;
                                 AddLog("{2}) HASVARIABLE {0} IS {1}", parameter, conditionResult, _pointer + 1);
                                 _conditions.Push(conditionResult);
+                                break;
+                            case NativeFunctions.ISPRESSED:
+                                AddLog("{1}) BUTTON PUSHED = {0}", IsPushed, _pointer + 1);
+                                _conditions.Push(IsPushed);
                                 break;
                             case NativeFunctions.CONDITIONEND:
                                 AddLog("{0}) CONDITIONEND", _pointer + 1);
@@ -1032,6 +1260,14 @@ namespace vMixController.Widgets
                 case 2:
                     Variables.Clear();
                     break;
+                case 3:
+                    IsPushed = true;
+                    ExecuteScript();
+                    break;
+                case 4:
+                    IsPushed = false;
+                    ExecuteScript();
+                    break;
             }
         }
 
@@ -1045,6 +1281,8 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
             FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
+            ComboBoxControl imgtype = new ComboBoxControl() { Title = LocalizationManager.Get("Image Type"), Items = new string[] { DEFAULT, DEFAULTPRESSED }, Value = ImageMax == 1 ? DEFAULT : DEFAULTPRESSED };
+            ComboBoxControl comboctrl = new ComboBoxControl() { Title = LocalizationManager.Get("Style"), Items = new string[] { MOMENTARY, PRESS/*, TOGGLE */}, Value = Style };
             BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_StateDependent };
             BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_ExecuteAfterLoad };
             BoolControl boolctrl2 = new BoolControl() { Title = LocalizationManager.Get("Colorize Button"), Value = IsColorized, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_Colorize };
@@ -1059,7 +1297,7 @@ namespace vMixController.Widgets
                 control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
             control.Log = Log;
-            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, imgtype, comboctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
@@ -1074,26 +1312,46 @@ namespace vMixController.Widgets
         public override void SetProperties(UserControl[] _controls)
         {
             Commands.Clear();
+            bool hasGoToOrTimer = false;
+            int p;
+            int i = 0;
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
+            {
                 Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+
+                hasGoToOrTimer |= item.Action.Function == NativeFunctions.TIMER;
+                hasGoToOrTimer |= item.Action.Function == NativeFunctions.GOTO && ((int.TryParse(item.Parameter, out p) && p < i) || !int.TryParse(item.Parameter, out p));
+                i++;
+            }
 
             IsStateDependent = _controls.OfType<BoolControl>().First().Value;
             AutoStart = _controls.OfType<BoolControl>().ElementAt(1).Value;
             IsColorized = _controls.OfType<BoolControl>().ElementAt(2).Value;
+            Style = (string)_controls.OfType<ComboBoxControl>().Last().Value;
+            ImageMax = (string)_controls.OfType<ComboBoxControl>().First().Value == DEFAULT ? 1 : 2;
 
             var u = _controls.OfType<FilePathControl>().First().Value;
-            if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
+            /*if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
             {
 
                 var uri = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), u)));
                 var dir = new Uri(Directory.GetCurrentDirectory() + @"\");
                 Image = Uri.UnescapeDataString(dir.MakeRelativeUri(uri).ToString());
             }
-            else
-                Image = "";
+            else*/
+            Image = u;
 
             RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);
+            if (hasGoToOrTimer && Style != MOMENTARY)
+            {
+                var d = new Ookii.Dialogs.Wpf.TaskDialog();
+                d.WindowTitle = "Possible Script Error";
+                d.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Warning;
+                d.Content = "Your script contains TIMER or possible LOOPS!\nUse Momentary buttons for this type of scripts.";
+                d.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
+                d.ShowDialog();
+            }
         }
 
         public override void Update()

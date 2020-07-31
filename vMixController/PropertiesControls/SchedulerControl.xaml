@@ -34,12 +34,11 @@
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border Margin="0,0,0,2">
-                                        <GridViewRowPresenter/>
-                                    </Border>
+                                    <GridViewRowPresenter Margin="0,0,0,2"/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -79,49 +78,70 @@
                             <GridViewColumn Header="M">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=M, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckM, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ff5600" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=M, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckM, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="T">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=T, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckT, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ffc156" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=T, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckT, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="W">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=W, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckW, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ffff00" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=W, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckW, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="TH">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=TH, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckTH, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#c1ff55" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=TH, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckTH, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="F">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=F, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckF, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#02e9ff" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=F, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckF, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="S">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=S, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckS, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#048dff" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=S, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckS, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="SU">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=SU, Mode=OneTime}" HorizontalAlignment="Center" Command="{Binding CheckSU, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0"/>
+                                        <Grid Margin="-5,0">
+                                            <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#e900ff" Margin="0,-2"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=SU, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckSU, ElementName=Me}" CommandParameter="{Binding}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
