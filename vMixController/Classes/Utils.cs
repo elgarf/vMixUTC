@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonServiceLocator;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using vMixController.Classes;
@@ -126,6 +128,35 @@ namespace vMixController.Classes
                 writer.WriteEndDocument();
                 writer.Flush();
             }
+        }
+
+        public static string FindInputKeyByVariable(string varName, Dispatcher d = null)
+        {
+            if (varName != null)
+                return (d ?? Dispatcher.CurrentDispatcher).Invoke(() =>
+                {
+                    var variable = GlobalVariablesViewModel._variables.Where(x => x.A == varName).FirstOrDefault();
+                    var inputKey = varName;
+                    if (variable != null)
+                        inputKey = variable.B;
+                    return inputKey;
+                });
+            return varName;
+            
+        }
+
+        public static string SearchFile(string path, string cpath)
+        {
+            var directories = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).Reverse().ToArray();
+            var filename = Path.GetFileName(path);
+            string dir = cpath;
+            int i = 0;
+            while (!File.Exists(Path.Combine(dir, filename)) && i < directories.Length)
+            {
+                dir = Path.Combine(dir, directories[i]);
+                i++;
+            }
+            return Path.Combine(dir, filename);
         }
     }
 

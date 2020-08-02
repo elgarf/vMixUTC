@@ -187,7 +187,7 @@ namespace vMixController.Widgets
         public override void ShadowUpdate()
         {
 
-            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 0.1)
+            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 0.01)
             {
                 _internalState.UpdateAsync();
                 _lastShadowUpdate = DateTime.Now;
@@ -771,7 +771,7 @@ namespace vMixController.Widgets
                 var currentState = ((State[])e.Argument)[1];
                 var result = true;
 
-                var cnt = 0;
+                /*var cnt = 0;
                 for (int i = 0; i < _commands.Count; i++)
                 {
                     var item = _commands[i];
@@ -784,23 +784,17 @@ namespace vMixController.Widgets
                 {
                     e.Result = Active;
                     return;
-                }
+                }*/
 
 
                 HasScriptErrors = false;
-                bool hasTimerGoto = false;
 
                 Stack<bool> conds = new Stack<bool>();
                 for (int i = 0; i < _commands.Count; i++)
                 {
                     var item = _commands[i];
-                    /*int p = 0;
-                    if (item.Action.Function == NativeFunctions.TIMER)
-                        hasTimerGoto = true;
-                    if (item.Action.Function == NativeFunctions.GOTO && int.TryParse(item.Parameter, out p) && p < i)
-                        hasTimerGoto = true;*/
 
-                    if (conds.Count == 0 || conds.Peek())
+                    if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
                     {
                         if (currentState == null) return;
 
@@ -828,7 +822,7 @@ namespace vMixController.Widgets
                     }
 
                 }
-                e.Result = result || hasTimerGoto;
+                e.Result = result;
             }
         }
 
@@ -1191,19 +1185,21 @@ namespace vMixController.Widgets
                     }
                     else if (state != null)
                     {
-                        var input = state.Inputs.Where(x => x.Key == cmd.InputKey).FirstOrDefault()?.Number;
-                        var command = string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
+                        var key = Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher);
+
+                        var input = state.Inputs.Where(x => x.Key == key).FirstOrDefault()?.Number;
+                        var command = string.Format(cmd.Action.FormatString, key, CalculateExpression<int>(cmd.Parameter), Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
 
                         if (!cmd.Action.StateDirect)
                             AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
                         else
                         {
-                            var path = string.Format(cmd.Action.StatePath, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0);
+                            var path = string.Format(cmd.Action.StatePath, key, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
                             object value;
                             switch (cmd.Action.StateValue)
                             {
                                 case "Input":
-                                    value = (object)cmd.InputKey;
+                                    value = (object)key;
                                     break;
                                 case "String":
                                     value = Dispatcher.Invoke(() => CalculateObjectParameter(cmd))?.ToString() ?? "";
@@ -1243,7 +1239,7 @@ namespace vMixController.Widgets
 
         private object CalculateObjectParameter(vMixControlButtonCommand cmd)
         {
-            return CalculateExpression(string.Format(cmd.StringParameter, cmd.InputKey)?.ToString() ?? "");
+            return CalculateExpression(string.Format(cmd.StringParameter, Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher))?.ToString() ?? "");
         }
 
         public override void ExecuteHotkey(int index)
@@ -1294,7 +1290,7 @@ namespace vMixController.Widgets
                 if (item.AdditionalParameters.Count == 0)
                     for (int i = 0; i < 10; i++)
                         item.AdditionalParameters.Add(new One<string>());
-                control.Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                control.Commands.Add(new vMixControlButtonCommand() { UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
             control.Log = Log;
             return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, imgtype, comboctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
@@ -1317,7 +1313,7 @@ namespace vMixController.Widgets
             int i = 0;
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
             {
-                Commands.Add(new vMixControlButtonCommand() { Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                Commands.Add(new vMixControlButtonCommand() {UseInActiveState = item.UseInActiveState,  Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.TIMER;
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.GOTO && ((int.TryParse(item.Parameter, out p) && p < i) || !int.TryParse(item.Parameter, out p));

@@ -17,6 +17,9 @@ namespace vMixAPI
         public string InputKey { get; set; }
         [XmlAttribute("name")]
         public string Name { get; set; }
+        [XmlAttribute("index")]
+        public int Index { get; set; }
+
         [XmlIgnore]
         public virtual int ID { get { return Name.GetHashCode() % GetType().GetHashCode(); } }
         [XmlIgnore]

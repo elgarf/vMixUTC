@@ -342,6 +342,36 @@ namespace vMixController.Classes
         }
 
         /// <summary>
+        /// The <see cref="ShowIndividualLock" /> property's name.
+        /// </summary>
+        public const string ShowIndividualLockPropertyName = "ShowIndividualLock";
+
+        private bool _showIndividualLock = true;
+
+        /// <summary>
+        /// Sets and gets the ShowIndividualLock property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool ShowIndividualLock
+        {
+            get
+            {
+                return _showIndividualLock;
+            }
+
+            set
+            {
+                if (_showIndividualLock == value)
+                {
+                    return;
+                }
+
+                _showIndividualLock = value;
+                RaisePropertyChanged(ShowIndividualLockPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Password" /> property's name.
         /// </summary>
         public const string PasswordPropertyName = "Password";

@@ -59,6 +59,7 @@ namespace vMixController.Widgets
         {
             var sc = GetPropertyControl<StringControl>();
             sc.AcceptReturn = true;
+            sc.TextWrapping = System.Windows.TextWrapping.Wrap;
             sc.Title = "Info";
             sc.Value = Text;
             return base.GetPropertiesControls().Concat(new UserControl[] { sc }).ToArray();

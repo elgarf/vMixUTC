@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <c:IntegerToBooleanConverter x:Key="IntToBool"/>
+            <c:PairToInputConverter x:Key="VarConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -29,7 +30,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource PropertyName}">Input</TextBlock>
-            <ComboBox Grid.Column="2" x:Name="Input" ItemsSource="{Binding Model.Inputs, ElementName=Me}" DisplayMemberPath="Title" SelectedValuePath="{Binding Tag, ElementName=Me, FallbackValue=Key}" SelectedValue="{Binding InputKey, Mode=TwoWay, ElementName=Me}"></ComboBox>
+            <ComboBox Grid.Column="2" x:Name="Input" DisplayMemberPath="Title" SelectedValuePath="{Binding Tag, ElementName=Me, FallbackValue=Key}" SelectedValue="{Binding InputKey, Mode=TwoWay, ElementName=Me}">
+                <ComboBox.ItemsSource>
+                    <CompositeCollection>
+                        <CollectionContainer Collection="{Binding Main.Model.Inputs, Source={StaticResource Locator}}"/>
+                        <CollectionContainer>
+                            <CollectionContainer.Collection>
+                                <Binding Path="GlobalSettings.Variables" Source="{StaticResource Locator}" Converter="{StaticResource VarConverter}"/>
+                            </CollectionContainer.Collection>
+                        </CollectionContainer>
+                    </CompositeCollection>
+                </ComboBox.ItemsSource>
+            </ComboBox>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>

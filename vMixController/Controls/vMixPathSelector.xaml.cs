@@ -79,7 +79,7 @@ namespace vMixController.Controls
                 {
                     if (self.Model == null)
                         return;
-                    self.InputIndex = self.Model.Inputs.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.Key == (string)e.NewValue).First().idx;
+                    self.InputIndex = self.Model.Inputs.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.Key == (string)e.NewValue).FirstOrDefault()?.idx ?? -2;
                 }
             }
             catch (Exception)

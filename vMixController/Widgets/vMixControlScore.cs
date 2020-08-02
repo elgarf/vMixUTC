@@ -58,6 +58,8 @@ namespace vMixController.Widgets
             Text = "0";
         }
 
+        
+
         public override Hotkey[] GetHotkeys()
         {
             return new Classes.Hotkey[] { new Classes.Hotkey() { Name = "Reset" },

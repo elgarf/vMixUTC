@@ -223,6 +223,7 @@
     <Compile Include="Converters\LogarithmicConverter.cs" />
     <Compile Include="Converters\ObjectToBoolConverter.cs" />
     <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
+    <Compile Include="Converters\PairToInputConverter.cs" />
     <Compile Include="Converters\RelativeToAbsoluteConverter.cs" />
     <Compile Include="Converters\StringBoolConverter.cs" />
     <Compile Include="Converters\StringToThicknessConverter.cs" />
@@ -428,6 +429,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Examples\Buttons.vmc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\Scoreboard.vmc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\Scoreboard.vmix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Usage.txt" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
@@ -442,6 +452,9 @@
     </Content>
     <Resource Include="Images\Function.png" />
     <Resource Include="Images\Input.png" />
+    <None Include="Examples\button.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Processing.NDI.Lib.x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

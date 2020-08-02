@@ -427,8 +427,32 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
-                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}"/>
-                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}"/>
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyUp">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyUp">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
                             <Grid Tag="Scaling">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -439,6 +463,7 @@
                             </Grid>
                             <CheckBox Tag="Is Topmost" IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}"/>
                             <CheckBox Tag="Enable Log" IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}"/>
+                            <CheckBox Tag="Show Widget Lock" IsChecked="{Binding WindowSettings.ShowIndividualLock, Mode=TwoWay}"/>
                         </ListView>
                         <Grid Background="Transparent" DataContext="{Binding GlobalSettings, Source={StaticResource Locator}}">
                             <Grid.Resources>
@@ -487,7 +512,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <Border Background="{StaticResource Main.Gradient}">
-                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A}" BorderThickness="0,0,0,1">
+                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1">
+                                                            <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="PreviewKeyUp">
+                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                                                </i:EventTrigger>
+                                                                <i:EventTrigger EventName="GotFocus">
+                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                                                </i:EventTrigger>
+                                                                <i:EventTrigger EventName="LostFocus">
+                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
                                                             <TextBox.Style>
                                                                 <Style TargetType="TextBox">
                                                                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -497,7 +533,19 @@
                                                             </TextBox.Style>
                                                         </TextBox>
                                                     </Border>
-                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="1" Text="{Binding B}"></TextBox>
+                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="1" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="PreviewKeyUp">
+                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                                            </i:EventTrigger>
+                                                            <i:EventTrigger EventName="GotFocus">
+                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                                            </i:EventTrigger>
+                                                            <i:EventTrigger EventName="LostFocus">
+                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </TextBox>
                                                     <Button ToolTip="{e:Localize Remove Variable}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding GlobalSettings.RemoveItemCommand, Source={StaticResource Locator}}" Content="&#xF374;" Grid.Column="2"/>
                                                 </Grid>
 
@@ -541,7 +589,7 @@
                             </ComboBox>
                         </StackPanel>
                     </TabItem.Header>
-                    <Grid Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+                    <Grid Name="LayoutGrid" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
                         <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent" ContextMenuOpening="Layout_ContextMenuOpening">
                             <ListView.ContextMenu>
                                 <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">

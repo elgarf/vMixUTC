@@ -63,5 +63,19 @@ namespace vMixController.PropertiesControls
 
 
 
+
+        public TextWrapping TextWrapping
+        {
+            get { return (TextWrapping)GetValue(TextWrappingProperty); }
+            set { SetValue(TextWrappingProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TextWrapping.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextWrappingProperty =
+            DependencyProperty.Register("TextWrapping", typeof(TextWrapping), typeof(StringControl), new PropertyMetadata(TextWrapping.NoWrap));
+
+
+
+
     }
 }

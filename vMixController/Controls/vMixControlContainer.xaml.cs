@@ -89,7 +89,9 @@ namespace vMixController.Controls
         {
             var sb = ((Storyboard)Resources["OpacityOn"]);
             sb.Begin(RightButtons);
+            //sb.Begin(LockButton);
             RightButtons.IsHitTestVisible = true;
+            //LockButton.IsHitTestVisible = true;
         }
 
         private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -100,7 +102,9 @@ namespace vMixController.Controls
             else
                 sb.BeginTime = TimeSpan.Zero;
             sb.Begin(RightButtons);
+            //sb.Begin(LockButton);
             RightButtons.IsHitTestVisible = false;
+            //LockButton.IsHitTestVisible = false;
         }
     }
 

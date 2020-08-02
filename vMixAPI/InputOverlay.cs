@@ -35,8 +35,6 @@ namespace vMixAPI
             }
         }
 
-        [XmlAttribute("index")]
-        public int Index { get; set; }
         [XmlAttribute("key")]
         public string Key { get; set; }
         [XmlElement(typeof(InputText), ElementName = "text"),

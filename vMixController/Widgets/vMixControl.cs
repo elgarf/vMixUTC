@@ -885,10 +885,15 @@ namespace vMixController.Widgets
                 {
                     //If it's array of Inputs just look to the right key
                     if (array is List<Input>)
-                        found = Dispatcher.Invoke(()=> (array as List<Input>).Where(x => x.Key == propindex[1] || x.Title == propindex[1]).FirstOrDefault() ?? (_regexInt.IsMatch(propindex[1]) ? (array as List<Input>).Where(x=>x.Number == Convert.ToInt32(propindex[1])).FirstOrDefault() : null));
+                    {
+                        //Look into global variables for key
+                        string inputKey = Utils.FindInputKeyByVariable(propindex[1], Dispatcher);
+
+                        found = Dispatcher.Invoke(() => (array as List<Input>).Where(x => x.Key == inputKey || x.Title == inputKey).FirstOrDefault() ?? (_regexInt.IsMatch(inputKey) ? (array as List<Input>).Where(x => x.Number == Convert.ToInt32(inputKey)).FirstOrDefault() : null));
+                    }
                     else
                     {
-                        
+
                         //If it's just index
                         if (!propindex[1].Contains("/") && _regexInt.IsMatch(propindex[1]))
                         {
@@ -1213,7 +1218,7 @@ namespace vMixController.Widgets
 
             if (managed)
             {
-                _shadowUpdate.Stop();
+                _shadowUpdate.Tick -= ShadowUpdate_Tick;
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }

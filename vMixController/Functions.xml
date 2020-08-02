@@ -5,7 +5,8 @@
   {1} - Parameter
   {2} - StringParameter
   {3} - Parameter - 1
-  {4} - Number of Input-->
+  {4} - Number of Input
+  {5} - Input= if input is not null-->
 
   <vMixFunctionReference>
     <Native>true</Native>
@@ -763,6 +764,30 @@ This is block function, block ends at ConditionEnd function.</Description>
     <IntDescription>Volume</IntDescription>
     <StringDescription>Milliseconds</StringDescription>
   </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Solo</Description>
+    <Function>Solo</Function>
+    <FormatString>Function=Solo&amp;Input={0}</FormatString>
+    <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateValue>True</ActiveStateValue>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>SoloOn</Description>
+    <Function>SoloOn</Function>
+    <FormatString>Function=SoloOn&amp;Input={0}</FormatString>
+    <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateValue>True</ActiveStateValue>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>SoloOff</Description>
+    <Function>SoloOff</Function>
+    <FormatString>Function=SoloOff&amp;Input={0}</FormatString>
+    <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateValue>True</ActiveStateValue>
+  </vMixFunctionReference>
   
   <!--Transitions-->
   
@@ -790,7 +815,7 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Function>QuickPlay</Function>
-    <FormatString>Function=QuickPlay</FormatString>
+    <FormatString>Function=QuickPlay&amp;Input={0}</FormatString>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -816,8 +841,8 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Description>Change Transition for Button X</Description>
-    <Function>SetTransitionEffect1</Function>
-    <FormatString>Function=SetTransitionEffectX&amp;Value={2}</FormatString>
+    <Function>SetTransitionEffectX</Function>
+    <FormatString>Function=SetTransitionEffect{1}&amp;Value={2}</FormatString>
     <IntDescription>Transition</IntDescription>
     <StringDescription>Effect</StringDescription>
     <IntValues>
@@ -877,7 +902,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Change what is displayed on Output X.</Description>
     <Function>SetOutputX</Function>
-    <FormatString>Function=SetOutput{1}&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetOutput{1}&amp;Value={2}&amp;{5}{0}</FormatString>
     <StringDescription>Display</StringDescription>
     <IntDescription>Output</IntDescription>
     <StringValues>
@@ -895,8 +920,9 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Description>Change what is displayed on the External2 output.</Description>
-    <Function>SetOutputExternalX</Function>
-    <FormatString>Function=SetOutputExternal2&amp;Value={2}&amp;Input={0}</FormatString>
+    <Function>SetOutputExternal2</Function>
+    <Aliases>SetOutputExternalX</Aliases>
+    <FormatString>Function=SetOutputExternal2&amp;Value={2}&amp;{5}{0}</FormatString>
     <StringDescription>Display</StringDescription>
     <StringValues>
       <string>Output</string>
@@ -909,7 +935,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Change what is displayed on the Fullscreen output.</Description>
     <Function>SetOutputFullscreen</Function>
-    <FormatString>Function=SetOutputFullscreen&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetOutputFullscreen&amp;Value={2}&amp;{5}{0}</FormatString>
     <StringDescription>Display</StringDescription>
     <StringValues>
       <string>Output</string>
@@ -922,7 +948,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Change what is displayed on the Fullscreen output.</Description>
     <Function>SetOutputFullscreen2</Function>
-    <FormatString>Function=SetOutputFullscreen2&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetOutputFullscreen2&amp;Value={2}&amp;{5}{0}</FormatString>
     <StringDescription>Display</StringDescription>
     <StringValues>
       <string>Output</string>
@@ -1850,6 +1876,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
       <int>4</int>
     </IntValues>
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -1864,6 +1892,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
       <int>4</int>
     </IntValues>
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -1878,6 +1908,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
       <int>4</int>
     </IntValues>
+    <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

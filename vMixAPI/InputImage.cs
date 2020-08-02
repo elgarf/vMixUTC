@@ -21,9 +21,6 @@ namespace vMixAPI
             }
         }
 
-        [XmlAttribute("index")]
-        public int Index { get; set; }
-
         //public string Text { get; set; }
         public override int ID
         {

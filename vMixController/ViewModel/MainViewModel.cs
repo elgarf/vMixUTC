@@ -890,6 +890,14 @@ namespace vMixController.ViewModel
                     return;
                 }
 
+                if (value == 1)
+                {
+                    foreach (var w in _widgets.OfType<vMixControlTextField>())
+                    {
+                        w.Update();
+                    }
+                }
+
                 _selectedTab = value;
                 RaisePropertyChanged(SelectedTabPropertyName);
             }
@@ -1168,6 +1176,9 @@ namespace vMixController.ViewModel
                         _settings = null;
 
                         IsHotkeysEnabled = true;
+
+                        /*App.Current.MainWindow.Focus();
+                        FocusManager.SetFocusedElement(null, null);*/
                     }));
             }
         }
@@ -1763,6 +1774,15 @@ namespace vMixController.ViewModel
 
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
+
+            Grid grid = (Grid)App.Current.MainWindow.FindName("LayoutGrid");
+            if (grid != null)
+            {
+                Keyboard.ClearFocus();
+                FocusManager.SetFocusedElement(grid, (IInputElement)grid);
+                ((FrameworkElement)grid).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+            }
+
             var result = false;
             foreach (var ctrl in _widgets)
             {

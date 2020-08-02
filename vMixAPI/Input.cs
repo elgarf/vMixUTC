@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 namespace vMixAPI
 {
     [Serializable]
-    public class Input : DependencyObject, INotifyPropertyChanged
+    public class Input : SampleInput
     {
         [XmlIgnore]
         public int Index
@@ -48,22 +48,10 @@ namespace vMixAPI
 
             } }
 
-        [XmlAttribute("key")]
-        public string Key { get; set; }
-        [XmlAttribute("number")]
-        public int Number { get; set; }
+        
         [XmlAttribute("type")]
         public string Type { get; set; }
-        [XmlAttribute("title")]
-        public string Title
-        {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
-        }
 
-        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(Input), new PropertyMetadata("", InternalPropertyChanged));
 
 
 
@@ -80,6 +68,17 @@ namespace vMixAPI
             get { return (int)GetValue(PositionProperty); }
             set { SetValue(PositionProperty, value); RaisePropertyChanged("Position"); }
         }
+
+        /*[XmlAttribute("title")]
+        public override string Title
+        {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }*/
+
+        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
+        /*public static new readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register("Title", typeof(string), typeof(Input), new PropertyMetadata("", InternalPropertyChanged));*/
 
         // Using a DependencyProperty as the backing store for Position.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PositionProperty =
@@ -144,6 +143,20 @@ namespace vMixAPI
         // Using a DependencyProperty as the backing store for Muted.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MutedProperty =
             DependencyProperty.Register("Muted", typeof(bool), typeof(Input), new PropertyMetadata(false, InternalPropertyChanged));
+
+
+
+        [XmlAttribute("solo")]
+        public bool Solo
+        {
+            get { return (bool)GetValue(SoloProperty); }
+            set { SetValue(SoloProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Solo.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SoloProperty =
+            DependencyProperty.Register("Solo", typeof(bool), typeof(Input), new PropertyMetadata(false));
+
 
 
 
@@ -217,15 +230,6 @@ namespace vMixAPI
             DependencyProperty.Register("Audiobusses", typeof(string), typeof(Input), new PropertyMetadata("M"));
 
 
-
-
-
-        [XmlElement(typeof(InputText), ElementName = "text"),
-            XmlElement(typeof(InputOverlay), ElementName = "overlay"),
-            XmlElement(typeof(InputPosition), ElementName = "position"),
-            XmlElement(typeof(InputImage), ElementName = "image")]
-        public ObservableCollection<InputBase> Elements { get; set; }
-
         [XmlArray("list"), XmlArrayItem(ElementName = "item")]
         public ObservableCollection<string> Items { get; set; }
 
@@ -235,10 +239,10 @@ namespace vMixAPI
             Elements.CollectionChanged += Elements_CollectionChanged;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        
         protected void RaisePropertyChanged(string property)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            PropertyChange(this, property);
         }
 
         private void Elements_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

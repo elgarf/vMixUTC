@@ -1,4 +1,5 @@
 ﻿using CommonServiceLocator;
+using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,29 +32,18 @@ namespace vMixController.Converters
                     var bi = new BitmapImage();
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
-                    var relativePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path));
-                    if (File.Exists(relativePath))
+                    //var relativePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path));
+                    var relativePath = Classes.Utils.SearchFile(path, Directory.GetCurrentDirectory());
+                    string foundPath = Classes.Utils.SearchFile(path, Path.GetDirectoryName(ServiceLocator.Current.GetInstance<MainViewModel>().ControllerPath));
+                    if (File.Exists(foundPath))
+                    {
+                        bi.UriSource = new Uri(foundPath);
+                    }
+                    else if (File.Exists(relativePath))
                         bi.UriSource = new Uri(relativePath);
                     else
-                    {
-                        var cpath = Path.GetDirectoryName(ServiceLocator.Current.GetInstance<MainViewModel>().ControllerPath);
-                        var directories = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).Reverse().ToArray();
-                        var filename = Path.GetFileName(path);
-                        string dir = cpath;
-                        int i = 0;
-                        while (!File.Exists(Path.Combine(dir, filename)) && i < directories.Length)
-                        {
-                            dir = Path.Combine(dir, directories[i]);
-                            i++;
-                        }
-                        if (File.Exists(Path.Combine(dir, filename)))
-                        {
-                            bi.UriSource = new Uri(Path.Combine(dir, filename));
-                        }
-                        else
-                            throw new FileNotFoundException();
+                        throw new FileNotFoundException();
 
-                    }    
                     bi.EndInit();
                     var img = new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight));
                     return img;

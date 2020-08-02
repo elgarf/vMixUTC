@@ -155,7 +155,9 @@ namespace vMixController {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Here you can create static variables, accessible from scripts..
+        ///   Ищет локализованную строку, похожую на Here you can create static variables, accessible from scripts.
+        ///Variables started from &quot;@&quot; symbol treat as input variables.
+        ///Input variables are accessible from title mappings and input selector into script command..
         /// </summary>
         public static string StaticVariables_Default {
             get {

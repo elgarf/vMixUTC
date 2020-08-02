@@ -94,10 +94,14 @@ namespace vMixController.PropertiesControls
 
         private void IsInputExist(vMixControlButtonCommand s)
         {
-            var key = s.InputKey;
+            var key = Utils.FindInputKeyByVariable(s.InputKey, Dispatcher);
             var l = (ViewModel.ViewModelLocator)TryFindResource("Locator");
-            var check = !l.WidgetSettings.Model?.Inputs.Select(x => x.Key).Contains(key);
-            s.NoInputAssigned = check ?? true;
+            var check = l.WidgetSettings.Model?.Inputs.Where(x =>
+            {
+                int number;
+                return x.Key == key || x.Title == key || (int.TryParse(key, out number) && x.Number == number);
+            }).Count() == 0;
+            s.NoInputAssigned = check;
         }
 
 

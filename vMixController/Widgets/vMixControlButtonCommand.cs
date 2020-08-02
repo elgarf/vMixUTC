@@ -289,6 +289,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="UseInActiveState" /> property's name.
+        /// </summary>
+        public const string UseInActiveStatePropertyName = "UseInActiveState";
+
+        private bool _useInActiveState = true;
+
+        /// <summary>
+        /// Sets and gets the UseInActiveState property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool UseInActiveState
+        {
+            get
+            {
+                return _useInActiveState;
+            }
+
+            set
+            {
+                if (_useInActiveState == value)
+                {
+                    return;
+                }
+
+                _useInActiveState = value;
+                RaisePropertyChanged(UseInActiveStatePropertyName);
+            }
+        }
+
         private string Enquote(string par)
         {
             if (par == null) return par;

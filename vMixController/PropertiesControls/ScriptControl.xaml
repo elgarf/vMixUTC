@@ -26,6 +26,7 @@
             <conv:NonVisibilityConverter x:Key="NonVisibilityConverter"/>
             <conv:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
             <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
+            <conv:PairToInputConverter x:Key="VarConverter"/>
             <this:Help x:Key="Help"/>
             <Storyboard x:Key="Blink">
                 <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" To="Lime" Duration="00:00:00.5" AutoReverse="True" RepeatBehavior="2x"/>
@@ -63,18 +64,13 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Label VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Vertical">
-                                                        <TextBlock VerticalAlignment="Center">
+
+                                                    <TextBlock VerticalAlignment="Center">
                                         
                                     <Run>#</Run>
                                     <Run Text="{Binding (ItemsControl.AlternationIndex),
            RelativeSource={RelativeSource AncestorType=ListViewItem}, Mode=OneWay}"/>
-                                                        </TextBlock>
-                                                        <Border Height="8"/>
-                                                        <TextBlock ToolTip="No Input Assigned To This Function!" VerticalAlignment="Center" x:Name="NoInputAssigned" Foreground="Yellow" Visibility="Collapsed" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF071;</TextBlock>
-                                                        <!--<Border Height="8"/>
-                                                        <Control ToolTip="{Binding Description}" Style="{StaticResource HelpBorder}"></Control>-->
-                                                    </StackPanel>
+                                                    </TextBlock>
                                                 </Label>
                                                 <Grid Grid.Column="1">
                                                     <Grid.ColumnDefinitions>
@@ -82,26 +78,28 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding Collapsed}">
-                                                        <CheckBox.Style>
-                                                            <Style TargetType="CheckBox">
-                                                                <Setter Property="Template">
-                                                                    <Setter.Value>
-                                                                        <ControlTemplate TargetType="CheckBox">
-                                                                            <Border>
-                                                                                <TextBlock FontSize="16" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#Material Design Icons" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF6F1;"/>
-                                                                            </Border>
-                                                                            <ControlTemplate.Triggers>
-                                                                                <Trigger Property="IsChecked" Value="True">
-                                                                                    <Setter TargetName="textBox" Property="Text" Value="&#xF703;" />
-                                                                                </Trigger>
-                                                                            </ControlTemplate.Triggers>
-                                                                        </ControlTemplate>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </Style>
-                                                        </CheckBox.Style>
-                                                    </CheckBox>
+                                                    <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
+                                                        <CheckBox IsChecked="{Binding Collapsed}">
+                                                            <CheckBox.Style>
+                                                                <Style TargetType="CheckBox">
+                                                                    <Setter Property="Template">
+                                                                        <Setter.Value>
+                                                                            <ControlTemplate TargetType="CheckBox">
+                                                                                <Border>
+                                                                                    <TextBlock FontSize="16" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#Material Design Icons" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF6F1;"/>
+                                                                                </Border>
+                                                                                <ControlTemplate.Triggers>
+                                                                                    <Trigger Property="IsChecked" Value="True">
+                                                                                        <Setter TargetName="textBox" Property="Text" Value="&#xF703;" />
+                                                                                    </Trigger>
+                                                                                </ControlTemplate.Triggers>
+                                                                            </ControlTemplate>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Style>
+                                                            </CheckBox.Style>
+                                                        </CheckBox>
+                                                    </StackPanel>
                                                     <!--<Label Content="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListViewItem}}"></Label>-->
                                                     <TextBlock VerticalAlignment="Center" Style="{StaticResource CaptionText}" Grid.Column="2" Visibility="{Binding Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis">
                                     <Run Background="White" FontWeight="Bold" Text="{Binding Action.Function, FallbackValue=None}" Foreground="{Binding Action.Color, Converter={StaticResource ColorToBrush}}">
@@ -145,7 +143,19 @@
                                                         </ComboBox.ItemTemplate>-->
                                                         </ComboBox>
                                                         <Label Content="{Binding SelectedValue.InputDescription, ElementName=Func, FallbackValue=N/A}"/>
-                                                        <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}"/>
+                                                        <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}">
+                                                            <!--ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}"-->
+                                                            <ComboBox.ItemsSource>
+                                                                <CompositeCollection>
+                                                                    <CollectionContainer Collection="{Binding Main.Model.Inputs, Source={StaticResource Locator}}"/>
+                                                                    <CollectionContainer>
+                                                                        <CollectionContainer.Collection>
+                                                                            <Binding Path="GlobalSettings.Variables" Source="{StaticResource Locator}" Converter="{StaticResource VarConverter}"/>
+                                                                        </CollectionContainer.Collection>
+                                                                    </CollectionContainer>
+                                                                </CompositeCollection>
+                                                            </ComboBox.ItemsSource>
+                                                        </ComboBox>
                                                         <Label x:Name="IntValuesLabel" Content="{Binding SelectedValue.IntDescription, ElementName=Func, FallbackValue=N/A}"/>
                                                         <Grid x:Name="IntValuesGrid" IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}">
                                                             <Grid.ColumnDefinitions>
@@ -184,7 +194,18 @@
                                         <Run> 2</Run>
                                                             </TextBlock>
                                                         </Label>
-                                                        <ComboBox Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" ItemsSource="{Binding WidgetSettings.Model.Inputs, Source={StaticResource Locator}}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}"/>
+                                                        <ComboBox Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}">
+                                                            <ComboBox.ItemsSource>
+                                                                <CompositeCollection>
+                                                                    <CollectionContainer Collection="{Binding Main.Model.Inputs, Source={StaticResource Locator}}"/>
+                                                                    <CollectionContainer>
+                                                                        <CollectionContainer.Collection>
+                                                                            <Binding Path="GlobalSettings.Variables" Source="{StaticResource Locator}" Converter="{StaticResource VarConverter}"/>
+                                                                        </CollectionContainer.Collection>
+                                                                    </CollectionContainer>
+                                                                </CompositeCollection>
+                                                            </ComboBox.ItemsSource>
+                                                        </ComboBox>
                                                         <Label Visibility="Collapsed" x:Name="CondLabel" Content="{e:Localize Condition}"/>
                                                         <Grid Visibility="Collapsed" x:Name="Cond">
                                                             <Grid.ColumnDefinitions>
@@ -236,6 +257,29 @@
                                                     </ctrls:TwoColumnGrid>
                                                 </Grid>
                                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="2,0,0,0" Orientation="{Binding Collapsed, Converter={StaticResource BoolToOrientationConverter}}" HorizontalAlignment="Right">
+                                                    <TextBlock Margin="{StaticResource StdMargin}" ToolTip="No Input Assigned To This Function!" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="NoInputAssigned" Foreground="Yellow" Visibility="Collapsed" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF071;</TextBlock>
+                                                    <CheckBox IsChecked="{Binding UseInActiveState}" ToolTip="Use In State Dependency" Margin="{StaticResource StdMargin}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <CheckBox.Style>
+                                                            <Style TargetType="CheckBox">
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="CheckBox">
+                                                                            <Border>
+                                                                                <TextBlock FontSize="12" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF006;"/>
+                                                                            </Border>
+                                                                            <ControlTemplate.Triggers>
+                                                                                <Trigger Property="IsChecked" Value="True">
+                                                                                    <Setter TargetName="textBox" Property="Text" Value="&#xF005;" />
+                                                                                    <Setter TargetName="textBox" Property="FontSize" Value="14"/>
+                                                                                </Trigger>
+                                                                            </ControlTemplate.Triggers>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </CheckBox.Style>
+                                                    </CheckBox>
+                                                    
                                                     <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding MoveCommandUpCommand, ElementName=Me}" CommandParameter="{Binding}" ToolTip="{e:Localize Move Up}" Content="&#xF143;"/>
                                                     <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding MoveCommandDownCommand, ElementName=Me}" CommandParameter="{Binding}" ToolTip="{e:Localize Move Down}" Content="&#xF140;"/>
 
