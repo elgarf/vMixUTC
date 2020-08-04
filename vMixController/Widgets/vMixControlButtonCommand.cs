@@ -332,7 +332,7 @@ namespace vMixController.Widgets
                     commas++;
             }
             if (commas > 0)
-                par = string.Format("'{0}'", par);
+                par = string.Format("\"{0}\"", par);
             return par;
         }
 
@@ -430,7 +430,7 @@ namespace vMixController.Widgets
             {
                 switch (s[i])
                 {
-                    case '\'':
+                    case '\"':
                         str++;
                         break;
                     case '(':
@@ -448,7 +448,7 @@ namespace vMixController.Widgets
                     case ',':
                         if (str % 2 == 0)
                         {
-                            arguments.Add(arg.Trim());
+                            arguments.Add(arg.Trim().Trim('"'));
                             arg = "";
                             continue;
                         }
@@ -458,7 +458,7 @@ namespace vMixController.Widgets
                 }
                 arg += s[i];
             }
-            arguments.Add(arg.Trim());
+            arguments.Add(arg.Trim().Trim('"'));
 
             if (act.HasInputProperty)
             {

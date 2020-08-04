@@ -19,11 +19,12 @@ namespace XmlDataProviderNs
 
         private static Dictionary<string, CacheStats> _cahce = new Dictionary<string, CacheStats>();
 
-        
+
         private OnWidgetUI _ui;
         private string _url;
         private string _xpath;
         private string _namespaces;
+        private int _groupBy;
 
         public System.Windows.UIElement CustomUI
         {
@@ -129,8 +130,41 @@ namespace XmlDataProviderNs
             }
             //Selecting nodes
             var nodes = doc.SelectNodes(_xpath, ns);
-            //We need only inner text property value
-            Data = nodes.OfType<XmlElement>().Select(x => x.InnerText).ToList();
+            //We need only inner text property value or attribute value
+            var _data = nodes.OfType<XmlNode>().Select(x =>
+            {
+                switch (x)
+                {
+                    case XmlElement element:
+                        return element.InnerText;
+                    case XmlAttribute attr:
+                        return attr.Value;
+                    case null:
+                    default:
+                        return "";
+                }
+            }).ToList();
+
+            if (_groupBy > 1)
+            {
+                List<string> groupedData = new List<string>();
+                string grouped = "";
+                for (int i = 0; i < _data.Count; i++)
+                {
+                    if (i % _groupBy == 0)
+                    {
+                        if (!string.IsNullOrWhiteSpace(grouped))
+                            groupedData.Add(grouped.TrimEnd('|'));
+                        grouped = "";
+                    }
+                    grouped += _data[i] + "|";
+                }
+                if (!string.IsNullOrWhiteSpace(grouped))
+                    groupedData.Add(grouped.TrimEnd('|'));
+                Data = groupedData;
+            }
+            else
+                Data = _data;
         }
 
         //Url property of data provider
@@ -156,6 +190,20 @@ namespace XmlDataProviderNs
             DependencyProperty.Register("NameSpaces", typeof(string), typeof(XmlDataProvider), new PropertyMetadata("", propchanged));
 
 
+
+        public int GroupBy
+        {
+            get { return (int)GetValue(GroupByProperty); }
+            set { SetValue(GroupByProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for GroupBy.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GroupByProperty =
+            DependencyProperty.Register("GroupBy", typeof(int), typeof(XmlDataProvider), new PropertyMetadata(1, propchanged));
+
+
+
+
         //Updating private variables on dependency property changed
         private static void propchanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -165,6 +213,8 @@ namespace XmlDataProviderNs
                 (d as XmlDataProvider)._xpath = (string)e.NewValue;
             if (e.Property.Name == "NameSpaces")
                 (d as XmlDataProvider)._namespaces = (string)e.NewValue;
+            if (e.Property.Name == "GroupBy")
+                (d as XmlDataProvider)._groupBy = (int)e.NewValue;
         }
 
         //XPath property of data provider
@@ -211,7 +261,7 @@ namespace XmlDataProviderNs
         /// <returns>Url, XPath and NameSpaces for saving into file</returns>
         public List<object> GetProperties()
         {
-            return new List<object>() { Url, XPath, NameSpaces };
+            return new List<object>() { Url, XPath, NameSpaces, GroupBy };
         }
 
         /// <summary>
@@ -226,6 +276,8 @@ namespace XmlDataProviderNs
             XPath = (string)props[1];
             if (props.Count > 2)
                 NameSpaces = (string)props[2];
+            if (props.Count > 3)
+                GroupBy = (int)props[3];
         }
 
         /// <summary>

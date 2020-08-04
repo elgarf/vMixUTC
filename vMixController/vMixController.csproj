@@ -432,6 +432,12 @@
     <None Include="Examples\Buttons.vmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Examples\InputSelector.vmc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\InputSelector.vmix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Examples\Scoreboard.vmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
