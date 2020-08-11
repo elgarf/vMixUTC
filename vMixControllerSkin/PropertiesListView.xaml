@@ -8,7 +8,8 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             x:Name="propsViewer">
+             x:Name="propsViewer"
+             HorizontalAlignment="Stretch">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,7 +18,7 @@
             <conv:ObjectToTypeStringConverter x:Key="ObjToType"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ListView HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" ItemsSource="{Binding Items, ElementName=propsViewer}">
+    <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" ItemsSource="{Binding Items, ElementName=propsViewer}" x:Name="container">
         <ListView.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel HorizontalAlignment="Stretch"/>
@@ -59,5 +60,10 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
         </ListView.ItemTemplate>
+        <ListView.Style>
+            <Style TargetType="ListView">
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+        </ListView.Style>
     </ListView>
 </UserControl>

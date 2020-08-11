@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Xml;
 using vMixControllerDataProvider;
 
@@ -254,6 +257,54 @@ namespace XmlDataProviderNs
             DependencyProperty.Register("XPath", typeof(string), typeof(XmlDataProvider), new PropertyMetadata("", propchanged));
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
+
+        /// <summary>
+        /// Gets the PreviewKeyUpCommand.
+        /// </summary>
+        public RelayCommand<KeyEventArgs> PreviewKeyUpCommand
+        {
+            get
+            {
+                return _previewKeyUpCommand
+                    ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
+                    p =>
+                    {
+                        if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
+                            ((RelayCommand<KeyEventArgs>)PreviewKeyUp).Execute(p);
+                    }));
+            }
+        }
+
+        private RelayCommand<KeyEventArgs> _previewKeyDown;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand
+        {
+            get
+            {
+                return _previewKeyDown
+                    ?? (_previewKeyDown = new RelayCommand<KeyEventArgs>(
+                    p =>
+                    {
+                        if (p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return)
+                        {
+                            p.Handled = true;
+                            TextBox sender = (TextBox)p.Source;
+                            Int32 lastLocation = sender.SelectionStart;
+                            sender.Text = sender.Text.Insert(lastLocation, Environment.NewLine);
+                            sender.SelectionStart = lastLocation + Environment.NewLine.Length;
+                        }
+                        else if (p.Key == Key.Return)
+                            p.Handled = true;
+
+                    }));
+            }
+        }
 
         /// <summary>
         /// Provide data provider properties.

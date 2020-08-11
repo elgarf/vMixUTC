@@ -1166,9 +1166,8 @@ namespace vMixController.Widgets
                                 Application.Current.MainWindow.MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
                             }
 
-
-
                             GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
+                            p.Handled = true;
                         }
                     }));
             }

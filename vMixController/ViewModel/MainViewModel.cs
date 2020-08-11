@@ -1084,6 +1084,24 @@ namespace vMixController.ViewModel
         }
 
 
+        private RelayCommand<vMixControl> _moveWidgetCommand;
+
+        /// <summary>
+        /// Gets the MoveWidgetCommand.
+        /// </summary>
+        public RelayCommand<vMixControl> MoveWidgetCommand
+        {
+            get
+            {
+                return _moveWidgetCommand
+                    ?? (_moveWidgetCommand = new RelayCommand<vMixControl>(
+                    p =>
+                    {
+                        p.Page = p.Page == 0 ? 1 : 0;
+                    }));
+            }
+        }
+
         private RelayCommand<vMixControl> _toggleCaptionCommand;
 
         /// <summary>

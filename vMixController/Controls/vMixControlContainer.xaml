@@ -65,7 +65,7 @@
         <Grid Tag="{Binding ParentContainer, ElementName=CC}">
             <Grid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Toggle caption" Command="{Binding ToggleCaptionCommand}" CommandParameter="{Binding Control}">
+                    <MenuItem Header="Toggle Caption" Command="{Binding ToggleCaptionCommand}" CommandParameter="{Binding Control}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf150;</TextBlock>
                         </MenuItem.Icon>
@@ -110,6 +110,11 @@
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61839;</TextBlock>
                         </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Move To Other Layout" Command="{Binding MoveCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xf061;</TextBlock>
+                        </MenuItem.Icon>                        
                     </MenuItem>
                     <MenuItem Header="Properties" Command="{Binding SettingsCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
                         <MenuItem.Icon>
