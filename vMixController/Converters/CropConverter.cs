@@ -32,10 +32,11 @@ namespace vMixController.Converters
                     var bi = new BitmapImage();
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
-                    //var relativePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), path));
                     var relativePath = Classes.Utils.SearchFile(path, Directory.GetCurrentDirectory());
                     string foundPath = Classes.Utils.SearchFile(path, Path.GetDirectoryName(ServiceLocator.Current.GetInstance<MainViewModel>().ControllerPath));
-                    if (File.Exists(foundPath))
+                    if (File.Exists(path))
+                        bi.UriSource = new Uri(path);
+                    else if (File.Exists(foundPath))
                     {
                         bi.UriSource = new Uri(foundPath);
                     }
