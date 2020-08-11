@@ -29,6 +29,7 @@
     <c:AudiobussesConverter x:Key="AudioBussesConverter"/>
     <c:AudiobusToVisibilityConverter x:Key="ABToVisibility"/>
     <c:ObjectToBoolConverter x:Key="ObjToBool"/>
+    <c:Int32ToVisibilityConverter x:Key="Int32Comp"/>
 
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
@@ -70,23 +71,41 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
         <Grid>
+            <Grid.Resources>
+                <!-- MinWidth="16" Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"-->
+                <Image x:Key="IMG">
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource CropConverter}">
+                            <Binding Path="Image"/>
+                            <Binding Path="ImageMax"/>
+                            <Binding Path="ImageNumber"/>
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
+            </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Ellipse Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <Border>
+                <Border.Visibility>
+                    <Binding Path="ImageMax" Converter="{StaticResource Int32Comp}">
+                        <Binding.ConverterParameter>
+                            <sys:Int32>1</sys:Int32>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </Border.Visibility>
+                <Ellipse x:Name="stateDep" Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            </Border>
             <!--<Border Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Background="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" VerticalAlignment="Stretch"/>-->
             <!--Foreground="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}"-->
             <TextBlock Foreground="{Binding Background.Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}, ConverterParameter=true}"/>
-            <Image Grid.Column="1" MinWidth="16" Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}}">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource CropConverter}">
-                        <Binding Path="Image"/>
-                        <Binding Path="ImageMax"/>
-                        <Binding Path="ImageNumber"/>
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
+            <Grid Grid.Column="1" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}}" Height="{Binding Source.PixelHeight, Source={StaticResource IMG}}">
+                <ContentControl Content="{StaticResource IMG}"/>
+                <Viewbox Stretch="Uniform">
+                    <TextBlock Foreground="{Binding Source, Source={StaticResource IMG}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                </Viewbox>
+            </Grid>
         </Grid>
         <Button.Style>
             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

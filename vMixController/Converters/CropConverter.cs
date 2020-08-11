@@ -43,7 +43,7 @@ namespace vMixController.Converters
                     else if (File.Exists(relativePath))
                         bi.UriSource = new Uri(relativePath);
                     else
-                        throw new FileNotFoundException();
+                        return null;//throw new FileNotFoundException();
 
                     bi.EndInit();
                     var img = new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight));

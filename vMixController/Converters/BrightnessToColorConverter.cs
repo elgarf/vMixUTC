@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace vMixController.Converters
 {
@@ -13,9 +14,20 @@ namespace vMixController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            Color clr = Colors.White;
+
             if (value == null)
                 return Brushes.Black;
-            var clr = ((Color)value);
+            
+            if (value is ImageSource)
+            {
+                var src = (CroppedBitmap)value;
+                WriteableBitmap wb = new WriteableBitmap(src);
+                clr = wb.GetPixel(wb.PixelWidth / 2, wb.PixelHeight / 2);
+                
+            }
+            else
+                clr = ((Color)value);
             var Y = 0.2126 * (clr.R / 255f) + 0.7152 * (clr.G / 255f) + 0.0722 * (clr.B / 255f);
             if (Y >= 0.5f)
                 return Brushes.Black;

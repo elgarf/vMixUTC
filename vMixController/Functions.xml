@@ -816,6 +816,8 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Function>QuickPlay</Function>
     <FormatString>Function=QuickPlay&amp;Input={0}</FormatString>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>

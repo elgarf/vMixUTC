@@ -331,10 +331,10 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_active == value)
+                /*if (_active == value)
                 {
                     return;
-                }
+                }*/
 
                 if (Style == MOMENTARY)
                     IsPushed = value;
