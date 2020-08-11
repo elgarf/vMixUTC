@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Text="{Binding Value, Mode=TwoWay, ElementName=Me}">
-                <TextBox.Style>
+                <!--<TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="Foreground" Value="Black"/>
                         <Style.Triggers>
@@ -37,7 +37,7 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>
+                </TextBox.Style>-->
             </TextBox>
             <Button ToolTip="Select File" Style="{StaticResource TitleButton}"  Grid.Column="1" Margin="2,0,0,0" Command="{Binding SelectFilePathCommand, ElementName=Me}">&#xF259;</Button>
         </Grid>
