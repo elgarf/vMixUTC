@@ -132,6 +132,20 @@ namespace NewTek.NDI.WPF
             }
         }
 
+        [Category("NewTek NDI"),
+        Description("Is current source using low bandwidth?")]
+        public bool IsLowBandwidth
+        {
+            get { return _lowBandwidth; }
+            set
+            {
+                if (value != _lowBandwidth)
+                {
+                    NotifyPropertyChanged("IsIsLowBandwidth");
+                }
+            }
+        }
+
         public ReceiveView()
         {
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
@@ -478,7 +492,7 @@ namespace NewTek.NDI.WPF
                 color_format = NDIlib.recv_color_format_e.recv_color_format_BGRX_BGRA,
 
                 // we want full quality - for small previews or limited bandwidth, choose lowest
-                bandwidth = NDIlib.recv_bandwidth_e.recv_bandwidth_lowest,
+                bandwidth = _lowBandwidth ? NDIlib.recv_bandwidth_e.recv_bandwidth_lowest : NDIlib.recv_bandwidth_e.recv_bandwidth_highest,
 
                 // let NDIlib deinterlace for us if needed
                 allow_video_fields = false,
@@ -805,6 +819,7 @@ namespace NewTek.NDI.WPF
 
         private bool _isPtz = false;
         private bool _canRecord = false;
+        private bool _lowBandwidth = true;
         private String _webControlUrl = String.Empty;
         private String _receiverName = String.Empty;
     }
