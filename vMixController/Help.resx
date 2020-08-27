@@ -136,7 +136,8 @@ Event will be executed, when user press hotkey into layout panel, while no widge
 Link parameter is for calling events from scripts.</value>
   </data>
   <data name="List_Default" xml:space="preserve">
-    <value>Edit items, that will be shown in widget dropdown list.</value>
+    <value>Edit items, that will be shown in widget dropdown list.
+Put ~ symbol to add description for list item.</value>
   </data>
   <data name="Midi_Default" xml:space="preserve">
     <value>Here you can assign MIDI commands to hotkeys in another widgets.</value>

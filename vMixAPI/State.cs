@@ -282,7 +282,9 @@ namespace vMixAPI
             Audio.Clear();
             foreach (var item in _temp.Audio)
                 Audio.Add(item);
-
+            Transitions.Clear();
+            foreach (var item in _temp.Transitions)
+                Transitions.Add(item);
 
             //UpdateChangedInputs(_currentStateText, _temp._currentStateText);
             if (_currentStateText != _temp._currentStateText)
@@ -331,6 +333,8 @@ namespace vMixAPI
                     Overlays = new List<Overlay>();
                 if (Audio == null)
                     Audio = new List<Master>();
+                if (Transitions == null)
+                    Transitions = new List<Transition>();
                 Inputs.Clear();
                 foreach (var item in _temp.Inputs)
                     Inputs.Add(item);
@@ -340,6 +344,9 @@ namespace vMixAPI
                 Audio.Clear();
                 foreach (var item in _temp.Audio)
                     Audio.Add(item);
+                Transitions.Clear();
+                foreach (var item in _temp.Transitions)
+                    Transitions.Add(item);
 
 
                 if (_currentStateText != _temp._currentStateText)

@@ -569,7 +569,7 @@ namespace vMixController.Widgets
             {
                 Source = ctrl1,
                 UpdateSourceTrigger = UpdateSourceTrigger.Default,
-                Converter = new StringBoolConverter(),
+                Converter = new NKristek.Wpf.Converters.ObjectToStringEqualsParameterToBoolConverter(),//new StringBoolConverter(),
                 ConverterParameter = "Input"
             };
             BindingOperations.SetBinding(input, UIElement.IsEnabledProperty, b);

@@ -5,11 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace vMixController.Converters
 {
-    public class DateTimeToDayOfWeek : IValueConverter
+    [ValueConversion(typeof(DateTime), typeof(int), ParameterType = typeof(string))]
+    public class DateTimeToDayOfWeekConverter : MarkupExtension, IValueConverter
     {
+
+        private static IValueConverter _instance;
+
+        /// <summary>
+        /// Static instance of this converter.
+        /// </summary>
+        public static IValueConverter Instance => _instance ?? (_instance = new DateTimeToDayOfWeekConverter());
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var date = (DateTime)value;
@@ -37,6 +47,11 @@ namespace vMixController.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Instance;
         }
     }
 }

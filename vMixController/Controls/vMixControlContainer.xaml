@@ -8,6 +8,7 @@
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:local="clr-namespace:vMixController.Controls"
              xmlns:conv="clr-namespace:vMixController.Converters"
+             xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="CC" SizeChanged="CC_SizeChanged" PreviewMouseMove="CC_PreviewMouseMove">
@@ -16,11 +17,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <conv:NotConverter x:Key="NotConverter"/>
-            <conv:ColorToSolidBrushConverter x:Key="ColorToBrush"/>
-            <conv:BrightnessToColorConverter x:Key="BrightnessToColor"/>
-            <local:LockToVisibilityConverter x:Key="LockToVisibilityConverter"/>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <!--<conv:BrightnessToColorConverter x:Key="BrightnessToColor"/>-->
             <local:LockButtonConverter x:Key="LockButtonConverter"/>
             <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:vMixControlMoveThumb}">
                 <Rectangle Fill="Transparent"/>
@@ -46,10 +43,10 @@
             </Storyboard>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={StaticResource NotConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={wpfc:BoolToVisibilityConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
         <Border.Style>
             <Style TargetType="Border">
-                <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={StaticResource ColorToBrush}}"/>
+                <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={conv:ColorToSolidBrushConverter}}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ParentContainer.Control.State, ElementName=CC}" Value="{x:Null}">
@@ -96,32 +93,32 @@
                         </MenuItem.Style>
                     </MenuItem>
                     <Separator></Separator>
-                    <MenuItem Header="Scale Up" Command="{Binding ScaleUpCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Scale Up" Command="{Binding ScaleUpCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf062;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Scale Down" Command="{Binding ScaleDownCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Scale Down" Command="{Binding ScaleDownCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf063;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Duplicate" Command="{Binding CopyCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Duplicate" Command="{Binding CopyCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61839;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Move To Other Layout" Command="{Binding MoveCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Move To Other Layout" Command="{Binding MoveCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xf061;</TextBlock>
                         </MenuItem.Icon>                        
                     </MenuItem>
-                    <MenuItem Header="Properties" Command="{Binding SettingsCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Properties" Command="{Binding SettingsCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#62611;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Remove" Command="{Binding CloseCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={StaticResource NotConverter}}">
+                    <MenuItem Header="Remove" Command="{Binding CloseCommand}" CommandParameter="{Binding Control}" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61782;</TextBlock>
                         </MenuItem.Icon>
@@ -129,7 +126,7 @@
                 </ContextMenu>
             </Grid.ContextMenu>
             <StackPanel x:Name="Buttons" Width="{Binding ParentContainer.Control.Width, ElementName=CC}">
-                <Grid Visibility="{Binding ParentContainer.Control.IsCaptionOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource ColorToBrush}}">
+                <Grid Visibility="{Binding ParentContainer.Control.IsCaptionOn, Converter={wpfc:BoolToVisibilityConverter}, ElementName=CC}" x:Name="Caption" Style="{StaticResource Caption}" MouseDown="Caption_MouseDown" Background="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={conv:ColorToSolidBrushConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
@@ -137,13 +134,14 @@
                     </Grid.ColumnDefinitions>
                     <Grid VerticalAlignment="Center" Margin="2,0,2,0" HorizontalAlignment="Left">
                         <Grid.Visibility>
-                            <Binding Path="Main.WindowSettings.ShowIndividualLock" Source="{StaticResource Locator}" Converter="{StaticResource BooleanToVisibilityConverter}"/>
+                            <Binding Path="Main.WindowSettings.ShowIndividualLock" Source="{StaticResource Locator}" Converter="{wpfc:BoolToVisibilityConverter}"/>
                         </Grid.Visibility>
-                        <Button Style="{StaticResource TitleButton}" Opacity="0" x:Name="LockButton" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" ToolTip="{e:Localize Lock widget}" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}" IsEnabled="{Binding ParentContainer.Control.IsPasswordLocked, ElementName=CC, Converter={StaticResource NotConverter}}"/>
+
+                        <Button Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={wpfc:BoolToVisibilityConverter}, ElementName=CC}" Style="{StaticResource TitleButton}" x:Name="LockButton" ToolTip="{e:Localize Lock widget}" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}" IsEnabled="{Binding ParentContainer.Control.IsPasswordLocked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}"/>
                     </Grid>
 
-                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}" Foreground="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={StaticResource BrightnessToColor}}"></TextBlock>
-                    <local:vMixControlMoveThumb IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}" Foreground="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={conv:ColorToBlackOrWhiteConverter}}"></TextBlock>
+                    <local:vMixControlMoveThumb IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={wpfc:BoolToVisibilityConverter}, ElementName=CC}" Grid.Column="1" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll">
                         <local:vMixControlMoveThumb.ToolTip>
                             <ToolTip DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
                                 <StackPanel>
@@ -160,7 +158,7 @@
                         </local:vMixControlMoveThumb.ToolTip>
                     </local:vMixControlMoveThumb>
 
-                    <StackPanel Opacity="0" x:Name="RightButtons" Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockToVisibilityConverter}, ElementName=CC}">
+                    <StackPanel Opacity="0" x:Name="RightButtons" Margin="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ParentContainer.Control.Locked, Converter={wpfc:BoolToInverseVisibilityConverter}, ConverterParameter=Hidden, ElementName=CC}">
                         <ContentControl Content="{Binding ParentContainer.CaptionContent, ElementName=CC}"/>
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale up}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleUpCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf062;</Button>
                         <Button FontFamily="/vMixControllerSkin;Component/#FontAwesome" ToolTip="{e:Localize Scale down}" Style="{StaticResource TitleButton}" Margin="1,0,1,0" HorizontalAlignment="Left" Command="{Binding ParentContainer.ScaleDownCommand, ElementName=CC}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}">&#xf063;</Button>
@@ -176,10 +174,10 @@
                     </ContentControl.LayoutTransform>
                 </ContentControl>
             </StackPanel>
-            <Grid x:Name="Overlay" Background="#7F00FFFF" Visibility="{Binding ParentContainer.Control.Selected, ElementName=CC, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False"/>
-            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
-            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
-            <local:vMixControlMoveThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={StaticResource NotConverter}}" x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
+            <Grid x:Name="Overlay" Background="#7F00FFFF" Visibility="{Binding ParentContainer.Control.Selected, ElementName=CC, Converter={wpfc:BoolToVisibilityConverter}}" IsHitTestVisible="False"/>
+            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+            <local:vMixControlResizeThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}" Width="4" Cursor="SizeWE" Template="{StaticResource ResizeThumbTemplate}" DataContext="{Binding ParentContainer.Control,ElementName=CC}" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+            <local:vMixControlMoveThumb  IsEnabled="{Binding ParentContainer.Control.Locked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}" x:Name="moveThumb" Tag="{Binding ParentContainer.Control.Info, ElementName=CC}" Visibility="Collapsed" Grid.ColumnSpan="3" Template="{StaticResource MoveThumbTemplate}" DataContext="{Binding ParentContainer.Control, ElementName=CC}" Cursor="SizeAll"/>
         </Grid>
     </Border>
 </UserControl>

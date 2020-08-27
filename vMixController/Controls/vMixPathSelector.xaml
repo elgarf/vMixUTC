@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixController.Controls"
+             xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
              xmlns:c="clr-namespace:vMixController.Converters"
              mc:Ignorable="d" 
              x:Name="Me"
@@ -13,8 +14,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <c:IntegerToBooleanConverter x:Key="IntToBool"/>
-            <c:PairToInputConverter x:Key="VarConverter"/>
+            <!--<c:IntegerToBooleanConverter x:Key="IntToBool"/>-->
+            <c:VariableListToInputListConverter x:Key="VarConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -50,7 +51,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource PropertyName}">Title</TextBlock>
-            <ComboBox Grid.Column="2" IsEnabled="{Binding Items.Count, Converter={StaticResource IntToBool}, Mode=OneWay, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding SelectedItem.Elements, ElementName=Input}" SelectedValuePath="Name" SelectedValue="{Binding TitleName, Mode=TwoWay, ElementName=Me}">
+            <ComboBox Grid.Column="2" IsEnabled="{Binding Items.Count, Converter={wpfc:ObjectToStringEqualsParameterToInverseBoolConverter}, ConverterParameter=0, Mode=OneWay, RelativeSource={RelativeSource Self}}" ItemsSource="{Binding SelectedItem.Elements, ElementName=Input}" SelectedValuePath="Name" SelectedValue="{Binding TitleName, Mode=TwoWay, ElementName=Me}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock>[<Run Text="{Binding Type, Mode=OneWay}"></Run>] <Run Text="{Binding Name, Mode=OneWay}"></Run></TextBlock>

@@ -15,7 +15,7 @@
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:this="clr-namespace:vMixController"
         x:Class="vMixController.MainWindow"
-        
+        xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
         mc:Ignorable="d ignore"
         x:Name="Window"
         
@@ -32,16 +32,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <c:StatusToColorConverter x:Key="StatusToColorConverter"/>
-            <c:StringToCursor x:Key="StringToCursor"/>
-            <c:IntegerToBooleanConverter x:Key="IntegerToBooleanConverter"/>
-            <c:IntegerToVisibilityConverter x:Key="IntegerToVisibilityConverter"/>
-            <c:MarginMultiConverter x:Key="MarginMultiConverter"/>
-            <c:NotConverter x:Key="NotConverter"/>
-            <c:BoolToBrushConverter x:Key="BoolToBrush"/>
-            <c:ControlToPointConverter x:Key="ControlToPoint"/>
-            <c:WidgetsCountConverter x:Key="WidgetsCountConverter"/>
-            <c:ObjectToBoolConverter x:Key="ObjectToBoolConverter"/>
             <this:Help x:Key="Help"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
@@ -179,7 +169,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem x:Name="Templates" Header="{e:Localize Templates}" ItemsSource="{Binding WidgetTemplates}" IsEnabled="{Binding Items.Count, Converter={StaticResource IntegerToBooleanConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+                <MenuItem x:Name="Templates" Header="{e:Localize Templates}" ItemsSource="{Binding WidgetTemplates}" IsEnabled="{Binding Items.Count, Converter={wpfc:ObjectToStringEqualsParameterToInverseBoolConverter}, ConverterParameter=0, Mode=OneWay, RelativeSource={RelativeSource Self}}">
 
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
@@ -224,7 +214,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <i:Interaction.Behaviors>
-        <e:HideCloseButtonOnWindow IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
+        <e:HideCloseButtonOnWindow IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}"/>
     </i:Interaction.Behaviors>
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
@@ -317,8 +307,8 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Header="{e:Localize Edit}">
-                <MenuItem IsEnabled="{Binding UndoState, Converter={StaticResource ObjectToBoolConverter}}" Command="{Binding UndoCommand}">
+            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Header="{e:Localize Edit}">
+                <MenuItem IsEnabled="{Binding UndoState, Converter={wpfc:ValueNullToInverseBoolConverter}}" Command="{Binding UndoCommand}">
                     <MenuItem.Header>
                         <StackPanel>
                             <TextBlock Text="{e:Localize Undo}"/>
@@ -332,7 +322,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Header="{e:Localize Widget}" ItemsSource="{DynamicResource CreateItems}">
+            <MenuItem IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Header="{e:Localize Widget}" ItemsSource="{DynamicResource CreateItems}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -365,7 +355,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="8" Height="8" Margin="{StaticResource RightStdMargin}" Stroke="Black">
                                 <Ellipse.Fill>
-                                    <SolidColorBrush Color="{Binding Converter={StaticResource StatusToColorConverter}}"/>
+                                    <SolidColorBrush Color="{Binding Converter={c:StatusToColorConverter}}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
                             <TextBlock Text="{e:Localize Sync}"></TextBlock>
@@ -383,9 +373,9 @@
                 </MenuItem.Style>
             </MenuItem>
         </Menu>
-        <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Background="Black">
+        <ScrollViewer Tag="{Binding IsHotkeysEnabled, Converter={wpfc:BoolToInverseBoolConverter}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" IsManipulationEnabled="True" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Background="Black">
             <TabControl SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" BorderThickness="0" Background="#1e2328">
-                <TabItem Style="{StaticResource GrayItemStyle}" Header="Settings" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}">
+                <TabItem Style="{StaticResource GrayItemStyle}" Header="Settings" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                     <StackPanel Margin="{StaticResource StdMargin}">
                         <Grid Margin="{StaticResource TopBottomStdMargin}">
                             <Grid.ColumnDefinitions>
@@ -427,7 +417,7 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
-                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewKeyUp">
                                         <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
@@ -440,7 +430,7 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </TextBox>
-                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewKeyUp">
                                         <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
@@ -575,14 +565,12 @@
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock VerticalAlignment="Center">Layout</TextBlock>
-                            <ComboBox SelectedIndex="{Binding PageIndex, Mode=TwoWay}" IsEditable="False" MinWidth="128" Margin="8,0,0,0" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}">
+                            <ComboBox SelectedIndex="{Binding PageIndex, Mode=TwoWay}" IsEditable="False" MinWidth="128" Margin="8,0,0,0" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                                 <ComboBox.Resources>
                                     <sys:Int32 x:Key="Zero">0</sys:Int32>
                                     <sys:Int32 x:Key="One">1</sys:Int32>
                                 </ComboBox.Resources>
                                 <ComboBox.Items>
-                                    <!--<Run Foreground="Black" Text="{Binding Widgets, Converter={StaticResource WidgetsCountConverter}, ConverterParameter={StaticResource Zero}}"></Run>
-                                    <Run Foreground="Black" Text="{Binding Widgets, Converter={StaticResource WidgetsCountConverter}, ConverterParameter={StaticResource One}}"></Run>-->
                                     <sys:String>Main</sys:String>
                                     <sys:String>Data</sys:String>
                                 </ComboBox.Items>
@@ -602,7 +590,7 @@
                                                 <Style TargetType="MenuItem">
                                                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                     <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                    <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}"/>
+                                                    <Setter Property="IsEnabled" Value="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}"/>
                                                 </Style>
                                             </cls:MenuStyleSelector.MenuItem>
                                         </cls:MenuStyleSelector>
@@ -639,7 +627,7 @@
                             </ListView.Style>
 
                             <ListView.Cursor>
-                                <Binding Converter="{StaticResource StringToCursor}" Mode="OneWay" Path="EditorCursor"/>
+                                <Binding Converter="{c:StringToCursorConverter}" Mode="OneWay" Path="EditorCursor"/>
                             </ListView.Cursor>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonUp">
@@ -659,7 +647,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <i:Interaction.Behaviors>
-                                <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={StaticResource NotConverter}}"/>
+                                <e:IgnoreMouseWheelBehavior IgnoreBehavior="{Binding IsHotkeysEnabled, Converter={wpfc:BoolToInverseBoolConverter}}"/>
                             </i:Interaction.Behaviors>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -674,7 +662,7 @@
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="Margin">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{StaticResource MarginMultiConverter}">
+                                            <MultiBinding Converter="{c:DoubleToThicknessConverter}">
                                                 <Binding Path="Left"/>
                                                 <Binding Path="Top"/>
                                             </MultiBinding>
@@ -719,61 +707,8 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-            <!--<ItemsControl ItemsSource="{Binding ExecLinks}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Line X1="{Binding A, Converter={StaticResource ControlToPoint}, Mode=TwoWay}"
-                                  Y1="{Binding A, Converter={StaticResource ControlToPoint}, ConverterParameter=1, Mode=TwoWay}"
-                                  X2="{Binding B, Converter={StaticResource ControlToPoint}, Mode=TwoWay}"
-                                  Y2="{Binding B, Converter={StaticResource ControlToPoint}, ConverterParameter=1, Mode=TwoWay}"
-                                  Stroke="Red"
-                                  StrokeThickness="2" StrokeStartLineCap="Triangle" StrokeEndLineCap="Square" StrokeDashArray="5 5"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>-->
         </ScrollViewer>
         <StatusBar Grid.Row="2">
-            <!--<StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="IP"/></TextBlock>
-                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="128" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxLostFocus}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxPreviewKeyUp}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TextBox>
-                </StackPanel>
-            </StatusBarItem>
-            <StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="{StaticResource RightStdMargin}"><Run Text="Port"/></TextBlock>
-                    <TextBox Style="{StaticResource WidgetTextBox}" IsEnabled="{Binding WindowSettings.Locked, Converter={StaticResource NotConverter}}" Width="64" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={StaticResource BoolToBrush}}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxGotFocus}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxLostFocus}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="true" Command="{Binding TextBoxPreviewKeyUp}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TextBox>
-                </StackPanel>
-            </StatusBarItem>-->
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="0,0,8,0">
@@ -781,21 +716,13 @@
                     </TextBlock>
                     <Ellipse Width="16" Height="16" Margin="{StaticResource RightStdMargin}" Stroke="Black">
                         <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
+                            <SolidColorBrush Color="{Binding Status, Converter={c:StatusToColorConverter}}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                     <TextBlock Text="{Binding Status}"/>
                 </StackPanel>
             </StatusBarItem>
             <Separator/>
-            <!--<StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="{StaticResource RightStdMargin}" Text="{e:Localize Scaling}"></TextBlock>
-                    <Slider Width="128" Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
-                    <TextBlock Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
-                </StackPanel>
-            </StatusBarItem>-
-            <Separator/>-->
             <StatusBarItem  HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <CheckBox IsChecked="{Binding LIVE, Mode=TwoWay}" FontWeight="Bold" Width="64" HorizontalContentAlignment="Center">
                     <CheckBox.Content>
@@ -835,7 +762,7 @@
             </StatusBarItem>-->
             <StatusBarItem HorizontalAlignment="Right" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="Make top layer transparent" IsEnabled="{Binding WindowSettings.Locked, Mode=OneWay, Converter={StaticResource NotConverter}}">
+                    <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="Make top layer transparent" IsEnabled="{Binding WindowSettings.Locked, Mode=OneWay, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox">
                                 <Style.Setters>

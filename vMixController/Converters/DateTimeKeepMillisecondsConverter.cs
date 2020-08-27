@@ -10,7 +10,7 @@ using System.Windows.Data;
 
 namespace vMixController.Converters
 {
-    public class DateConverter : ValidationRule, IValueConverter
+    public class DateTimeKeepMillisecondsConverter : ValidationRule, IValueConverter
     {
         private DateTime date;
 

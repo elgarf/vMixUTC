@@ -20,6 +20,8 @@ using System.Windows.Media;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using System.Windows.Input;
+using System.Windows;
 
 namespace vMixController.Widgets
 {
@@ -552,9 +554,9 @@ namespace vMixController.Widgets
                 {
                     return;
                 }
+
                 if (_imageMax == 2 && value)
                     ImageNumber = 1;
-
                 if (!value)
                     ImageNumber = 0;
 
@@ -607,6 +609,7 @@ namespace vMixController.Widgets
                     ?? (_executeScriptCommand = new RelayCommand(
                     () =>
                     {
+                        Debug.Print("Click");
                         if (Style == MOMENTARY)
                             ExecuteScript();
 
@@ -616,7 +619,8 @@ namespace vMixController.Widgets
 
         private void ExecuteScript()
         {
-            Enabled = false;
+            if (Style == MOMENTARY)
+                Enabled = false;
             if (_executionWorker != null && _executionWorker.IsBusy)
             {
                 _stopThread = true;
@@ -629,19 +633,21 @@ namespace vMixController.Widgets
         }
 
         [NonSerialized]
-        private RelayCommand _executePushOn;
+        private RelayCommand<MouseEventArgs> _executePushOn;
 
         /// <summary>
         /// Gets the ExecutePushOn.
         /// </summary>
-        public RelayCommand ExecutePushOn
+        public RelayCommand<MouseEventArgs> ExecutePushOn
         {
             get
             {
                 return _executePushOn
-                    ?? (_executePushOn = new RelayCommand(
-                    () =>
+                    ?? (_executePushOn = new RelayCommand<MouseEventArgs>(
+                    (p) =>
                     {
+                        Debug.Print("Press");
+                        Debug.Print("{0}", Mouse.Capture((IInputElement)p.Source, CaptureMode.SubTree));
                         switch (Style)
                         {
                             case PRESS:
@@ -654,34 +660,41 @@ namespace vMixController.Widgets
                                 ExecuteScript();
                                 break;
                         }
+                        //p.Handled = true;
 
                     }));
             }
         }
 
         [NonSerialized]
-        private RelayCommand _executePushOff;
+        private RelayCommand<MouseEventArgs> _executePushOff;
 
         /// <summary>
         /// Gets the ExecutePushOff.
         /// </summary>
-        public RelayCommand ExecutePushOff
+        public RelayCommand<MouseEventArgs> ExecutePushOff
         {
             get
             {
                 return _executePushOff
-                    ?? (_executePushOff = new RelayCommand(
-                    () =>
+                    ?? (_executePushOff = new RelayCommand<MouseEventArgs>(
+                    (p) =>
                     {
+                        Debug.Print("Release");
+                        Mouse.Capture(null);
                         switch (Style)
                         {
                             case PRESS:
                                 IsPushed = false;
                                 ExecuteScript();
                                 break;
-                            case MOMENTARY: if (!IsStateDependent) IsPushed = false; break;
+                            case MOMENTARY:
+                                if (!IsStateDependent) IsPushed = false;
+                                ExecuteScript();
+                                break;
                             case TOGGLE: break;
                         }
+                        //p.Handled = true;
 
                     }));
             }
@@ -769,7 +782,7 @@ namespace vMixController.Widgets
 
                 var stateToCheck = ((State[])e.Argument)[0];
                 var currentState = ((State[])e.Argument)[1];
-                var result = true;
+                var result = false;
 
                 /*var cnt = 0;
                 for (int i = 0; i < _commands.Count; i++)
@@ -799,12 +812,23 @@ namespace vMixController.Widgets
                         if (currentState == null) return;
 
                         var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
+
+                        int intp = CalculateExpression<int>(item.Parameter);
+                        object strp = CalculateExpression(item.StringParameter);
+                        int strpasint = -1;
+                        if (strp != null)
+                            if (!int.TryParse(strp.ToString(), out strpasint))
+                                strpasint = int.MinValue;
+
+                        string keybystring = currentState.Inputs.Where(x => x.Number == strpasint).FirstOrDefault()?.Key ?? (strp?.ToString() ?? "");
+                        string keybyint = currentState.Inputs.Where(x => x.Number == intp).FirstOrDefault()?.Key ?? "";
+
                         if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input ?? -1);
+                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
                         var nval = GetValueByPath(stateToCheck, path);
                         var val = nval == null ? "" : nval.ToString();
                         HasScriptErrors = HasScriptErrors || nval == null;
-                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), CalculateExpression<int>(item.Parameter), item.StringParameter, CalculateExpression<int>(item.Parameter) - 1, input ?? -1);
+                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
                         var realval = aval;
                         aval = aval.TrimStart('!', '~');
                         //! - not
@@ -818,7 +842,7 @@ namespace vMixController.Widgets
                             (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
                         if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
                             mult = !mult;
-                        result = result && mult;
+                        result = result || mult;
                     }
 
                 }
@@ -1070,6 +1094,9 @@ namespace vMixController.Widgets
                 bool? conditionResult = null;
                 if (_stopThread) return;
                 var cmd = _commands[_pointer];
+
+                if (!cmd.IsExecutable) continue;
+
                 var cond = new bool?(true);
                 if (_conditions.Count > 0)
                     cond = _conditions.Peek();
@@ -1222,7 +1249,7 @@ namespace vMixController.Widgets
                                     break;
                             }
                         }
-                        _waitBeforeUpdate = Math.Max(_internalState.Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
+                        _waitBeforeUpdate = Math.Max((_internalState ?? state).Transitions[cmd.Action.TransitionNumber].Duration, _waitBeforeUpdate);
                     }
                     else
                         AddLog("{0}) {1} IS NOT EXECUTED", _pointer + 1, cmd.Action.Function);
@@ -1233,7 +1260,8 @@ namespace vMixController.Widgets
                 Enabled = true;
                 Thread.Sleep(_waitBeforeUpdate);
                 _waitBeforeUpdate = -1;
-                Dispatcher.Invoke(() => _internalState.UpdateAsync());
+                //NULL Check
+                Dispatcher.Invoke(() => _internalState?.UpdateAsync());
             });
         }
 
@@ -1290,7 +1318,7 @@ namespace vMixController.Widgets
                 if (item.AdditionalParameters.Count == 0)
                     for (int i = 0; i < 10; i++)
                         item.AdditionalParameters.Add(new One<string>());
-                control.Commands.Add(new vMixControlButtonCommand() { UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                control.Commands.Add(new vMixControlButtonCommand() { IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
             control.Log = Log;
             return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, imgtype, comboctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
@@ -1313,7 +1341,7 @@ namespace vMixController.Widgets
             int i = 0;
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
             {
-                Commands.Add(new vMixControlButtonCommand() {UseInActiveState = item.UseInActiveState,  Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                Commands.Add(new vMixControlButtonCommand() {IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState,  Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.TIMER;
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.GOTO && ((int.TryParse(item.Parameter, out p) && p < i) || !int.TryParse(item.Parameter, out p));

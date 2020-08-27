@@ -29,29 +29,52 @@ namespace vMixController.PropertiesControls
     /// </summary>
     public partial class ScriptControl : UserControl, INotifyPropertyChanged
     {
-        private int _prevIndex = 0;
         public ScriptControl()
         {
             InitializeComponent();
-            Commands.CollectionChanged += Commands_CollectionChanged;
+            Commands.CollectionChanged += OnCommandsChanged;
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 Commands.Add(new vMixControlButtonCommand());
             }
         }
 
-        private void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnCommandsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            //Re-generate code, when any of properties was changed
+            if (e.NewItems != null)
+                foreach (vMixControlButtonCommand cmd in e.NewItems)
+                {
+                    cmd.PropertyChanged += OnCommandPropertyChanged;
+                    foreach (One<string> par in cmd.AdditionalParameters)
+                        par.PropertyChanged += OnAdditionalParameterChanged;
+                }
+            if (e.OldItems != null)
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset || e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                    foreach (vMixControlButtonCommand cmd in e.OldItems)
+                    {
+                        cmd.PropertyChanged -= OnCommandPropertyChanged;
+                        foreach (One<string> par in cmd.AdditionalParameters)
+                            par.PropertyChanged -= OnAdditionalParameterChanged;
+                    }
             RearrangeCommnads();
+            GenerateCode();
+        }
+
+        private void OnAdditionalParameterChanged(object sender, PropertyChangedEventArgs e)
+        {
+            GenerateCode();
+        }
+
+        private void OnCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            GenerateCode();
         }
 
         private void GenerateCode()
         {
-            List<string> code = new List<string>();
-            foreach (var item in Commands)
-                code.Add(item.ToString());
-            if (code.Count > 0)
-                TextCode = code.Aggregate((x, y) => x + "\r\n" + y);
+            if (Commands.Count > 0)
+                TextCode = Commands.Select(x=>x.ToString()).Aggregate((x, y) => x + "\r\n" + y);
             else
                 TextCode = "";
 
@@ -78,7 +101,7 @@ namespace vMixController.PropertiesControls
                 if (ident < 0) ident = 0;
 
                 icmd.Ident = new Thickness(ident, 0, 0, 0);
-                GenerateCode();
+                //GenerateCode();
 
             }
         }
@@ -407,7 +430,7 @@ namespace vMixController.PropertiesControls
         {
             if ((sender as TabControl).SelectedIndex == 1)
             {
-                GenerateCode();
+                //GenerateCode();
                 Code.Select(0, 0);
             }
         }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 using vMixAPI;
 using vMixController.Classes;
 using vMixController.ViewModel;
@@ -16,8 +17,17 @@ namespace vMixController.Converters
     /// <summary>
     /// Convert from list of variables into list of inputs
     /// </summary>
-    public class PairToInputConverter : IValueConverter
+    [ValueConversion(typeof(Pair<string>), typeof(List<SampleInput>))]
+    public class VariableListToInputListConverter : MarkupExtension, IValueConverter
     {
+
+        private static IValueConverter _instance;
+
+        /// <summary>
+        /// Static instance of this converter.
+        /// </summary>
+        public static IValueConverter Instance => _instance ?? (_instance = new VariableListToInputListConverter());
+
         private const string VARIABLEPREFIX = "@";
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -64,6 +74,11 @@ namespace vMixController.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Instance;
         }
     }
 }

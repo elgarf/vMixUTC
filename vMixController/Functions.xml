@@ -6,7 +6,15 @@
   {2} - StringParameter
   {3} - Parameter - 1
   {4} - Number of Input
-  {5} - Input= if input is not null-->
+  {5} - Input= if input is not null
+  {6} - InputKey by int
+  {7} - InputKey by string
+  
+  ActiveStateValue prefixes
+  
+  ! - NOT
+  ~ - CONTAINS
+  ` - NOT CONTAINS-->
 
   <vMixFunctionReference>
     <Native>true</Native>
@@ -839,6 +847,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>3</string>
       <string>4</string>
     </StringValues>
+    <ActiveStatePath>Transitions[Transition/Number/{2}].Duration</ActiveStatePath>
+    <ActiveStateValue>{1}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -853,6 +863,29 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
       <int>4</int>
     </IntValues>
+    <StringValues>
+      <string>Fade</string>
+      <string>Zoom</string>
+      <string>Wipe</string>
+      <string>Slide</string>
+      <string>Fly</string>
+      <string>CrossZoom</string>
+      <string>FlyRotate</string>
+      <string>Cube</string>
+      <string>CubeZoom</string>
+      <string>VerticalWipe</string>
+      <string>VerticalSlide</string>
+      <string>Merge</string>
+      <string>WipeReverse</string>
+      <string>SlideReverse</string>
+      <string>VerticalWipeReverse</string>
+      <string>VerticalSlideReverse</string>
+      <string>Cut</string>
+      <string>Stinger1</string>
+      <string>Stinger2</string>
+    </StringValues>
+    <ActiveStatePath>Transitions[Transition/Number/{1}].Effect</ActiveStatePath>
+    <ActiveStateValue>{2}</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>StingerX</Function>
@@ -1177,7 +1210,8 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Toggle X Visibility in Title.</Description>
-    <Function>SetImageVisible</Function>
+    <Function>SetXVisible</Function>
+    <Aliases>SetImageVisible</Aliases>
     <FormatString>Function=Set{2}Visible&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Index</IntDescription>
     <StringDescription>Type</StringDescription>
@@ -1188,7 +1222,8 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Hide X in Title.</Description>
-    <Function>SetImageVisibleOff</Function>
+    <Function>SetXVisibleOff</Function>
+    <Aliases>SetImageVisibleOff</Aliases>
     <FormatString>Function=Set{2}VisibleOff&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Index</IntDescription>
     <StringDescription>Type</StringDescription>
@@ -1199,7 +1234,8 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Show X in Title. SelectedIndex or SelectedValue can be used to select image.</Description>
-    <Function>SetImageVisibleOn</Function>
+    <Function>SetXVisibleOn</Function>
+    <Aliases>SetImageVisibleOn</Aliases>
     <FormatString>Function=Set{2}VisibleOn&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <IntDescription>Index</IntDescription>
     <StringDescription>Type</StringDescription>
@@ -1223,7 +1259,8 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Change Colour of Text in Title in HTML format (#xxxxxx)</Description>
     <Function>SetTextColour</Function>
-    <FormatString>Function=SetTextColour&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetTextColour&amp;Value={2}&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Index</IntDescription>
     <StringDescription>Colour</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
@@ -1963,6 +2000,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>9</int>
       <int>10</int>
     </IntValues>
+    <ActiveStatePath>Inputs[{0}].Elements[InputOverlay/Index/{3}].Key</ActiveStatePath>
+    <ActiveStateValue>{7}</ActiveStateValue>
   </vMixFunctionReference>
   
   <!--PlayList-->

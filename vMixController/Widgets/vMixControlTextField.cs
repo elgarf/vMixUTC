@@ -267,7 +267,7 @@ namespace vMixController.Widgets
             if (!IsTable)
                 return new FirstValueConverter();
             else
-                return new TableConverter();
+                return new StringsToStringConverter();
         }
 
         internal virtual void UpdateText(IList<Pair<string, string>> _paths)
@@ -423,7 +423,7 @@ namespace vMixController.Widgets
 
             if (this.GetType() == typeof(vMixControlTextField))
             {
-                var control2 = new ComboBoxControl() { Title = "Template", Value = Template ? "File" : "Text" };
+                var control2 = new ComboBoxControl() { Title = "Style", Value = Template ? "File" : "Text" };
                 control2.Items = new List<string>() { "Text", "File" };
                 return base.GetPropertiesControls().Concat(new UserControl[] { control2, control1, control }).ToArray();
             }

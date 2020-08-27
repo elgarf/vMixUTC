@@ -5,11 +5,11 @@ using System.Windows.Data;
 
 namespace vMixController.Converters
 {
-    public class TableConverter : IMultiValueConverter
+    public class StringsToStringConverter : IMultiValueConverter
     {
         private bool _isList = false;
 
-        public TableConverter(bool isList = false)
+        public StringsToStringConverter(bool isList = false)
         {
             _isList = isList;
         }

@@ -478,7 +478,7 @@ namespace NewTek.NDI.WPF
                 color_format = NDIlib.recv_color_format_e.recv_color_format_BGRX_BGRA,
 
                 // we want full quality - for small previews or limited bandwidth, choose lowest
-                bandwidth = NDIlib.recv_bandwidth_e.recv_bandwidth_highest,
+                bandwidth = NDIlib.recv_bandwidth_e.recv_bandwidth_lowest,
 
                 // let NDIlib deinterlace for us if needed
                 allow_video_fields = false,

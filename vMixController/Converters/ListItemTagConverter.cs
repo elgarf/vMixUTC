@@ -5,11 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace vMixController.Converters
 {
-    public class TagConverter : IValueConverter
+    [ValueConversion(typeof(string), typeof(string))]
+    public class ListItemTagConverter : MarkupExtension, IValueConverter
     {
+        private static IValueConverter _instance;
+
+        /// <summary>
+        /// Static instance of this converter.
+        /// </summary>
+        public static IValueConverter Instance => _instance ?? (_instance = new ListItemTagConverter());
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var val = (string)value;
@@ -31,6 +40,11 @@ namespace vMixController.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Instance;
         }
     }
 }

@@ -8,14 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using vMixController.ViewModel;
 
 namespace vMixController.Converters
 {
-    public class CropConverter : IMultiValueConverter
+    public class ImagePartConverter : MarkupExtension, IMultiValueConverter
     {
+
+        private static IMultiValueConverter _instance;
+
+        /// <summary>
+        /// Static instance of this converter.
+        /// </summary>
+        public static IMultiValueConverter Instance => _instance ?? (_instance = new ImagePartConverter());
+
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             //URI
@@ -46,7 +55,7 @@ namespace vMixController.Converters
                         return null;//throw new FileNotFoundException();
 
                     bi.EndInit();
-                    var img = new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight));
+                    var img = new FormatConvertedBitmap(new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight)), PixelFormats.Bgra32, null, 0);
                     return img;
                 }
             }
@@ -61,6 +70,11 @@ namespace vMixController.Converters
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Instance;
         }
     }
 }

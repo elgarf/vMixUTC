@@ -10,6 +10,7 @@ using System.Windows.Data;
 
 namespace vMixController.Converters
 {
+    [ValueConversion(typeof(int[]), typeof(Visibility))]
     public class IntegersToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -28,7 +29,6 @@ namespace vMixController.Converters
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return Array.Empty<object>();
-            //throw new NotImplementedException();
         }
     }
 }

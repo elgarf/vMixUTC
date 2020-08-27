@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>vMixController</RootNamespace>
     <AssemblyName>vMixController</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -114,6 +114,9 @@
     <Reference Include="NCalc, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NCalc-Edge.1.5.0\lib\net35\NCalc.dll</HintPath>
     </Reference>
+    <Reference Include="NKristek.Wpf.Converters, Version=2.0.2.0, Culture=neutral, PublicKeyToken=c22c10dda31b71c4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NKristek.Wpf.Converters.2.0.2\lib\net40\NKristek.Wpf.Converters.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -196,6 +199,7 @@
     <Compile Include="Classes\Triple.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />
+    <Compile Include="Controls\ReleaseButton.cs" />
     <Compile Include="Controls\TBarSlider.cs" />
     <Compile Include="Controls\TwoColumnGrid.cs" />
     <Compile Include="Controls\TypeTemplateSelector.cs" />
@@ -208,43 +212,33 @@
     <Compile Include="Controls\vMixPathSelector.xaml.cs">
       <DependentUpon>vMixPathSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\AudiobussesConverter.cs" />
+    <Compile Include="Converters\AudiobusToBoolConverter.cs" />
     <Compile Include="Converters\AudiobusToVisibilityConverter.cs" />
-    <Compile Include="Converters\BoolToBrushConverter.cs" />
+    <Compile Include="Converters\BoolToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
-    <Compile Include="Converters\BrightnessToColorConverter.cs" />
-    <Compile Include="Converters\ColorDarkConverter.cs" />
+    <Compile Include="Converters\ColorToBlackOrWhiteConverter.cs" />
+    <Compile Include="Converters\ColorToDarkerSolidBrushConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
-    <Compile Include="Converters\ControlIntPairConverter.cs" />
-    <Compile Include="Converters\ControlToPointConverter.cs" />
-    <Compile Include="Converters\CropConverter.cs" />
-    <Compile Include="Converters\DateConverter.cs" />
-    <Compile Include="Converters\DateTimeToDayOfWeek.cs" />
+    <Compile Include="Converters\TextFieldAndIntToControlIntParameterConverter.cs" />
+    <Compile Include="Converters\ImagePartConverter.cs" />
+    <Compile Include="Converters\DateTimeKeepMillisecondsConverter.cs" />
+    <Compile Include="Converters\DateTimeToDayOfWeekConverter.cs" />
     <Compile Include="Converters\EscapeAt.cs" />
     <Compile Include="Converters\Int32ToVisibilityConverter.cs" />
     <Compile Include="Converters\IntegersToVisibilityConverter.cs" />
-    <Compile Include="Converters\ListToStringConverter.cs" />
+    <Compile Include="Converters\ParametersToStringConverter.cs" />
     <Compile Include="Converters\LogarithmicConverter.cs" />
-    <Compile Include="Converters\ObjectToBoolConverter.cs" />
-    <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
-    <Compile Include="Converters\PairToInputConverter.cs" />
-    <Compile Include="Converters\RelativeToAbsoluteConverter.cs" />
-    <Compile Include="Converters\StringBoolConverter.cs" />
-    <Compile Include="Converters\StringToThicknessConverter.cs" />
-    <Compile Include="Converters\StringToVisibilityConverter.cs" />
-    <Compile Include="Converters\MarginMultiConverter.cs" />
+    <Compile Include="Converters\VariableListToInputListConverter.cs" />
+    <Compile Include="Converters\ListItemTagToThicknessConverter.cs" />
+    <Compile Include="Converters\ListItemTagToVisibilityConverter.cs" />
+    <Compile Include="Converters\DoubleToThicknessConverter.cs" />
     <Compile Include="Converters\StringToCollectionConverter.cs" />
-    <Compile Include="Converters\TableConverter.cs" />
+    <Compile Include="Converters\StringsToStringConverter.cs" />
     <Compile Include="Converters\FirstValueConverter.cs" />
-    <Compile Include="Converters\IntegerToVisibilityConverter.cs" />
-    <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\StatusToColorConverter.cs" />
-    <Compile Include="Converters\StringToCursor.cs" />
-    <Compile Include="Converters\NonVisibilityConverter.cs" />
-    <Compile Include="Converters\NotConverter.cs" />
-    <Compile Include="Converters\TagConverter.cs" />
-    <Compile Include="Converters\TextIsPathToImageConverter.cs" />
-    <Compile Include="Converters\WidgetsCountConverter.cs" />
+    <Compile Include="Converters\StringToCursorConverter.cs" />
+    <Compile Include="Converters\ListItemTagConverter.cs" />
+    <Compile Include="Converters\ImagePathToVisibilityConverter.cs" />
     <Compile Include="Extensions\ControlBox.cs" />
     <Compile Include="Extensions\ThumbColorizer.cs" />
     <Compile Include="Extensions\FocusExtension.cs" />

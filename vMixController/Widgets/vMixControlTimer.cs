@@ -34,7 +34,7 @@ namespace vMixController.Widgets
         public vMixControlTimer()
         {
             //Text = "00:00:00";
-            _timer.Interval = TimeSpan.FromSeconds(0.5);
+            _timer.Interval = TimeSpan.FromSeconds(0.1);
             _timer.Tick += _timer_Tick;
 
             _width = 256;
@@ -104,8 +104,8 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     _timer.Stop();
-                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
-                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[3], null));
+                    Messenger.Default.Send(new Pair<string, object>(Links[2], null));
+                    Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
             }
             else
@@ -120,8 +120,8 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     _timer.Stop();
-                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
-                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[3], null));
+                    Messenger.Default.Send(new Pair<string, object>(Links[2], null));
+                    Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
             }
         }

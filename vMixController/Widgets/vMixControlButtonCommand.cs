@@ -319,6 +319,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="IsExecutable" /> property's name.
+        /// </summary>
+        public const string IsExecutablePropertyName = "IsExecutable";
+
+        private bool _isExecutable = true;
+
+        /// <summary>
+        /// Sets and gets the IsExecutable property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsExecutable
+        {
+            get
+            {
+                return _isExecutable;
+            }
+
+            set
+            {
+                if (_isExecutable == value)
+                {
+                    return;
+                }
+
+                _isExecutable = value;
+                RaisePropertyChanged(IsExecutablePropertyName);
+            }
+        }
+
         private string Enquote(string par)
         {
             if (par == null) return par;
@@ -341,6 +371,10 @@ namespace vMixController.Widgets
             var result = new String('\t', (int)(Ident.Left / 8));
             if (Collapsed)
                 result += ">";
+            if (!IsExecutable)
+                result += "!";
+            if (UseInActiveState)
+                result += "*";
 
             if (Action == null) return "";
 
@@ -359,9 +393,9 @@ namespace vMixController.Widgets
 
             foreach (var item in AdditionalParameters)
             {
-                lastMean--;
-                if (!string.IsNullOrWhiteSpace(item.A) || lastMean - 1 > 0)
+                if (!string.IsNullOrWhiteSpace(item.A) || lastMean - 1 >= 0)
                     result += Enquote(item.A) + ", ";
+                lastMean--;
             }
 
             if (result.EndsWith(", "))
@@ -386,16 +420,17 @@ namespace vMixController.Widgets
             var bracketIndex = s.IndexOf('(');
             if (bracketIndex <= 0)
             {
-                var action = functions.Where(x => x.Function == s.Substring(0, s.Length).Trim().TrimStart('>')).FirstOrDefault();
+                var action = functions.Where(x => x.Function == s.Substring(0, s.Length).Trim().TrimStart('>', '*', '!')).FirstOrDefault();
                 if (action != null)
                     result.Action = action;
                 return result;
             }
-            var act = functions.Where(x => x.Function == s.Substring(0, bracketIndex).Trim().TrimStart('>')).FirstOrDefault();
+            var act = functions.Where(x => x.Function == s.Substring(0, bracketIndex).Trim().TrimStart('>', '*', '!')).FirstOrDefault();
             if (act == null)
                 return result;
             else
                 result.Action = act;
+
             int ident = 0;
             for (int i = 0; i < s.Length; i++)
             {
@@ -407,6 +442,12 @@ namespace vMixController.Widgets
                         break;
                     case '>':
                         result.Collapsed = true;
+                        break;
+                    case '!':
+                        result.IsExecutable = false;
+                        break;
+                    case '*':
+                        result.UseInActiveState = true;
                         break;
                     default:
                         brk = true;

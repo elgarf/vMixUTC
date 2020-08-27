@@ -9,33 +9,14 @@
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:ext="clr-namespace:vMixController.Extensions"
         xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
-        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit">
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <!--<c:NotConverter x:Key="NotConverter1"/>-->
-    <c:NotConverter x:Key="NotConverter"/>
-    <c:NonVisibilityConverter x:Key="NonVis"/>
-    <c:BoolToBrushConverter x:Key="BoolToBrush"/>
-    <c:TagConverter x:Key="TagConverter"/>
-    <c:StringToVisibilityConverter x:Key="StringToVis"/>
-    <c:StringToThicknessConverter x:Key="StringToThickness"/>
-    <c:TextIsPathToImageConverter x:Key="TextIsPathToImage"/>
-    <c:RelativeToAbsoluteConverter x:Key="RelativeToAbsolute"/>
-    <c:BrightnessToColorConverter x:Key="BrightnessToColor"/>
-    <c:LogarithmicConverter x:Key="LogConverter"/>
-    <c:ColorDarkConverter x:Key="ColorDarkener"/>
-    <c:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
-    <c:AudiobussesConverter x:Key="AudioBussesConverter"/>
-    <c:AudiobusToVisibilityConverter x:Key="ABToVisibility"/>
-    <c:ObjectToBoolConverter x:Key="ObjToBool"/>
-    <c:Int32ToVisibilityConverter x:Key="Int32Comp"/>
 
-    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    <c:AudiobusToBoolConverter x:Key="AudioBussesConverter"/>
 
-    <c:IntegerToBooleanConverter x:Key="IntToBool"/>
-    <c:ControlIntPairConverter x:Key="ControlInt"/>
-    <c:CropConverter x:Key="CropConverter"/>
     <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type ctrls:vMixControlMoveThumb}">
         <Rectangle Fill="Transparent"/>
     </ControlTemplate>
@@ -54,28 +35,26 @@
     </Style>
 
     <!--Inner Controls-->
-
-    <Button Tag="{Binding IsColorized}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Command="{Binding ExecuteScriptCommand}" Grid.Column="1">
+    <Button ClickMode="Release" Tag="{Binding IsColorized}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Grid.Column="1">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                <cmd:EventToCommand Command="{Binding ExecutePushOn}"/>
+                <cmd:EventToCommand Command="{Binding ExecutePushOn}" PassEventArgsToCommand="True"/>
             </i:EventTrigger>
             <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
-                <cmd:EventToCommand Command="{Binding ExecutePushOff}"/>
+                <cmd:EventToCommand Command="{Binding ExecutePushOff}" PassEventArgsToCommand="True"/>
             </i:EventTrigger>
             <i:EventTrigger EventName="TouchDown">
-                <cmd:EventToCommand Command="{Binding ExecutePushOn}"/>
+                <cmd:EventToCommand Command="{Binding ExecutePushOn}" PassEventArgsToCommand="True"/>
             </i:EventTrigger>
             <i:EventTrigger EventName="TouchUp">
-                <cmd:EventToCommand Command="{Binding ExecutePushOff}"/>
+                <cmd:EventToCommand Command="{Binding ExecutePushOff}" PassEventArgsToCommand="True"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
         <Grid>
             <Grid.Resources>
-                <!-- MinWidth="16" Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"-->
                 <Image x:Key="IMG">
                     <Image.Source>
-                        <MultiBinding Converter="{StaticResource CropConverter}">
+                        <MultiBinding Converter="{c:ImagePartConverter}">
                             <Binding Path="Image"/>
                             <Binding Path="ImageMax"/>
                             <Binding Path="ImageNumber"/>
@@ -87,23 +66,14 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Border>
-                <Border.Visibility>
-                    <Binding Path="ImageMax" Converter="{StaticResource Int32Comp}">
-                        <Binding.ConverterParameter>
-                            <sys:Int32>1</sys:Int32>
-                        </Binding.ConverterParameter>
-                    </Binding>
-                </Border.Visibility>
-                <Ellipse x:Name="stateDep" Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Fill="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" Height="8"/>
+            <Border Grid.Column="0" Margin="{StaticResource LeftStdMargin}" Visibility="{Binding ImageMax, Converter={wpfc:ObjectToStringEqualsParameterToVisibilityConverter}, ConverterParameter=1}">
+                <Ellipse x:Name="stateDep" Visibility="{Binding IsStateDependent, Converter={wpfc:BoolToVisibilityConverter}}" Fill="{Binding Active, Converter={c:BoolToSolidColorBrushConverter}}" Width="8" Height="8"/>
             </Border>
-            <!--<Border Visibility="{Binding IsStateDependent, Converter={StaticResource BoolToVis}}" Background="{Binding Active, Converter={StaticResource BoolToBrush}}" Width="8" VerticalAlignment="Stretch"/>-->
-            <!--Foreground="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}"-->
-            <TextBlock Foreground="{Binding Background.Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}, ConverterParameter=true}"/>
-            <Grid Grid.Column="1" Visibility="{Binding Image, Converter={StaticResource TextIsPathToImage}}" Height="{Binding Source.PixelHeight, Source={StaticResource IMG}}">
+            <TextBlock Foreground="{Binding Background.Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Converter={c:ColorToBlackOrWhiteConverter}}" HorizontalAlignment="Center" Grid.Column="1" Text="{Binding Name}" Visibility="{Binding Image, Converter={c:ImagePathToVisibilityConverter}, ConverterParameter=true}"/>
+            <Grid Grid.Column="1" Visibility="{Binding Image, Converter={c:ImagePathToVisibilityConverter}}">
                 <ContentControl Content="{StaticResource IMG}"/>
-                <Viewbox Stretch="Uniform">
-                    <TextBlock Foreground="{Binding Source, Source={StaticResource IMG}, Converter={StaticResource BrightnessToColor}}" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                <Viewbox Stretch="Uniform" Height="{Binding ActualHeight, Source={StaticResource IMG}}">
+                    <TextBlock Foreground="{Binding Source, Source={StaticResource IMG}, Converter={c:ColorToBlackOrWhiteConverter}}" HorizontalAlignment="Center" Text="{Binding Name}"/>
                 </Viewbox>
             </Grid>
         </Grid>
@@ -113,22 +83,9 @@
                     <Setter Property="DataContext" Value="{Binding}"/>
                 </Style.Setters>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Image, Converter={StaticResource ObjToBool}}" Value="True">
+                    <DataTrigger Binding="{Binding Image, Converter={wpfc:ValueNullToBoolConverter}}" Value="False">
                         <Setter Property="Height" Value="Auto"/>
                     </DataTrigger>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsPushed}" Value="True"/>
-                            <Condition Binding="{Binding Style}" Value="Press"/>
-                        </MultiDataTrigger.Conditions>
-                        <MultiDataTrigger.Setters>
-                            <Setter Property="Background" Value="{StaticResource Button.Pressed.Background}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource Button.Pressed.Border}"/>
-                        </MultiDataTrigger.Setters>
-                    </MultiDataTrigger>
-                    <!--<DataTrigger Binding="{Binding IsPushed}" Value="True">
-                        
-                    </DataTrigger>-->
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="Tag">
@@ -139,8 +96,8 @@
                             <Condition Property="IsMouseOver" Value="False"/>
                         </MultiTrigger.Conditions>
                         <MultiTrigger.Setters>
-                            <Setter Property="Background" Value="{Binding Color, Converter={StaticResource ColorToSolidBrush}}"/>
-                            <Setter Property="BorderBrush" Value="{Binding BorderColor, Converter={StaticResource ColorToSolidBrush}}"/>
+                            <Setter Property="Background" Value="{Binding Color, Converter={c:ColorToSolidBrushConverter}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding BorderColor, Converter={c:ColorToSolidBrushConverter}}"/>
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -154,8 +111,8 @@
                             <Condition Property="IsMouseOver" Value="True"/>
                         </MultiTrigger.Conditions>
                         <MultiTrigger.Setters>
-                            <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorToSolidBrush}}"/>
-                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorToSolidBrush}}"/>
+                            <Setter Property="Background" Value="{Binding BorderColor, Converter={c:ColorToSolidBrushConverter}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={c:ColorToSolidBrushConverter}}"/>
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -169,15 +126,10 @@
                             <Condition Property="IsPressed" Value="True"/>
                         </MultiTrigger.Conditions>
                         <MultiTrigger.Setters>
-                            <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorDarkener}}"/>
-                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorDarkener}}"/>
+                            <Setter Property="Background" Value="{Binding BorderColor, Converter={c:ColorToDarkerSolidBrushConverter}}"/>
+                            <Setter Property="BorderBrush" Value="{Binding Color, Converter={c:ColorToDarkerSolidBrushConverter}}"/>
                         </MultiTrigger.Setters>
                     </MultiTrigger>
-
-                    <!--<Trigger Property="IsPressed" Value="True">
-                        <Setter Property="Background" Value="{Binding BorderColor, Converter={StaticResource ColorDarkener}}"/>
-                        <Setter Property="BorderBrush" Value="{Binding Color, Converter={StaticResource ColorDarkener}}"/>
-                    </Trigger>-->
                 </Style.Triggers>
             </Style>
         </Button.Style>
@@ -202,9 +154,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}" Content="..." Visibility="{Binding Template, Converter={StaticResource BoolToVis}}">
+        <Button Grid.Column="2" Style="{StaticResource TitleButton}" Command="{Binding SelectPathCommand}" Content="..." Visibility="{Binding Template, Converter={wpfc:BoolToVisibilityConverter}}">
             <Button.ToolTip>
-                <ToolTip Visibility="{Binding Text, Converter={StaticResource TextIsPathToImage}}">
+                <ToolTip Visibility="{Binding Text, Converter={c:ImagePathToVisibilityConverter}}">
                     <Image Width="128" Height="128" Source="{Binding Text}"></Image>
                 </ToolTip>
             </Button.ToolTip>
@@ -275,7 +227,7 @@
                             </StackPanel.Resources>
 
 
-                            <CheckBox IsChecked="{Binding IsMuted, Mode=TwoWay, Converter={StaticResource NotConverter}}" Tag="Mute" Content="&#xf028;" FontFamily="/vMixControllerSkin;Component/#FontAwesome">
+                            <CheckBox IsChecked="{Binding IsMuted, Mode=TwoWay, Converter={wpfc:BoolToInverseBoolConverter}}" Tag="Mute" Content="&#xf028;" FontFamily="/vMixControllerSkin;Component/#FontAwesome">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
@@ -283,56 +235,56 @@
                                 </i:Interaction.Triggers>
                             </CheckBox>
 
-                            <CheckBox x:Name="BusM" Visibility="Collapsed" Content="M" Tag="M" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=M, Mode=OneWay}">
+                            <CheckBox x:Name="BusM" Visibility="Collapsed" Content="M" Tag="M" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=M, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusA" Visibility="Collapsed" Content="A" Tag="A" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=A, Mode=OneWay}">
+                            <CheckBox x:Name="BusA" Visibility="Collapsed" Content="A" Tag="A" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=A, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusB" Visibility="Collapsed" Content="B" Tag="B" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=B, Mode=OneWay}">
+                            <CheckBox x:Name="BusB" Visibility="Collapsed" Content="B" Tag="B" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=B, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusC" Visibility="Collapsed" Content="C" Tag="C" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=C, Mode=OneWay}">
+                            <CheckBox x:Name="BusC" Visibility="Collapsed" Content="C" Tag="C" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=C, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusD" Visibility="Collapsed" Content="D" Tag="D" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=D, Mode=OneWay}">
+                            <CheckBox x:Name="BusD" Visibility="Collapsed" Content="D" Tag="D" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=D, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusE" Visibility="Collapsed" Content="E" Tag="E" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=E, Mode=OneWay}">
+                            <CheckBox x:Name="BusE" Visibility="Collapsed" Content="E" Tag="E" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=E, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusF" Visibility="Collapsed" Content="F" Tag="F" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=F, Mode=OneWay}">
+                            <CheckBox x:Name="BusF" Visibility="Collapsed" Content="F" Tag="F" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=F, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox x:Name="BusG" Visibility="Collapsed" Content="G" Tag="G" IsChecked="{Binding AudioBusses, Converter={StaticResource AudioBussesConverter}, ConverterParameter=G, Mode=OneWay}">
+                            <CheckBox x:Name="BusG" Visibility="Collapsed" Content="G" Tag="G" IsChecked="{Binding AudioBusses, Converter={c:AudiobusToBoolConverter}, ConverterParameter=G, Mode=OneWay}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cmd:EventToCommand Command="{Binding UpdateBusses}" PassEventArgsToCommand="True"/>
@@ -340,7 +292,7 @@
                                 </i:Interaction.Triggers>
                             </CheckBox>
                         </StackPanel>
-                        <Slider Visibility="{Binding ShowSlider, Converter={StaticResource BoolToVis}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LogConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
+                        <Slider Visibility="{Binding ShowSlider, Converter={wpfc:BoolToVisibilityConverter}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={c:LogarithmicConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewKeyUp">
@@ -446,14 +398,14 @@
                             <Setter TargetName="Stack" Property="VerticalAlignment" Value="Stretch"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Target}" Value="Input">
-                            <Setter TargetName="BusM" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=Master}"/>
-                            <Setter TargetName="BusA" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusA}"/>
-                            <Setter TargetName="BusB" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusB}"/>
-                            <Setter TargetName="BusC" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusC}"/>
-                            <Setter TargetName="BusD" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusD}"/>
-                            <Setter TargetName="BusE" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusE}"/>
-                            <Setter TargetName="BusF" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusF}"/>
-                            <Setter TargetName="BusG" Property="Visibility" Value="{Binding State.Audio, Converter={StaticResource ABToVisibility}, ConverterParameter=BusG}"/>
+                            <Setter TargetName="BusM" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=Master}"/>
+                            <Setter TargetName="BusA" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusA}"/>
+                            <Setter TargetName="BusB" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusB}"/>
+                            <Setter TargetName="BusC" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusC}"/>
+                            <Setter TargetName="BusD" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusD}"/>
+                            <Setter TargetName="BusE" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusE}"/>
+                            <Setter TargetName="BusF" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusF}"/>
+                            <Setter TargetName="BusG" Property="Visibility" Value="{Binding State.Audio, Converter={c:AudiobusToVisibilityConverter}, ConverterParameter=BusG}"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -461,7 +413,7 @@
         </ContentPresenter>
     </Grid>
 
-    <ComboBox x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+    <ComboBox HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <Grid HorizontalAlignment="Stretch">
@@ -469,8 +421,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Visibility="{Binding Converter={StaticResource StringToVis}}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Foreground="DarkGreen" Text="{Binding Converter={StaticResource TagConverter}, ConverterParameter=tag}" TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Margin="{Binding Converter={StaticResource StringToThickness}}" Grid.Row="1" Text="{Binding Converter={StaticResource TagConverter}}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Visibility="{Binding Converter={c:ListItemTagToVisibilityConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Foreground="DarkGreen" Text="{Binding Converter={c:ListItemTagConverter}, ConverterParameter=tag}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Margin="{Binding Converter={c:ListItemTagToThicknessConverter}}" Grid.Row="1" Text="{Binding Converter={c:ListItemTagConverter}}" TextTrimming="CharacterEllipsis"/>
                 </Grid>
             </DataTemplate>
         </ComboBox.ItemTemplate>
@@ -526,7 +478,7 @@
                                 <sys:Int32>1</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
-                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
                                     <Binding/>
                                     <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                                 </MultiBinding>
@@ -537,7 +489,7 @@
                                 <sys:Int32>2</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
-                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
                                     <Binding/>
                                     <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                                 </MultiBinding>
@@ -548,7 +500,7 @@
                                 <sys:Int32>3</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
-                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
                                     <Binding/>
                                     <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                                 </MultiBinding>
@@ -559,7 +511,7 @@
                                 <sys:Int32>5</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
-                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
                                     <Binding/>
                                     <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                                 </MultiBinding>
@@ -570,7 +522,7 @@
                                 <sys:Int32>6</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
-                                <MultiBinding Converter="{StaticResource ControlInt}">
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
                                     <Binding/>
                                     <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                                 </MultiBinding>
@@ -621,7 +573,7 @@
         </Grid.ColumnDefinitions>
         <skin:PropertiesListView Grid.ColumnSpan="3">
             <CompositeCollection>
-                <toolkit:TimeSpanUpDown Tag="Default Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+                <toolkit:TimeSpanUpDown Tag="Default Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewKeyUp">
                             <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -634,7 +586,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </toolkit:TimeSpanUpDown>
-                <toolkit:TimeSpanUpDown Tag="Current Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}">
+                <toolkit:TimeSpanUpDown Tag="Current Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewKeyUp">
                             <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -647,11 +599,11 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </toolkit:TimeSpanUpDown>
-                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}"/>
+                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}"/>
             </CompositeCollection>
         </skin:PropertiesListView>
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
-            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={StaticResource NotConverter}}" ToolTip="Start">&#xF40A;</Button>
+            <Button Command="{Binding TimerCommand}" CommandParameter="Start" Style="{StaticResource TitleButton}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}" ToolTip="Start">&#xF40A;</Button>
             <Button Command="{Binding TimerCommand}" IsEnabled="{Binding Active}" CommandParameter="Pause" Style="{StaticResource TitleButton}" ToolTip="Pause">&#xF3E4;</Button>
             <Button Command="{Binding TimerCommand}" CommandParameter="Stop" Style="{StaticResource TitleButton}" ToolTip="Stop/Reset">&#xF4DB;</Button>
             <Border BorderBrush="White" Margin="{StaticResource LeftRightStdMargin}" BorderThickness="1,0,0,0"/>
@@ -667,15 +619,14 @@
 
     <!--Inner Controls End-->
     <DataTemplate x:Key="Dummy"/>
-    <c:IntegersToVisibilityConverter x:Key="IntegersToVisibilityConverter"/>
+    
     <DataTemplate x:Key="vMixControlButton">
         <ctrls:vMixControlContainerDummy BorderColorProxy="{Binding BlinkBorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
                     <Ellipse x:Name="hasErrors" Width="4" Height="4" Margin="{StaticResource RightStdMargin}"/>
-                    <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={StaticResource NotConverter}, Mode=OneWay}">&#xF4DB;</Button>
-                    <!--<Control Style="{StaticResource HelpBorder}" ToolTip="{Binding Log}"/>-->
+                    <Button ToolTip="{e:Localize Stop script}" Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding StopScriptCommand}" IsEnabled="{Binding Enabled, Converter={wpfc:BoolToInverseBoolConverter}, Mode=OneWay}">&#xF4DB;</Button>
                 </StackPanel>
             </ctrls:vMixControlContainerDummy.CaptionContent>
             <ctrls:vMixControlContainerDummy.MainContent>
@@ -724,12 +675,8 @@
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <Grid Height="{Binding Height}">
-                    <!--<Grid.Background>
-                        <SolidColorBrush Color="{Binding BorderColor}"/>
-                    </Grid.Background>
-                    <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>-->
                     <ContentControl Content="{StaticResource VolumeWidgetControl}"/>
-                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
                                 <Rectangle Fill="Transparent"/>
@@ -738,9 +685,6 @@
                     </ctrls:vMixControlResizeThumb>
                 </Grid>
             </ctrls:vMixControlContainerDummy.MainContent>
-            <!--<ctrls:vMixControlContainerDummy.MainContent>
-                <ContentControl Content="{StaticResource SliderWidgetControl}"/>
-            </ctrls:vMixControlContainerDummy.MainContent>-->
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 
@@ -749,12 +693,8 @@
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <Grid Height="{Binding Height}">
-                    <!--<Grid.Background>
-                        <SolidColorBrush Color="{Binding BorderColor}"/>
-                    </Grid.Background>
-                    <TextBlock Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>-->
                     <ContentControl Content="{StaticResource TBarWidgetControl}"/>
-                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
                                 <Rectangle Fill="Transparent"/>
@@ -763,9 +703,6 @@
                     </ctrls:vMixControlResizeThumb>
                 </Grid>
             </ctrls:vMixControlContainerDummy.MainContent>
-            <!--<ctrls:vMixControlContainerDummy.MainContent>
-                <ContentControl Content="{StaticResource SliderWidgetControl}"/>
-            </ctrls:vMixControlContainerDummy.MainContent>-->
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 
@@ -783,8 +720,8 @@
                     <Grid.Background>
                         <SolidColorBrush Color="{Binding BorderColor}"/>
                     </Grid.Background>
-                    <TextBlock FontWeight="Normal"  Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={StaticResource BrightnessToColor}}" TextWrapping="Wrap"/>
-                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={StaticResource NotConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                    <TextBlock FontWeight="Normal"  Margin="{StaticResource StdMargin}" Text="{Binding Text}" Foreground="{Binding BorderColor, Converter={c:ColorToBlackOrWhiteConverter}}" TextWrapping="Wrap"/>
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
                         <ctrls:vMixControlResizeThumb.Template>
                             <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
                                 <Rectangle Fill="Transparent"/>

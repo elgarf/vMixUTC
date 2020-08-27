@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:c="clr-namespace:vMixController.Converters"
@@ -13,7 +12,7 @@
              x:Name="Me">
     <UserControl.Resources>
         <ResourceDictionary>
-            <c:DateTimeToDayOfWeek x:Key="dttw"/>
+            <!--<c:DateTimeToDayOfWeekConverter x:Key="dttw"/>-->
             <this:Help x:Key="Help"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
@@ -53,13 +52,13 @@
                                         <!--<xceed:TimePicker Style="{StaticResource TimePickerStyle}" Value="{Binding A}" Kind="Local" ClipValueToMinMax="True" AllowTextInput="True" Format="LongTime" EndTime="23:59:59" ShowDropDownButton="False" ShowButtonSpinner="False"/>-->
                                         <TextBox Style="{StaticResource WidgetTextBox}" Margin="-3,0,-5,0">
                                             <TextBox.Resources>
-                                                <c:DateConverter x:Key="DateConverter"/>
+                                                <c:DateTimeKeepMillisecondsConverter x:Key="DateConverter"/>
                                             </TextBox.Resources>
                                             <TextBox.Text>
                                                 <Binding Path="A" StringFormat="HH:mm:ss" Converter="{StaticResource DateConverter}">
                                                     <Binding.ValidationRules>
                                                         <DataErrorValidationRule/>
-                                                        <c:DateConverter/>
+                                                        <c:DateTimeKeepMillisecondsConverter/>
                                                     </Binding.ValidationRules>
                                                 </Binding>
                                             </TextBox.Text>
@@ -80,7 +79,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ff5600" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=M, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckM, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=M, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckM, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -90,7 +89,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ffc156" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=T, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckT, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=T, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckT, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -100,7 +99,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#ffff00" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=W, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckW, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=W, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckW, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -110,7 +109,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#c1ff55" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=TH, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckTH, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=TH, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckTH, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -120,7 +119,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#02e9ff" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=F, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckF, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=F, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckF, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -130,7 +129,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#048dff" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=S, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckS, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=S, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckS, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -140,7 +139,7 @@
                                     <DataTemplate>
                                         <Grid Margin="-5,0">
                                             <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#e900ff" Margin="0,-2"/>
-                                            <CheckBox IsChecked="{Binding A, Converter={StaticResource dttw}, ConverterParameter=SU, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckSU, ElementName=Me}" CommandParameter="{Binding}"/>
+                                            <CheckBox IsChecked="{Binding A, Converter={c:DateTimeToDayOfWeekConverter}, ConverterParameter=SU, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding CheckSU, ElementName=Me}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

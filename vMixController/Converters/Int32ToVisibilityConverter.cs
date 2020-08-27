@@ -13,7 +13,7 @@ namespace vMixController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == parameter ? Visibility.Visible : Visibility.Collapsed;
+            return (int)value == (int)parameter ? Visibility.Visible : Visibility.Collapsed;
             //throw new NotImplementedException();
         }
 

@@ -81,7 +81,7 @@ namespace vMixController.Widgets
             BindingOperations.ClearAllBindings(control);
             var binding = new Binding("Active")
             {
-                Converter = new NonVisibilityConverter(),
+                Converter = new NKristek.Wpf.Converters.BoolToInverseVisibilityConverter(),
                 Source = control2
             };
             BindingOperations.SetBinding(control, ListControl.VisibilityProperty, binding);
@@ -161,7 +161,7 @@ namespace vMixController.Widgets
             if (!IsTable)
                 return new FirstValueConverter(true);
             else
-                return new TableConverter(true);
+                return new StringsToStringConverter(true);
         }
 
         public override void SetProperties(UserControl[] _controls)

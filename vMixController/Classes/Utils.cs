@@ -147,16 +147,25 @@ namespace vMixController.Classes
 
         public static string SearchFile(string path, string cpath)
         {
-            var directories = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).Reverse().ToArray();
-            var filename = Path.GetFileName(path);
-            string dir = cpath;
-            int i = 0;
-            while (!File.Exists(Path.Combine(dir, filename)) && i < directories.Length)
+            try
             {
-                dir = Path.Combine(dir, directories[i]);
-                i++;
+                if (string.IsNullOrWhiteSpace(path)) return "";
+
+                var directories = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).Reverse().ToArray();
+                var filename = Path.GetFileName(path);
+                string dir = cpath;
+                int i = 0;
+                while (!File.Exists(Path.Combine(dir, filename)) && i < directories.Length)
+                {
+                    dir = Path.Combine(dir, directories[i]);
+                    i++;
+                }
+                return Path.Combine(dir, filename);
             }
-            return Path.Combine(dir, filename);
+            catch (ArgumentException)
+            {
+                return "";
+            }
         }
     }
 

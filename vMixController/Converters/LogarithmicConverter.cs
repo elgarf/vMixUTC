@@ -5,19 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace vMixController.Converters
 {
-    class LogarithmicConverter : IValueConverter
+    [ValueConversion(typeof(double), typeof(double))]
+    class LogarithmicConverter : MarkupExtension, IValueConverter
     {
+
+        private static IValueConverter _instance;
+
+        /// <summary>
+        /// Static instance of this converter.
+        /// </summary>
+        public static IValueConverter Instance => _instance ?? (_instance = new LogarithmicConverter());
+
         private static double min = 1e-32f;
         private Func<double, double> _in = (x) =>  20 * Math.Log10(x);
         private Func<double, double> _out = (x) => Math.Pow(10, x / 20);
-
-        float Map(float s, float a1, float a2, float b1, float b2)
-        {
-            return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
-        }
 
         public LogarithmicConverter()
         {
@@ -31,16 +36,17 @@ namespace vMixController.Converters
             if (v < min)
                 v = min;
             return _in(v) * 100;
-
-            //throw new NotImplementedException();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var v = (double)value / 100;
             return _out(v) * 100;
-            //return value;
-            //throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Instance;
         }
     }
 }
