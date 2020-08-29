@@ -125,7 +125,7 @@ namespace vMixController.Widgets
             };
             ctrl.Value = Style;
 
-            var ctrl1 = new ComboBoxControl();
+            var ctrl1 = GetPropertyControl<ComboBoxControl>(Type + "Mode");
             ctrl1.Title = Extensions.LocalizationManager.Get("Mode");
             ctrl1.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {

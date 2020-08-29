@@ -423,7 +423,9 @@ namespace vMixController.Widgets
 
             if (this.GetType() == typeof(vMixControlTextField))
             {
-                var control2 = new ComboBoxControl() { Title = "Style", Value = Template ? "File" : "Text" };
+                var control2 = GetPropertyControl<ComboBoxControl>(Type);
+                control2.Title = "Style";
+                control2.Value = Template ? "File" : "Text";
                 control2.Items = new List<string>() { "Text", "File" };
                 return base.GetPropertiesControls().Concat(new UserControl[] { control2, control1, control }).ToArray();
             }

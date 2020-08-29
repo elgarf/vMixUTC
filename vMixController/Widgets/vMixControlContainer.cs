@@ -115,7 +115,7 @@ namespace vMixController.Widgets
             {
                 var _ctrls = _controls[i].GetPropertiesControls();
                 _propIndex.Add(i, _ctrls);
-                var lbl = GetPropertyControl<LabelControl>();
+                var lbl = GetPropertyControl<LabelControl>(Type + i.ToString());
                 lbl.Title = _controls[i].Name;
                 _props.Add(lbl);
                 foreach (var ctrl in _ctrls)

@@ -55,6 +55,20 @@ namespace vMixController.Controls
 
 
 
+
+        public bool IsBorderDashed
+        {
+            get { return (bool)GetValue(IsBorderDashedProperty); }
+            set { SetValue(IsBorderDashedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsBorderDashed.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsBorderDashedProperty =
+            DependencyProperty.Register("IsBorderDashed", typeof(bool), typeof(vMixControlContainerDummy), new PropertyMetadata(false));
+
+
+
+
         public string Caption
         {
             get { return (string)GetValue(CaptionProperty); }

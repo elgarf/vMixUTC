@@ -532,7 +532,7 @@ namespace vMixController.Widgets
             input.Title = "Input";
             input.Value = InputKey;
 
-            var ctrl = GetPropertyControl<ComboBoxControl>();
+            var ctrl = GetPropertyControl<ComboBoxControl>(Type + "Style");
             ctrl.Title = Extensions.LocalizationManager.Get("Style");
             ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
@@ -541,7 +541,7 @@ namespace vMixController.Widgets
             };
             ctrl.Value = Style;
 
-            var ctrl1 = GetPropertyControl<ComboBoxControl>();
+            var ctrl1 = GetPropertyControl<ComboBoxControl>(Type + "Target");
             ctrl1.Title = Extensions.LocalizationManager.Get("Target");
             ctrl1.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
@@ -557,11 +557,11 @@ namespace vMixController.Widgets
             };
             ctrl1.Value = Target;
 
-            var ctrl2 = new BoolControl();
+            var ctrl2 = GetPropertyControl<BoolControl>(Type + "SM");
             ctrl2.Title = Extensions.LocalizationManager.Get("Show Meters");
             ctrl2.Value = ShowMeters;
 
-            var ctrl3 = new BoolControl();
+            var ctrl3 = GetPropertyControl<BoolControl>(Type + "SS");
             ctrl3.Title = Extensions.LocalizationManager.Get("Show Slider");
             ctrl3.Value = ShowSlider;
 

@@ -31,6 +31,9 @@ namespace vMixController.Converters
             //MAX
             //NUMBER
 
+            if (!(values[0] is string && values[1] is int && values[2] is int))
+                return null;
+
             var path = (string)values[0];
             var max = (int)values[1];
             var number = (int)values[2];

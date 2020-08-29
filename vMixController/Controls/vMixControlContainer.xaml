@@ -41,20 +41,68 @@
             <Storyboard x:Key="OpacityOff">
                 <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.5" To="0"/>
             </Storyboard>
+            <FrameworkElement x:Key="ProxyElement" DataContext="{Binding ParentContainer, Source={x:Reference CC}}"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={wpfc:BoolToVisibilityConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+    <Border Tag="{Binding ParentContainer, ElementName=CC}" Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={wpfc:BoolToVisibilityConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
         <Border.Style>
             <Style TargetType="Border">
+                <!--Value=""-->
                 <Setter Property="BorderBrush" Value="{Binding ParentContainer.BorderColorProxy, ElementName=CC, Converter={conv:ColorToSolidBrushConverter}}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ParentContainer.Control.State, ElementName=CC}" Value="{x:Null}">
-                        <Setter Property="BorderBrush" Value="Red"/>
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <DrawingBrush Viewport="0,0,16,16" ViewportUnits="Absolute" TileMode="Tile">
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Brush="Red">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                            <GeometryDrawing Brush="{Binding DataContext.BorderColorProxy, Source={StaticResource ProxyElement}, Converter={conv:ColorToSolidBrushConverter}}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="50,0,50,50" />
+                                                        <RectangleGeometry Rect="0,50,50,50" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="BorderThickness" Value="1"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ParentContainer.Control.IsGhosted, ElementName=CC}" Value="True">
                         <Setter Property="Opacity" Value="0.5"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ParentContainer.IsBorderDashed, ElementName=CC}" Value="True">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <DrawingBrush Viewport="0,0,4,4" ViewportUnits="Absolute" TileMode="Tile">
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Brush="{Binding DataContext.BorderColorProxy, Source={StaticResource ProxyElement}, Converter={conv:ColorToSolidBrushConverter}}">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Setter.Value>
+                        </Setter>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

@@ -53,8 +53,8 @@ namespace vMixController.Widgets
         private BackgroundWorker _activeStateUpdateWorker;
         [NonSerialized]
         private BackgroundWorker _executionWorker;
-        [NonSerialized]
-        DispatcherTimer _blinker;
+        //[NonSerialized]
+        //DispatcherTimer _blinker;
         [NonSerialized]
         Color _defaultBorderColor;
         [NonSerialized]
@@ -749,13 +749,13 @@ namespace vMixController.Widgets
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
 
 
-            _blinker = new DispatcherTimer();
+            /*_blinker = new DispatcherTimer();
             _blinker.Tick += Blinker_Tick;
             _blinker.Interval = TimeSpan.FromSeconds(1);
-            _blinker.Start();
+            _blinker.Start();*/
         }
 
-        private void Blinker_Tick(object sender, EventArgs e)
+        /*private void Blinker_Tick(object sender, EventArgs e)
         {
             if (_defaultBorderColor.A == 0)
                 _defaultBorderColor = BorderColor;
@@ -768,7 +768,7 @@ namespace vMixController.Widgets
             }
             else
                 BlinkBorderColor = BorderColor;
-        }
+        }*/
 
         private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1087,12 +1087,17 @@ namespace vMixController.Widgets
             int _waitBeforeUpdate = -1;
             int _jumpCount = 0;
             ClearLog();
+            BlinkBorderColor = Colors.Lime;
             for (int _pointer = 0; _pointer < _commands.Count; _pointer++)
             {
                 int parameter = 0;
                 string strparameter = "";
                 bool? conditionResult = null;
-                if (_stopThread) return;
+                if (_stopThread)
+                {
+                    BlinkBorderColor = BorderColor;
+                    return;
+                }
                 var cmd = _commands[_pointer];
 
                 if (!cmd.IsExecutable) continue;
@@ -1255,6 +1260,7 @@ namespace vMixController.Widgets
                         AddLog("{0}) {1} IS NOT EXECUTED", _pointer + 1, cmd.Action.Function);
             }
             _conditions.Clear();
+            BlinkBorderColor = BorderColor;
             ThreadPool.QueueUserWorkItem((x) =>
             {
                 Enabled = true;
@@ -1304,12 +1310,39 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            FilePathControl imgctrl = new FilePathControl() { Filter = "Images|*.bmp;*.jpg;*.png;*.ico", Value = Image, Title = "Image" };
-            ComboBoxControl imgtype = new ComboBoxControl() { Title = LocalizationManager.Get("Image Type"), Items = new string[] { DEFAULT, DEFAULTPRESSED }, Value = ImageMax == 1 ? DEFAULT : DEFAULTPRESSED };
-            ComboBoxControl comboctrl = new ComboBoxControl() { Title = LocalizationManager.Get("Style"), Items = new string[] { MOMENTARY, PRESS/*, TOGGLE */}, Value = Style };
-            BoolControl boolctrl = new BoolControl() { Title = LocalizationManager.Get("State Dependent"), Value = IsStateDependent, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_StateDependent };
-            BoolControl boolctrl1 = new BoolControl() { Title = LocalizationManager.Get("Execute After Load"), Value = AutoStart, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_ExecuteAfterLoad };
-            BoolControl boolctrl2 = new BoolControl() { Title = LocalizationManager.Get("Colorize Button"), Value = IsColorized, Visibility = System.Windows.Visibility.Visible, Help = Help.Button_Colorize };
+            FilePathControl imgctrl = GetPropertyControl<FilePathControl>(this.Type);
+            imgctrl.Filter = "Images|*.bmp;*.jpg;*.png;*.ico";
+            imgctrl.Value = Image;
+            imgctrl.Title = "Image";
+
+            ComboBoxControl imgtype = GetPropertyControl<ComboBoxControl>(this.Type + "imagetype");
+            imgtype.Title = LocalizationManager.Get("Image Type");
+            imgtype.Items = new string[] { DEFAULT, DEFAULTPRESSED };
+            imgtype.Value = ImageMax == 1 ? DEFAULT : DEFAULTPRESSED;
+
+            ComboBoxControl comboctrl = GetPropertyControl<ComboBoxControl>(this.Type + "style");
+            comboctrl.Title = LocalizationManager.Get("Style");
+            comboctrl.Items = new string[] { MOMENTARY, PRESS/*, TOGGLE */};
+            comboctrl.Value = Style;
+
+            BoolControl boolctrl = GetPropertyControl<BoolControl>(this.Type + "SD");
+            boolctrl.Title = LocalizationManager.Get("State Dependent");
+            boolctrl.Value = IsStateDependent;
+            boolctrl.Visibility = System.Windows.Visibility.Visible;
+            boolctrl.Help = Help.Button_StateDependent;
+
+            BoolControl boolctrl1 = GetPropertyControl<BoolControl>(this.Type + "EA");
+            boolctrl1.Title = LocalizationManager.Get("Execute After Load");
+            boolctrl1.Value = AutoStart;
+            boolctrl1.Visibility = System.Windows.Visibility.Visible;
+            boolctrl1.Help = Help.Button_ExecuteAfterLoad;
+
+            BoolControl boolctrl2 = GetPropertyControl<BoolControl>(Type + "CB");
+            boolctrl2.Title = LocalizationManager.Get("Colorize Button");
+            boolctrl2.Value = IsColorized;
+            boolctrl2.Visibility = System.Windows.Visibility.Visible;
+            boolctrl2.Help = Help.Button_Colorize;
+
             ScriptControl control = GetPropertyControl<ScriptControl>();
             control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             control.Commands.Clear();
@@ -1326,11 +1359,11 @@ namespace vMixController.Widgets
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
-            _blinker.Stop();
+            //_blinker.Stop();
             base.SetProperties(viewModel);
             BlinkBorderColor = BorderColor;
             //_defaultBorderColor = BorderColor;
-            _blinker.Start();
+            //_blinker.Start();
         }
 
         public override void SetProperties(UserControl[] _controls)
@@ -1392,7 +1425,7 @@ namespace vMixController.Widgets
 
             if (managed)
             {
-                _blinker.Stop();
+                //_blinker.Stop();
                 if (_internalState != null)
                     _internalState.OnStateSynced -= State_OnStateUpdated;
                 _stopThread = true;

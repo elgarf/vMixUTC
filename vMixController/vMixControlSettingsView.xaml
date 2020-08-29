@@ -244,7 +244,12 @@
                 </StackPanel>
 
                 <pctrl:LabelControl Foreground="Orange" Title="{e:Localize Individual Properties}" Visibility="{Binding WidgetPropertiesControls.Count, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0, Mode=OneWay}"></pctrl:LabelControl>
-                <ItemsControl VerticalContentAlignment="Stretch" ItemsSource="{Binding WidgetPropertiesControls}">
+                <ItemsControl VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VerticalContentAlignment="Stretch" ItemsSource="{Binding WidgetPropertiesControls}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>

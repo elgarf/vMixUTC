@@ -38,7 +38,7 @@ namespace vMixController.ViewModel
     {
         bool _isPressed = false;
         //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
-        vMixWidgetSettingsView _settings = null;// new vMixWidgetSettingsView();
+        vMixWidgetSettingsView _settings = new vMixWidgetSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The <see cref="Model" /> property's name.
@@ -48,6 +48,7 @@ namespace vMixController.ViewModel
         Point _clickPoint;
         Point _relativeClickPoint;
         Thickness _rawSelectorPosition = new Thickness();
+        bool _skipClick = false;
 
 
         /// <summary>
@@ -1178,11 +1179,13 @@ namespace vMixController.ViewModel
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
                         viewModel.Widget = p;
                         viewModel.SetProperties(p);
+                        
 
-                        _settings = new vMixWidgetSettingsView
-                        {
-                            Owner = App.Current.MainWindow
-                        };
+                        if (_settings == null)
+                            _settings = new vMixWidgetSettingsView
+                            {
+                                Owner = App.Current.MainWindow
+                            };
 
                         var result = _settings.ShowDialog();
                         if (result.HasValue && result.Value)
@@ -1278,6 +1281,12 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
+                        if (_skipClick)
+                        {
+                            _skipClick = !_skipClick;
+                            return;
+                        }
+
                         if (_createWidget != null)
                         {
                             EditorCursor = "Arrow";
@@ -1285,6 +1294,7 @@ namespace vMixController.ViewModel
                             _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
                             _createWidget = null;
                         }
+
                         if ((p.OriginalSource is ListView))
                             IsHotkeysEnabled = true;
 
@@ -1512,6 +1522,57 @@ namespace vMixController.ViewModel
                         {
                             SaveUndo("Controller loaded");
                             LoadControllerFromFile(opendlg.FileName);
+                        }
+                    }));
+            }
+        }
+
+
+        private RelayCommand _appendControllerCommand;
+
+        /// <summary>
+        /// Gets the AppendControllerCommand.
+        /// </summary>
+        public RelayCommand AppendControllerCommand
+        {
+            get
+            {
+                return _appendControllerCommand
+                    ?? (_appendControllerCommand = new RelayCommand(
+                    () =>
+                    {
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+                        {
+                            Filter = "vMix Controller|*.vmc"
+                        };
+                        var result = opendlg.ShowDialog(App.Current.MainWindow);
+                        if (result.HasValue && result.Value)
+                        {
+                            SaveUndo("Controller loaded");
+
+                            MainWindowSettings ws;
+                            var w = Utils.LoadController(opendlg.FileName, Functions, out ws);
+                            EditorCursor = "Hand";
+                            _createWidget = x =>
+                            {
+                                var mintop = double.MaxValue;
+                                var minleft = double.MaxValue;
+                                foreach (var wgt in w)
+                                {
+                                    if (wgt.Top < mintop) mintop = wgt.Top;
+                                    if (wgt.Left < minleft) minleft = wgt.Left;
+                                }
+                                foreach (var wgt in w)
+                                {
+                                    wgt.Left += x.X - minleft;
+                                    wgt.Top += x.Y - mintop;
+                                    wgt.Selected = true;
+                                    wgt.AlignByGrid();
+                                    _widgets.Add(wgt);
+                                }
+
+                            };
+                            _skipClick = true;
                         }
                     }));
             }
@@ -1867,6 +1928,13 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
+                        if (_createWidget != null && p.Key == Key.Escape)
+                        {
+                            _createWidget = null;
+                            EditorCursor = Cursors.Arrow.ToString();
+                        }
+
+
                         if (!IsHotkeysEnabled || _isPressed)
                             return;
                         _isPressed = true;

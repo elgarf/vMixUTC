@@ -64,10 +64,10 @@ namespace vMixController.Widgets
 
 
             StringControl[] links = new StringControl[] {
-                GetPropertyControl<StringControl>(),
-                GetPropertyControl<StringControl>(),
-                GetPropertyControl<StringControl>(),
-                GetPropertyControl<StringControl>()
+                GetPropertyControl<StringControl>(Type + "1"),
+                GetPropertyControl<StringControl>(Type + "2"),
+                GetPropertyControl<StringControl>(Type + "3"),
+                GetPropertyControl<StringControl>(Type + "4")
             };
 
             var lbl = GetPropertyControl<LabelControl>();

@@ -238,6 +238,19 @@
                         </Border>
                     </MenuItem.Icon>
                 </MenuItem>
+
+                <MenuItem Command="{Binding AppendControllerCommand}" Header="{e:Localize Append}">
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <Grid>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF07C;</TextBlock>
+                                <TextBlock Foreground="White" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF111;</TextBlock>
+                                <TextBlock FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xF055;</TextBlock>
+                            </Grid>
+                        </Border>
+                    </MenuItem.Icon>
+                </MenuItem>
+
                 <MenuItem Command="{Binding SaveControllerCommand}"  Header="{e:Localize Save}">
                     <MenuItem.Icon>
                         <Border Width="16" Height="16">
@@ -682,6 +695,34 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
+                        <Border BorderBrush="White" BorderThickness="2" Opacity="0" Background="DarkSlateGray" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="2" Margin="2" IsHitTestVisible="False">
+                            <TextBlock FontSize="18" TextAlignment="Center">Click on the layout to add widget(s).
+                                <LineBreak/>
+                            Or press ESC to cancel.</TextBlock>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EditorCursor}" Value="Arrow">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard Storyboard.TargetProperty="Opacity">
+                                                        <DoubleAnimation To="0" Duration="0:0:0.5"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard Storyboard.TargetProperty="Opacity">
+                                                        <DoubleAnimation To="1" Duration="0:0:0.5"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+
                         <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SelectorPosition}" Width="{Binding SelectorWidth}" Height="{Binding SelectorHeight}" Visibility="{Binding SelectorEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" Background="#7F00FFFF"/>
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
@@ -691,10 +732,6 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <!--<Trigger Property="Cursor" Value="Hand">
-                                <Setter Property="BorderThickness" Value="2"/>
-                                <Setter Property="BorderBrush" Value="Red"/>
-                            </Trigger>-->
                                     <Trigger Property="Tag">
                                         <Trigger.Value>
                                             <sys:Boolean>True</sys:Boolean>
