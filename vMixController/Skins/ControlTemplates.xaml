@@ -446,15 +446,11 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <toolkit:IntegerUpDown Grid.Column="1" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal">
             <toolkit:IntegerUpDown.Text>
                 <Binding Path="Text" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.FallbackValue>
-                        <sys:Int32>0</sys:Int32>
-                    </Binding.FallbackValue>
-                    <Binding.TargetNullValue>
-                        <sys:Int32>0</sys:Int32>
-                    </Binding.TargetNullValue>
+                    <Binding.FallbackValue>0</Binding.FallbackValue>
+                    <Binding.TargetNullValue>0</Binding.TargetNullValue>
                 </Binding>
             </toolkit:IntegerUpDown.Text>
             <i:Interaction.Triggers>

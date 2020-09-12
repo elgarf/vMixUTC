@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using vMixController.Extensions;
 using CommonServiceLocator;
 using System.Xml.Serialization;
+using System.Threading;
 
 namespace vMixController.ViewModel
 {
@@ -466,6 +467,7 @@ namespace vMixController.ViewModel
             PeriodVisibility = p is IvMixAutoUpdateWidget ? Visibility.Visible : Visibility.Collapsed;
 
             WidgetPropertiesControls = p.GetPropertiesControls();
+            
         }
 
         private RelayCommand _closingCommand;

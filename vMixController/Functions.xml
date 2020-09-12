@@ -1689,7 +1689,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Change current PanY value of Input. 0=centered, -2=100% to bottom, 2=100% to top, Value = Value -2-2</Description>
     <Function>SetPanY</Function>
-    <FormatString>Function=SetPanY&amp;Value={1}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetPanY&amp;Value={2}&amp;Input={0}</FormatString>
 	<StringDescription>PanY</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>

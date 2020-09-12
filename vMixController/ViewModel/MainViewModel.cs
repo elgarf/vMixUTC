@@ -1219,7 +1219,7 @@ namespace vMixController.ViewModel
                     ?? (_createWidgetCommand = new RelayCommand<string>(
                     p =>
                     {
-                        EditorCursor = CursorType.Hand.ToString();
+                        EditorCursor = CursorType.Cross.ToString();
                         _createWidget = new Action<Point>(x =>
                         {
 
