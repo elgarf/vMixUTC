@@ -27,7 +27,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource PropertyName}">Additional Namespaces</TextBlock>
-        <TextBox Style="{StaticResource WidgetTextBox}"  Grid.Row="1" AcceptsReturn="True" Text="{Binding NameSpaces}" />
+        <TextBox Style="{StaticResource WidgetTextBox}"  Grid.Row="1" AcceptsReturn="True" Height="Auto" VerticalAlignment="Stretch" Text="{Binding NameSpaces}" />
         <StackPanel Grid.Row="2" Margin="0,2,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Margin="2,0" IsCancel="True">Cancel</Button>
             <Button IsDefault="True" Click="Button_Click">Ok</Button>

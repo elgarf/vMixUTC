@@ -34,6 +34,7 @@ namespace vMixController
                 {
                     vMixController.Properties.Settings.Default.Save();
                     ViewModelLocator.Cleanup();
+                    App.Current.Shutdown();
                 }
             };
         }

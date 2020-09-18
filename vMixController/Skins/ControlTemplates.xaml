@@ -551,7 +551,7 @@
 
     <StackPanel x:Shared="false" x:Key="ExternalDataWidgetControl">
         <ContentControl Content="{Binding DataProvider.CustomUI}"/>
-        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{e:Localize Properties}"></Button>
+        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Visibility="{Binding DataProvider.IsProvidingCustomProperties, Converter={wpfc:BoolToVisibilityConverter}}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{e:Localize Properties}"></Button>
     </StackPanel>
 
     <Grid x:Shared="false"  x:Key="TimerWidgetControl" Margin="{StaticResource StdMargin}">

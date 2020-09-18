@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace vMixController.Widgets
 {
@@ -38,6 +39,7 @@ namespace vMixController.Widgets
         private const string DEFAULT = "Default";
         private const string DEFAULTPRESSED = "Default+Pressed";
 
+        Regex _isExpression = new Regex(@"([\+|\-])\=(\d+\.?\d*)");
         [NonSerialized]
         static Queue<Exception> _loggedExceptions = new Queue<Exception>();
         [NonSerialized]
@@ -54,10 +56,6 @@ namespace vMixController.Widgets
         private BackgroundWorker _activeStateUpdateWorker;
         [NonSerialized]
         private BackgroundWorker _executionWorker;
-        //[NonSerialized]
-        //DispatcherTimer _blinker;
-        [NonSerialized]
-        Color _defaultBorderColor;
         [NonSerialized]
         Dictionary<string, string> _trackedValues = new Dictionary<string, string>();
 
@@ -824,8 +822,19 @@ namespace vMixController.Widgets
                         string keybystring = currentState.Inputs.Where(x => x.Number == strpasint).FirstOrDefault()?.Key ?? (strp?.ToString() ?? "");
                         string keybyint = currentState.Inputs.Where(x => x.Number == intp).FirstOrDefault()?.Key ?? "";
 
-                        if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath)) continue;
-                        var path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+                        
+
+                        if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath) && item.Action.ActiveStatePathIntDependence == null) continue;
+                        var path = "";
+                        
+                        if (!string.IsNullOrWhiteSpace(item.Action.ActiveStatePath))
+                            path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+                        
+                        if (item.Action.ActiveStatePathIntDependence != null)
+                            path = string.Format(item.Action.ActiveStatePathIntDependence[intp], item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+
+                        if (string.IsNullOrWhiteSpace(path)) return;
+
                         var nval = GetValueByPath(stateToCheck, path);
                         var val = nval == null ? "" : nval.ToString();
                         HasScriptErrors = HasScriptErrors || nval == null;
@@ -1241,8 +1250,15 @@ namespace vMixController.Widgets
                                     value = (object)CalculateExpression<int>(cmd.Parameter);
                                     break;
                             }
-
                             AddLog("{2}) SET {0} TO {1}", path, value, _pointer + 1);
+
+
+                            //translate (+/-=number) into expression
+                            if (value is string strvalue && _isExpression.IsMatch(strvalue))
+                            {
+                                var expr = _isExpression.Split(strvalue);
+                                value = Dispatcher.Invoke(() => CalculateExpression(string.Format("1 * _('{0}') {1} {2}", path, expr[1], expr[2])))?.ToString() ?? "";
+                            }
 
                             SetValueByPath(state, path, value);
                             int flag = 0;

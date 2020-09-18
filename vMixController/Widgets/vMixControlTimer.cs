@@ -16,14 +16,35 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace vMixController.Widgets
 {
+    public static class GlobalTimer
+    {
+        static long _workingTimers = 0;
+        public static long WorkingTimers {
+            get { return _workingTimers; }
+            set { _workingTimers = value;
+                if (_workingTimers <= 0)
+                {
+                    _timer.Stop();
+                    _workingTimers = 0;
+                }
+                else if (!_timer.IsEnabled) _timer.Start();
+            }
+        }
+        static DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Send);
+        static GlobalTimer()
+        {
+            _timer.Tick += _timer_Tick;
+            _timer.Interval = TimeSpan.FromSeconds(1);
+        }
+
+        private static void _timer_Tick(object sender, EventArgs e)
+        {
+            Messenger.Default.Send(TimeSpan.FromSeconds(1));
+        }
+    }
     [Serializable]
     public class vMixControlTimer : vMixControlTextField
     {
-        [NonSerialized]
-        Stopwatch _stopwatch = new Stopwatch();
-        [NonSerialized]
-        DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Send);
-
         public override string Type
         {
             get
@@ -33,9 +54,10 @@ namespace vMixController.Widgets
         }
         public vMixControlTimer()
         {
-            //Text = "00:00:00";
-            _timer.Interval = TimeSpan.FromSeconds(0.1);
-            _timer.Tick += _timer_Tick;
+            Messenger.Default.Register<TimeSpan>(this, (t) =>
+            {
+                Tick(t);
+            });
 
             _width = 256;
         }
@@ -89,13 +111,18 @@ namespace vMixController.Widgets
             return props.Concat(new UserControl[] { control, lbl }.Union(links)).ToArray();
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
+        /*private void _timer_Tick(object sender, EventArgs e)
         {
+            Tick(_stopwatch.Elapsed);
+            _stopwatch.Restart();
+        }*/
 
+        private void Tick(TimeSpan e)
+        {
+            if (!Active) return;
             if (!Reverse)
             {
-                var t = Time.Add(_stopwatch.Elapsed);
-                _stopwatch.Restart();
+                var t = Time.Add(e);
                 if (t <= DefaultTime)
                     Time = t;
                 else
@@ -103,15 +130,14 @@ namespace vMixController.Widgets
                     Time = DefaultTime;
                     Paused = false;
                     Active = false;
-                    _timer.Stop();
+                    GlobalTimer.WorkingTimers--;
                     Messenger.Default.Send(new Pair<string, object>(Links[2], null));
                     Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
             }
             else
             {
-                var t = Time.Subtract(_stopwatch.Elapsed);
-                _stopwatch.Restart();
+                var t = Time.Subtract(e);
                 if (t > TimeSpan.FromSeconds(0))
                     Time = t;
                 else
@@ -119,7 +145,7 @@ namespace vMixController.Widgets
                     Time = TimeSpan.Zero;
                     Paused = false;
                     Active = false;
-                    _timer.Stop();
+                    GlobalTimer.WorkingTimers--;
                     Messenger.Default.Send(new Pair<string, object>(Links[2], null));
                     Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
@@ -130,10 +156,11 @@ namespace vMixController.Widgets
         {
             //Назад
             if (!Paused)
-                if (!Reverse)
-                    Time = TimeSpan.Zero;
-                else
-                    Time = DefaultTime;
+            {
+                Time = TimeSpan.Zero;//TimeSpan.FromMilliseconds(Time.Milliseconds);
+                if (Reverse)
+                    Time = DefaultTime.Add(Time);
+            }
         }
 
         /// <summary>
@@ -460,33 +487,22 @@ namespace vMixController.Widgets
                         {
                             case "Start":
                                 if (!Paused)
-                                {
                                     UpdateTimer();
-                                    _stopwatch.Restart();
-                                }
-                                else
-                                    _stopwatch.Start();
+
                                 Paused = false;
                                 Active = true;
-
-                                _timer.Start();
-
+                                GlobalTimer.WorkingTimers++;
                                 Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 break;
                             case "Pause":
 
                                 if (!Paused)
                                 {
-                                    if (_timer.IsEnabled && _stopwatch.IsRunning)
+                                    if (Active)
                                     {
                                         Paused = true;
                                         Active = false;
-                                        if (!Reverse)
-                                            Time.Add(_stopwatch.Elapsed);
-                                        else
-                                            Time.Subtract(_stopwatch.Elapsed);
-                                        _stopwatch.Stop();
-                                        _timer.Stop();
+                                        GlobalTimer.WorkingTimers--;
                                         Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[1], null));
                                     }
 
@@ -495,8 +511,7 @@ namespace vMixController.Widgets
                                 {
                                     Paused = false;
                                     Active = true;
-                                    _stopwatch.Start();
-                                    _timer.Start();
+                                    GlobalTimer.WorkingTimers++;
                                     Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 }
 
@@ -504,8 +519,7 @@ namespace vMixController.Widgets
                             case "Stop":
                                 Active = false;
                                 Paused = false;
-                                _stopwatch.Stop();
-                                _timer.Stop();
+                                GlobalTimer.WorkingTimers--;
                                 UpdateTimer();
                                 Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
                                 break;
@@ -559,8 +573,8 @@ namespace vMixController.Widgets
 
             if (managed)
             {
-                _timer.Stop();
-                _stopwatch.Stop();
+                GlobalTimer.WorkingTimers--;
+                Messenger.Default.Unregister(this);
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);
             }

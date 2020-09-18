@@ -36,6 +36,7 @@ namespace vMixController.Classes
         public bool IsGroup { get; set; }
 
         public string ActiveStatePath { get; set; }
+        public string[] ActiveStatePathIntDependence { get; set; }
         public string ActiveStateValue { get; set; }
 
         public bool StateDirect { get; set; }

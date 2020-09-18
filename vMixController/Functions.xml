@@ -808,9 +808,23 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Cuts the input directly to Output without changing Preview</Description>
     <Function>CutDirect</Function>
-    <FormatString>Function=CutDirect&amp;Input={0}</FormatString>
+    <FormatString>Function=CutDirect&amp;Input={0}&amp;Mix={1}</FormatString>
     <ActiveStatePath>Active</ActiveStatePath>
-    <ActiveStateValue>{0}</ActiveStateValue>
+    <ActiveStateValue>{4}</ActiveStateValue>
+    <IntDescription>Mix</IntDescription>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStatePathIntDependence>
+      <string>Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+    </ActiveStatePathIntDependence>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -908,6 +922,48 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
       <int>4</int>
     </IntValues>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Description>Clicks one of the four Transition buttons in the main vMix window.</Description>
+    <Function>TransitionMix</Function>
+    <FormatString>Function={2}&amp;Mix={1}</FormatString>
+    <IntDescription>Mix</IntDescription>
+    <StringDecription>Transition</StringDecription>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
+    <StringValues>
+      <string>Fade</string>
+      <string>Zoom</string>
+      <string>Wipe</string>
+      <string>Slide</string>
+      <string>Fly</string>
+      <string>CrossZoom</string>
+      <string>FlyRotate</string>
+      <string>Cube</string>
+      <string>CubeZoom</string>
+      <string>VerticalWipe</string>
+      <string>VerticalSlide</string>
+      <string>Merge</string>
+      <string>WipeReverse</string>
+      <string>SlideReverse</string>
+      <string>VerticalWipeReverse</string>
+      <string>VerticalSlideReverse</string>
+      <string>Cut</string>
+      <string>Stinger1</string>
+      <string>Stinger2</string>
+    </StringValues>
+    <ActiveStatePathIntDependence>
+      <string>Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+    </ActiveStatePathIntDependence>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <!--Output-->
@@ -1300,9 +1356,22 @@ This is block function, block ends at ConditionEnd function.</Description>
     <vMixFunctionReference>
     <Description>Send to Output the selected Input</Description>
     <Function>ActiveInput</Function>
-    <FormatString>Function=ActiveInput&amp;Input={0}</FormatString>
+    <FormatString>Function=ActiveInput&amp;Input={0}&amp;Mix={1}</FormatString>
+      <IntDescription>Mix</IntDescription>
+      <IntValues>
+        <int>0</int>
+        <int>1</int>
+        <int>2</int>
+        <int>3</int>
+      </IntValues>
 	<ActiveStatePath>Active</ActiveStatePath>
-	<ActiveStateValue>{0}</ActiveStateValue>
+  <ActiveStatePathIntDependence>
+    <string>Active</string>
+    <string>Mixes[{3}].Active</string>
+    <string>Mixes[{3}].Active</string>
+    <string>Mixes[{3}].Active</string>
+  </ActiveStatePathIntDependence>
+	<ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Create a new Input based on information provided in Value.</Description>
@@ -1515,10 +1584,24 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Description>Send to Preview the selected Input</Description>
     <Function>PreviewInput</Function>
-    <FormatString>Function=PreviewInput&amp;Input={0}</FormatString>
+    <FormatString>Function=PreviewInput&amp;Input={0}&amp;Mix={1}</FormatString>
+    <IntDescription>Mix</IntDescription>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
 	<ActiveStatePath>Preview</ActiveStatePath>
-	<ActiveStateValue>{0}</ActiveStateValue>
+  <ActiveStatePathIntDependence>
+    <string>Preview</string>
+    <string>Mixes[{3}].Preview</string>
+    <string>Mixes[{3}].Preview</string>
+    <string>Mixes[{3}].Preview</string>
+  </ActiveStatePathIntDependence>
+	<ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
+  
   <vMixFunctionReference>
     <Description>Send to Preview the next Input</Description>
     <Function>PreviewInputNext</Function>

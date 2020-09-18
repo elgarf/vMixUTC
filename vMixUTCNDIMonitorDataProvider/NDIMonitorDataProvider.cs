@@ -93,34 +93,64 @@ namespace UTCNDIMonitorDataProvider
 
 
         /// <summary>
-        /// The <see cref="AudioEnabled" /> property's name.
+        /// The <see cref="IsAudioEnabled" /> property's name.
         /// </summary>
-        public const string AudioEnabledPropertyName = "AudioEnabled";
+        public const string IsAudioEnabledPropertyName = "IsAudioEnabled";
 
-        private bool _audioEnabled = false;
+        private bool _isAudioEnabled = false;
 
         /// <summary>
         /// Sets and gets the AudioEnabled property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public bool AudioEnabled
+        public bool IsAudioEnabled
         {
             get
             {
-                return _audioEnabled;
+                return _isAudioEnabled;
             }
 
             set
             {
-                if (_audioEnabled == value)
+                if (_isAudioEnabled == value)
                 {
                     return;
                 }
 
-                _ui.Preview.IsAudioEnabled = value;
+                //_ui.Preview.IsAudioEnabled = value;
 
-                _audioEnabled = value;
-                RaisePropertyChanged(AudioEnabledPropertyName);
+                _isAudioEnabled = value;
+                RaisePropertyChanged(IsAudioEnabledPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="IsLowBandwidth" /> property's name.
+        /// </summary>
+        public const string IsLowBandwidthPropertyName = "IsLowBandwidth";
+
+        private bool _isLowBandwidth = true;
+
+        /// <summary>
+        /// Sets and gets the IsLowBandwidth property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsLowBandwidth
+        {
+            get
+            {
+                return _isLowBandwidth;
+            }
+
+            set
+            {
+                if (_isLowBandwidth == value)
+                {
+                    return;
+                }
+
+                _isLowBandwidth = value;
+                RaisePropertyChanged(IsLowBandwidthPropertyName);
             }
         }
 
@@ -278,7 +308,7 @@ namespace UTCNDIMonitorDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object>() { NDISource?.Name, null, MultiViewLayout, AspectRatio, AudioEnabled };
+            return new List<object>() { NDISource?.Name, null, MultiViewLayout, AspectRatio, IsAudioEnabled, IsLowBandwidth };
         }
 
         public void SetProperties(List<object> props)
@@ -290,8 +320,6 @@ namespace UTCNDIMonitorDataProvider
                         Source = src;*/
                 Source = (string)props[0];
 
-                if (props.Count >= 5)
-                    AudioEnabled = (bool)props[4];
                 //NDISource = new NewTek.NDI.Source((string)props[0]);//_finder.Sources.Where(x => x.Name == (string)props[0] && x.IpAddress == (string)props[1]).FirstOrDefault();
                 //8in, 14in, legacy
                 if (props.Count >= 3)
@@ -299,6 +327,12 @@ namespace UTCNDIMonitorDataProvider
                 //wide, normal, anamorphic
                 if (props.Count >= 4)
                     AspectRatio = (byte)props[3];
+                //audio enabled
+                if (props.Count >= 5)
+                    IsAudioEnabled = (bool)props[4];
+                //low bandwidth
+                if (props.Count >= 6)
+                    IsLowBandwidth = (bool)props[5];
             }
 
 

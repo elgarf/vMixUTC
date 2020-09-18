@@ -2371,6 +2371,10 @@ namespace vMixController.ViewModel
             {
                 item.Dispose();
             }
+            foreach (var item in WidgetTemplates.OfType<IDisposable>())
+            {
+                item.Dispose();
+            }
             base.Cleanup();
         }
 
