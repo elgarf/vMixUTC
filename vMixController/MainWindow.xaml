@@ -464,8 +464,15 @@
                                 <Slider Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
                                 <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
                             </Grid>
+                            <CheckBox Tag="Open Last At Start" IsChecked="{Binding WindowSettings.OpenLastAtStart, Mode=TwoWay}"/>
                             <CheckBox Tag="Is Topmost" IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}"/>
-                            <CheckBox Tag="Enable Log" IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}"/>
+                            <Border Tag="Enable Log">
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox x:Name="CheckBox" IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}"/>
+                                    <Button Margin="4,0,0,0" VerticalAlignment="Center" FontSize="10" Height="16" Command="{Binding OpenLogFolder}">Open Log Folder</Button>
+                                </StackPanel>
+                            </Border>
+                            
                             <CheckBox Tag="Show Widget Lock" IsChecked="{Binding WindowSettings.ShowIndividualLock, Mode=TwoWay}"/>
                         </ListView>
                         <Grid Background="Transparent" DataContext="{Binding GlobalSettings, Source={StaticResource Locator}}">

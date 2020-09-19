@@ -68,5 +68,15 @@ namespace vMixController.PropertiesControls
 
 
 
+        public bool Grouped
+        {
+            get { return (bool)GetValue(GroupedProperty); }
+            set { SetValue(GroupedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Grouped.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GroupedProperty =
+            DependencyProperty.Register("Grouped", typeof(bool), typeof(BoolControl), new PropertyMetadata(false));
+
     }
 }

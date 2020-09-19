@@ -58,6 +58,11 @@
             <ContentControl.Template>
                 <ControlTemplate>
                     <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Height" Value="Auto"/>
+                            </Style>
+                        </Grid.Resources>
                         <Grid DataContext="{TemplateBinding DataContext}" x:Name="Multiview8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="0.94*"/>
@@ -167,21 +172,25 @@
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="1">
+                            <Setter Property="Cursor" Value="Hand" TargetName="Multiview8"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview8"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="2">
+                            <Setter Property="Cursor" Value="Hand" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="3">
+                            <Setter Property="Cursor" Value="Hand" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview8"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding MultiViewLayout}" Value="4">
+                            <Setter Property="Cursor" Value="Hand" TargetName="Multiview8"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview2"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Multiview14"/>
                             <Setter Property="Visibility" Value="Visible" TargetName="Multiview8"/>

@@ -89,11 +89,11 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
             List<UserControl> _temp = new List<UserControl>();
-            var uc = GetPropertyControl<PropertiesControls.StringControl>();
+            var uc = GetPropertyControl<PropertiesControls.StringControl>(Type + "IP");
             uc.Title = "IP";
             uc.Value = IP;
             _temp.Add(uc);
-            uc = GetPropertyControl<PropertiesControls.StringControl>();
+            uc = GetPropertyControl<PropertiesControls.StringControl>(Type + "PRT");
             uc.Title = "Port";
             uc.Value = Port;
             _temp.Add(uc);

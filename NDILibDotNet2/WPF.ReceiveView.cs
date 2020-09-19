@@ -481,6 +481,9 @@ namespace NewTek.NDI.WPF
             if (String.IsNullOrEmpty(ReceiverName))
                 throw new ArgumentException("sourceName can not be null or empty.", ReceiverName);
 
+            using (var volOut = new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, 50))
+                _volume = volOut.Volume;
+
             // just in case we're already connected
             Disconnect();
 

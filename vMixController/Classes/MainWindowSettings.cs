@@ -322,6 +322,37 @@ namespace vMixController.Classes
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="OpenLastAtStart" /> property's name.
+        /// </summary>
+        public const string OpenLastAtStartPropertyName = "OpenLastAtStart";
+
+        private bool _openLastAtStart = false;
+
+        /// <summary>
+        /// Sets and gets the OpenLastAtStart property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool OpenLastAtStart
+        {
+            get
+            {
+                return _openLastAtStart;
+            }
+
+            set
+            {
+                if (_openLastAtStart == value)
+                {
+                    return;
+                }
+
+                _openLastAtStart = value;
+                RaisePropertyChanged(OpenLastAtStartPropertyName);
+            }
+        }
+
         private bool _isTopmost = false;
 
         public bool IsTopmost

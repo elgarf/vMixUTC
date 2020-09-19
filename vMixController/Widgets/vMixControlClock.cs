@@ -186,13 +186,13 @@ namespace vMixController.Widgets
         {
             _timer.Stop();
 
-            var ctrl = GetPropertyControl<PropertiesControls.SchedulerControl>();
-            ctrl.Events.Clear();
+            var clockSchedule = GetPropertyControl<PropertiesControls.SchedulerControl>();
+            clockSchedule.Events.Clear();
             foreach (var item in _events)
             {
-                ctrl.Events.Add(item);
+                clockSchedule.Events.Add(item);
             }
-            return base.GetPropertiesControls().Union(new UserControl[] { ctrl }).ToArray();
+            return base.GetPropertiesControls().Union(new UserControl[] { clockSchedule }).ToArray();
         }
 
         public override void SetProperties(UserControl[] _controls)

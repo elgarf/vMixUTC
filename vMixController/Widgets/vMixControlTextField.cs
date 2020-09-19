@@ -29,7 +29,7 @@ namespace vMixController.Widgets
 
         static vMixControlTextField()
         {
-            //Отложенное обновление биндинга
+            //Delayed binding update
             DelayedUpdateTimer.Interval = TimeSpan.FromSeconds(0.1);
             DelayedUpdateTimer.Tick += DelayedUpdateTimer_Tick;
             DelayedUpdateTimer.Start();
@@ -173,6 +173,36 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
+        /// The <see cref="IsEditable" /> property's name.
+        /// </summary>
+        public const string IsEditablePropertyName = "IsEditable";
+
+        private bool _isEditable = true;
+
+        /// <summary>
+        /// Sets and gets the IsEditable property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsEditable
+        {
+            get
+            {
+                return _isEditable;
+            }
+
+            set
+            {
+                if (_isEditable == value)
+                {
+                    return;
+                }
+
+                _isEditable = value;
+                RaisePropertyChanged(IsEditablePropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="IsMappedToGUID" /> property's name.
         /// </summary>
         public const string IsMappedToGUIDPropertyName = "IsMappedToGUID";
@@ -222,43 +252,9 @@ namespace vMixController.Widgets
                 {
                     var exp = BindingOperations.GetMultiBindingExpression(d, TextProperty);
                     if (exp != null && exp.Status == BindingStatus.Active)
-                    {
                         DelayedUpdate.Enqueue(new Triple<DependencyObject, DependencyProperty, DateTime>() { A = d, B = e.Property, C = DateTime.Now });
-                        //DelayedUpdateTimer.Start();
-                        //exp.UpdateTarget();
-                        //exp.UpdateSource();
-                        /*foreach (var item in exp.BindingExpressions.OfType<BindingExpression>())
-                        {
-                            if (item.DataItem is InputBase && (item.DataItem as InputBase).Type == "TXT" && (item.DataItem as InputText).Text == (string)e.OldValue)
-                                (item.DataItem as InputText).Text = (string)e.NewValue;
-                            if (item.DataItem is InputBase && (item.DataItem as InputBase).Type == "IMG" && (item.DataItem as InputImage).Image == (string)e.OldValue)
-                                (item.DataItem as InputImage).Image = (string)e.NewValue;
-                            
-                        }*/
-                    }
-                    //BindingOperations.SetBinding(d, TextProperty, bnd);
                 }
                 catch (Exception) { }
-                //(d as vMixControlTextField).Update();
-                ///TODO: Non defined behavior, rewrite
-                /*var obj = (vMixControlTextField)d;
-                if (obj._updating) return;
-                var text = e.NewValue as string;
-                if (obj.Paths != null && obj.State != null)
-                    foreach (var item in obj.Paths)
-                    {
-                        var input = (Input)obj.GetValueByPath(obj.State, string.Format("Inputs[{0}]", item.A));
-                        if (input != null)
-                        {
-                            var val = input.Elements.Where(x => (x is InputBase) && (x as InputBase).Name == item.B).FirstOrDefault();
-                            if (val != null)
-                            {
-                                var prop = val.GetType().GetProperty(((vMixControlTextField)d).MappedProperty);
-                                if (prop != null)
-                                    prop.SetValue(val, text);
-                            }
-                        }
-                    }*/
             }
         }
 
@@ -288,7 +284,6 @@ namespace vMixController.Widgets
                 MultiBinding binding = new MultiBinding
                 {
                     Converter = ConverterSelector(),
-
                     Mode = BindingMode.TwoWay,
                     UpdateSourceTrigger = UpdateSourceTrigger.Default,
                     NotifyOnSourceUpdated = true,
@@ -410,27 +405,32 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
 
-            var control = GetPropertyControl<TitleMappingControl>();
-            control.Titles.Clear();
+            var titleMapper = GetPropertyControl<TitleMappingControl>();
+            titleMapper.Titles.Clear();
             foreach (var item in _paths)
-                control.Titles.Add(new Pair<string, string>(item.A, item.B));
+                titleMapper.Titles.Add(new Pair<string, string>(item.A, item.B));
 
-            var control1 = GetPropertyControl<BoolControl>();
-            control1.Visibility = Visibility.Visible;
-            control1.Value = IsTable;
-            control1.Title = LocalizationManager.Get("Table");
-            control1.Help = Help.TextField_Table;
+            var tableBool = GetPropertyControl<BoolControl>(Type + "T");
+            tableBool.Visibility = Visibility.Visible;
+            tableBool.Value = IsTable;
+            tableBool.Title = LocalizationManager.Get("Table");
+            tableBool.Help = Help.TextField_Table;
+
+            var editableBool = GetPropertyControl<BoolControl>(Type + "E");
+            editableBool.Visibility = Visibility.Visible;
+            editableBool.Value = IsEditable;
+            editableBool.Title = LocalizationManager.Get("Editable");
 
             if (this.GetType() == typeof(vMixControlTextField))
             {
-                var control2 = GetPropertyControl<ComboBoxControl>(Type);
-                control2.Title = "Style";
-                control2.Value = Template ? "File" : "Text";
-                control2.Items = new List<string>() { "Text", "File" };
-                return base.GetPropertiesControls().Concat(new UserControl[] { control2, control1, control }).ToArray();
+                var styleComboBox = GetPropertyControl<ComboBoxControl>(Type + "ST");
+                styleComboBox.Title = "Style";
+                styleComboBox.Value = Template ? "File" : "Text";
+                styleComboBox.Items = new List<string>() { "Text", "File" };
+                return base.GetPropertiesControls().Concat(new UserControl[] { styleComboBox, tableBool, editableBool, titleMapper }).ToArray();
             }
 
-            return base.GetPropertiesControls().Concat(new UserControl[] { control1, control }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { tableBool, editableBool, titleMapper }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
@@ -473,18 +473,17 @@ namespace vMixController.Widgets
             foreach (var item in (_controls.OfType<TitleMappingControl>().First()).Titles)
                 _paths.Add(new Pair<string, string>(item.A, item.B));
 
-            _isTable = _controls.OfType<BoolControl>().First().Value;
+            IsTable = _controls.FindPropertyControl<BoolControl>(Type + "T").Value;
+            IsEditable = _controls.FindPropertyControl<BoolControl>(Type + "E").Value;
 
             if (this.GetType() == typeof(vMixControlTextField))
-                Template = (string)_controls.OfType<ComboBoxControl>().First().Value == "File";
-            //_isMappedToGUID = _controls.OfType<TitleMappingControl>().First().IsGUIDTargeted;
+                Template = (string)_controls.FindPropertyControl<ComboBoxControl>(Type + "ST").Value == "File";
 
             UpdateText(_paths);
         }
 
         protected override void Dispose(bool managed)
         {
-            //BindingOperations.ClearAllBindings(this);
             base.Dispose(managed);
         }
 

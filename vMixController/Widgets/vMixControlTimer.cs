@@ -78,9 +78,9 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
 
-            StringControl control = GetPropertyControl<StringControl>();
-            control.Title = "Format";
-            control.Value = Format;
+            StringControl formatString = GetPropertyControl<StringControl>();
+            formatString.Title = "Format";
+            formatString.Value = Format;
             var props = base.GetPropertiesControls();
             props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
 
@@ -97,18 +97,18 @@ namespace vMixController.Widgets
 
             links[0].Title = "On Start";
             links[0].Value = Links[0];
-            links[0].Tag = 0;
+            //links[0].Tag = "0";
             links[1].Title = "On Pause";
             links[1].Value = Links[1];
-            links[1].Tag = 1;
+            //links[1].Tag = "1";
             links[2].Title = "On Stop";
             links[2].Value = Links[2];
-            links[2].Tag = 2;
+            //links[2].Tag = "2";
             links[3].Title = "On Completion";
             links[3].Value = Links.Length > 3 ? Links[3] : "";
-            links[3].Tag = 3;
+            //links[3].Tag = "3";
 
-            return props.Concat(new UserControl[] { control, lbl }.Union(links)).ToArray();
+            return props.Concat(new UserControl[] { formatString, lbl }.Union(links)).ToArray();
         }
 
         /*private void _timer_Tick(object sender, EventArgs e)
@@ -561,10 +561,10 @@ namespace vMixController.Widgets
             if (Links.Length < 4)
                 Links = new string[] { "", "", "", "" };
 
-            Links[0] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 0).First().Value;
-            Links[1] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 1).First().Value;
-            Links[2] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 2).First().Value;
-            Links[3] = _controls.OfType<StringControl>().Where(x => x.Tag != null && (int)x.Tag == 3).First().Value;
+            Links[0] = _controls.FindPropertyControl<StringControl>(Type + "1").Value;
+            Links[1] = _controls.FindPropertyControl<StringControl>(Type + "2").Value;
+            Links[2] = _controls.FindPropertyControl<StringControl>(Type + "3").Value;
+            Links[3] = _controls.FindPropertyControl<StringControl>(Type + "4").Value;
         }
 
         protected override void Dispose(bool managed)

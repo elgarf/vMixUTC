@@ -67,32 +67,32 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            var control2 = GetPropertyControl<DataSourceControl>();
-            control2.Update();
+            var dataSource = GetPropertyControl<DataSourceControl>();
+            dataSource.Update();
             if (DataSource != null)
             {
-                control2.DataSource = DataSource.A;
-                control2.DataProperty = DataSource.B;
-                control2.Active = DataSource.C;
+                dataSource.DataSource = DataSource.A;
+                dataSource.DataProperty = DataSource.B;
+                dataSource.Active = DataSource.C;
             }
 
 
-            ListControl control = GetPropertyControl<ListControl>();
-            BindingOperations.ClearAllBindings(control);
+            ListControl itemsList = GetPropertyControl<ListControl>();
+            BindingOperations.ClearAllBindings(itemsList);
             var binding = new Binding("Active")
             {
                 Converter = new NKristek.Wpf.Converters.BoolToInverseVisibilityConverter(),
-                Source = control2
+                Source = dataSource
             };
-            BindingOperations.SetBinding(control, ListControl.VisibilityProperty, binding);
+            BindingOperations.SetBinding(itemsList, ListControl.VisibilityProperty, binding);
 
-            control.Items.Clear();
+            itemsList.Items.Clear();
             if (Items != null)
                 foreach (var item in Items)
                 {
-                    control.Items.Add(new Classes.DummyStringProperty() { Value = item });
+                    itemsList.Items.Add(new Classes.DummyStringProperty() { Value = item });
                 }
-            return base.GetPropertiesControls().Concat(new UserControl[] { control, control2 }).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { itemsList, dataSource }).ToArray();
             //return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray(); ;
         }
 

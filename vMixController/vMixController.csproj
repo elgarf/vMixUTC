@@ -260,6 +260,9 @@
     <Compile Include="KeyLearnWindow.xaml.cs">
       <DependentUpon>KeyLearnWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertiesControls\GridControl.xaml.cs">
+      <DependentUpon>GridControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PropertiesControls\InputSelectorControl.xaml.cs">
       <DependentUpon>InputSelectorControl.xaml</DependentUpon>
     </Compile>
@@ -354,6 +357,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PropertiesControls\GridControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertiesControls\InputSelectorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -446,6 +453,12 @@
     </None>
     <None Include="Examples\Scoreboard.vmix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\ProxySample.vmc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\ProxySample.vmix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

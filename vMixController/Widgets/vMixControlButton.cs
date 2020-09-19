@@ -1327,60 +1327,87 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            FilePathControl imgctrl = GetPropertyControl<FilePathControl>(this.Type);
-            imgctrl.Filter = "Images|*.bmp;*.jpg;*.png;*.ico";
-            imgctrl.Value = Image;
-            imgctrl.Title = "Image";
+            FilePathControl imagePath = GetPropertyControl<FilePathControl>(this.Type);
+            imagePath.Filter = "Images|*.bmp;*.jpg;*.png;*.ico";
+            imagePath.Value = Image;
+            imagePath.Title = "Image";
 
-            ComboBoxControl imgtype = GetPropertyControl<ComboBoxControl>(this.Type + "imagetype");
-            imgtype.Title = LocalizationManager.Get("Image Type");
-            imgtype.Items = new string[] { DEFAULT, DEFAULTPRESSED };
-            imgtype.Value = ImageMax == 1 ? DEFAULT : DEFAULTPRESSED;
+            ComboBoxControl imageTypeComboBox = GetPropertyControl<ComboBoxControl>(this.Type + "imagetype");
+            imageTypeComboBox.Title = LocalizationManager.Get("Image Type");
+            imageTypeComboBox.Items = new string[] { DEFAULT, DEFAULTPRESSED };
+            imageTypeComboBox.Value = ImageMax == 1 ? DEFAULT : DEFAULTPRESSED;
+            imageTypeComboBox.Margin = new Thickness(0, 0, 2, 0);
 
-            ComboBoxControl comboctrl = GetPropertyControl<ComboBoxControl>(this.Type + "style");
-            comboctrl.Title = LocalizationManager.Get("Style");
-            comboctrl.Items = new string[] { MOMENTARY, PRESS/*, TOGGLE */};
-            comboctrl.Value = Style;
+            ComboBoxControl styleComboBox = GetPropertyControl<ComboBoxControl>(this.Type + "style");
+            styleComboBox.Title = LocalizationManager.Get("Style");
+            styleComboBox.Items = new string[] { MOMENTARY, PRESS/*, TOGGLE */};
+            styleComboBox.Value = Style;
+            styleComboBox.Margin = new Thickness(2, 0, 0, 0);
+            Grid.SetColumn(styleComboBox, 1);
 
-            BoolControl boolctrl = GetPropertyControl<BoolControl>(this.Type + "SD");
-            boolctrl.Title = LocalizationManager.Get("State Dependent");
-            boolctrl.Value = IsStateDependent;
-            boolctrl.Visibility = System.Windows.Visibility.Visible;
-            boolctrl.Help = Help.Button_StateDependent;
+            GridControl styleGroup = GetPropertyControl<GridControl>(this.Type + "ST");
+            styleGroup.Columns = 2;
+            styleGroup.Children.Clear();
+            styleGroup.Children.Add(imageTypeComboBox);
+            styleGroup.Children.Add(styleComboBox);
 
-            BoolControl boolctrl1 = GetPropertyControl<BoolControl>(this.Type + "EA");
-            boolctrl1.Title = LocalizationManager.Get("Execute After Load");
-            boolctrl1.Value = AutoStart;
-            boolctrl1.Visibility = System.Windows.Visibility.Visible;
-            boolctrl1.Help = Help.Button_ExecuteAfterLoad;
 
-            BoolControl boolctrl2 = GetPropertyControl<BoolControl>(Type + "CB");
-            boolctrl2.Title = LocalizationManager.Get("Colorize Button");
-            boolctrl2.Value = IsColorized;
-            boolctrl2.Visibility = System.Windows.Visibility.Visible;
-            boolctrl2.Help = Help.Button_Colorize;
+            BoolControl stateDependentBool = GetPropertyControl<BoolControl>(this.Type + "SD");
+            stateDependentBool.Title = LocalizationManager.Get("State Dependent");
+            stateDependentBool.Value = IsStateDependent;
+            stateDependentBool.Visibility = System.Windows.Visibility.Visible;
+            stateDependentBool.Help = Help.Button_StateDependent;
+            stateDependentBool.Grouped = true;
+            stateDependentBool.Margin = new Thickness(0, 0, 2, 0);
 
-            ScriptControl control = GetPropertyControl<ScriptControl>();
-            control.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            control.Commands.Clear();
+            BoolControl execAfterLoadBool = GetPropertyControl<BoolControl>(this.Type + "EA");
+            execAfterLoadBool.Title = LocalizationManager.Get("Execute After Load");
+            execAfterLoadBool.Value = AutoStart;
+            execAfterLoadBool.Visibility = System.Windows.Visibility.Visible;
+            execAfterLoadBool.Help = Help.Button_ExecuteAfterLoad;
+            execAfterLoadBool.Grouped = true;
+            execAfterLoadBool.Margin = new Thickness(2, 0, 2, 0);
+
+            BoolControl colorizeBool = GetPropertyControl<BoolControl>(Type + "CB");
+            colorizeBool.Title = LocalizationManager.Get("Colorize Button");
+            colorizeBool.Value = IsColorized;
+            colorizeBool.Visibility = System.Windows.Visibility.Visible;
+            colorizeBool.Help = Help.Button_Colorize;
+            colorizeBool.Grouped = true;
+            colorizeBool.Margin = new Thickness(2, 0, 0, 0);
+
+            ScriptControl script = GetPropertyControl<ScriptControl>();
+            script.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            script.Commands.Clear();
+
+
+            GridControl boolGroup = GetPropertyControl<GridControl>();
+            boolGroup.Columns = 3;
+
+            Grid.SetColumn(stateDependentBool, 0);
+            Grid.SetColumn(execAfterLoadBool, 1);
+            Grid.SetColumn(colorizeBool, 2);
+
+            boolGroup.Children.Clear();
+            boolGroup.Children.Add(stateDependentBool);
+            boolGroup.Children.Add(execAfterLoadBool);
+            boolGroup.Children.Add(colorizeBool);
+
             foreach (var item in Commands)
             {
                 if (item.AdditionalParameters.Count == 0)
                     for (int i = 0; i < 10; i++)
                         item.AdditionalParameters.Add(new One<string>());
-                control.Commands.Add(new vMixControlButtonCommand() { IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                script.Commands.Add(new vMixControlButtonCommand() { IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
             }
-            control.Log = Log;
-            return base.GetPropertiesControls().Concat(new UserControl[] { imgctrl, imgtype, comboctrl, boolctrl, boolctrl1, boolctrl2, control }).ToArray();
+            script.Log = Log;
+            return base.GetPropertiesControls().Concat(new UserControl[] { imagePath, styleGroup, boolGroup, script }).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)
         {
-            //_blinker.Stop();
             base.SetProperties(viewModel);
             BlinkBorderColor = BorderColor;
-            //_defaultBorderColor = BorderColor;
-            //_blinker.Start();
         }
 
         public override void SetProperties(UserControl[] _controls)
@@ -1398,11 +1425,16 @@ namespace vMixController.Widgets
                 i++;
             }
 
-            IsStateDependent = _controls.OfType<BoolControl>().First().Value;
-            AutoStart = _controls.OfType<BoolControl>().ElementAt(1).Value;
-            IsColorized = _controls.OfType<BoolControl>().ElementAt(2).Value;
-            Style = (string)_controls.OfType<ComboBoxControl>().Last().Value;
-            ImageMax = (string)_controls.OfType<ComboBoxControl>().First().Value == DEFAULT ? 1 : 2;
+            var sg = _controls.OfType<GridControl>().FirstOrDefault();
+            var g = _controls.OfType<GridControl>().LastOrDefault();
+
+            IsStateDependent = g.Children.OfType<BoolControl>().First().Value;
+            AutoStart = g.Children.OfType<BoolControl>().ElementAt(1).Value;
+            IsColorized = g.Children.OfType<BoolControl>().ElementAt(2).Value;
+
+
+            Style = (string)sg.Children.OfType<ComboBoxControl>().Last().Value;
+            ImageMax = (string)sg.Children.OfType<ComboBoxControl>().First().Value == DEFAULT ? 1 : 2;
 
             var u = _controls.OfType<FilePathControl>().First().Value;
             /*if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))

@@ -22,6 +22,6 @@
         <Grid Background="{StaticResource Main.Gradient}">
             <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
         </Grid>
-        <TextBox Text="{Binding Value, Mode=TwoWay, ElementName=Me}" Grid.Column="1"></TextBox>
+        <TextBox Style="{StaticResource WidgetTextBox}" Height="Auto" Text="{Binding Value, Mode=TwoWay, ElementName=Me}" Grid.Column="1"></TextBox>
     </Grid>
 </UserControl>

@@ -51,7 +51,7 @@ namespace vMixController.Classes
         public bool Ctrl { get; set; }
         public bool Alt { get; set; }
         public bool Shift { get; set; }
-        public bool OnPress { get; set; } = false;
+        public bool OnPress { get; set; } = true;
 
         /// <summary>
         /// The <see cref="Active" /> property's name.

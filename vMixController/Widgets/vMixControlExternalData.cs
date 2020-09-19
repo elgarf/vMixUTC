@@ -394,23 +394,24 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            IntControl control = GetPropertyControl<IntControl>();
-            control.Title = LocalizationManager.Get("Update Period");
-            control.Value = Period;
+            IntControl periodInt = GetPropertyControl<IntControl>();
+            periodInt.Title = LocalizationManager.Get("Update Period");
+            periodInt.Value = Period;
 
-            FilePathControl control1 = GetPropertyControl<FilePathControl>();
-            control1.Filter = "External Data|*.dll";
-            control1.Value = DataProviderPath;
-            control.Value = Period;
+            FilePathControl providerPath = GetPropertyControl<FilePathControl>();
+            providerPath.Filter = "External Data|*.dll";
+            providerPath.Value = DataProviderPath;
+            periodInt.Value = Period;
 
-            BoolControl control2 = GetPropertyControl<BoolControl>();
-            control2.Value = RestartData;
-            control2.Title = LocalizationManager.Get("Loop Data");
-            control2.Tag = "RD";
+            BoolControl loopBool = GetPropertyControl<BoolControl>();
+            loopBool.Value = RestartData;
+            loopBool.Title = LocalizationManager.Get("Loop Data");
+            loopBool.Tag = "RD";
 
             var props = base.GetPropertiesControls();
-            props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
-            return (new UserControl[] { control, control1, control2 }).Concat(props).ToArray();
+            foreach (var prop in props.OfType<BoolControl>())
+                prop.Visibility = Visibility.Collapsed;
+            return (new UserControl[] { periodInt, providerPath, loopBool }).Concat(props).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)

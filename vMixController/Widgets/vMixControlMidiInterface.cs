@@ -172,16 +172,11 @@ namespace vMixController.Widgets
 
             }
 
-            var midiDeviceSelector = GetPropertyControl<ComboBoxControl>();
-            midiDeviceSelector.Title = "Device";
-            midiDeviceSelector.Items = MidiDevices;
-            midiDeviceSelector.Tag = "DeviceSelector";
-            /*Binding bnd = new Binding("DeviceCaps")
-            {
-                Source = this
-            };
-            BindingOperations.SetBinding(midiDeviceSelector, ComboBoxControl.ValueProperty, bnd);*/
-            midiDeviceSelector.Value = Device != null ? InputDevice.GetDeviceCapabilities(Device.DeviceID).name : "";
+            var midiDeviceComboBox = GetPropertyControl<ComboBoxControl>();
+            midiDeviceComboBox.Title = "Device";
+            midiDeviceComboBox.Items = MidiDevices;
+            midiDeviceComboBox.Tag = "DeviceSelector";
+            midiDeviceComboBox.Value = Device != null ? InputDevice.GetDeviceCapabilities(Device.DeviceID).name : "";
 
 
             var midiMappingCtrl = GetPropertyControl<MidiMappingControl>();
@@ -193,10 +188,7 @@ namespace vMixController.Widgets
             {
                 midiMappingCtrl.Midis.Add(item);
             }
-            /*Binding bnd = new Binding("Device");
-            bnd.Source = this;
-            BindingOperations.SetBinding(midiDeviceSelector, ComboBox.SelectedValueProperty, bnd);*/
-            return base.GetPropertiesControls().Union(new UserControl[] { midiDeviceSelector, midiMappingCtrl }).ToArray();
+            return base.GetPropertiesControls().Union(new UserControl[] { midiDeviceComboBox, midiMappingCtrl }).ToArray();
         }
 
         private MidiInterfaceKey Learn()

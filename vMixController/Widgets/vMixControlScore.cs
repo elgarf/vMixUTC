@@ -147,18 +147,18 @@ namespace vMixController.Widgets
             var props = base.GetPropertiesControls();
             props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
 
-            var ctrl = GetPropertyControl<ComboBoxControl>();
-            ctrl.Title = Extensions.LocalizationManager.Get("Style");
-            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            var styleComboBox = GetPropertyControl<ComboBoxControl>(Type + "SCS");
+            styleComboBox.Title = Extensions.LocalizationManager.Get("Style");
+            styleComboBox.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
                 "Basic",
                 "Basketball",
                 "Rugby",
                 "American Football"
             };
-            ctrl.Value = Style;
+            styleComboBox.Value = Style;
 
-            return (new UserControl[] { ctrl }).Concat(props).ToArray();
+            return (new UserControl[] { styleComboBox }).Concat(props).ToArray();
         }
 
         public override void SetProperties(UserControl[] _controls)

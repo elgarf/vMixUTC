@@ -116,25 +116,25 @@ namespace vMixController.Widgets
 
         public override UserControl[] GetPropertiesControls()
         {
-            var ctrl = GetPropertyControl<ComboBoxControl>();
-            ctrl.Title = Extensions.LocalizationManager.Get("Style");
-            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            var styleComboBox = GetPropertyControl<ComboBoxControl>();
+            styleComboBox.Title = Extensions.LocalizationManager.Get("Style");
+            styleComboBox.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
                 "Horizontal",
                 "Vertical"
             };
-            ctrl.Value = Style;
+            styleComboBox.Value = Style;
 
-            var ctrl1 = GetPropertyControl<ComboBoxControl>(Type + "Mode");
-            ctrl1.Title = Extensions.LocalizationManager.Get("Mode");
-            ctrl1.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            var modeComboBox = GetPropertyControl<ComboBoxControl>(Type + "Mode");
+            modeComboBox.Title = Extensions.LocalizationManager.Get("Mode");
+            modeComboBox.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
                 "A/B",
                 "Snap Back"
             };
-            ctrl1.Value = Mode;
+            modeComboBox.Value = Mode;
 
-            return (new UserControl[] { ctrl, ctrl1 }).Concat(base.GetPropertiesControls()).ToArray();
+            return (new UserControl[] { styleComboBox, modeComboBox }).Concat(base.GetPropertiesControls()).ToArray();
         }
 
         public override void SetProperties(UserControl[] _controls)

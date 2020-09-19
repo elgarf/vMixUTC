@@ -51,7 +51,7 @@ namespace vMixController.Widgets
 
         private void _meterTimer_Tick(object sender, EventArgs e)
         {
-            if (!ShowMeters) return;
+            //if (!ShowMeters) return;
 
             if (this.State == null) return;
             if (_meterState == null || _meterState.GetUrl() != this.State.GetUrl())
@@ -88,14 +88,22 @@ namespace vMixController.Widgets
                 case "Bus G": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusG]", InputKey)); break;
             }
             if (input == null) return;
+
+            //Update all properties
+
             var f1 = input.GetType().GetProperty("MeterF1");
             var f2 = input.GetType().GetProperty("MeterF2");
+            var muted = input.GetType().GetProperty("Muted");
+            var volume = input.GetType().GetProperty("Volume");
             if (f1 != null && f2 != null)
             {
                 F1 = Math.Pow((double)f1.GetValue(input), 1d / 4d);
                 F2 = Math.Pow((double)f2.GetValue(input), 1d / 4d);
-                //Debug.WriteLine("F1:{0}, F2:{1}", F1, F2);
             }
+            if (muted != null)
+                IsMuted = (bool)muted.GetValue(input);
+            if (volume != null)
+                Value = (double)volume.GetValue(input);
         }
 
         [NonSerialized]
@@ -523,8 +531,11 @@ namespace vMixController.Widgets
         {
             var props = base.GetPropertiesControls();
 
-            props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
-            props.OfType<TitleMappingControl>().First().Visibility = System.Windows.Visibility.Collapsed;
+            foreach (var prop in props)
+                prop.Visibility = Visibility.Collapsed;
+            //props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
+            //props.OfType<TitleMappingControl>().First().Visibility = System.Windows.Visibility.Collapsed;
+
 
             var input = GetPropertyControl<InputSelectorControl>();
             input.Items = null;
@@ -532,18 +543,9 @@ namespace vMixController.Widgets
             input.Title = "Input";
             input.Value = InputKey;
 
-            var ctrl = GetPropertyControl<ComboBoxControl>(Type + "Style");
-            ctrl.Title = Extensions.LocalizationManager.Get("Style");
-            ctrl.Items = new System.Collections.ObjectModel.ObservableCollection<string>
-            {
-                "Horizontal",
-                "Vertical"
-            };
-            ctrl.Value = Style;
-
-            var ctrl1 = GetPropertyControl<ComboBoxControl>(Type + "Target");
-            ctrl1.Title = Extensions.LocalizationManager.Get("Target");
-            ctrl1.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            var targetComboBox = GetPropertyControl<ComboBoxControl>(Type + "Target");
+            targetComboBox.Title = Extensions.LocalizationManager.Get("Target");
+            targetComboBox.Items = new System.Collections.ObjectModel.ObservableCollection<string>
             {
                 "Input",
                 "Master",
@@ -555,19 +557,45 @@ namespace vMixController.Widgets
                 "Bus F",
                 "Bus G"
             };
-            ctrl1.Value = Target;
+            targetComboBox.Value = Target;
 
-            var ctrl2 = GetPropertyControl<BoolControl>(Type + "SM");
-            ctrl2.Title = Extensions.LocalizationManager.Get("Show Meters");
-            ctrl2.Value = ShowMeters;
 
-            var ctrl3 = GetPropertyControl<BoolControl>(Type + "SS");
-            ctrl3.Title = Extensions.LocalizationManager.Get("Show Slider");
-            ctrl3.Value = ShowSlider;
+            var styleComboBox = GetPropertyControl<ComboBoxControl>(Type + "Style");
+            styleComboBox.Title = Extensions.LocalizationManager.Get("Style");
+            styleComboBox.Items = new System.Collections.ObjectModel.ObservableCollection<string>
+            {
+                "Horizontal",
+                "Vertical"
+            };
+            styleComboBox.Value = Style;
+            styleComboBox.Margin = new Thickness(0, 0, 2, 0);
+            Grid.SetColumn(styleComboBox, 0);
+
+            var showMetersBool = GetPropertyControl<BoolControl>(Type + "SM");
+            showMetersBool.Title = Extensions.LocalizationManager.Get("Show Meters");
+            showMetersBool.Value = ShowMeters;
+            showMetersBool.Grouped = true;
+            showMetersBool.Margin = new Thickness(2, 0, 2, 0);
+            Grid.SetColumn(showMetersBool, 1);
+
+            var showSliderBool = GetPropertyControl<BoolControl>(Type + "SS");
+            showSliderBool.Title = Extensions.LocalizationManager.Get("Show Slider");
+            showSliderBool.Value = ShowSlider;
+            showSliderBool.Grouped = true;
+            showSliderBool.Margin = new Thickness(2, 0, 0, 0);
+            Grid.SetColumn(showSliderBool, 2);
+
+            var grid = GetPropertyControl<GridControl>(Type + "GR");
+            grid.Children.Clear();
+            grid.Columns = 3;
+            grid.Children.Add(styleComboBox);
+            grid.Children.Add(showMetersBool);
+            grid.Children.Add(showSliderBool);
+            
 
             Binding b = new Binding("Value")
             {
-                Source = ctrl1,
+                Source = targetComboBox,
                 UpdateSourceTrigger = UpdateSourceTrigger.Default,
                 Converter = new NKristek.Wpf.Converters.ObjectToStringEqualsParameterToBoolConverter(),//new StringBoolConverter(),
                 ConverterParameter = "Input"
@@ -575,7 +603,7 @@ namespace vMixController.Widgets
             BindingOperations.SetBinding(input, UIElement.IsEnabledProperty, b);
 
 
-            return (new UserControl[] { ctrl1, input, ctrl, ctrl3, ctrl2 }).Concat(props).ToArray();
+            return (new UserControl[] { targetComboBox, input, /*ctrl, ctrl3, ctrl2*/grid }).Concat(props).ToArray();
         }
 
         public override void Update()
@@ -590,11 +618,14 @@ namespace vMixController.Widgets
         {
             foreach (var item in _controls)
                 item.Visibility = Visibility.Visible;
+
+            var grid = _controls.OfType<GridControl>().FirstOrDefault();
+            
             Target = (string)((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
-            Style = (string)((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).LastOrDefault()).Value;
+            Style = (string)((ComboBoxControl)grid.Children.OfType<ComboBoxControl>().Where(x => x is ComboBoxControl).LastOrDefault()).Value;
             InputKey = (string)((InputSelectorControl)_controls.Where(x => x is InputSelectorControl).FirstOrDefault()).Value;
-            ShowMeters = (bool)((BoolControl)_controls.Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Meters")).FirstOrDefault()).Value;
-            ShowSlider = (bool)((BoolControl)_controls.Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Slider")).FirstOrDefault()).Value;
+            ShowMeters = grid.Children.OfType<BoolControl>().Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Meters")).FirstOrDefault().Value;
+            ShowSlider = grid.Children.OfType<BoolControl>().Where(x => x is BoolControl && ((BoolControl)x).Title == Extensions.LocalizationManager.Get("Show Slider")).FirstOrDefault().Value;
 
             base.SetProperties(_controls);
             UpdateText(null);

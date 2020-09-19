@@ -141,7 +141,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <TextBox IsEnabled="{Binding IsEditable}" Style="{StaticResource WidgetTextBox}" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -413,7 +413,7 @@
         </ContentPresenter>
     </Grid>
 
-    <ComboBox HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" IsEditable="True" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+    <ComboBox IsEditable="{Binding IsEditable}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <Grid HorizontalAlignment="Stretch">
@@ -446,7 +446,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown Grid.Column="1" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal">
+        <toolkit:IntegerUpDown IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal">
             <toolkit:IntegerUpDown.Text>
                 <Binding Path="Text" UpdateSourceTrigger="PropertyChanged">
                     <Binding.FallbackValue>0</Binding.FallbackValue>
@@ -582,19 +582,21 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </toolkit:TimeSpanUpDown>
-                <toolkit:TimeSpanUpDown Tag="Current Time" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Grid.Column="1" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyUp">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="GotFocus">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </toolkit:TimeSpanUpDown>
+                <Grid IsEnabled="{Binding IsEditable}" Tag="Current Time" Grid.Row="2" Grid.Column="1">
+                    <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </toolkit:TimeSpanUpDown>
+                </Grid>
                 <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}"/>
             </CompositeCollection>
         </skin:PropertiesListView>
@@ -615,7 +617,7 @@
 
     <!--Inner Controls End-->
     <DataTemplate x:Key="Dummy"/>
-    
+
     <DataTemplate x:Key="vMixControlButton">
         <ctrls:vMixControlContainerDummy BorderColorProxy="{Binding BlinkBorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">

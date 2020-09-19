@@ -1588,8 +1588,12 @@ namespace vMixController.ViewModel
 
             LIVE = true;
 
+            var ol = _windowSettings.OpenLastAtStart;
+
             foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
                 _widgets.Add(item);
+
+            _windowSettings.OpenLastAtStart = ol;
 
             foreach (var item in _widgets)
                 item.Update();
@@ -1860,6 +1864,7 @@ namespace vMixController.ViewModel
                 Keyboard.ClearFocus();
                 FocusManager.SetFocusedElement(grid, (IInputElement)grid);
                 ((FrameworkElement)grid).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                Keyboard.ClearFocus();
             }
 
             var result = false;
@@ -1910,7 +1915,8 @@ namespace vMixController.ViewModel
                         if (!IsHotkeysEnabled)
                             return;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
-
+                        p.Handled = true;
+                        
                     }));
             }
         }
@@ -1939,6 +1945,7 @@ namespace vMixController.ViewModel
                             return;
                         _isPressed = true;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, true);
+                        p.Handled = true;
                     }));
             }
         }
@@ -1971,6 +1978,11 @@ namespace vMixController.ViewModel
                         using (var fs = new FileStream(Path.Combine(_documentsPath, "Variables.xml"), FileMode.Create))
                             s.Serialize(fs, GlobalVariablesViewModel._variables);
 
+
+                        _logger.Info("Saving last controller");
+                        using (var fs = new FileStream(Path.Combine(_documentsPath, "Last.vmc"), FileMode.Create))
+                            Utils.SaveController(fs, Widgets, WindowSettings);
+
                         //Dispose external data providers
                         foreach (var item in ExternalDataProviders)
                         {
@@ -1980,6 +1992,29 @@ namespace vMixController.ViewModel
                         {
                             item.B.Dispose();
                         }
+                    }));
+            }
+        }
+
+
+        private RelayCommand _openLogFolder;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand OpenLogFolder
+        {
+            get
+            {
+                return _openLogFolder
+                    ?? (_openLogFolder = new RelayCommand(
+                    () =>
+                    {
+                        try
+                        {
+                            Process.Start(Path.Combine(_documentsPath, "logs"));
+                        }
+                        catch (Exception) { }
                     }));
             }
         }
@@ -2219,6 +2254,20 @@ namespace vMixController.ViewModel
                 {
                     _logger.Error(e, "Error loading controller. {0}");
                 }
+            else if (WindowSettings.OpenLastAtStart)
+            {
+                var last = Path.Combine(_documentsPath, "Last.vmc");
+                if (File.Exists(last))
+                    try
+                    {
+                        _logger.Info("Trying to load {0}.", last);
+                        LoadControllerFromFile(last);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Error(e, "Error loading controller. {0}");
+                    }
+            }
             CheckUpdate();
 
         }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml;
@@ -166,6 +167,17 @@ namespace vMixController.Classes
             {
                 return "";
             }
+        }
+
+        public static T FindPropertyControl<T>(this UserControl[] controls, string key) where T : UserControl
+        {
+            var ctrl = controls.Where(x => {
+                if (x.Tag is string k) return k == key;
+                return false;
+            }).FirstOrDefault();
+            if (ctrl != null && ctrl is T)
+                return (T)ctrl;
+            return null;
         }
     }
 

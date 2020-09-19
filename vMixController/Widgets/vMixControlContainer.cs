@@ -105,9 +105,9 @@ namespace vMixController.Widgets
         public override UserControl[] GetPropertiesControls()
         {
 
-            var _filepath = GetPropertyControl<FilePathControl>();
-            _filepath.Filter = "vMix Title Controller|*.vmc";
-            _filepath.Value = null;
+            var filePath = GetPropertyControl<FilePathControl>();
+            filePath.Filter = "vMix Title Controller|*.vmc";
+            filePath.Value = null;
 
             _propIndex.Clear();
             List<UserControl> _props = new List<UserControl>();
@@ -123,7 +123,7 @@ namespace vMixController.Widgets
                 _props.AddRange(_ctrls);
             }
 
-            return base.GetPropertiesControls().Concat(new UserControl[] { _filepath }).Concat(_props).ToArray();
+            return base.GetPropertiesControls().Concat(new UserControl[] { filePath }).Concat(_props).ToArray();
         }
 
         public override void SetProperties(vMixWidgetSettingsViewModel viewModel)

@@ -628,6 +628,7 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Height" Value="21"/>
         <Setter Property="FontWeight" Value="Regular"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -1321,6 +1322,9 @@
                 <Setter Property="Foreground" Value="{StaticResource Main.Foreground}"/>
                 <Setter Property="Background" Value="{StaticResource Main.Background}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource Main.Border}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Button.Disabled.Foreground}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

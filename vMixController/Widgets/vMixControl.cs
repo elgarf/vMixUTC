@@ -1013,16 +1013,16 @@ namespace vMixController.Widgets
 
         protected static T GetPropertyControl<T>(string key = "") where T : UserControl
         {
-            if (ControlsStore.ContainsKey(typeof(T).FullName + key ?? "") && !ControlsStoreUsage.Contains(ControlsStore[typeof(T).FullName + key ?? ""]))
+            if (ControlsStore.ContainsKey(typeof(T).FullName + key ?? ""))
             {
-                ControlsStore[typeof(T).FullName + key].Tag = null;
+                ControlsStore[typeof(T).FullName + key].Tag = key;
                 ControlsStoreUsage.Add(ControlsStore[typeof(T).FullName + key ?? ""]);
                 return (T)ControlsStore[typeof(T).FullName + key ?? ""];
             }
             else
             {
                 var c = (T)typeof(T).GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
-                c.Tag = null;
+                c.Tag = key;
                 if (!ControlsStore.ContainsKey(typeof(T).FullName + key ?? ""))
                 {
                     ControlsStore.Add(typeof(T).FullName + key ?? "", c);
