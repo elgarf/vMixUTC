@@ -718,6 +718,8 @@ namespace vMixController.Widgets
                         if (_executionWorker != null && _executionWorker.IsBusy)
                             _executionWorker.CancelAsync();
 
+                        BlinkBorderColor = BorderColor;
+
                         _trackedValues.Clear();
                         _conditions.Clear();
                         Enabled = true;
@@ -1143,10 +1145,14 @@ namespace vMixController.Widgets
                                 Thread.Sleep(parameter);
                                 break;
                             case NativeFunctions.UPDATESTATE:
+                            case NativeFunctions.SYNC:
                                 AddLog("{0}) STATE UPDATING", _pointer + 1);
-                                Dispatcher.Invoke(() => state?.UpdateAsync());
+                                Dispatcher.Invoke(()=> Messenger.Default.Send(new Pair<string, bool>() { A = "SYNC", B = true }));
+
+                                //Dispatcher.Invoke(() => state?.UpdateAsync());
                                 break;
                             case NativeFunctions.UPDATEINTERNALBUTTONSTATE:
+                            case NativeFunctions.SYNCINTERNALBUTTONSTATE:
                                 AddLog("{0}) INTERNAL BUTTON STATE UPDATING", _pointer + 1);
                                 Dispatcher.Invoke(() => _internalState?.UpdateAsync());
                                 break;

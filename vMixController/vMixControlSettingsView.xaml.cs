@@ -47,6 +47,8 @@ namespace vMixController
             var hwnd = new WindowInteropHelper(this).Handle;
             long value = GetWindowLong(hwnd, GWL_STYLE);
             SetWindowLong(hwnd, GWL_STYLE, (int)(value & ~WS_MINIMIZEBOX));
+            Topmost = true;
+            Activate();
         }
     }
 }

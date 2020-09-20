@@ -211,8 +211,9 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Update vMix state.</Description>
-    <Function>UpdateState</Function>
+    <Description>Sync vMix state to UTC.</Description>
+    <Function>SyncState</Function>
+    <Aliases>UpdateState</Aliases>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>
@@ -259,8 +260,9 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Update internal button vMix state/</Description>
-    <Function>UpdateInternalButtonState</Function>
+    <Description>Sync internal button vMix state/</Description>
+    <Function>SyncInternalButtonState</Function>
+    <Aliases>UpdateInternalButtonState</Aliases>
     <HasInputProperty>false</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
     <HasStringProperty>false</HasStringProperty>

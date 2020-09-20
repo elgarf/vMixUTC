@@ -730,7 +730,7 @@ namespace vMixController.ViewModel
                 {
                     var coffHeader = (IMAGE_FILE_HEADER)Marshal.PtrToStructure(pinnedBuffer.AddrOfPinnedObject(), typeof(IMAGE_FILE_HEADER));
 
-                    return TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond));
+                    return TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond)).ToUniversalTime();
                 }
                 finally
                 {
@@ -2226,7 +2226,10 @@ namespace vMixController.ViewModel
                 {
                     case "Hotkeys":
                         IsHotkeysEnabled = t.B;
-                        //Debug.WriteLine(t.B);
+                        break;
+                    case "SYNC":
+                        if (t.B == true)
+                            SyncTovMixState();
                         break;
                     default:
                         break;
