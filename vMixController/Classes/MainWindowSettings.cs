@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using vMixController.Widgets;
 
 namespace vMixController.Classes
 {
@@ -350,6 +351,37 @@ namespace vMixController.Classes
 
                 _openLastAtStart = value;
                 RaisePropertyChanged(OpenLastAtStartPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="PollTime" /> property's name.
+        /// </summary>
+        public const string PollTimePropertyName = "PollTime";
+
+        private int _pollTime = 1000;
+
+        /// <summary>
+        /// Sets and gets the PollTime property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int PollTime
+        {
+            get
+            {
+                return _pollTime;
+            }
+
+            set
+            {
+                if (_pollTime == value)
+                {
+                    return;
+                }
+
+                _pollTime = value;
+                vMixControl.ShadowUpdatePollTime = TimeSpan.FromMilliseconds(value);
+                RaisePropertyChanged(PollTimePropertyName);
             }
         }
 

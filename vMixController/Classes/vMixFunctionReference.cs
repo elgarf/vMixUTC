@@ -39,6 +39,9 @@ namespace vMixController.Classes
         public string[] ActiveStatePathIntDependence { get; set; }
         public string ActiveStateValue { get; set; }
 
+        public string ActiveStateXPath { get; set; }
+        public string[] ActiveStateXPathIntDependence { get; set; }
+
         public bool StateDirect { get; set; }
         public string StatePath { get; set; }
         public string StateValue { get; set; } 

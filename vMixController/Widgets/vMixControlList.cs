@@ -96,53 +96,6 @@ namespace vMixController.Widgets
             //return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray(); ;
         }
 
-        [NonSerialized]
-        BackgroundWorker _bgWorker = new BackgroundWorker();
-        //string _previousText;
-        public override void ShadowUpdate()
-        {
-            base.ShadowUpdate();
-            /*if (DataSource != null && DataSource.C && !_bgWorker.IsBusy)
-            {
-
-                _previousText = Text;
-                _bgWorker.WorkerReportsProgress = true;
-                _bgWorker.DoWork += (sender, bgwp) => {
-                    var result = new string[5];
-                    int i = 0;
-                    int n = 0;
-
-                    var data = (IList<string>)bgwp.Argument;
-                    foreach (var item in data)
-                    {
-                        result[i++] = item;
-                        if (i >= 5)
-                        {
-                            n++;
-                            i = 0;
-                            (sender as BackgroundWorker).ReportProgress(n, result);
-                        }
-                    }
-                    bgwp.Result = null;
-                };
-                _bgWorker.ProgressChanged += (sender, pce) =>
-                {
-                    foreach (var item in (string[])pce.UserState)
-                    {
-                        Items.Add(item);
-                    }
-                };
-                _bgWorker.RunWorkerCompleted += (sender, e) =>
-                {
-                    Text = _previousText;
-                };
-                Items.Clear();
-                Text = _previousText;
-                _bgWorker.RunWorkerAsync(Singleton<SharedData>.Instance.GetData(DataSource.A, DataSource.B));
-            
-            }*/
-        }
-
         public override void Update()
         {
             base.Update();

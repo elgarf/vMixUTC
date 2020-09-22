@@ -456,6 +456,21 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </TextBox>
+
+                            <TextBox Style="{StaticResource WidgetTextBox}" Tag="Poll Time, msec" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyUp">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="GotFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+
                             <Grid Tag="Scaling">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>

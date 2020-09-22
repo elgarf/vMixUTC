@@ -1858,14 +1858,17 @@ namespace vMixController.ViewModel
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
 
-            Grid grid = (Grid)App.Current.MainWindow.FindName("LayoutGrid");
+            Debug.Print("Hotkey processing");
+
+            /*Grid grid = (Grid)App.Current.MainWindow.FindName("LayoutGrid");
             if (grid != null)
             {
                 Keyboard.ClearFocus();
                 FocusManager.SetFocusedElement(grid, (IInputElement)grid);
                 ((FrameworkElement)grid).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
                 Keyboard.ClearFocus();
-            }
+            }*/
+            FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
 
             var result = false;
             foreach (var ctrl in _widgets)
@@ -1887,6 +1890,9 @@ namespace vMixController.ViewModel
                     }
                 }
             }
+
+            //FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
+
             return result;
         }
 
@@ -1911,11 +1917,12 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
+                        Debug.Print("Key Up");
                         _isPressed = false;
                         if (!IsHotkeysEnabled)
                             return;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
-                        p.Handled = true;
+                        //p.Handled = true;
                         
                     }));
             }
@@ -1934,6 +1941,7 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
+                        Debug.Print("Key Down");
                         if (_createWidget != null && p.Key == Key.Escape)
                         {
                             _createWidget = null;
@@ -1945,7 +1953,7 @@ namespace vMixController.ViewModel
                             return;
                         _isPressed = true;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, true);
-                        p.Handled = true;
+                        //p.Handled = true;
                     }));
             }
         }

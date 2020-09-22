@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:vMixController"
         ShowInTaskbar="False"
         mc:Ignorable="d"
-        Title="KeyLearnWindow" Height="300" Width="300" KeyUp="Window_KeyUp" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="KeyLearnWindow" Height="300" Width="300" KeyUp="Window_KeyUp" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Topmost="True">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+﻿//#define OBJECTDEPENDENCY
+using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Data;
@@ -24,6 +25,12 @@ using System.Windows.Input;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
+using Microsoft.Windows.Themes;
+using System.Xml.XPath;
+using System.IO.Pipes;
+using System.Reflection;
 
 namespace vMixController.Widgets
 {
@@ -48,12 +55,11 @@ namespace vMixController.Widgets
         const string parameterName = "P";
         object parameterValue = null;
         static DateTime _lastShadowUpdate = DateTime.Now;
-        static object _locker = new object();
         Stack<bool?> _conditions = new Stack<bool?>();
         [NonSerialized]
         CultureInfo _culture;
-        [NonSerialized]
-        private BackgroundWorker _activeStateUpdateWorker;
+        /*[NonSerialized]
+        private BackgroundWorker _activeStateUpdateWorker;*/
         [NonSerialized]
         private BackgroundWorker _executionWorker;
         [NonSerialized]
@@ -61,6 +67,15 @@ namespace vMixController.Widgets
 
         [NonSerialized]
         bool _stopThread = false;
+
+        [NonSerialized]
+        static string _xml = null;
+        [NonSerialized]
+        static DateTime _previousQuery = DateTime.Now;
+        [NonSerialized]
+        static DispatcherTimer _stateDependentTimer;
+
+        static List<vMixControlButton> _instances = new List<vMixControlButton>();
 
 
         /// <summary>
@@ -104,13 +119,13 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_internalState != null)
-                    _internalState.OnStateSynced -= State_OnStateUpdated;
+                /*if (_internalState != null)
+                    _internalState.OnStateSynced -= State_OnStateUpdated;*/
 
                 base.State = value;
 
-                if (_internalState != null)
-                    _internalState.OnStateSynced += State_OnStateUpdated;
+                /*if (_internalState != null)
+                    _internalState.OnStateSynced += State_OnStateUpdated;*/
             }
         }
 
@@ -185,7 +200,7 @@ namespace vMixController.Widgets
             }
         }
 
-        public override void ShadowUpdate()
+        /*public new void ShadowUpdate()
         {
 
             if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 0.01)
@@ -193,24 +208,24 @@ namespace vMixController.Widgets
                 _internalState.UpdateAsync();
                 _lastShadowUpdate = DateTime.Now;
             }
-            base.ShadowUpdate();
-        }
+        //base.ShadowUpdate();
+        }*/
 
-        private void State_OnStateUpdated(object sender, StateSyncedEventArgs e)
+        /*private void State_OnStateUpdated(object sender, StateSyncedEventArgs e)
         {
             if (e.Successfully)
                 RealUpdateActiveProperty(false, null, State);
 
-        }
+        }*/
 
-        private void RealUpdateActiveProperty(bool skipStateDependency = false, vMixAPI.State stateToCheck = null, vMixAPI.State currentState = null)
+        /*private void RealUpdateActiveProperty(bool skipStateDependency = false, vMixAPI.State stateToCheck = null, vMixAPI.State currentState = null)
         {
             stateToCheck = stateToCheck ?? _internalState;
             currentState = currentState ?? State;
 
             if ((!IsStateDependent && skipStateDependency) || stateToCheck == null || _activeStateUpdateWorker.IsBusy) return;
             _activeStateUpdateWorker.RunWorkerAsync(new State[] { stateToCheck, currentState });
-        }
+        }*/
 
         public override string Type
         {
@@ -608,7 +623,6 @@ namespace vMixController.Widgets
                     ?? (_executeScriptCommand = new RelayCommand(
                     () =>
                     {
-                        Debug.Print("Click");
                         if (Style == MOMENTARY)
                             ExecuteScript();
 
@@ -645,8 +659,6 @@ namespace vMixController.Widgets
                     ?? (_executePushOn = new RelayCommand<MouseEventArgs>(
                     (p) =>
                     {
-                        Debug.Print("Press");
-                        Debug.Print("{0}", Mouse.Capture((IInputElement)p.Source, CaptureMode.SubTree));
                         switch (Style)
                         {
                             case PRESS:
@@ -679,7 +691,6 @@ namespace vMixController.Widgets
                     ?? (_executePushOff = new RelayCommand<MouseEventArgs>(
                     (p) =>
                     {
-                        Debug.Print("Release");
                         Mouse.Capture(null);
                         switch (Style)
                         {
@@ -727,18 +738,11 @@ namespace vMixController.Widgets
             }
         }
 
-        private void UpdateActiveProperty()
-        {
-            if (!IsStateDependent) return;
-            State.UpdateAsync();
-
-        }
-
         public vMixControlButton()
         {
-            _activeStateUpdateWorker = new BackgroundWorker();
+            /*_activeStateUpdateWorker = new BackgroundWorker();
             _activeStateUpdateWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-            _activeStateUpdateWorker.DoWork += ActiveStateUpdateWorker_DoWork;
+            _activeStateUpdateWorker.DoWork += ActiveStateUpdateWorker_DoWork;*/
 
             _executionWorker = new BackgroundWorker();
             _executionWorker.DoWork += ExecutionWorker_DoWork;
@@ -750,124 +754,223 @@ namespace vMixController.Widgets
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
 
 
-            /*_blinker = new DispatcherTimer();
-            _blinker.Tick += Blinker_Tick;
-            _blinker.Interval = TimeSpan.FromSeconds(1);
-            _blinker.Start();*/
+            _stateDependentTimer = new DispatcherTimer(DispatcherPriority.Background);
+            _stateDependentTimer.Interval = TimeSpan.FromSeconds(1);
+            _stateDependentTimer.Start();
+            _stateDependentTimer.Tick += _stateDependentTimer_Tick;
+
+
+            Messenger.Default.Register<XmlDocument>(this, x =>
+            {
+                ThreadPool.QueueUserWorkItem((t) =>
+                {
+                    if (IsStateDependent)
+                        Active = XPathStateDependent(x);
+                });
+            });
+
         }
 
-        /*private void Blinker_Tick(object sender, EventArgs e)
+        private static void _stateDependentTimer_Tick(object sender, EventArgs e)
         {
-            if (_defaultBorderColor.A == 0)
-                _defaultBorderColor = BorderColor;
-            if (!Enabled)
+            if ((DateTime.Now - _previousQuery).TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
             {
-                if (BlinkBorderColor != BorderColor)
-                    BlinkBorderColor = BorderColor;
-                else
-                    BlinkBorderColor = Colors.Lime;
+                WebClient client = new WebClient();
+                client.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
+                client.DownloadStringCompleted += Client_DownloadStringCompleted1;
+
+
             }
-            else
-                BlinkBorderColor = BorderColor;
-        }*/
+        }
+
+        private static void Client_DownloadStringCompleted1(object sender, DownloadStringCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(e.Result);
+                Messenger.Default.Send(doc);
+                _previousQuery = DateTime.Now;
+            }
+        }
 
         private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             ExecutionThread((State)e.Argument);
         }
 
-        private void ActiveStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
+        /*private void ActiveStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            lock (_locker)
+
+            var stateToCheck = ((State[])e.Argument)[0];
+            var currentState = ((State[])e.Argument)[1];
+
+#if !OBJECTDEPENDENCY
+            
+            else if (_xml != null)
+                Active = XPathStateDependent(_xml);
+#else
+            var result = false;
+
+            HasScriptErrors = false;
+
+            Stack<bool> conds = new Stack<bool>();
+            for (int i = 0; i < _commands.Count; i++)
             {
+                var item = _commands[i];
 
-                var stateToCheck = ((State[])e.Argument)[0];
-                var currentState = ((State[])e.Argument)[1];
-                var result = false;
-
-                /*var cnt = 0;
-                for (int i = 0; i < _commands.Count; i++)
+                if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
                 {
-                    var item = _commands[i];
-                    if (stateToCheck.ChangedInputs.Contains(item.InputKey))
-                        cnt++;
+                    if (currentState == null) return;
+
+                    var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
+
+                    int intp = CalculateExpression<int>(item.Parameter);
+                    object strp = CalculateExpression(item.StringParameter);
+                    int strpasint = -1;
+                    if (strp != null)
+                        if (!int.TryParse(strp.ToString(), out strpasint))
+                            strpasint = int.MinValue;
+
+                    string keybystring = currentState.Inputs.Where(x => x.Number == strpasint).FirstOrDefault()?.Key ?? (strp?.ToString() ?? "");
+                    string keybyint = currentState.Inputs.Where(x => x.Number == intp).FirstOrDefault()?.Key ?? "";
+
+
+
+                    if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath) && item.Action.ActiveStatePathIntDependence == null) continue;
+                    var path = "";
+
                     if (!string.IsNullOrWhiteSpace(item.Action.ActiveStatePath))
-                        cnt++;
+                        path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+
+                    if (item.Action.ActiveStatePathIntDependence != null)
+                        path = string.Format(item.Action.ActiveStatePathIntDependence[intp], item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+
+                    if (string.IsNullOrWhiteSpace(path)) return;
+
+                    var nval = GetValueByPath(stateToCheck, path);
+                    var val = nval == null ? "" : nval.ToString();
+                    HasScriptErrors = HasScriptErrors || nval == null;
+                    var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
+                    var realval = aval;
+                    aval = aval.TrimStart('!', '~');
+                    //! - not
+                    //~ - contains
+                    //` - not contains
+                    bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
+                        (aval == "*") ||
+                        (val != null && !(val is string) && aval == val.ToString()) ||
+                        (val is string && (string)val == aval) ||
+                        (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
+                        (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
+                    if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
+                        mult = !mult;
+                    result = result || mult;
                 }
-                if (cnt == 0)
-                {
-                    e.Result = Active;
-                    return;
-                }*/
 
-
-                HasScriptErrors = false;
-
-                Stack<bool> conds = new Stack<bool>();
-                for (int i = 0; i < _commands.Count; i++)
-                {
-                    var item = _commands[i];
-
-                    if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
-                    {
-                        if (currentState == null) return;
-
-                        var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
-
-                        int intp = CalculateExpression<int>(item.Parameter);
-                        object strp = CalculateExpression(item.StringParameter);
-                        int strpasint = -1;
-                        if (strp != null)
-                            if (!int.TryParse(strp.ToString(), out strpasint))
-                                strpasint = int.MinValue;
-
-                        string keybystring = currentState.Inputs.Where(x => x.Number == strpasint).FirstOrDefault()?.Key ?? (strp?.ToString() ?? "");
-                        string keybyint = currentState.Inputs.Where(x => x.Number == intp).FirstOrDefault()?.Key ?? "";
-
-                        
-
-                        if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath) && item.Action.ActiveStatePathIntDependence == null) continue;
-                        var path = "";
-                        
-                        if (!string.IsNullOrWhiteSpace(item.Action.ActiveStatePath))
-                            path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-                        
-                        if (item.Action.ActiveStatePathIntDependence != null)
-                            path = string.Format(item.Action.ActiveStatePathIntDependence[intp], item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-
-                        if (string.IsNullOrWhiteSpace(path)) return;
-
-                        var nval = GetValueByPath(stateToCheck, path);
-                        var val = nval == null ? "" : nval.ToString();
-                        HasScriptErrors = HasScriptErrors || nval == null;
-                        var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-                        var realval = aval;
-                        aval = aval.TrimStart('!', '~');
-                        //! - not
-                        //~ - contains
-                        //` - not contains
-                        bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
-                            (aval == "*") ||
-                            (val != null && !(val is string) && aval == val.ToString()) ||
-                            (val is string && (string)val == aval) ||
-                            (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
-                            (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
-                        if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
-                            mult = !mult;
-                        result = result || mult;
-                    }
-
-                }
-                e.Result = result;
             }
+            e.Result = result;
+            Active = result;
+#endif
         }
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                Active = XPathStateDependent(e.Result);
+                _xml = e.Result;
+                _previousQuery = DateTime.Now;
+
+            }
+            (sender as IDisposable).Dispose();
+        }*/
+
+
+        private bool XPathStateDependent(XmlDocument doc)
+        {
+            var result = false;
+
+            HasScriptErrors = false;
+
+
+            Stack<bool> conds = new Stack<bool>();
+            for (int i = 0; i < _commands.Count; i++)
+            {
+                var item = _commands[i];
+
+                if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
+                {
+
+                    //var input = Convert.ToInt32(nav.Select(string.Format(@"//inputs/input[@key='{0}']/@number", item.InputKey)).Current?.Value ?? "-1");
+                    var input = Convert.ToInt32(doc.SelectSingleNode(string.Format(@"//inputs/input[@key='{0}']/@number", item.InputKey))?.Value ?? "-1");
+
+                    int intp = CalculateExpression<int>(item.Parameter);
+                    object strp = CalculateExpression(item.StringParameter);
+                    int strpasint = -1;
+                    if (strp != null)
+                        if (!int.TryParse(strp.ToString(), out strpasint))
+                            strpasint = int.MinValue;
+
+                    //string keybystring = nav.Select(string.Format(@"//inputs/input[@number='{0}']/@key", strpasint)).Current?.Value;
+                    //string keybyint = nav.Select(string.Format(@"//inputs/input[@number='{0}']/@key", intp)).Current?.Value;
+                    string keybystring = doc.SelectSingleNode(string.Format(@"//inputs/input[@number='{0}']/@key", strpasint))?.Value;
+                    string keybyint = doc.SelectSingleNode(string.Format(@"//inputs/input[@number='{0}']/@key", intp))?.Value;
+
+
+
+                    if (string.IsNullOrWhiteSpace(item.Action.ActiveStateXPath) && item.Action.ActiveStateXPathIntDependence == null) continue;
+                    var path = "";
+
+                    if (!string.IsNullOrWhiteSpace(item.Action.ActiveStateXPath))
+                        path = string.Format(item.Action.ActiveStateXPath, item.InputKey, intp, strp, intp - 1, input, "", keybyint, keybystring);
+
+                    if (item.Action.ActiveStateXPathIntDependence != null)
+                        path = string.Format(item.Action.ActiveStateXPathIntDependence[intp], item.InputKey, intp, strp, intp - 1, input, "", keybyint, keybystring);
+
+                    if (string.IsNullOrWhiteSpace(path)) return false;
+
+                    var nval = "";
+
+                    var tempval = doc.SelectSingleNode(path);
+
+                    if (tempval == null) continue;
+
+                    if (tempval is XmlAttribute)
+                        nval = tempval.Value;
+                    else
+                        nval = tempval.InnerText;
+
+                    var val = nval == null ? "" : nval.ToString();
+                    HasScriptErrors = HasScriptErrors || nval == null;
+                    var aval = string.Format(item.Action.ActiveStateValue, input, intp, strp, intp - 1, input, "", keybyint, keybystring);
+                    var realval = aval;
+                    aval = aval.TrimStart('!', '~');
+                    //! - not
+                    //~ - contains
+                    //` - not contains
+                    bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
+                        (aval == "*") ||
+                        (val != null && !(val is string) && aval == val.ToString()) ||
+                        (val is string && (string)val == aval) ||
+                        (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
+                        (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
+                    if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
+                        mult = !mult;
+                    result = result || mult;
+                }
+
+            }
+            return result;
+        }
+
+
+        /*private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
-            Active = (bool)(e.Result ?? false);
+            //Active = (bool)(e.Result ?? false);
 
-        }
+        }*/
 
         public override Hotkey[] GetHotkeys()
         {
@@ -880,7 +983,7 @@ namespace vMixController.Widgets
             };
         }
 
-        private string GetInputNumber(int input)
+        /*private string GetInputNumber(int input)
         {
             try
             {
@@ -906,7 +1009,7 @@ namespace vMixController.Widgets
             {
                 return "-1";
             }
-        }
+        }*/
 
         private void PopulateVariables(NCalc.Expression exp)
         {
@@ -1029,6 +1132,29 @@ namespace vMixController.Widgets
             var result = CalculateExpression(s);
             try
             {
+                //If types are equal
+                if (result is T) return (T)result;
+
+                //Try convert
+                MethodInfo parse = null;
+                Type targetType = typeof(T);
+                Type ut = typeof(T);
+                if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    ut = Nullable.GetUnderlyingType(targetType);
+                parse = ut.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "TryParse" && x.DeclaringType == ut && x.GetParameters().FirstOrDefault()?.ParameterType == typeof(string)).FirstOrDefault();
+                if (parse != null)
+                {
+                    object[] parameters = new object[] { result, null };
+                    object parseResult = parse.Invoke(targetType, parameters);
+                    if ((bool)parseResult)
+                        return (T)parameters[1];
+                    else
+                        //return default value if parsing was failed
+                        if (ut.IsValueType)
+                        return (T)Activator.CreateInstance(ut);
+                }
+
+                //Try change type
                 return (T)Convert.ChangeType(result, typeof(T));
             }
             catch
@@ -1147,7 +1273,7 @@ namespace vMixController.Widgets
                             case NativeFunctions.UPDATESTATE:
                             case NativeFunctions.SYNC:
                                 AddLog("{0}) STATE UPDATING", _pointer + 1);
-                                Dispatcher.Invoke(()=> Messenger.Default.Send(new Pair<string, bool>() { A = "SYNC", B = true }));
+                                Dispatcher.Invoke(() => Messenger.Default.Send(new Pair<string, bool>() { A = "SYNC", B = true }));
 
                                 //Dispatcher.Invoke(() => state?.UpdateAsync());
                                 break;
@@ -1284,14 +1410,16 @@ namespace vMixController.Widgets
             }
             _conditions.Clear();
             BlinkBorderColor = BorderColor;
-            ThreadPool.QueueUserWorkItem((x) =>
-            {
-                Enabled = true;
-                Thread.Sleep(_waitBeforeUpdate);
-                _waitBeforeUpdate = -1;
-                //NULL Check
-                Dispatcher.Invoke(() => _internalState?.UpdateAsync());
-            });
+            //new Thread(new ThreadStart(() =>
+            //{
+            Enabled = true;
+            _previousQuery = _previousQuery.AddMilliseconds(-ShadowUpdatePollTime.TotalMilliseconds * 2);
+            _stateDependentTimer_Tick(null, null);
+            /*Thread.Sleep(_waitBeforeUpdate);
+            _waitBeforeUpdate = -1;
+            //NULL Check
+            Dispatcher.Invoke(() => _internalState?.UpdateAsync());
+        })).Start();*/
         }
 
         private object CalculateObjectParameter(vMixControlButtonCommand cmd)
@@ -1424,7 +1552,7 @@ namespace vMixController.Widgets
             int i = 0;
             foreach (var item in (_controls.OfType<ScriptControl>().First()).Commands)
             {
-                Commands.Add(new vMixControlButtonCommand() {IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState,  Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
+                Commands.Add(new vMixControlButtonCommand() { IsExecutable = item.IsExecutable, UseInActiveState = item.UseInActiveState, Action = item.Action, Collapsed = item.Collapsed, Input = item.Input, InputKey = item.InputKey, Parameter = item.Parameter, StringParameter = item.StringParameter, AdditionalParameters = item.AdditionalParameters });
 
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.TIMER;
                 hasGoToOrTimer |= item.Action.Function == NativeFunctions.GOTO && ((int.TryParse(item.Parameter, out p) && p < i) || !int.TryParse(item.Parameter, out p));
@@ -1453,7 +1581,7 @@ namespace vMixController.Widgets
             else*/
             Image = u;
 
-            RealUpdateActiveProperty(true, State);
+            //RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);
             if (hasGoToOrTimer && Style != MOMENTARY)
             {
@@ -1471,19 +1599,21 @@ namespace vMixController.Widgets
             base.Update();
             if (AutoStart)
                 ExecuteScriptCommand.Execute(null);
-            RealUpdateActiveProperty();
+            //RealUpdateActiveProperty();
         }
 
         protected override void Dispose(bool managed)
         {
             if (_disposed) return;
-
+            Messenger.Default.Unregister(this);
             if (managed)
             {
                 //_blinker.Stop();
-                if (_internalState != null)
-                    _internalState.OnStateSynced -= State_OnStateUpdated;
+                /*if (_internalState != null)
+                    _internalState.OnStateSynced -= State_OnStateUpdated;*/
                 _stopThread = true;
+
+                _instances.Remove(this);
 
                 if (_executionWorker != null && _executionWorker.IsBusy)
                 {
@@ -1493,7 +1623,7 @@ namespace vMixController.Widgets
                     _executionWorker.Dispose();
                 }
 
-                _activeStateUpdateWorker.Dispose();
+                //_activeStateUpdateWorker.Dispose();
 
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);

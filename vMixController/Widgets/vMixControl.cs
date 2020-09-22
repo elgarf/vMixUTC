@@ -1,10 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -57,6 +59,16 @@ namespace vMixController.Widgets
 
         protected static DispatcherTimer _shadowUpdate;
 
+        public static TimeSpan ShadowUpdatePollTime
+        {
+            get { return _shadowUpdate.Interval; }
+            set {
+                _shadowUpdate.Interval = value;
+                _shadowUpdate.Stop();
+                _shadowUpdate.Start();
+            }
+        }
+
 
         public vMixControl()
         {
@@ -64,21 +76,13 @@ namespace vMixController.Widgets
             {
                 _shadowUpdate = new DispatcherTimer
                 {
-                    Interval = TimeSpan.FromMilliseconds(100)
+                    Interval = TimeSpan.FromMilliseconds(1000)
                 };
                 _shadowUpdate.Start();
             }
-            _shadowUpdate.Tick += ShadowUpdate_Tick;
+
             WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
         }
-
-        private void ShadowUpdate_Tick(object sender, EventArgs e)
-        {
-            ShadowUpdate();
-        }
-
-
-        public virtual void ShadowUpdate() { }
 
 
         public virtual string Type { get; }
@@ -856,7 +860,7 @@ namespace vMixController.Widgets
                 switch (path[i])
                 {
                     case '[':
-                    intoArray++;
+                        intoArray++;
                         break;
                     case ']':
                         intoArray--;
@@ -972,15 +976,18 @@ namespace vMixController.Widgets
                 found_prop = GetPropertyOrNull(type, propindex);
                 var propinfo = found_prop;
 
-                if (Thread.CurrentThread.ThreadState != ThreadState.Stopped &&
-                    Thread.CurrentThread.ThreadState != ThreadState.AbortRequested &&
-                    Thread.CurrentThread.ThreadState != ThreadState.StopRequested &&
-                    Thread.CurrentThread.ThreadState != ThreadState.SuspendRequested)
-                    found = Dispatcher.Invoke<object>(() =>
-                    {
+                if (Thread.CurrentThread.ThreadState != System.Threading.ThreadState.Stopped &&
+                    Thread.CurrentThread.ThreadState != System.Threading.ThreadState.AbortRequested &&
+                    Thread.CurrentThread.ThreadState != System.Threading.ThreadState.StopRequested &&
+                    Thread.CurrentThread.ThreadState != System.Threading.ThreadState.SuspendRequested)
+                    if (Dispatcher.CheckAccess())
+                        found = propinfo?.GetValue(obj);
+                    else
+                        found = Dispatcher.Invoke<object>(() =>
+                        {
                         //TODO: CHECK
-                        if (Thread.CurrentThread.ThreadState != ThreadState.Stopped) return propinfo?.GetValue(obj); else return null;
-                    });
+                        if (Thread.CurrentThread.ThreadState != System.Threading.ThreadState.Stopped) return propinfo?.GetValue(obj); else return null;
+                        });
                 else
                     found = null;
             }
@@ -1219,7 +1226,7 @@ namespace vMixController.Widgets
 
             if (managed)
             {
-                _shadowUpdate.Tick -= ShadowUpdate_Tick;
+                //_shadowUpdate.Tick -= ShadowUpdate_Tick;
                 GC.SuppressFinalize(this);
                 _disposed = true;
             }

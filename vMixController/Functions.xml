@@ -43,8 +43,10 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Check condition, functions below this one executes only if condition is TRUE.
-This is block function, block ends at ConditionEnd function.</Description>
+    <Description>
+      Check condition, functions below this one executes only if condition is TRUE.
+      This is block function, block ends at ConditionEnd function.
+    </Description>
     <Function>Condition</Function>
     <HasInputProperty>true</HasInputProperty>
     <HasIntProperty>false</HasIntProperty>
@@ -84,8 +86,10 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Check if value of expression changed from previous check, functions below this one executes only if value was changed.
-This is block function, block ends at ConditionEnd function.</Description>
+    <Description>
+      Check if value of expression changed from previous check, functions below this one executes only if value was changed.
+      This is block function, block ends at ConditionEnd function.
+    </Description>
     <Function>ValueChanged</Function>
     <IsBlock>true</IsBlock>
     <InputDescription>Input</InputDescription>
@@ -101,7 +105,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <B>0</B>
     </Color>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Native>true</Native>
     <Description>Close Condition block.</Description>
@@ -146,8 +150,10 @@ This is block function, block ends at ConditionEnd function.</Description>
 
   <vMixFunctionReference>
     <Native>true</Native>
-    <Description>Check if variable exist, functions below this one executes only if variable exist.
-This is block function, block ends at ConditionEnd function.</Description>
+    <Description>
+      Check if variable exist, functions below this one executes only if variable exist.
+      This is block function, block ends at ConditionEnd function.
+    </Description>
     <Function>HasVariable</Function>
     <IsBlock>true</IsBlock>
     <HasInputProperty>false</HasInputProperty>
@@ -270,7 +276,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>N/A</StringDescription>
     <IntDescription>N/A</IntDescription>
   </vMixFunctionReference>
-  
+
   <!--General-->
   <vMixFunctionReference>
     <Function>General Functions</Function>
@@ -308,6 +314,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>Audio</Function>
     <FormatString>Function=Audio&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -332,6 +339,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=AudioBus&amp;Input={0}&amp;Value={2}</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Inputs[{0}].Audiobusses</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@audiobusses</ActiveStateXPath>
     <ActiveStateValue>~{2}</ActiveStateValue>
     <StringValues>
       <string>M</string>
@@ -351,6 +359,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=AudioBusOff&amp;Input={0}&amp;Value={2}</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Inputs[{0}].Audiobusses</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@audiobusses</ActiveStateXPath>
     <ActiveStateValue>~{2}</ActiveStateValue>
     <StringValues>
       <string>M</string>
@@ -370,6 +379,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=AudioBusOn&amp;Input={0}&amp;Value={2}</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Inputs[{0}].Audiobusses</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@audiobusses</ActiveStateXPath>
     <ActiveStateValue>~{2}</ActiveStateValue>
     <StringValues>
       <string>M</string>
@@ -382,7 +392,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>G</string>
     </StringValues>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Audio Mixer Show Hide</Description>
     <Function>AudioMixerShowHide</Function>
@@ -394,6 +404,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>AudioOff</Function>
     <FormatString>Function=AudioOff&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -402,9 +413,10 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>AudioOn</Function>
     <FormatString>Function=AudioOn&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Turn off Audio Plugin, starting from 1</Description>
     <Function>AudioPluginOff</Function>
@@ -435,6 +447,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>MasterAudio</Function>
     <FormatString>Function=MasterAudio</FormatString>
     <ActiveStatePath>Audio[Master].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/master/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -443,6 +456,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>MasterAudioOff</Function>
     <FormatString>Function=MasterAudioOff</FormatString>
     <ActiveStatePath>Audio[Master].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/master/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -451,6 +465,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>MasterAudioOn</Function>
     <FormatString>Function=MasterAudioOn</FormatString>
     <ActiveStatePath>Audio[Master].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/master/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -461,6 +476,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=BusXAudio&amp;Value={2}</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Audio[Bus{2}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/bus{2}/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
     <StringValues>
       <string>A</string>
@@ -479,6 +495,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=BusXAudioOff&amp;Value={2}</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Audio[Bus{2}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/bus{2}/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
     <StringValues>
       <string>A</string>
@@ -497,6 +514,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=BusXAudioOn</FormatString>
     <StringDescription>Bus</StringDescription>
     <ActiveStatePath>Audio[Bus{2}].Muted</ActiveStatePath>
+    <ActiveStateXPath>//audio/bus{2}/@muted</ActiveStateXPath>
     <ActiveStateValue>False</ActiveStateValue>
     <StringValues>
       <string>A</string>
@@ -508,8 +526,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>G</string>
     </StringValues>
   </vMixFunctionReference>
-  
-  
+
+
   <vMixFunctionReference>
     <Description>Turn off Audio Plugin, starting from 1</Description>
     <Function>MasterAudioPluginOff</Function>
@@ -530,8 +548,8 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>MasterAudioPluginShow</Function>
     <FormatString>Function=MasterAudioPluginShow</FormatString>
   </vMixFunctionReference>
-  
-  
+
+
   <vMixFunctionReference>
     <Description>Turn off Audio Plugin, starting from 1</Description>
     <Function>BusXAudioPluginOff</Function>
@@ -600,7 +618,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>G</string>
     </StringValues>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Bus X Send To Master On/Off</Description>
     <Function>BusXSendToMaster</Function>
@@ -714,7 +732,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Function>SetGainChannel2</Function>
     <FormatString>Function=SetGainChannel2&amp;Value={1}&amp;Input={0}</FormatString>
-  <IntDescription>Gain</IntDescription>
+    <IntDescription>Gain</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>SetHeadphonesVolume</Function>
@@ -746,8 +764,8 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=SetVolume&amp;Input={0}&amp;Value={1}</FormatString>
     <IntDescription>Volume</IntDescription>
   </vMixFunctionReference>
- 
- <vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description>When using SeparateMono on an Audio Input, this can be used to set channel volumes independently.</Description>
     <Function>SetVolumeChannel1</Function>
     <FormatString>Function=SetVolumeChannel1&amp;Value={1}&amp;Input={0}</FormatString>
@@ -766,7 +784,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>Channel</StringDescription>
     <IntDescription>Volume</IntDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Input Volume gradually over X milliseconds</Description>
     <Function>SetVolumeFade</Function>
@@ -780,6 +798,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>Solo</Function>
     <FormatString>Function=Solo&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@solo</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -788,6 +807,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>SoloOn</Function>
     <FormatString>Function=SoloOn&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@solo</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -796,13 +816,14 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>SoloOff</Function>
     <FormatString>Function=SoloOff&amp;Input={0}</FormatString>
     <ActiveStatePath>Inputs[{0}].Solo</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@solo</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
-  
+
   <!--Transitions-->
-  
+
   <vMixFunctionReference>
-    
+
     <Function>Transitions</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
@@ -811,7 +832,6 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Cuts the input directly to Output without changing Preview</Description>
     <Function>CutDirect</Function>
     <FormatString>Function=CutDirect&amp;Input={0}&amp;Mix={1}</FormatString>
-    <ActiveStatePath>Active</ActiveStatePath>
     <ActiveStateValue>{4}</ActiveStateValue>
     <IntDescription>Mix</IntDescription>
     <IntValues>
@@ -821,12 +841,19 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>3</int>
     </IntValues>
     <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateXPath>//active</ActiveStateXPath>
     <ActiveStatePathIntDependence>
       <string>Active</string>
       <string>Mixes[{3}].Active</string>
       <string>Mixes[{3}].Active</string>
       <string>Mixes[{3}].Active</string>
     </ActiveStatePathIntDependence>
+    <ActiveStateXPathIntDependence>
+      <string>//active</string>
+      <string>//mix[@number='2']/active</string>
+      <string>//mix[@number='3']/active</string>
+      <string>//mix[@number='4']/active</string>
+    </ActiveStateXPathIntDependence>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -834,6 +861,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>FadeToBlack</Function>
     <FormatString>Function=FadeToBlack</FormatString>
     <ActiveStatePath>FadeToBlack</ActiveStatePath>
+    <ActiveStateXPath>//fadeToBlack</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -841,6 +869,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>QuickPlay</Function>
     <FormatString>Function=QuickPlay&amp;Input={0}</FormatString>
     <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateXPath>//active</ActiveStateXPath>
     <ActiveStateValue>{0}</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -864,6 +893,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>4</string>
     </StringValues>
     <ActiveStatePath>Transitions[Transition/Number/{2}].Duration</ActiveStatePath>
+    <ActiveStateXPath>//transition[@number='{2}']/@duration</ActiveStateXPath>
     <ActiveStateValue>{1}</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -901,6 +931,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>Stinger2</string>
     </StringValues>
     <ActiveStatePath>Transitions[Transition/Number/{1}].Effect</ActiveStatePath>
+    <ActiveStateXPath>//transition[@number='{1}']/@effect</ActiveStateXPath>
     <ActiveStateValue>{2}</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
@@ -912,7 +943,7 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>2</int>
     </IntValues>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Clicks one of the four Transition buttons in the main vMix window.</Description>
     <Function>TransitionX</Function>
@@ -959,13 +990,6 @@ This is block function, block ends at ConditionEnd function.</Description>
       <string>Stinger1</string>
       <string>Stinger2</string>
     </StringValues>
-    <ActiveStatePathIntDependence>
-      <string>Active</string>
-      <string>Mixes[{3}].Active</string>
-      <string>Mixes[{3}].Active</string>
-      <string>Mixes[{3}].Active</string>
-    </ActiveStatePathIntDependence>
-    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <!--Output-->
@@ -979,6 +1003,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>Fullscreen</Function>
     <FormatString>Function=Fullscreen</FormatString>
     <ActiveStatePath>Fullscreen</ActiveStatePath>
+    <ActiveStateXPath>//fullscreen</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
@@ -1085,6 +1110,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>StartStopExternal</Function>
     <FormatString>Function=StartStopExternal</FormatString>
     <ActiveStatePath>External</ActiveStatePath>
+    <ActiveStateXPath>//external</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -1093,6 +1119,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>StartStopMultiCorder</Function>
     <FormatString>Function=StartStopMultiCorder</FormatString>
     <ActiveStatePath>MultiCorder</ActiveStatePath>
+    <ActiveStateXPath>//multiCorder</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -1101,6 +1128,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>StartStopRecording</Function>
     <FormatString>Function=StartStopRecording</FormatString>
     <ActiveStatePath>Recording.Active</ActiveStatePath>
+    <ActiveStateXPath>//recording</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
   </vMixFunctionReference>
 
@@ -1110,6 +1138,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <FormatString>Function=StartStopStreaming&amp;Value={2}</FormatString>
     <StringDescription>Stream</StringDescription>
     <ActiveStatePath>Streaming</ActiveStatePath>
+    <ActiveStateXPath>//streaming</ActiveStateXPath>
     <ActiveStateValue>True</ActiveStateValue>
     <StringValues>
       <string></string>
@@ -1193,9 +1222,9 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>WriteDurationToRecordingLog</Function>
     <FormatString>Function=WriteDurationToRecordingLog&amp;Value={2}</FormatString>
   </vMixFunctionReference>
-  
-<!--Title Functions-->
-  
+
+  <!--Title Functions-->
+
   <vMixFunctionReference>
     <Function>Title Functions</Function>
     <IsGroup>true</IsGroup>
@@ -1261,6 +1290,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>FileName</StringDescription>
     <IntDescription>Index</IntDescription>
     <ActiveStatePath>Inputs[{0}].Elements[InputImage/Index/{1}].Image</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/image[@index='{1}']</ActiveStateXPath>
     <ActiveStateValue>{2}</ActiveStateValue>
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Elements[InputImage/Index/{1}].Image</StatePath>
@@ -1309,6 +1339,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <IntDescription>Index</IntDescription>
     <StringDescription>Text</StringDescription>
     <ActiveStatePath>Inputs[{0}].Elements[InputText/Index/{1}].Text</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/text[@index='{1}']</ActiveStateXPath>
     <ActiveStateValue>{2}</ActiveStateValue>
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Elements[InputText/Index/{1}].Text</StatePath>
@@ -1348,38 +1379,45 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StringDescription>Animation</StringDescription>
     <FormatString>Function=TitleBeginAnimation&amp;Value={2}&amp;Input={0}</FormatString>
   </vMixFunctionReference>
-  
+
   <!--Input-->
   <vMixFunctionReference>
     <Function>Input Functions</Function>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>
-  
-    <vMixFunctionReference>
+
+  <vMixFunctionReference>
     <Description>Send to Output the selected Input</Description>
     <Function>ActiveInput</Function>
     <FormatString>Function=ActiveInput&amp;Input={0}&amp;Mix={1}</FormatString>
-      <IntDescription>Mix</IntDescription>
-      <IntValues>
-        <int>0</int>
-        <int>1</int>
-        <int>2</int>
-        <int>3</int>
-      </IntValues>
-	<ActiveStatePath>Active</ActiveStatePath>
-  <ActiveStatePathIntDependence>
-    <string>Active</string>
-    <string>Mixes[{3}].Active</string>
-    <string>Mixes[{3}].Active</string>
-    <string>Mixes[{3}].Active</string>
-  </ActiveStatePathIntDependence>
-	<ActiveStateValue>{4}</ActiveStateValue>
+    <IntDescription>Mix</IntDescription>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+    </IntValues>
+    <ActiveStatePath>Active</ActiveStatePath>
+    <ActiveStateXPath>//active</ActiveStateXPath>
+    <ActiveStatePathIntDependence>
+      <string>Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+      <string>Mixes[{3}].Active</string>
+    </ActiveStatePathIntDependence>
+    <ActiveStateXPathIntDependence>
+      <string>//active</string>
+      <string>//mix[@number='2']/active</string>
+      <string>//mix[@number='3']/active</string>
+      <string>//mix[@number='4']/active</string>
+    </ActiveStateXPathIntDependence>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Create a new Input based on information provided in Value.</Description>
     <Function>AddInput</Function>
     <FormatString>Function=AddInput&amp;Value={2}</FormatString>
-	<StringDescription>TypeAndFilename</StringDescription>
+    <StringDescription>TypeAndFilename</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>AutoPauseOff</Function>
@@ -1477,13 +1515,13 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Add Filename to List</Description>
     <Function>ListAdd</Function>
     <FormatString>Function=ListAdd&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>FileName</StringDescription>
+    <StringDescription>FileName</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Export List as M3U to Filename</Description>
     <Function>ListExport</Function>
     <FormatString>Function=ListExport&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>FileName</StringDescription>
+    <StringDescription>FileName</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>ListPlayOut</Function>
@@ -1493,7 +1531,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Remove from List by Index starting from 1</Description>
     <Function>ListRemove</Function>
     <FormatString>Function=ListRemove&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Index</IntDescription>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Remove all items from List</Description>
@@ -1552,7 +1590,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Function>MoveInput</Function>
     <FormatString>Function=MoveInput&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Number</IntDescription>
+    <IntDescription>Number</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Move to next item in List</Description>
@@ -1567,21 +1605,24 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Function>Pause</Function>
     <FormatString>Function=Pause&amp;Input={0}</FormatString>
-	<ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
-	<ActiveStateValue>!Paused</ActiveStateValue>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@state</ActiveStateXPath>
+    <ActiveStateValue>!Paused</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>Play</Function>
     <FormatString>Function=Play&amp;Input={0}</FormatString>
-	<ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
-	<ActiveStateValue>!Running</ActiveStateValue>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@state</ActiveStateXPath>
+    <ActiveStateValue>!Running</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description></Description>
     <Function>PlayPause</Function>
     <FormatString>Function=PlayPause&amp;Input={0}</FormatString>
-	<ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
-	<ActiveStateValue>Running</ActiveStateValue>
+    <ActiveStatePath>Inputs[{0}].State</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/@state</ActiveStateXPath>
+    <ActiveStateValue>Running</ActiveStateValue>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Send to Preview the selected Input</Description>
@@ -1594,16 +1635,23 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>2</int>
       <int>3</int>
     </IntValues>
-	<ActiveStatePath>Preview</ActiveStatePath>
-  <ActiveStatePathIntDependence>
-    <string>Preview</string>
-    <string>Mixes[{3}].Preview</string>
-    <string>Mixes[{3}].Preview</string>
-    <string>Mixes[{3}].Preview</string>
-  </ActiveStatePathIntDependence>
-	<ActiveStateValue>{4}</ActiveStateValue>
+    <ActiveStatePath>Preview</ActiveStatePath>
+    <ActiveStateXPath>//preview</ActiveStateXPath>
+    <ActiveStatePathIntDependence>
+      <string>Preview</string>
+      <string>Mixes[{3}].Preview</string>
+      <string>Mixes[{3}].Preview</string>
+      <string>Mixes[{3}].Preview</string>
+    </ActiveStatePathIntDependence>
+    <ActiveStateXPathIntDependence>
+      <string>//preview</string>
+      <string>//mix[@number='2']/preview</string>
+      <string>//mix[@number='3']/preview</string>
+      <string>//mix[@number='4']/preview</string>
+    </ActiveStateXPathIntDependence>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Send to Preview the next Input</Description>
     <Function>PreviewInputNext</Function>
@@ -1641,121 +1689,123 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Description>Save video clip from Video Delay according to Duration in milliseconds</Description>
     <Function>SaveVideoDelay</Function>
     <FormatString>Function=SaveVideoDelay&amp;Input={0}&amp;Duration={1}</FormatString>
-	<IntDescription>Duration</IntDescription>
+    <IntDescription>Duration</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change to Category according to Value</Description>
     <Function>SelectCategory</Function>
     <FormatString>Function=SelectCategory&amp;Value={2}</FormatString>
-	<StringDescription>Category</StringDescription>
-	<StringValues>
-		<string>All</string>
-		<string>Red</string>
-		<string>Green</string>
-		<string>Orange</string>
-		<string>Purple</string>
-		<string>Aqua</string>
-		<string>Blue</string>
-	</StringValues>
+    <StringDescription>Category</StringDescription>
+    <StringValues>
+      <string>All</string>
+      <string>Red</string>
+      <string>Green</string>
+      <string>Orange</string>
+      <string>Purple</string>
+      <string>Aqua</string>
+      <string>Blue</string>
+    </StringValues>
   </vMixFunctionReference>
   <vMixFunctionReference>
-    <Description>Photos,List: Selects item in List according to Value starting from number 1
-      Virtual Set: Zooms to selected preset using the current speed settings</Description>
+    <Description>
+      Photos,List: Selects item in List according to Value starting from number 1
+      Virtual Set: Zooms to selected preset using the current speed settings
+    </Description>
     <Function>SelectIndex</Function>
     <FormatString>Function=SelectIndex&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Index</IntDescription>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set Input transparency according to Value. 0 is transparent, 255 is opaque</Description>
     <Function>SetAlpha</Function>
     <FormatString>Function=SetAlpha&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Alpha</IntDescription>
+    <IntDescription>Alpha</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gain R level of Input. 1 = Original, Value = Value 0-2</Description>
     <Function>SetCCGainB</Function>
     <FormatString>Function=SetCCGainB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GainR</StringDescription>
+    <StringDescription>GainR</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gain G level of Input. 1 = Original, Value = Value 0-2</Description>
     <Function>SetCCGainG</Function>
     <FormatString>Function=SetCCGainG&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GainG</StringDescription>
+    <StringDescription>GainG</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gain B level of Input. 1 = Original, Value = Value 0-2</Description>
     <Function>SetCCGainG</Function>
     <FormatString>Function=SetCCGainB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GainB</StringDescription>
+    <StringDescription>GainB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gain RGB level of Input. 1 = Original, Value = Value 0-2</Description>
     <Function>SetCCGainRGB</Function>
     <FormatString>Function=SetCCGainRGB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GainRGB</StringDescription>
+    <StringDescription>GainRGB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gamma R level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCGammaR</Function>
     <FormatString>Function=SetCCGammaR&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GammaR</StringDescription>
+    <StringDescription>GammaR</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gamma G level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCGammaG</Function>
     <FormatString>Function=SetCCGammaG&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GammaG</StringDescription>
+    <StringDescription>GammaG</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gamma B level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCGammaB</Function>
     <FormatString>Function=SetCCGammaB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GammaB</StringDescription>
+    <StringDescription>GammaB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Gamma RGB level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCGammaRGB</Function>
     <FormatString>Function=SetCCGammaRGB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>GammaRGB</StringDescription>
+    <StringDescription>GammaRGB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Hue level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCHue</Function>
     <FormatString>Function=SetCCHue&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>CCHue</StringDescription>
+    <StringDescription>CCHue</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Lift R level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCLiftR</Function>
     <FormatString>Function=SetCCLiftR&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>LiftR</StringDescription>
+    <StringDescription>LiftR</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Lift G level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCLiftG</Function>
     <FormatString>Function=SetCCLiftG&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>LiftG</StringDescription>
+    <StringDescription>LiftG</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Lift B level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCLiftB</Function>
     <FormatString>Function=SetCCLiftB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>LiftB</StringDescription>
+    <StringDescription>LiftB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Lift RGB level of Input. 0=Original, Value = Value -1-1</Description>
     <Function>SetCCLiftRGB</Function>
     <FormatString>Function=SetCCLiftRGB&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>LiftRGB</StringDescription>
+    <StringDescription>LiftRGB</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Saturation level of Input. 0=Original, -1=Greyscale, Value = Value -1-1</Description>
     <Function>SetCCSaturation</Function>
     <FormatString>Function=SetCCSaturation&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Saturation</StringDescription>
+    <StringDescription>Saturation</StringDescription>
   </vMixFunctionReference>
-  
+
   <vMixFunctionReference>
     <Description>Set the Display Name of the Input</Description>
     <Function>SetInputName</Function>
@@ -1763,61 +1813,61 @@ This is block function, block ends at ConditionEnd function.</Description>
     <StateDirect>true</StateDirect>
     <StatePath>Inputs[{0}].Title</StatePath>
     <StateValue>String</StateValue>
-	  <StringDescription>DisplayName</StringDescription>
+    <StringDescription>DisplayName</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change current PanX value of Input. 0=centered, -2=100% to left, 2=100% to right, Value = Value -2-2</Description>
     <Function>SetPanX</Function>
     <FormatString>Function=SetPanX&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>PanX</StringDescription>
+    <StringDescription>PanX</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change current PanY value of Input. 0=centered, -2=100% to bottom, 2=100% to top, Value = Value -2-2</Description>
     <Function>SetPanY</Function>
     <FormatString>Function=SetPanY&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>PanY</StringDescription>
+    <StringDescription>PanY</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set transition effect for Photos and PowerPoint Inputs (Fade, Zoom, etc)</Description>
     <Function>SetPictureEffect</Function>
     <FormatString>Function=SetPictureEffect&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Effect</StringDescription>
+    <StringDescription>Effect</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set duration of transition effect in Milliseconds</Description>
     <Function>SetPictureEffectDuration</Function>
     <FormatString>Function=SetPictureEffectDuration&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Duration MS</IntDescription>
+    <IntDescription>Duration MS</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set transition time between Photos and PowerPoint slides in Seconds</Description>
     <Function>SetPictureTransition</Function>
     <FormatString>Function=SetPictureTransition&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Seconds</IntDescription>
+    <IntDescription>Seconds</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set Position of selected Input according to Value in Milliseconds</Description>
     <Function>SetPosition</Function>
     <FormatString>Function=SetPosition&amp;Value={1}&amp;Input={0}</FormatString>
-	<IntDescription>Milliseconds</IntDescription>
+    <IntDescription>Milliseconds</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set Playback speed/rate for Videos and Video Delays, 0.5=50%,1=100%,2=200% etc, Value = Speed 0.1-4</Description>
     <Function>SetRate</Function>
     <FormatString>Function=SetRate&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Speed</StringDescription>
+    <StringDescription>Speed</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Set Slow Motion speed for Instant Replay, 0.5=50%,1=100% etc, Value = Speed 0-1</Description>
     <Function>SetRateSlowMotion</Function>
     <FormatString>Function=SetRateSlowMotion&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Speed</StringDescription>
+    <StringDescription>Speed</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change current Zoom level of Input. 1=100%, 0.5=50%, 2=200%, Value = Value 0-5</Description>
     <Function>SetZoom</Function>
     <FormatString>Function=SetZoom&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Zoom</StringDescription>
+    <StringDescription>Zoom</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>SharpenOff</Function>
@@ -1830,53 +1880,53 @@ This is block function, block ends at ConditionEnd function.</Description>
   <vMixFunctionReference>
     <Function>VideoCallAudioSource</Function>
     <FormatString>Function=VideoCallAudioSource&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Source</StringDescription>
-	<StringValues>
-		<string>Master</string>
-		<string>Headphones</string>
-		<string>BusA</string>
-		<string>BusB</string>
-		<string>BusC</string>
-		<string>BusD</string>
-		<string>BusE</string>
-		<string>BusF</string>
-		<string>BusG</string>
-	</StringValues>
+    <StringDescription>Source</StringDescription>
+    <StringValues>
+      <string>Master</string>
+      <string>Headphones</string>
+      <string>BusA</string>
+      <string>BusB</string>
+      <string>BusC</string>
+      <string>BusD</string>
+      <string>BusE</string>
+      <string>BusF</string>
+      <string>BusG</string>
+    </StringValues>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>VideoCallVideoSource</Function>
     <FormatString>Function=VideoCallVideoSource&amp;Value={2}&amp;Input={0}</FormatString>
-	<StringDescription>Source</StringDescription>
-	<StringValues>
-		<string>Output1</string>
-		<string>Output2</string>
-		<string>Output3</string>
-		<string>Output4</string>
-	</StringValues>
+    <StringDescription>Source</StringDescription>
+    <StringValues>
+      <string>Output1</string>
+      <string>Output2</string>
+      <string>Output3</string>
+      <string>Output4</string>
+    </StringValues>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Start Video Delay Recording</Description>
     <Function>VideoDelayStartRecording</Function>
     <FormatString>Function=VideoDelayStartRecording&amp;Input={0}&amp;Duration={1}</FormatString>
-	<IntDescription>Description</IntDescription>
+    <IntDescription>Description</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Toggle Video Delay Recording</Description>
     <Function>VideoDelayStartStopRecording</Function>
     <FormatString>Function=VideoDelayStartStopRecording&amp;Input={0}&amp;Duration={1}</FormatString>
-	<IntDescription>Description</IntDescription>
+    <IntDescription>Description</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Stop Video Delay Recording</Description>
     <Function>VideoDelayStopRecording</Function>
     <FormatString>Function=VideoDelayStopRecording&amp;Input={0}&amp;Duration={1}</FormatString>
-	<IntDescription>Description</IntDescription>
+    <IntDescription>Description</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Wait for a Video Input to reach the end of playback.</Description>
     <Function>WaitForCompletion</Function>
     <FormatString>Function=WaitForCompletion&amp;Input={0}&amp;Duration={1}</FormatString>
-	<IntDescription>Description</IntDescription>
+    <IntDescription>Description</IntDescription>
   </vMixFunctionReference>
 
 
@@ -1985,7 +2035,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>4</int>
     </IntValues>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
-    <ActiveStateValue>{0}</ActiveStateValue>
+    <ActiveStateXPath>//overlays/overlay[@number='{1}']</ActiveStateXPath>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -2001,7 +2052,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>4</int>
     </IntValues>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
-    <ActiveStateValue>{0}</ActiveStateValue>
+    <ActiveStateXPath>//overlays/overlay[@number='{1}']</ActiveStateXPath>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -2017,7 +2069,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>4</int>
     </IntValues>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
-    <ActiveStateValue>{0}</ActiveStateValue>
+    <ActiveStateXPath>//overlays/overlay[@number='{1}']</ActiveStateXPath>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -2033,7 +2086,8 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>4</int>
     </IntValues>
     <ActiveStatePath>Overlays[{3}].ActiveInput</ActiveStatePath>
-    <ActiveStateValue>{0}</ActiveStateValue>
+    <ActiveStateXPath>//overlays/overlay[@number='{1}']</ActiveStateXPath>
+    <ActiveStateValue>{4}</ActiveStateValue>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -2086,9 +2140,10 @@ This is block function, block ends at ConditionEnd function.</Description>
       <int>10</int>
     </IntValues>
     <ActiveStatePath>Inputs[{0}].Elements[InputOverlay/Index/{3}].Key</ActiveStatePath>
+    <ActiveStateXPath>//inputs/input[@key='{0}']/overlay[@index='{3}']/@key</ActiveStateXPath>
     <ActiveStateValue>{7}</ActiveStateValue>
   </vMixFunctionReference>
-  
+
   <!--PlayList-->
 
   <vMixFunctionReference>
@@ -2154,7 +2209,7 @@ This is block function, block ends at ConditionEnd function.</Description>
   </vMixFunctionReference>
 
   <!--Replay-->
-  
+
   <vMixFunctionReference>
     <Function>Replay Functions</Function>
     <IsGroup>true</IsGroup>
@@ -2630,7 +2685,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <Function>ReplayUpdateSelectedOutPoint</Function>
     <FormatString>Function=ReplayUpdateSelectedOutPoint</FormatString>
   </vMixFunctionReference>
-  
+
   <!--NDI-->
 
   <vMixFunctionReference>
@@ -3190,7 +3245,7 @@ This is block function, block ends at ConditionEnd function.</Description>
     <IsGroup>true</IsGroup>
   </vMixFunctionReference>-->
 
-<!--  <vMixFunctionReference>
+  <!--  <vMixFunctionReference>
     <Description>Set image path.</Description>
     <Function>SetImage</Function>
     <FormatString>Function=SetImage&amp;Input={0}&amp;SelectedIndex={1}&amp;Value={2}</FormatString>
