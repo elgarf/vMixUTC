@@ -17,6 +17,17 @@ using vMixController.Widgets;
 
 namespace vMixController.Classes
 {
+    public enum MessageType
+    {
+        Button,
+        Volume
+    }
+    public struct DocumentMessage
+    {
+        public MessageType Type;
+        public XmlDocument Document;
+        public DateTime Timestamp;
+    }
     public static class Utils
     {
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();

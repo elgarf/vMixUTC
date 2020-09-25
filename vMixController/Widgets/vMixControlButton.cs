@@ -48,9 +48,7 @@ namespace vMixController.Widgets
 
         Regex _isExpression = new Regex(@"([\+|\-])\=(\d+\.?\d*)");
         [NonSerialized]
-        static Queue<Exception> _loggedExceptions = new Queue<Exception>();
-        [NonSerialized]
-        NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
         const string parameterName = "P";
         object parameterValue = null;
@@ -740,9 +738,6 @@ namespace vMixController.Widgets
 
         public vMixControlButton()
         {
-            /*_activeStateUpdateWorker = new BackgroundWorker();
-            _activeStateUpdateWorker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-            _activeStateUpdateWorker.DoWork += ActiveStateUpdateWorker_DoWork;*/
 
             _executionWorker = new BackgroundWorker();
             _executionWorker.DoWork += ExecutionWorker_DoWork;
@@ -760,12 +755,12 @@ namespace vMixController.Widgets
             _stateDependentTimer.Tick += _stateDependentTimer_Tick;
 
 
-            Messenger.Default.Register<XmlDocument>(this, x =>
+            Messenger.Default.Register<DocumentMessage>(this, x =>
             {
                 ThreadPool.QueueUserWorkItem((t) =>
                 {
-                    if (IsStateDependent)
-                        Active = XPathStateDependent(x);
+                    if (IsStateDependent && x.Type == MessageType.Button)
+                        Active = XPathStateDependent(x.Document);
                 });
             });
 
@@ -773,13 +768,17 @@ namespace vMixController.Widgets
 
         private static void _stateDependentTimer_Tick(object sender, EventArgs e)
         {
-            if ((DateTime.Now - _previousQuery).TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
+            var t = DateTime.Now - _previousQuery;
+            if (t.TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
             {
-                WebClient client = new WebClient();
+#if DEBUG
+                _logger.Info("Dependency update");
+                Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
+#endif
+                _previousQuery = DateTime.Now;
+                WebClient client = new vMixWebClient();
                 client.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
                 client.DownloadStringCompleted += Client_DownloadStringCompleted1;
-
-
             }
         }
 
@@ -789,9 +788,9 @@ namespace vMixController.Widgets
             {
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(e.Result);
-                Messenger.Default.Send(doc);
-                _previousQuery = DateTime.Now;
+                Messenger.Default.Send(new DocumentMessage() { Document = doc, Type = MessageType.Button, Timestamp = DateTime.Now });
             }
+            _previousQuery = DateTime.Now;
         }
 
         private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -889,6 +888,7 @@ namespace vMixController.Widgets
 
         private bool XPathStateDependent(XmlDocument doc)
         {
+            if (doc == null) return false;
             var result = false;
 
             HasScriptErrors = false;

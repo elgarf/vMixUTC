@@ -307,7 +307,7 @@
                             </i:Interaction.Triggers>
                         </Slider>
                         <!--Left-->
-                        <Border x:Name="Border" HorizontalAlignment="Stretch" Margin="1">
+                        <Border x:Name="Border" HorizontalAlignment="Stretch" Margin="1" Visibility="{Binding ShowMeters, Converter={wpfc:BoolToVisibilityConverter}}">
                             <Border.Tag>
                                 <PointCollection>
                                     <Point X="0" Y="0"/>
@@ -332,7 +332,7 @@
                             </Border.Background>
                         </Border>
                         <!--Right-->
-                        <Border x:Name="Border1" HorizontalAlignment="Stretch" Margin="1">
+                        <Border x:Name="Border1" HorizontalAlignment="Stretch" Margin="1" Visibility="{Binding ShowMeters, Converter={wpfc:BoolToVisibilityConverter}}">
                             <Border.Tag>
                                 <PointCollection>
                                     <Point X="0" Y="0"/>

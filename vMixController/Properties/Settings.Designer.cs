@@ -97,7 +97,7 @@ namespace vMixController.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.01")]
         public float AudioMeterPollTime {
             get {
                 return ((float)(this["AudioMeterPollTime"]));

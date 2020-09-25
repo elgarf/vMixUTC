@@ -90,7 +90,9 @@ namespace vMixAPI
                 return;
             var input = (Input)d;
             var state = input.ControlledState;
-            
+
+            if (state == null) return;
+
             switch (e.Property.Name)
             {
                 case "Position":
@@ -105,12 +107,12 @@ namespace vMixAPI
                     else
                         state.SendFunction("Function", "LoopOff", "Input", input.Key);
                     break;
-                case "Muted":
+                /*case "Muted":
                     if ((bool)e.NewValue)
                         state.SendFunction("Function", "AudioOn", "Input", input.Key);
                     else
                         state.SendFunction("Function", "AudioOff", "Input", input.Key);
-                    break;
+                    break;*/
                 case "Title":
                     state.SendFunction("Function", "SetInputName", "Value", (string)e.NewValue, "Input", input.Key);
                     break;
