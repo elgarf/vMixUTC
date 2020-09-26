@@ -32,15 +32,12 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlVolume : vMixControlTextField
     {
-        static DateTime _prevoiusUpdate = DateTime.Now;
-        //[NonSerialized]
-        //BackgroundWorker _activeStateUpdateWorker;
         private static DispatcherTimer _meterTimer;
         private DateTime _previousTimestamp;
         private static DateTime _previousQuery;
         private static uint _instances = 0;
         private bool _disposing = false;
-
+        private static bool _querying = false;
 
 
         public vMixControlVolume() : base()
@@ -109,102 +106,30 @@ namespace vMixController.Widgets
         {
             if (_instances == 0) return;
             var t = DateTime.Now - _previousQuery;
-            if (t.TotalMilliseconds >= Properties.Settings.Default.AudioMeterPollTime * 1000)
+            if ((t.TotalMilliseconds >= (ShowMeters ? Properties.Settings.Default.AudioMeterPollTime * 1000 : vMixControl.ShadowUpdatePollTime.TotalMilliseconds)) && !_querying)
             {
                 _previousQuery = DateTime.Now;
-                WebClient client = new vMixWebClient();
-                client.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
-                client.DownloadStringCompleted += Client_DownloadStringCompleted;
+                
+                _querying = true;
+                WebClient _webClient = new vMixWebClient();
+                _webClient.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
+                _webClient.DownloadStringCompleted += Client_DownloadStringCompleted;
             }
-            /*if (this.State == null || _stateMetering) return;
-            if ((_meterState == null || _meterState.GetUrl() != this.State.GetUrl()))
-            {
-                _meterState = new vMixAPI.State();
-                _meterState.Configure(this.State.Ip, this.State.Port);
-                _meterState.CreateAsync();
-                _lastMetering = DateTime.Now;
-            }
-            if (!_subscribed)
-            {
-                _meterState.OnStateCreated += _meterState_OnStateCreated;
-                _subscribed = true;
-            }
-
-
-            _meterState.CreateAsync();
-
-            _lastMetering = DateTime.Now;*/
         }
 
         private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
+            
             if (e.Error == null)
             {
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(e.Result);
                 Messenger.Default.Send(new DocumentMessage() { Document = doc, Type = MessageType.Volume, Timestamp = DateTime.Now });
+                _querying = false;
             }
             _previousQuery = DateTime.Now;
+            ((WebClient)sender).Dispose();
         }
-
-        /*private void _meterState_OnStateCreated(object sender, EventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem((t) =>
-            {
-                _previousQuery = DateTime.Now;
-                object input = null;
-                switch (Target)
-                {
-                    case "Input": input = GetValueByPath((vMixAPI.State)sender, string.Format("Inputs[{0}]", InputKey)); break;
-                    case "Master": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[Master]", InputKey)); break;
-                    case "Bus A": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusA]", InputKey)); break;
-                    case "Bus B": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusB]", InputKey)); break;
-                    case "Bus C": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusC]", InputKey)); break;
-                    case "Bus D": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusD]", InputKey)); break;
-                    case "Bus E": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusE]", InputKey)); break;
-                    case "Bus F": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusF]", InputKey)); break;
-                    case "Bus G": input = GetValueByPath((vMixAPI.State)sender, string.Format("Audio[BusG]", InputKey)); break;
-                }
-                if (input == null) return;
-
-                //Update all properties
-
-                var f1 = input.GetType().GetProperty("MeterF1");
-                var f2 = input.GetType().GetProperty("MeterF2");
-                var muted = input.GetType().GetProperty("Muted");
-                var volume = input.GetType().GetProperty("Volume");
-
-
-                var f1val = 0.0;
-                var f2val = 0.0;
-                var mutedval = false;
-                var volumeval = 0.0;
-
-                Dispatcher.Invoke(() =>
-                {
-                    if (f1 != null && f2 != null)
-                    {
-                        f1val = Math.Pow((double)f1.GetValue(input), 1d / 4d);
-                        f2val = Math.Pow((double)f2.GetValue(input), 1d / 4d);
-                    }
-                    if (!_updating)
-                    {
-                        if (muted != null)
-                            mutedval = (bool)muted.GetValue(input);
-                        if (volume != null)
-                            volumeval = (double)volume.GetValue(input);
-                    }
-
-
-                    F1 = f1val;
-                    F2 = f2val;
-
-                    IsMuted = mutedval;
-                    Value = volumeval;
-                });
-            });
-            //_stateMetering = false;
-        }*/
 
         [NonSerialized]
         private RelayCommand<object> _updateBusses;

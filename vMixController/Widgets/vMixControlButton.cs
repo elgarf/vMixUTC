@@ -67,11 +67,13 @@ namespace vMixController.Widgets
         bool _stopThread = false;
 
         [NonSerialized]
-        static string _xml = null;
+        static bool _querying = false;
         [NonSerialized]
         static DateTime _previousQuery = DateTime.Now;
         [NonSerialized]
         static DispatcherTimer _stateDependentTimer;
+        [NonSerialized]
+        static WebClient _webClient = new vMixWebClient();
 
         static List<vMixControlButton> _instances = new List<vMixControlButton>();
 
@@ -644,19 +646,21 @@ namespace vMixController.Widgets
         }
 
         [NonSerialized]
-        private RelayCommand<MouseEventArgs> _executePushOn;
+        private RelayCommand<object> _executePushOn;
 
         /// <summary>
         /// Gets the ExecutePushOn.
         /// </summary>
-        public RelayCommand<MouseEventArgs> ExecutePushOn
+        public RelayCommand<object> ExecutePushOn
         {
             get
             {
                 return _executePushOn
-                    ?? (_executePushOn = new RelayCommand<MouseEventArgs>(
+                    ?? (_executePushOn = new RelayCommand<object>(
                     (p) =>
                     {
+                        //MouseEventArgs
+
                         switch (Style)
                         {
                             case PRESS:
@@ -676,17 +680,17 @@ namespace vMixController.Widgets
         }
 
         [NonSerialized]
-        private RelayCommand<MouseEventArgs> _executePushOff;
+        private RelayCommand<object> _executePushOff;
 
         /// <summary>
         /// Gets the ExecutePushOff.
         /// </summary>
-        public RelayCommand<MouseEventArgs> ExecutePushOff
+        public RelayCommand<object> ExecutePushOff
         {
             get
             {
                 return _executePushOff
-                    ?? (_executePushOff = new RelayCommand<MouseEventArgs>(
+                    ?? (_executePushOff = new RelayCommand<object>(
                     (p) =>
                     {
                         Mouse.Capture(null);
@@ -769,16 +773,17 @@ namespace vMixController.Widgets
         private static void _stateDependentTimer_Tick(object sender, EventArgs e)
         {
             var t = DateTime.Now - _previousQuery;
-            if (t.TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
+            if (t.TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds && !_querying)
             {
 #if DEBUG
                 _logger.Info("Dependency update");
                 Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
 #endif
                 _previousQuery = DateTime.Now;
-                WebClient client = new vMixWebClient();
-                client.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
-                client.DownloadStringCompleted += Client_DownloadStringCompleted1;
+                _querying = true;
+                
+                _webClient.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
+                _webClient.DownloadStringCompleted += Client_DownloadStringCompleted1;
             }
         }
 
@@ -789,7 +794,9 @@ namespace vMixController.Widgets
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(e.Result);
                 Messenger.Default.Send(new DocumentMessage() { Document = doc, Type = MessageType.Button, Timestamp = DateTime.Now });
+                _querying = false;
             }
+            //((WebClient)sender).Dispose();
             _previousQuery = DateTime.Now;
         }
 

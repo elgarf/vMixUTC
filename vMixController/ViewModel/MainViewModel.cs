@@ -1334,19 +1334,20 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<MouseEventArgs> _mouseMove;
+        private RelayCommand<object> _mouseMove;
 
         /// <summary>
         /// Gets the MouseButtonDown.
         /// </summary>
-        public RelayCommand<MouseEventArgs> MouseMove
+        public RelayCommand<object> MouseMove
         {
             get
             {
                 return _mouseMove
-                    ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
+                    ?? (_mouseMove = new RelayCommand<object>(
                     p =>
                     {
+                        //MouseEventArgs
                         //_moveSource = p.Source;
 
                     }));
@@ -2487,17 +2488,17 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand<MouseEventArgs> _previewMouseUp;
+        private RelayCommand<object> _previewMouseUp;
 
         /// <summary>
         /// Gets the PreviewMouseUp.
         /// </summary>
-        public RelayCommand<MouseEventArgs> PreviewMouseUp
+        public RelayCommand<object> PreviewMouseUp
         {
             get
             {
                 return _previewMouseUp
-                    ?? (_previewMouseUp = new RelayCommand<MouseEventArgs>(
+                    ?? (_previewMouseUp = new RelayCommand<object>(
                     p =>
                     {
                         //mouseHook.UninstallHook();
@@ -2507,17 +2508,17 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand<MouseEventArgs> _previewMouseDown;
+        private RelayCommand<object> _previewMouseDown;
 
         /// <summary>
         /// Gets the PreviewMouseDown.
         /// </summary>
-        public RelayCommand<MouseEventArgs> PreviewMouseDown
+        public RelayCommand<object> PreviewMouseDown
         {
             get
             {
                 return _previewMouseDown
-                    ?? (_previewMouseDown = new RelayCommand<MouseEventArgs>(
+                    ?? (_previewMouseDown = new RelayCommand<object>(
                     p =>
                     {
                         //mouseHook.InstallHook();
