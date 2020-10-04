@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,34 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
-using System.Windows.Media;
-using vMixController.Classes;
 
 namespace vMixController.Converters
 {
-    [ValueConversion(typeof(string), typeof(Color))]
-    public class StatusToColorConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(object), typeof(int))]
+    public class ObjectToIndexConverter: MarkupExtension, IValueConverter
     {
         private static IValueConverter _instance;
 
         /// <summary>
         /// Static instance of this converter.
         /// </summary>
-        public static IValueConverter Instance => _instance ?? (_instance = new StatusToColorConverter());
+        public static IValueConverter Instance => _instance ?? (_instance = new ObjectToIndexConverter());
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((Status)value)
-            {
-                case Status.Offline:
-                    return Colors.Red;
-                case Status.Online:
-                    return Colors.Lime;
-                case Status.Sync:
-                    return Colors.Yellow;
-                default:
-                    return Colors.Yellow;
-            }
+            return ((IList)parameter).IndexOf(value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

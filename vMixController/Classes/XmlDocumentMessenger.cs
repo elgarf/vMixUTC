@@ -1,0 +1,114 @@
+﻿using GalaSoft.MvvmLight.Messaging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.TextFormatting;
+using System.Windows.Threading;
+using System.Xml;
+using vMixAPI;
+using vMixController.Widgets;
+
+namespace vMixController.Classes
+{
+    public static class XmlDocumentMessenger
+    {
+        public static bool Sync { get; set; }
+        public static string Url { get; set; }
+        public delegate void DocumentDownloaded(XmlDocument doc, DateTime timestamp);
+        static int _subscribers = 0;
+
+        public static int Rate { get; set; }
+
+        static HttpClient _client;
+
+        static event DocumentDownloaded _onDocumentDownloaded;
+        public static event DocumentDownloaded OnDocumentDownloaded
+        {
+            add
+            {
+                _onDocumentDownloaded += value;
+                _subscribers = _onDocumentDownloaded?.GetInvocationList().Length ?? 0;
+            }
+            remove
+            {
+                _onDocumentDownloaded -= value;
+                _subscribers = _onDocumentDownloaded?.GetInvocationList().Length ?? 0;
+            }
+        }
+
+        static int _queries = 0;
+        static DateTime _previousQuery = DateTime.Now;
+        static DispatcherTimer _stateDependentTimer;
+        static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger(typeof(XmlDocumentMessenger));
+
+        static XmlDocumentMessenger()
+        {
+            _stateDependentTimer = new DispatcherTimer(DispatcherPriority.Render);
+            _stateDependentTimer.Interval = TimeSpan.FromSeconds(0.01);
+            _stateDependentTimer.Start();
+            _stateDependentTimer.Tick += _stateDependentTimer_Tick;
+
+            _client = new HttpClient() { Timeout = TimeSpan.FromSeconds(1) };
+        }
+
+        private static void _stateDependentTimer_Tick(object sender, EventArgs e)
+        {
+            if (!Sync) return;
+            var t = DateTime.Now - _previousQuery;
+            if (t.TotalMilliseconds >= (Rate != 0 ? Properties.Settings.Default.AudioMeterPollTime * 1000 : vMixControl.ShadowUpdatePollTime.TotalMilliseconds) && _queries < 5 && _subscribers > 0)
+            {
+#if DEBUG
+                //Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
+#endif
+                _previousQuery = DateTime.Now;
+                _queries++;
+
+                ThreadPool.QueueUserWorkItem(async x =>
+                {
+                    Uri uri = null;
+                    if (Uri.TryCreate((Url ?? "http://127.0.0.1:8088") + "/api", UriKind.Absolute, out uri))
+                    {
+                        ServicePointManager.FindServicePoint(uri).ConnectionLimit = 10;
+
+
+                        try
+                        {
+                            var result = await _client.GetAsync(uri);
+                            XmlDocument doc = new XmlDocument();
+                            doc.LoadXml(await result.Content.ReadAsStringAsync());
+                            _onDocumentDownloaded?.Invoke(doc, DateTime.Now);
+                            _queries--;
+                        }
+                        catch (Exception)
+                        {
+                            _queries--;
+                        }
+                    }
+                });
+
+
+            }
+        }
+
+        private static void Client_DownloadStringCompleted1(object sender, DownloadStringCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(e.Result);
+                _onDocumentDownloaded?.Invoke(doc, DateTime.Now);
+                _queries--;
+            }
+            (sender as WebClient).Dispose();
+            _previousQuery = DateTime.Now;
+        }
+    }
+}

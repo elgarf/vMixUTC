@@ -753,30 +753,60 @@ namespace vMixController.Widgets
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
 
 
-            _stateDependentTimer = new DispatcherTimer(DispatcherPriority.Background);
+            /*_stateDependentTimer = new DispatcherTimer(DispatcherPriority.Background);
             _stateDependentTimer.Interval = TimeSpan.FromSeconds(1);
             _stateDependentTimer.Start();
-            _stateDependentTimer.Tick += _stateDependentTimer_Tick;
+            _stateDependentTimer.Tick += _stateDependentTimer_Tick;*/
 
 
-            Messenger.Default.Register<DocumentMessage>(this, x =>
+            /*Messenger.Default.Register<DocumentMessage>(this, x =>
             {
                 ThreadPool.QueueUserWorkItem((t) =>
                 {
                     if (IsStateDependent && x.Type == MessageType.Button)
                         Active = XPathStateDependent(x.Document);
                 });
-            });
+            });*/
+            XmlDocumentMessenger.OnDocumentDownloaded += XmlDocumentMessenger_OnDocumentDownloaded;
 
         }
 
-        private static void _stateDependentTimer_Tick(object sender, EventArgs e)
+        private void XmlDocumentMessenger_OnDocumentDownloaded(XmlDocument doc, DateTime timestamp)
+        {
+            if (IsStateDependent && (DateTime.Now - _previousQuery).TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
+            {
+
+                ThreadPool.QueueUserWorkItem((t) =>
+            {
+
+                try
+                {
+                    Active = XPathStateDependent(doc);
+
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Error while checking state dependency!");
+                }
+
+
+
+            });
+                Dispatcher.Invoke(() =>
+                {
+                    _internalState?.UpdateAsync();
+                });
+                
+                _previousQuery = DateTime.Now;
+            }
+        }
+
+        /*private static void _stateDependentTimer_Tick(object sender, EventArgs e)
         {
             var t = DateTime.Now - _previousQuery;
             if (t.TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds && !_querying)
             {
 #if DEBUG
-                _logger.Info("Dependency update");
                 Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
 #endif
                 _previousQuery = DateTime.Now;
@@ -798,7 +828,7 @@ namespace vMixController.Widgets
             }
             //((WebClient)sender).Dispose();
             _previousQuery = DateTime.Now;
-        }
+        }*/
 
         private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1260,6 +1290,18 @@ namespace vMixController.Widgets
                     {
                         switch (cmd.Action.Function)
                         {
+                            case NativeFunctions.NEXTPAGE:
+                                Messenger.Default.Send(new Pair<string, bool>("PAGE", true));
+                                break;
+                            case NativeFunctions.PREVPAGE:
+                                Messenger.Default.Send(new Pair<string, bool>("PAGE", false));
+                                break;
+                            case NativeFunctions.SETPAGE:
+                                Messenger.Default.Send(new Pair<string, int>("PAGE", int.Parse(cmd.Parameter)));
+                                break;
+                            case NativeFunctions.WIN:
+                                Process.Start(cmd.StringParameter);
+                                break;
                             case NativeFunctions.API:
                                 WebClient _webClient = new vMixWebClient();
                                 strparameter = string.Format("http://{0}", CalculateObjectParameter(cmd).ToString());
@@ -1421,7 +1463,7 @@ namespace vMixController.Widgets
             //{
             Enabled = true;
             _previousQuery = _previousQuery.AddMilliseconds(-ShadowUpdatePollTime.TotalMilliseconds * 2);
-            _stateDependentTimer_Tick(null, null);
+            //_stateDependentTimer_Tick(null, null);
             /*Thread.Sleep(_waitBeforeUpdate);
             _waitBeforeUpdate = -1;
             //NULL Check
@@ -1612,15 +1654,13 @@ namespace vMixController.Widgets
         protected override void Dispose(bool managed)
         {
             if (_disposed) return;
-            Messenger.Default.Unregister(this);
+            XmlDocumentMessenger.OnDocumentDownloaded -= XmlDocumentMessenger_OnDocumentDownloaded;
             if (managed)
             {
                 //_blinker.Stop();
                 /*if (_internalState != null)
                     _internalState.OnStateSynced -= State_OnStateUpdated;*/
                 _stopThread = true;
-
-                _instances.Remove(this);
 
                 if (_executionWorker != null && _executionWorker.IsBusy)
                 {
@@ -1629,6 +1669,8 @@ namespace vMixController.Widgets
                     //    Thread.Sleep(100);
                     _executionWorker.Dispose();
                 }
+
+
 
                 //_activeStateUpdateWorker.Dispose();
 

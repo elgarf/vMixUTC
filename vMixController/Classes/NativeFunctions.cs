@@ -8,6 +8,10 @@ namespace vMixController.Classes
 {
     public static class NativeFunctions
     {
+        public const string NEXTPAGE = "NextPage";
+        public const string PREVPAGE = "PrevPage";
+        public const string SETPAGE = "SetPage";
+        public const string WIN = "Win";
         public const string CONDITION = "Condition";
         public const string ELSE = "Else";
         public const string CONDITIONEND = "ConditionEnd";

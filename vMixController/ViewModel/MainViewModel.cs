@@ -68,7 +68,6 @@ namespace vMixController.ViewModel
             {
                 return _isHotkeysEnabled;
             }
-
             set
             {
                 if (_isHotkeysEnabled == value)
@@ -388,13 +387,13 @@ namespace vMixController.ViewModel
         /// </summary>
         public const string StatusPropertyName = "Status";
 
-        private string _status = "Offline";
+        private Status _status = Classes.Status.Offline;
 
         /// <summary>
         /// Sets and gets the Status property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public string Status
+        public Status Status
         {
             get
             {
@@ -409,6 +408,8 @@ namespace vMixController.ViewModel
                 }
 
                 _status = value;
+
+                XmlDocumentMessenger.Sync = Status == Classes.Status.Online;
 
                 _logger.Info("Status changed to {0}.", value);
 
@@ -1085,20 +1086,20 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<vMixControl> _moveWidgetCommand;
+        private RelayCommand<ControlIntParameter> _moveWidgetCommand;
 
         /// <summary>
         /// Gets the MoveWidgetCommand.
         /// </summary>
-        public RelayCommand<vMixControl> MoveWidgetCommand
+        public RelayCommand<ControlIntParameter> MoveWidgetCommand
         {
             get
             {
                 return _moveWidgetCommand
-                    ?? (_moveWidgetCommand = new RelayCommand<vMixControl>(
+                    ?? (_moveWidgetCommand = new RelayCommand<ControlIntParameter>(
                     p =>
                     {
-                        p.Page = p.Page == 0 ? 1 : 0;
+                        p.A.Page = p.B;
                     }));
             }
         }
@@ -1179,7 +1180,7 @@ namespace vMixController.ViewModel
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
                         viewModel.Widget = p;
                         viewModel.SetProperties(p);
-                        
+
 
                         if (_settings == null)
                             _settings = new vMixWidgetSettingsView
@@ -1256,7 +1257,7 @@ namespace vMixController.ViewModel
                                     UndoReason = string.Format("Widget [{0}] created", widget.Type);
                                 }
 
-                                
+
 
                             }
                             else
@@ -1581,35 +1582,42 @@ namespace vMixController.ViewModel
 
         private void LoadControllerFromFile(string opendlg)
         {
-            ControllerPath = opendlg;
+            try
+            {
+                ControllerPath = opendlg;
 
-            foreach (var item in _widgets)
-                item.Dispose();
-            _widgets.Clear();
+                foreach (var item in _widgets)
+                    item.Dispose();
+                _widgets.Clear();
 
-            LIVE = true;
+                LIVE = true;
 
-            var ol = _windowSettings.OpenLastAtStart;
+                var ol = _windowSettings.OpenLastAtStart;
 
-            foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
-                _widgets.Add(item);
+                foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
+                    _widgets.Add(item);
 
-            _windowSettings.OpenLastAtStart = ol;
+                _windowSettings.OpenLastAtStart = ol;
 
-            foreach (var item in _widgets)
-                item.Update();
+                foreach (var item in _widgets)
+                    item.Update();
 
-            RaisePropertyChanged(nameof(WindowSettings));
-            _logger.Info("Configuring API.");
+                RaisePropertyChanged(nameof(WindowSettings));
+                _logger.Info("Configuring API.");
 
-            ConnectTimer_Tick(null, new EventArgs());
+                ConnectTimer_Tick(null, new EventArgs());
 
-            vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
+                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port);
 
-            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+                IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
 
-            SyncTovMixState();
-            UpdateExecLinks();
+                SyncTovMixState();
+                UpdateExecLinks();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error while loading controller");
+            }
         }
 
 
@@ -1846,7 +1854,7 @@ namespace vMixController.ViewModel
             {
                 Model = null;
                 State_OnStateCreated(null, null);
-                Status = "Offline";
+                Status = Status.Offline;
             }
             else
             {
@@ -1924,7 +1932,7 @@ namespace vMixController.ViewModel
                             return;
                         p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
                         //p.Handled = true;
-                        
+
                     }));
             }
         }
@@ -2240,11 +2248,26 @@ namespace vMixController.ViewModel
                         if (t.B == true)
                             SyncTovMixState();
                         break;
+                    case "PAGE":
+                        if (t.B)
+                            PageIndex = (PageIndex + 1) % 7;
+                        else
+                            PageIndex = Math.Max(0, PageIndex - 1);
+                        break;
                     default:
                         break;
                 }
             });
 
+            Messenger.Default.Register<Pair<string, int>>(this, (t) =>
+            {
+                switch (t.A)
+                {
+                    case "PAGE":
+                        PageIndex = t.B;
+                        break;
+                }
+            });
             if (!IsInDesignMode)
             {
                 var globalEvents = Gma.System.MouseKeyHook.Hook.AppEvents();
@@ -2416,13 +2439,13 @@ namespace vMixController.ViewModel
             if (e.Error != null)
             {
                 _logger.Error(e.Error, "Error while connecting vMix server.");
-                Status = "Offline";
+                Status = Status.Offline;
                 return;
             }
             if (Model != null && (Model.Ip == WindowSettings.IP && Model.Port == WindowSettings.Port))
-                Status = "Online";
+                Status = Status.Online;
             else
-                Status = "Sync";
+                Status = Status.Sync;
         }
 
         public override void Cleanup()

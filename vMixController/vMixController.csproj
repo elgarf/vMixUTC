@@ -201,6 +201,7 @@
     <Compile Include="Classes\Triple.cs" />
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />
+    <Compile Include="Classes\XmlDocumentMessenger.cs" />
     <Compile Include="Controls\ReleaseButton.cs" />
     <Compile Include="Controls\TBarSlider.cs" />
     <Compile Include="Controls\TwoColumnGrid.cs" />
@@ -218,9 +219,13 @@
     <Compile Include="Converters\AudiobusToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
+    <Compile Include="Converters\ColorsListToColorConverter.cs" />
     <Compile Include="Converters\ColorToBlackOrWhiteConverter.cs" />
     <Compile Include="Converters\ColorToDarkerSolidBrushConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
+    <Compile Include="Converters\ControlIntToParameterConverter.cs" />
+    <Compile Include="Converters\EnumToStringConverter.cs" />
+    <Compile Include="Converters\ObjectToIndexConverter.cs" />
     <Compile Include="Converters\TextFieldAndIntToControlIntParameterConverter.cs" />
     <Compile Include="Converters\ImagePartConverter.cs" />
     <Compile Include="Converters\DateTimeKeepMillisecondsConverter.cs" />

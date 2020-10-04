@@ -43,6 +43,35 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
+    <Description>Move to next page</Description>
+    <Function>NextPage</Function>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>Move to previous page</Description>
+    <Function>PrevPage</Function>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
+    <Description>Set current page</Description>
+    <Function>SetPage</Function>
+    <HasIntProperty>true</HasIntProperty>
+    <IntValues>
+      <int>0</int>
+      <int>1</int>
+      <int>2</int>
+      <int>3</int>
+      <int>4</int>
+      <int>5</int>
+      <int>6</int>
+      <int>7</int>
+    </IntValues>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
     <Description>
       Check condition, functions below this one executes only if condition is TRUE.
       This is block function, block ends at ConditionEnd function.

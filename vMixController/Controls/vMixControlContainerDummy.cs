@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using vMixController.Classes;
 using vMixController.Converters;
 using vMixController.ViewModel;
 
@@ -142,15 +143,15 @@ namespace vMixController.Controls
 
 
 
-        public RelayCommand<Widgets.vMixControl> MoveCommand
+        public RelayCommand<ControlIntParameter> MoveCommand
         {
-            get { return (RelayCommand<Widgets.vMixControl>)GetValue(MoveCommandProperty); }
+            get { return (RelayCommand<ControlIntParameter>)GetValue(MoveCommandProperty); }
             set { SetValue(MoveCommandProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for MoveCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MoveCommandProperty =
-            DependencyProperty.Register("MoveCommand", typeof(RelayCommand<Widgets.vMixControl>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
+            DependencyProperty.Register("MoveCommand", typeof(RelayCommand<ControlIntParameter>), typeof(vMixControlContainerDummy), new PropertyMetadata(null));
 
 
 

@@ -115,9 +115,9 @@ namespace vMixController.Widgets
                     ?? (_addScoreCommand = new RelayCommand<ControlIntParameter>(
                     p =>
                     {
-                        int.TryParse(p.A.Text, out int _out);
+                        int.TryParse(((vMixControlTextField)p.A).Text, out int _out);
                         _out += p.B;
-                        p.A.Text = _out.ToString();
+                        ((vMixControlTextField)p.A).Text = _out.ToString();
                     }));
             }
         }

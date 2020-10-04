@@ -23,7 +23,7 @@ namespace XmlDataProviderNs
         private static Dictionary<string, CacheStats> _cahce = new Dictionary<string, CacheStats>();
 
 
-        private OnWidgetUI _ui;
+        private UIElement _ui;
         private string _url;
         private string _xpath;
         private string _namespaces;
@@ -351,7 +351,15 @@ namespace XmlDataProviderNs
         public XmlDataProvider()
         {
             _id = _maxid++;
-            _ui = new OnWidgetUI() { DataContext = this };
+            try
+            {
+                _ui = new OnWidgetUI() { DataContext = this };
+            }
+            catch (Exception e)
+            {
+                _ui = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            }
+            
             _namespaces = "";
 
         }

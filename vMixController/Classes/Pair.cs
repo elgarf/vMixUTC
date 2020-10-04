@@ -102,13 +102,13 @@ namespace vMixController.Classes
             DependencyProperty.Register("B", typeof(T2), typeof(Pair<T1, T2>), new PropertyMetadata(default(T2), InternalPropertyChanged));
     }
 
-    public class ControlIntParameter : Pair<Widgets.vMixControlTextField, int>
+    public class ControlIntParameter : Pair<Widgets.vMixControl, int>
     {
         public ControlIntParameter() : base()
         {
 
         }
-        public ControlIntParameter(Widgets.vMixControlTextField a, int b) : base(a, b)
+        public ControlIntParameter(Widgets.vMixControl a, int b) : base(a, b)
         {
 
         }

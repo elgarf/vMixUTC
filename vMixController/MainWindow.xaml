@@ -14,6 +14,7 @@
         xmlns:e="clr-namespace:vMixController.Extensions"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:this="clr-namespace:vMixController"
+        xmlns:vm="clr-namespace:vMixController.ViewModel"
         x:Class="vMixController.MainWindow"
         xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
         mc:Ignorable="d ignore"
@@ -366,7 +367,7 @@
                 <MenuItem.HeaderTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Margin="{StaticResource RightStdMargin}" Stroke="Black">
+                            <Ellipse Width="8" Height="8" Margin="0,0,8,0" Stroke="Black">
                                 <Ellipse.Fill>
                                     <SolidColorBrush Color="{Binding Converter={c:StatusToColorConverter}}"/>
                                 </Ellipse.Fill>
@@ -600,19 +601,47 @@
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock VerticalAlignment="Center">Layout</TextBlock>
-                            <ComboBox SelectedIndex="{Binding PageIndex, Mode=TwoWay}" IsEditable="False" MinWidth="128" Margin="8,0,0,0" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
-                                <ComboBox.Resources>
-                                    <sys:Int32 x:Key="Zero">0</sys:Int32>
-                                    <sys:Int32 x:Key="One">1</sys:Int32>
-                                </ComboBox.Resources>
-                                <ComboBox.Items>
-                                    <sys:String>Main</sys:String>
-                                    <sys:String>Data</sys:String>
-                                </ComboBox.Items>
+                            <ComboBox x:Name="Page" SelectedIndex="{Binding PageIndex, Mode=TwoWay}" IsEditable="False" MinWidth="128" Margin="8,0,0,0" ItemsSource="{StaticResource Pages}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="16" Height="16" Margin="{StaticResource RightStdMargin}">
+                                                <Border.Background>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <MultiBinding  Converter="{c:ColorsListToColorConverter}">
+                                                                <Binding Source="{x:Static vm:vMixWidgetSettingsViewModel.Colors}"/>
+                                                                <Binding Converter="{c:ObjectToIndexConverter}" ConverterParameter="{StaticResource Pages}"/>
+                                                            </MultiBinding>
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Border.Background>
+                                            </Border>
+                                            <TextBlock Text="{Binding}" Grid.Column="12"/>
+                                        </Grid>
+                                        
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
                     </TabItem.Header>
                     <Grid Name="LayoutGrid" Tag="{Binding WindowSettings.Locked, Mode=TwoWay}">
+                        <TextBlock Margin="-10,-30" FontFamily="Segoe UI" Opacity="0.25" FontSize="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="{Binding SelectedValue, ElementName=Page}">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush>
+                                    <SolidColorBrush.Color>
+                                        <MultiBinding  Converter="{c:ColorsListToColorConverter}">
+                                            <Binding Source="{x:Static vm:vMixWidgetSettingsViewModel.Colors}"/>
+                                            <Binding Path="PageIndex"/>
+                                        </MultiBinding>
+                                    </SolidColorBrush.Color>
+                                </SolidColorBrush>
+                            </TextBlock.Foreground>
+                        </TextBlock>
                         <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent" ContextMenuOpening="Layout_ContextMenuOpening">
                             <ListView.ContextMenu>
                                 <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
@@ -778,7 +807,7 @@
                             <SolidColorBrush Color="{Binding Status, Converter={c:StatusToColorConverter}}"/>
                         </Ellipse.Fill>
                     </Ellipse>
-                    <TextBlock Text="{Binding Status}"/>
+                    <TextBlock Text="{Binding Status, Converter={c:EnumToStringConverter}}"/>
                 </StackPanel>
             </StatusBarItem>
             <Separator/>

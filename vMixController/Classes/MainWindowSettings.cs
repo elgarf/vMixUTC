@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,15 @@ namespace vMixController.Classes
     [Serializable]
     public class MainWindowSettings : ObservableObject
     {
+
+        public MainWindowSettings()
+        {
+            Pages.Add("Main");
+            Pages.Add("Data");
+            Pages.Add("Page 1");
+            Pages.Add("Page 2");
+            Pages.Add("Page 3");
+        }
         /// <summary>
         /// The <see cref="State" /> property's name.
         /// </summary>
@@ -188,6 +198,9 @@ namespace vMixController.Classes
 
                 _ip = value;
                 vMixAPI.StateFabrique.Configure(IP, Port);
+
+                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
+
                 RaisePropertyChanged(IPPropertyName);
             }
         }
@@ -219,6 +232,9 @@ namespace vMixController.Classes
 
                 _port = value;
                 vMixAPI.StateFabrique.Configure(IP, Port);
+
+                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
+
                 RaisePropertyChanged(PortPropertyName);
             }
         }
@@ -491,6 +507,37 @@ namespace vMixController.Classes
 
                 _userName = value;
                 RaisePropertyChanged(UserNamePropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="Pages" /> property's name.
+        /// </summary>
+        public const string PagesPropertyName = "Pages";
+
+        private ObservableCollection<string> _pages = new ObservableCollection<string>();
+
+        /// <summary>
+        /// Sets and gets the Pages property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<string> Pages
+        {
+            get
+            {
+                return _pages;
+            }
+
+            set
+            {
+                if (_pages == value)
+                {
+                    return;
+                }
+
+                _pages = value;
+                RaisePropertyChanged(PagesPropertyName);
             }
         }
 

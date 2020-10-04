@@ -32,33 +32,23 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlVolume : vMixControlTextField
     {
-        private static DispatcherTimer _meterTimer;
-        private DateTime _previousTimestamp;
         private static DateTime _previousQuery;
         private static uint _instances = 0;
         private bool _disposing = false;
-        private static bool _querying = false;
 
 
         public vMixControlVolume() : base()
         {
-            if (_meterTimer == null)
-            {
-                _meterTimer = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AudioMeterPollTime) };
-                _meterTimer.Start();
-            }
-
+           
             Height = 64;
-            _instances++;
-            _meterTimer.Tick += _meterTimer_Tick;
-            Messenger.Default.Register<DocumentMessage>(this, (x) =>
-            {
-                if (_previousTimestamp < x.Timestamp)
-                {
-                    UpdateVolumeByXPath(x.Document);
-                    _previousTimestamp = x.Timestamp;
-                }
-            });
+            
+            XmlDocumentMessenger.OnDocumentDownloaded += XmlDocumentMessenger_OnDocumentDownloaded;
+            XmlDocumentMessenger.Rate++;
+        }
+
+        private void XmlDocumentMessenger_OnDocumentDownloaded(XmlDocument doc, DateTime timestamp)
+        {
+            UpdateVolumeByXPath(doc);
         }
 
         private void UpdateVolumeByXPath(XmlDocument document)
@@ -93,7 +83,7 @@ namespace vMixController.Widgets
                 F1 = Math.Pow(f1, 1 / 4d);
                 F2 = Math.Pow(f2, 1 / 4d);
 
-                if (!App.Current.MainWindow.IsActive)
+                if (!App.Current?.MainWindow?.IsActive ?? false)
                 {
                     IsMuted = muted;
                     Value = volume;
@@ -102,7 +92,7 @@ namespace vMixController.Widgets
             });
         }
 
-        private void _meterTimer_Tick(object sender, EventArgs e)
+        /*private void _meterTimer_Tick(object sender, EventArgs e)
         {
             if (_instances == 0) return;
             var t = DateTime.Now - _previousQuery;
@@ -129,7 +119,7 @@ namespace vMixController.Widgets
             }
             _previousQuery = DateTime.Now;
             ((WebClient)sender).Dispose();
-        }
+        }*/
 
         [NonSerialized]
         private RelayCommand<object> _updateBusses;
@@ -157,10 +147,12 @@ namespace vMixController.Widgets
         {
 
             base.Dispose(managed);
-            if (_meterTimer != null)
+            /*if (_meterTimer != null)
                 _meterTimer.Tick -= _meterTimer_Tick;
             //if (_meterState != null)
-            Messenger.Default.Unregister(this);
+            Messenger.Default.Unregister(this);*/
+            XmlDocumentMessenger.OnDocumentDownloaded -= XmlDocumentMessenger_OnDocumentDownloaded;
+            XmlDocumentMessenger.Rate--;
             _instances--;
             //_meterState.OnStateCreated -= _meterState_OnStateCreated;
 

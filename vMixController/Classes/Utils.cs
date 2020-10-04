@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -17,6 +19,13 @@ using vMixController.Widgets;
 
 namespace vMixController.Classes
 {
+
+    public enum Status
+    {
+        Offline,
+        Sync,
+        Online
+    }
     public enum MessageType
     {
         Button,
@@ -33,10 +42,28 @@ namespace vMixController.Classes
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static ObservableCollection<vMixControl> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
         {
-            var _controls = new ObservableCollection<vMixControl>();
-            using (var stream = File.OpenRead(fileName))
+            windowSettings = null;
+            try
             {
-                return LoadController(stream, functions, out windowSettings);
+                var _controls = new ObservableCollection<vMixControl>();
+                using (var stream = File.OpenRead(fileName))
+                {
+                    return LoadController(stream, functions, out windowSettings);
+                }
+            }
+            catch (Exception e)
+            {
+                //Emergency controller
+                _logger.Error(e, "Error while loading controller!");
+                windowSettings = new MainWindowSettings() { Width = 512 + 16 + 16 + 8, Height = 512 + 196 + 48 };
+                var btn = new vMixControlButton() { IsColorized = true, Color = vMixWidgetSettingsViewModel.Colors[11].A, BorderColor = vMixWidgetSettingsViewModel.Colors[11].B, Name = "Report Bug", Top = 16 + 16 + 8 + 512, Left = 8, Width = 512, IsCaptionVisible = false, IsCaptionOn = false };
+                btn.Commands.Add(new vMixControlButtonCommand() {
+                    Action = new vMixFunctionReference() { Function = NativeFunctions.WIN, Native = true },
+                    StringParameter = "https://forums.vmix.com/postmessage?t=6468&f=8" });
+                return new ObservableCollection<vMixControl>() {
+                    new vMixControlRegion() { Text = string.Format("{0}\n\n\nP.S. Don't be afraid, your controller is OK.\nReport about it on forum.", string.Join("", SecurityElement.Escape(e.ToString()).Select(x=>(XmlConvert.IsXmlChar(x)?x.ToString():"0x" + Convert.ToByte(x).ToString())).ToArray())), Width = 512, Height = 512, Top = 8, Left = 8, Color = Colors.Red, Name = "Error while loading controller!" },
+                    btn
+                };
             }
 
         }
@@ -92,8 +119,6 @@ namespace vMixController.Classes
                         else
                             GlobalVariablesViewModel._variables.Where(x => x.A == item.A).First().B = item.B;
                     }
-
-
                     reader.ReadEndElement();
                 }
 

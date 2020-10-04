@@ -15,6 +15,7 @@
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+
     <c:AudiobusToBoolConverter x:Key="AudioBussesConverter"/>
 
     <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type ctrls:vMixControlMoveThumb}">
@@ -685,6 +686,26 @@
             </ctrls:vMixControlContainerDummy.MainContent>
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
+
+    <!--Backwards compatibility-->
+    <DataTemplate x:Key="vMixControlSlider">
+        <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"
+                                         MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <Grid Height="{Binding Height}">
+                    <ContentControl Content="{StaticResource VolumeWidgetControl}"/>
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                        <ctrls:vMixControlResizeThumb.Template>
+                            <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+                                <Rectangle Fill="Transparent"/>
+                            </ControlTemplate>
+                        </ctrls:vMixControlResizeThumb.Template>
+                    </ctrls:vMixControlResizeThumb>
+                </Grid>
+            </ctrls:vMixControlContainerDummy.MainContent>
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+
 
     <DataTemplate x:Key="vMixControlTBar">
         <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 
 namespace UTCExcelDataProvider
@@ -95,8 +96,22 @@ namespace UTCExcelDataProvider
             }
         }
 
-        public System.Windows.UIElement CustomUI => new OnWidgetUI() { DataContext = this };
 
+        System.Windows.UIElement _customUI;
+
+        public System.Windows.UIElement CustomUI { get { return _customUI; } }
+
+        public ExcelDataProvider()
+        {
+            try
+            {
+                _customUI = new OnWidgetUI() { DataContext = this };
+            }
+            catch (Exception e)
+            {
+                _customUI = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            }
+        }
 
         /// <summary>
         /// The <see cref="FilePath" /> property's name.

@@ -5,6 +5,16 @@
         xmlns:themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit"
         xmlns:chrome="clr-namespace:Xceed.Wpf.Toolkit.Chromes;assembly=Xceed.Wpf.Toolkit" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
+    <CompositeCollection x:Key="Pages">
+        <sys:String>MAIN</sys:String>
+        <sys:String>DATA</sys:String>
+        <sys:String>PAGE 1</sys:String>
+        <sys:String>PAGE 2</sys:String>
+        <sys:String>PAGE 3</sys:String>
+        <sys:String>PAGE 4</sys:String>
+        <sys:String>PAGE 5</sys:String>
+    </CompositeCollection>
+
     <Thickness x:Key="LeftStdMargin">2,0,0,0</Thickness>
     <Thickness x:Key="RightStdMargin">0,0,2,0</Thickness>
     <Thickness x:Key="TopStdMargin">0,2,0,0</Thickness>

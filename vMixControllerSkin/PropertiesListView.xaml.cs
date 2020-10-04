@@ -27,8 +27,6 @@ namespace vMixControllerSkin
     {
         public PropertiesListView()
         {
-            InitializeComponent();
-
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 var e = new CompositeCollection
@@ -40,6 +38,10 @@ namespace vMixControllerSkin
                 };
                 Items = e;
             }
+
+            InitializeComponent();
+
+            
         }
 
 
