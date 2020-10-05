@@ -6,7 +6,6 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
              xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
-             xmlns:local="clr-namespace:XmlDataProviderNs"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="_xmlUi">
@@ -80,6 +79,13 @@
             </skin:PropertiesListView>
         </Grid>
         <Separator/>
-        <TextBlock Margin="{StaticResource StdMargin}" Style="{StaticResource PropertyName}">Loaded <Run Text="{Binding Data.Count, Mode=OneWay}"></Run> row(s)</TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Margin="{StaticResource StdMargin}" Style="{StaticResource PropertyName}">Loaded <Run Text="{Binding Data.Count, Mode=OneWay}"></Run> row(s)</TextBlock>
+            <Button Grid.Column="1" Command="{Binding ShowRowsCommand}">Show Rows</Button>
+        </Grid>
     </StackPanel>
 </UserControl>

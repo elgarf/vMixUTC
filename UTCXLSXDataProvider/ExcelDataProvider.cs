@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using vMixControllerSkin;
 
 namespace UTCExcelDataProvider
 {
@@ -73,10 +75,10 @@ namespace UTCExcelDataProvider
                                     sheet++;
                                 }
                                 while (reader.NextResult());
-                                _cached = results.ToArray();
-                                RowsCount = _cached.Length;
+                                Cached = results.ToArray();
+                                RowsCount = Cached.Length;
                                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FilePathPropertyName));
-                                return _cached;
+                                return Cached;
                             }
                             catch (ExcelDataReader.Exceptions.ExcelReaderException)
                             {
@@ -87,7 +89,7 @@ namespace UTCExcelDataProvider
                         }
                     }
                     else
-                        return _cached;
+                        return Cached;
 
                 }
                 _hasError = true;
@@ -362,6 +364,35 @@ namespace UTCExcelDataProvider
         }
 
         public string Error => throw new NotImplementedException();
+
+
+        private RelayCommand _showRowsCommand;
+
+        /// <summary>
+        /// Gets the ShowRowsCommand.
+        /// </summary>
+        public RelayCommand ShowRowsCommand
+        {
+            get
+            {
+                return _showRowsCommand
+                    ?? (_showRowsCommand = new RelayCommand(
+                    () =>
+                    {
+                        new RowsViewer().Bind(this, "Cached");
+                    }));
+            }
+        }
+
+        public string[] Cached
+        {
+            get => _cached;
+            set
+            {
+                _cached = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Cached)));
+            }
+        }
 
         public string this[string columnName]
         {

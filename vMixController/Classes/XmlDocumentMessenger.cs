@@ -52,7 +52,7 @@ namespace vMixController.Classes
         static XmlDocumentMessenger()
         {
             _stateDependentTimer = new DispatcherTimer(DispatcherPriority.Render);
-            _stateDependentTimer.Interval = TimeSpan.FromSeconds(0.01);
+            _stateDependentTimer.Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AudioMeterPollTime / 5);
             _stateDependentTimer.Start();
             _stateDependentTimer.Tick += _stateDependentTimer_Tick;
 
@@ -66,7 +66,7 @@ namespace vMixController.Classes
             if (t.TotalMilliseconds >= (Rate != 0 ? Properties.Settings.Default.AudioMeterPollTime * 1000 : vMixControl.ShadowUpdatePollTime.TotalMilliseconds) && _queries < 5 && _subscribers > 0)
             {
 #if DEBUG
-                //Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
+                Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
 #endif
                 _previousQuery = DateTime.Now;
                 _queries++;

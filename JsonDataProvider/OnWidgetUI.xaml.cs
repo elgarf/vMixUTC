@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using vMixControllerSkin;
-namespace UTCExcelDataProvider
+
+namespace JsonDataProviderNs
 {
     /// <summary>
     /// Логика взаимодействия для OnWidgetUI.xaml
@@ -22,8 +22,7 @@ namespace UTCExcelDataProvider
     {
         public OnWidgetUI()
         {
-            //InitializeComponent();
-            this.LoadViewFromUri("/ExcelDataProvider;component/OnWidgetUI.xaml");
+            InitializeComponent();
         }
     }
 }

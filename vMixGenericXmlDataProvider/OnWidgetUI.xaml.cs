@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using vMixControllerSkin;
 
 namespace XmlDataProviderNs
 {
@@ -22,7 +23,8 @@ namespace XmlDataProviderNs
     {
         public OnWidgetUI()
         {
-            InitializeComponent();
+            //InitializeComponent();
+            this.LoadViewFromUri("/XmlDataProvider;component/OnWidgetUI.xaml");
         }
     }
 }

@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 using vMixControllerDataProvider;
+using vMixControllerSkin;
 
 namespace XmlDataProviderNs
 {
@@ -21,21 +23,12 @@ namespace XmlDataProviderNs
         private int _id = 0;
 
         private static Dictionary<string, CacheStats> _cahce = new Dictionary<string, CacheStats>();
-
-
-        private UIElement _ui;
         private string _url;
         private string _xpath;
         private string _namespaces;
         private int _groupBy;
 
-        public System.Windows.UIElement CustomUI
-        {
-            get
-            {
-                return _ui;
-            }
-        }
+        public System.Windows.UIElement CustomUI { get; }
 
         public bool IsProvidingCustomProperties
         {
@@ -306,6 +299,24 @@ namespace XmlDataProviderNs
             }
         }
 
+        private RelayCommand _showRowsCommand;
+
+        /// <summary>
+        /// Gets the ShowRowsCommand.
+        /// </summary>
+        public RelayCommand ShowRowsCommand
+        {
+            get
+            {
+                return _showRowsCommand
+                    ?? (_showRowsCommand = new RelayCommand(
+                    () =>
+                    {
+                        new RowsViewer().Bind(this, "Data");
+                    }));
+            }
+        }
+
         /// <summary>
         /// Provide data provider properties.
         /// </summary>
@@ -353,11 +364,11 @@ namespace XmlDataProviderNs
             _id = _maxid++;
             try
             {
-                _ui = new OnWidgetUI() { DataContext = this };
+                CustomUI = new OnWidgetUI() { DataContext = this };
             }
             catch (Exception e)
             {
-                _ui = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                CustomUI = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             }
             
             _namespaces = "";

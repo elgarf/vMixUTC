@@ -12,7 +12,7 @@
         Height="256"
          WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Title="Generic Xml Data Provider Settings" WindowStyle="ToolWindow">
+        Title="Xml Data Provider Settings" WindowStyle="ToolWindow">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

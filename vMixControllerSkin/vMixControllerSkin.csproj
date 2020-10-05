@@ -65,10 +65,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\ObjectToTypeString.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="PropertiesListView.xaml.cs">
       <DependentUpon>PropertiesListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RowsViewer.xaml.cs">
+      <DependentUpon>RowsViewer.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MainSkin.xaml">
@@ -87,6 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="PropertiesListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RowsViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
