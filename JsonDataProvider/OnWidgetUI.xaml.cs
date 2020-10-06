@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using vMixControllerSkin;
 
 namespace JsonDataProviderNs
 {
@@ -22,7 +23,8 @@ namespace JsonDataProviderNs
     {
         public OnWidgetUI()
         {
-            InitializeComponent();
+            //InitializeComponent();
+            this.LoadViewFromUri("/JsonDataProvider;component/OnWidgetUI.xaml");
         }
     }
 }

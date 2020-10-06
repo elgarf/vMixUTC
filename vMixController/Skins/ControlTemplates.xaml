@@ -734,6 +734,36 @@
     <DataTemplate x:Key="vMixControlRegion">
         <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.CaptionContent>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox ToolTip="{e:Localize Magnetic}" HorizontalAlignment="Left" VerticalContentAlignment="Center" IsChecked="{Binding Magnet}" IsEnabled="True">
+                        <CheckBox.Style>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="CheckBox">
+                                                <Border x:Name="border" Background="{StaticResource Button.Static.Background}" BorderBrush="{StaticResource Button.Static.Border}" BorderThickness="1" Width="19" Height="19">
+                                                    <TextBlock FontSize="{TemplateBinding FontSize}" FontWeight="Regular" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF076;" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource Button.MouseOver.Background}" TargetName="border"/>
+                                                    <Setter Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter Property="Foreground" Value="Red" TargetName="textBox"/>
+                                                </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                </StackPanel>
+            </ctrls:vMixControlContainerDummy.CaptionContent>
+            
             <ctrls:vMixControlContainerDummy.MainContent>
                 <Grid Height="{Binding Height}">
                     <Grid.Background>

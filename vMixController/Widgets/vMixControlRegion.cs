@@ -55,6 +55,36 @@ namespace vMixController.Widgets
             }
         }
 
+        /// <summary>
+        /// The <see cref="Magnet" /> property's name.
+        /// </summary>
+        public const string MagnetPropertyName = "Magnet";
+
+        private bool _magnet = false;
+
+        /// <summary>
+        /// Sets and gets the Magnet property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool Magnet
+        {
+            get
+            {
+                return _magnet;
+            }
+
+            set
+            {
+                if (_magnet == value)
+                {
+                    return;
+                }
+
+                _magnet = value;
+                RaisePropertyChanged(MagnetPropertyName);
+            }
+        }
+
         public override UserControl[] GetPropertiesControls()
         {
             var infoString = GetPropertyControl<StringControl>();

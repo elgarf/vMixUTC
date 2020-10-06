@@ -24,7 +24,8 @@ namespace vMixControllerSkin
     {
         public RowsViewer()
         {
-            InitializeComponent();
+            //InitializeComponent();
+            this.LoadViewFromUri("vMixControllerSkin;component/RowsViewer.xaml");
             DataContext = this;
             Topmost = Application.Current?.MainWindow?.Topmost ?? false;
         }

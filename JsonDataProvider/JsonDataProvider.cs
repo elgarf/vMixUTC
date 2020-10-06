@@ -20,8 +20,8 @@ namespace JsonDataProviderNs
     public class JsonDataProvider : IvMixDataProviderTextInput, INotifyPropertyChanged
     {
 
-        static JToken _document;
-        static DateTime _previousQuery;
+        JToken _document;
+        DateTime _previousQuery;
 
         List<string> _data = new List<string>();
         bool _retrivingData = false;
@@ -128,7 +128,7 @@ namespace JsonDataProviderNs
                     if (_document != null)
                     {
                         _document = null;
-                        GC.SuppressFinalize(_document);
+                        GC.Collect();
                     }
                     var text = sr.ReadToEnd();
                     _document = JToken.Parse(text);
@@ -138,6 +138,7 @@ namespace JsonDataProviderNs
             catch (Exception) {
 
             }
+            _previousQuery = DateTime.Now;
             _retrivingData = false;
 
         }

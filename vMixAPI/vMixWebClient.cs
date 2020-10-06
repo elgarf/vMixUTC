@@ -9,30 +9,19 @@ namespace vMixAPI
 {
     public class vMixWebClient : WebClient
     {
-        private int m_Timeout;
-
-        public int Timeout
-        {
-            get
-            {
-                return this.m_Timeout;
-            }
-            set
-            {
-                this.m_Timeout = value;
-            }
-        }
+        public int Timeout { get; set; }
 
         public vMixWebClient()
         {
-            this.m_Timeout = 5000;
+            this.Timeout = 5000;
             this.Encoding = Encoding.UTF8;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
         {
             WebRequest webRequest = base.GetWebRequest(address);
-            webRequest.Timeout = this.m_Timeout;
+            ((HttpWebRequest)webRequest).KeepAlive = false;
+            webRequest.Timeout = Timeout;
             return webRequest;
         }
     }

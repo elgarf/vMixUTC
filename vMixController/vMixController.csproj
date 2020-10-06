@@ -111,9 +111,6 @@
     <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="NCalc, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NCalc-Edge.1.5.0\lib\net35\NCalc.dll</HintPath>
-    </Reference>
     <Reference Include="NKristek.Wpf.Converters, Version=2.0.2.0, Culture=neutral, PublicKeyToken=c22c10dda31b71c4, processorArchitecture=MSIL">
       <HintPath>..\packages\NKristek.Wpf.Converters.2.0.2\lib\net40\NKristek.Wpf.Converters.dll</HintPath>
     </Reference>
@@ -532,6 +529,10 @@
     <Folder Include="Design\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ncalc\Evaluant.Calculator\NCalc.csproj">
+      <Project>{e70a0b09-f339-44f6-9551-a38565748904}</Project>
+      <Name>NCalc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NDILibDotNet2\NDILibDotNet2.csproj">
       <Project>{7195bfa6-8095-4618-96f6-8577db13fb43}</Project>
       <Name>NDILibDotNet2</Name>

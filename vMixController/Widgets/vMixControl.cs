@@ -753,7 +753,7 @@ namespace vMixController.Widgets
                 else
                 {
                     _internalState?.Configure(value.Ip, value.Port);
-                    _internalState?.UpdateAsync();
+                    //_internalState?.UpdateAsync();
                 }
             }
         }
@@ -820,6 +820,12 @@ namespace vMixController.Widgets
                     ((vMixAPI.State)e.NewValue).OnStateSynced += (d as vMixControl).VMixControl_Updated;
                 (d as vMixControl).OnStateSynced();
             }
+        }
+
+        public bool Intersect(vMixControl c)
+        {
+            return new Rect(Left, Top, Width, Height).Contains(new Rect(c.Left, c.Top, c.Width, c.Height));
+
         }
 
         private void VMixControl_Updated(object sender, vMixAPI.StateSyncedEventArgs e)

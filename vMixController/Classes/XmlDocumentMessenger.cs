@@ -27,7 +27,7 @@ namespace vMixController.Classes
 
         public static int Rate { get; set; }
 
-        static HttpClient _client;
+        //static HttpClient _client;
 
         static event DocumentDownloaded _onDocumentDownloaded;
         public static event DocumentDownloaded OnDocumentDownloaded
@@ -36,11 +36,13 @@ namespace vMixController.Classes
             {
                 _onDocumentDownloaded += value;
                 _subscribers = _onDocumentDownloaded?.GetInvocationList().Length ?? 0;
+                Debug.Print("{0} subscribers", _subscribers);
             }
             remove
             {
                 _onDocumentDownloaded -= value;
                 _subscribers = _onDocumentDownloaded?.GetInvocationList().Length ?? 0;
+                Debug.Print("{0} subscribers", _subscribers);
             }
         }
 
@@ -56,7 +58,7 @@ namespace vMixController.Classes
             _stateDependentTimer.Start();
             _stateDependentTimer.Tick += _stateDependentTimer_Tick;
 
-            _client = new HttpClient() { Timeout = TimeSpan.FromSeconds(1) };
+            //_client = new HttpClient() { Timeout = TimeSpan.FromSeconds(1) };
         }
 
         private static void _stateDependentTimer_Tick(object sender, EventArgs e)
@@ -66,7 +68,9 @@ namespace vMixController.Classes
             if (t.TotalMilliseconds >= (Rate != 0 ? Properties.Settings.Default.AudioMeterPollTime * 1000 : vMixControl.ShadowUpdatePollTime.TotalMilliseconds) && _queries < 5 && _subscribers > 0)
             {
 #if DEBUG
-                Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
+                //Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
+                //ThreadPool.GetAvailableThreads(out int t1, out int t2);
+                //Debug.WriteLine("{0}, {1}", t1, t2);
 #endif
                 _previousQuery = DateTime.Now;
                 _queries++;
@@ -76,8 +80,17 @@ namespace vMixController.Classes
                     Uri uri = null;
                     if (Uri.TryCreate((Url ?? "http://127.0.0.1:8088") + "/api", UriKind.Absolute, out uri))
                     {
-                        ServicePointManager.FindServicePoint(uri).ConnectionLimit = 10;
-
+                        try
+                        {
+                            var client = new vMixWebClient();
+                            client.DownloadStringCompleted += Client_DownloadStringCompleted;
+                            client.DownloadStringAsync(uri);
+                        }
+                        catch (Exception)
+                        {
+                            _queries--;
+                        }
+                        /*ServicePointManager.FindServicePoint(uri).ConnectionLimit = 10;
 
                         try
                         {
@@ -90,7 +103,7 @@ namespace vMixController.Classes
                         catch (Exception)
                         {
                             _queries--;
-                        }
+                        }*/
                     }
                 });
 
@@ -98,14 +111,24 @@ namespace vMixController.Classes
             }
         }
 
-        private static void Client_DownloadStringCompleted1(object sender, DownloadStringCompletedEventArgs e)
+        private static void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             if (e.Error == null)
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(e.Result);
-                _onDocumentDownloaded?.Invoke(doc, DateTime.Now);
-                _queries--;
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(e.Result) && e.Result.StartsWith("<vmix>"))
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(e.Result);
+                        _onDocumentDownloaded?.Invoke(doc, DateTime.Now);
+                        _queries--;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _queries--;
+                }
             }
             (sender as WebClient).Dispose();
             _previousQuery = DateTime.Now;

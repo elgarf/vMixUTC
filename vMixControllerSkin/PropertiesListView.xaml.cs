@@ -27,7 +27,7 @@ namespace vMixControllerSkin
     {
         public PropertiesListView()
         {
-            if (DesignerProperties.GetIsInDesignMode(this))
+            /*if (DesignerProperties.GetIsInDesignMode(this))
             {
                 var e = new CompositeCollection
                 {
@@ -37,9 +37,10 @@ namespace vMixControllerSkin
                     new TextBox() { Tag = "Test 4" }
                 };
                 Items = e;
-            }
+            }*/
 
-            InitializeComponent();
+            //InitializeComponent();
+            this.LoadViewFromUri("vMixControllerSkin;component/PropertiesListView.xaml");
 
             
         }

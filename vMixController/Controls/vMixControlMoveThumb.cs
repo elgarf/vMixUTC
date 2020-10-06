@@ -28,6 +28,13 @@ namespace vMixController.Controls
             DragDelta += new DragDeltaEventHandler(this.MoveThumb_DragDelta);
             this.DragStarted += PhotoMoveThumb_DragStarted;
             this.DataContextChanged += VMixControlMoveThumb_DataContextChanged;
+            this.DragCompleted += VMixControlMoveThumb_DragCompleted;
+        }
+
+        private void VMixControlMoveThumb_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            if (this.DataContext is vMixControl item && !item.Locked)
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<vMixControl, bool>(item, false));
         }
 
         private void VMixControlMoveThumb_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -52,19 +59,20 @@ namespace vMixController.Controls
         void PhotoMoveThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<vMixControl, bool>(item, true));
             //item.IsSelected = true;
         }
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
 
-            if (this.DataContext is vMixController.Widgets.vMixControl item && !item.Locked)
+            if (this.DataContext is vMixControl item && !item.Locked)
             {
                 item.Left = Math.Round(item.Left + e.HorizontalChange);
                 item.Top = Math.Round(item.Top + e.VerticalChange);
                 item.AlignByGrid();
 
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<Triple<vMixControl, double, double>>(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
             }
 
 

@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.SqlServer.Server;
 using System.Linq.Expressions;
+using System.IO.Compression;
 
 namespace vMixController.ViewModel
 {
@@ -1282,6 +1283,29 @@ namespace vMixController.ViewModel
                     ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
                     p =>
                     {
+
+                        if (SelectorWidth != 0 && SelectorHeight != 0)
+                        {
+
+                            var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
+                            foreach (var item in _widgets)
+                            {
+                                var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
+                                item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked && item.Page == PageIndex;
+                            }
+                            SelectorWidth = 0;
+                            SelectorHeight = 0;
+                            SelectorEnabled = false;
+                            return;
+                        }
+                        SelectorEnabled = false;
+                        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                            foreach (var item in _widgets)
+                            {
+                                item.Selected = false;
+                            }
+
+
                         if (_skipClick)
                         {
                             _skipClick = !_skipClick;
@@ -1335,22 +1359,38 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<object> _mouseMove;
+        private RelayCommand<MouseEventArgs> _mouseMove;
 
         /// <summary>
         /// Gets the MouseButtonDown.
         /// </summary>
-        public RelayCommand<object> MouseMove
+        public RelayCommand<MouseEventArgs> MouseMove
         {
             get
             {
                 return _mouseMove
-                    ?? (_mouseMove = new RelayCommand<object>(
+                    ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
                     p =>
                     {
                         //MouseEventArgs
                         //_moveSource = p.Source;
+                        var ps = p.GetPosition(App.Current.MainWindow);
+                        var ipos = new Point(ps.X, ps.Y);
+                        if (!SelectorEnabled)
+                        {
 
+                            _clickPoint = new Point(ipos.X, ipos.Y);
+                            return;
+                        }
+
+
+                        var pos = new Point(ipos.X, ipos.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
+                        var w = -(_rawSelectorPosition.Left - pos.X);
+                        var h = -(_rawSelectorPosition.Top - pos.Y);
+
+                        SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
+                        SelectorWidth = Math.Abs(w);
+                        SelectorHeight = Math.Abs(h);
                     }));
             }
         }
@@ -1867,7 +1907,7 @@ namespace vMixController.ViewModel
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
 
-            Debug.Print("Hotkey processing");
+            //Debug.Print("Hotkey processing");
 
             /*Grid grid = (Grid)App.Current.MainWindow.FindName("LayoutGrid");
             if (grid != null)
@@ -1926,7 +1966,7 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
-                        Debug.Print("Key Up");
+                        //Debug.Print("Key Up");
                         _isPressed = false;
                         if (!IsHotkeysEnabled)
                             return;
@@ -1950,7 +1990,7 @@ namespace vMixController.ViewModel
                     ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
                     p =>
                     {
-                        Debug.Print("Key Down");
+                        //Debug.Print("Key Down");
                         if (_createWidget != null && p.Key == Key.Escape)
                         {
                             _createWidget = null;
@@ -2040,11 +2080,17 @@ namespace vMixController.ViewModel
 
         string _documentsPath;
 
+        List<vMixControl> _intersections = new List<vMixControl>();
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
+            _logger.Info(Environment.Version);
+            _logger.Info(Environment.OSVersion);
+            ThreadPool.GetAvailableThreads(out int t1, out int t2);
+            _logger.Info("Worker Threads:Completion Pool Threads - {0}:{1}", t1, t2);
             //Fix changing current directory on opening .vmc from external folder
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
@@ -2227,14 +2273,27 @@ namespace vMixController.ViewModel
                 }
             });
 
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
+            Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
             {
-                foreach (var item in _widgets.Where(x => x.Selected && x != t.A))
+                foreach (var item in _widgets.Where(x => x.Selected && x != t.A).Union(_intersections))
                 {
                     item.Left = Math.Round(item.Left + t.B);
                     item.Top = Math.Round(item.Top + t.C);
                     item.AlignByGrid();
                 }
+            });
+
+            Messenger.Default.Register<Pair<vMixControl, bool>>(this, (t) =>
+            {
+                if (!(t.A is vMixControlRegion reg)) return;
+                if (!reg.Magnet) return;
+                
+
+                if (!t.B)
+                    _intersections.Clear();
+                else
+                    foreach (var item in _widgets.Where(x => t.A.Intersect(x) && x != t.A))
+                        _intersections.Add(item);
             });
 
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Pair<string, bool>>(this, (t) =>
@@ -2270,9 +2329,9 @@ namespace vMixController.ViewModel
             });
             if (!IsInDesignMode)
             {
-                var globalEvents = Gma.System.MouseKeyHook.Hook.AppEvents();
-                globalEvents.MouseMove += MainViewModel_MouseMove;
-                globalEvents.MouseUp += MainViewModel_MouseUp;
+                //var globalEvents = Gma.System.MouseKeyHook.Hook.AppEvents();
+                //globalEvents.MouseMove += MainViewModel_MouseMove;
+                //globalEvents.MouseUp += MainViewModel_MouseUp;
             }
 
             IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
@@ -2572,9 +2631,15 @@ namespace vMixController.ViewModel
                             while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
                                 parent = VisualTreeHelper.GetParent(parent);
                             Keyboard.ClearFocus();
-                            FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                            //MoveFocus
-                            ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+
+                            if (parent == null)
+                                FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
+                            else
+                            {
+                                FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                                //MoveFocus
+                                ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                            }
 
 
 
@@ -2678,6 +2743,38 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         LoadUndo();
+                    }));
+            }
+        }
+
+
+        private RelayCommand _duplicateSelectedCommand;
+
+        /// <summary>
+        /// Gets the DublicateSelectedCommand.
+        /// </summary>
+        public RelayCommand DuplicateSelectedCommand
+        {
+            get
+            {
+                return _duplicateSelectedCommand
+                    ?? (_duplicateSelectedCommand = new RelayCommand(
+                    () =>
+                    {
+                        List<vMixControl> dups = new List<vMixControl>();
+                        foreach (var item in _widgets.Where(x=>x.Selected))
+                        {
+                            var copy = item.Copy();
+                            dups.Add(copy);
+                            copy.Left += 8;
+                            copy.Top += 8;
+                            copy.State = Model;
+                            item.Selected = false;
+                        }
+                        foreach (var item in dups)
+                        {
+                            _widgets.Add(item);
+                        }
                     }));
             }
         }

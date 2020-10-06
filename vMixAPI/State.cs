@@ -245,6 +245,7 @@ namespace vMixAPI
 
         private void Diff(object a, object b, bool lists = false)
         {
+            if (a == null || b == null) return;
             var properties = a.GetType().GetProperties().Where(x => lists || (!x.PropertyType.GetInterfaces().Contains(typeof(IList))));
             foreach (var item in properties)
                 if (item.CanWrite)
@@ -253,90 +254,27 @@ namespace vMixAPI
 
         public bool Update()
         {
-            IsInitializing = true;
-            _logger.Info("Updating vMix state.");
-            var _temp = Create();
-
-            if (_temp == null)
+            try
             {
-                _logger.Info("vMix is offline");
-                _logger.Info("Firing \"updated\" event.");
-
-                OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
-                IsInitializing = false;
-                return false;
-            }
-
-            _logger.Info("Calculating difference.");
-            Diff(this, _temp);
-
-            _logger.Info("Updating inputs.");
-
-            Inputs.Clear();
-            foreach (var item in _temp.Inputs)
-                Inputs.Add(item);
-            Overlays.Clear();
-            foreach (var item in _temp.Overlays)
-                Overlays.Add(item);
-            Audio.Clear();
-            foreach (var item in _temp.Audio)
-                Audio.Add(item);
-            Transitions.Clear();
-            foreach (var item in _temp.Transitions)
-                Transitions.Add(item);
-            Mixes.Clear();
-            foreach (var item in _temp.Mixes)
-                Mixes.Add(item);
-
-            //UpdateChangedInputs(_currentStateText, _temp._currentStateText);
-            if (_currentStateText != _temp._currentStateText)
-                _currentStateText = _temp._currentStateText;
-
-            _logger.Info("Firing \"updated\" event.");
-
-            OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
-            IsInitializing = false;
-            return true;
-        }
-
-        public void UpdateAsync()
-        {
-            SendFunction("", true, x =>
-            {
-                var e = (DownloadStringCompletedEventArgs)x;
-
-                if (e.Error != null)
-                {
-                    OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
-                    return;
-                }
-                if (e.UserState == null)
-                    return;
                 IsInitializing = true;
                 _logger.Info("Updating vMix state.");
-                var _temp = Create(e.Result);
+                var _temp = Create();
 
                 if (_temp == null)
                 {
                     _logger.Info("vMix is offline");
                     _logger.Info("Firing \"updated\" event.");
 
-                    IsInitializing = false;
                     OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
+                    IsInitializing = false;
+                    return false;
                 }
 
                 _logger.Info("Calculating difference.");
                 Diff(this, _temp);
 
                 _logger.Info("Updating inputs.");
-                if (Inputs == null)
-                    Inputs = new List<Input>();
-                if (Overlays == null)
-                    Overlays = new List<Overlay>();
-                if (Audio == null)
-                    Audio = new List<Master>();
-                if (Transitions == null)
-                    Transitions = new List<Transition>();
+
                 Inputs.Clear();
                 foreach (var item in _temp.Inputs)
                     Inputs.Add(item);
@@ -353,15 +291,95 @@ namespace vMixAPI
                 foreach (var item in _temp.Mixes)
                     Mixes.Add(item);
 
-
+                //UpdateChangedInputs(_currentStateText, _temp._currentStateText);
                 if (_currentStateText != _temp._currentStateText)
                     _currentStateText = _temp._currentStateText;
 
                 _logger.Info("Firing \"updated\" event.");
 
-                IsInitializing = false;
                 OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
-                return;
+                IsInitializing = false;
+                return true;
+            }
+            catch (Exception e)
+            {
+                IsInitializing = false;
+                _logger.Error(e, "Exception at Update");
+                return false;
+            }
+        }
+
+        public void UpdateAsync()
+        {
+            SendFunction("", true, x =>
+            {
+                try
+                {
+                    var e = (DownloadStringCompletedEventArgs)x;
+
+                    if (e.Error != null)
+                    {
+                        OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
+                        return;
+                    }
+                    if (e.UserState == null)
+                        return;
+                    IsInitializing = true;
+                    _logger.Info("Updating vMix state.");
+                    var _temp = Create(e.Result);
+
+                    if (_temp == null)
+                    {
+                        _logger.Info("vMix is offline");
+                        _logger.Info("Firing \"updated\" event.");
+
+                        IsInitializing = false;
+                        OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
+                    }
+
+                    _logger.Info("Calculating difference.");
+                    Diff(this, _temp);
+
+                    _logger.Info("Updating inputs.");
+                    if (Inputs == null)
+                        Inputs = new List<Input>();
+                    if (Overlays == null)
+                        Overlays = new List<Overlay>();
+                    if (Audio == null)
+                        Audio = new List<Master>();
+                    if (Transitions == null)
+                        Transitions = new List<Transition>();
+                    Inputs.Clear();
+                    foreach (var item in _temp.Inputs)
+                        Inputs.Add(item);
+                    Overlays.Clear();
+                    foreach (var item in _temp.Overlays)
+                        Overlays.Add(item);
+                    Audio.Clear();
+                    foreach (var item in _temp.Audio)
+                        Audio.Add(item);
+                    Transitions.Clear();
+                    foreach (var item in _temp.Transitions)
+                        Transitions.Add(item);
+                    Mixes.Clear();
+                    foreach (var item in _temp.Mixes)
+                        Mixes.Add(item);
+
+
+                    if (_currentStateText != _temp._currentStateText)
+                        _currentStateText = _temp._currentStateText;
+
+                    _logger.Info("Firing \"updated\" event.");
+
+                    IsInitializing = false;
+                    OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
+                    return;
+                }
+                catch (Exception e)
+                {
+                    IsInitializing = false;
+                    _logger.Error(e, "Exception at UpdateAsync");
+                }
             });
         }
 

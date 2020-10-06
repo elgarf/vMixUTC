@@ -67,12 +67,9 @@ namespace vMixController.Widgets
         bool _stopThread = false;
 
         [NonSerialized]
-        static bool _querying = false;
+        DateTime _previousQuery = DateTime.Now;
         [NonSerialized]
-        static DateTime _previousQuery = DateTime.Now;
-        [NonSerialized]
-        static DispatcherTimer _stateDependentTimer;
-        [NonSerialized]
+        static DateTime _previousInternalStateUpdating = DateTime.Now;
         static WebClient _webClient = new vMixWebClient();
 
         static List<vMixControlButton> _instances = new List<vMixControlButton>();
@@ -792,11 +789,15 @@ namespace vMixController.Widgets
 
 
             });
-                Dispatcher.Invoke(() =>
+                if ((DateTime.Now - _previousInternalStateUpdating).TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds)
                 {
-                    _internalState?.UpdateAsync();
-                });
-                
+                    Dispatcher.Invoke(() =>
+                    {
+                        _internalState?.UpdateAsync();
+                    });
+                    _previousInternalStateUpdating = DateTime.Now;
+                }
+
                 _previousQuery = DateTime.Now;
             }
         }
@@ -990,9 +991,9 @@ namespace vMixController.Widgets
                         (aval == "*") ||
                         (val != null && !(val is string) && aval == val.ToString()) ||
                         (val is string && (string)val == aval) ||
-                        (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
-                        (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
-                    if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
+                        ((string.IsNullOrWhiteSpace(realval) ? '-' : realval[0]) == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
+                        ((string.IsNullOrWhiteSpace(realval) ? '-' : realval[0]) == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
+                    if (!string.IsNullOrWhiteSpace(aval) && (string.IsNullOrWhiteSpace(realval) ? '-' : realval[0]) == '!')
                         mult = !mult;
                     result = result || mult;
                 }
