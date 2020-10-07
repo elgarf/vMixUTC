@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,18 @@ namespace vMixController.Converters
     public class FirstValueConverter : IMultiValueConverter
     {
         private bool _isList = false;
+        private string _default = null;
 
-        public FirstValueConverter(bool isList = false)
+        public FirstValueConverter(bool isList = false, string def = null)
         {
             _isList = isList;
+            _default = def;
         }
 
         private object[] _previousValues;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            //Debug.Print("FVC {0}", (object)values);
             object val = null;
             if (_previousValues == null)
             {
@@ -37,25 +41,25 @@ namespace vMixController.Converters
             }*/
             values.CopyTo(_previousValues, 0);
             if (!(val is string))
-                return null;
+                return _default;
             else
             {
                 if (_isList)
                     return Helpers.UnescapeAt((Helpers.EscapeAt((string)val)).Split(Helpers.EscapeSymbol[0])[0]);
                 else
-                    return val;
+                    return val ?? _default;
             }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            
+            //Debug.Print("FVC Back {0}", value);
             object[] values = new object[targetTypes.Length];
             for (int i = 0; i < targetTypes.Length; i++)
                 if (_isList)
                     values[i] = Helpers.UnescapeAt((Helpers.EscapeAt((string)value)).Split(Helpers.EscapeSymbol[0])[0]);
                 else
-                    values[i] = value;
+                    values[i] = value ?? _default;
             return values;
         }
     }

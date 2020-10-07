@@ -9,12 +9,16 @@ using vMixController.Classes;
 using System.Windows.Controls;
 using vMixController.PropertiesControls;
 using vMixController.Extensions;
+using System.Windows.Data;
+using vMixController.Converters;
+using System.Windows;
 
 namespace vMixController.Widgets
 {
     [Serializable]
     public class vMixControlScore : vMixControlTextField
     {
+
         public override string Type
         {
             get
@@ -53,12 +57,33 @@ namespace vMixController.Widgets
             }
         }
 
-        public vMixControlScore()
+        static vMixControlScore()
         {
-            Text = "0";
+            TextProperty.OverrideMetadata(typeof(vMixControlScore), new System.Windows.PropertyMetadata("", InternalPropertyChanged, CoerceValueCallback));
         }
 
-        
+        public vMixControlScore():
+            base()
+        {
+            Text = "0";
+            _defaultValue = "0";
+            
+            
+        }
+
+        private static object CoerceValueCallback(DependencyObject d, object baseValue)
+        {
+            //Dirty hack for zero =(
+            return (string)baseValue == "0" ? "0\x200A" : baseValue;
+        }
+
+        internal override IMultiValueConverter ConverterSelector()
+        {
+            if (!IsTable)
+                return new FirstValueConverter(def: "0");
+            else
+                return new StringsToStringConverter();
+        }
 
         public override Hotkey[] GetHotkeys()
         {

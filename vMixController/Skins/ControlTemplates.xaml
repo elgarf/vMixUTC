@@ -10,7 +10,8 @@
         xmlns:ext="clr-namespace:vMixController.Extensions"
         xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters">
+        xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
     </ResourceDictionary.MergedDictionaries>
@@ -447,13 +448,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <toolkit:IntegerUpDown IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetIntegerUpDown}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal">
-            <toolkit:IntegerUpDown.Text>
-                <Binding Path="Text" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.FallbackValue>0</Binding.FallbackValue>
-                    <Binding.TargetNullValue>0</Binding.TargetNullValue>
-                </Binding>
-            </toolkit:IntegerUpDown.Text>
+        <TextBox IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetTextBox}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -465,7 +460,7 @@
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </toolkit:IntegerUpDown>
+        </TextBox>
         <ContentPresenter Grid.Column="2" Content="{Binding}">
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>
@@ -736,14 +731,14 @@
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.CaptionContent>
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox ToolTip="{e:Localize Magnetic}" HorizontalAlignment="Left" VerticalContentAlignment="Center" IsChecked="{Binding Magnet}" IsEnabled="True">
+                    <CheckBox ToolTip="{e:Localize Sticky}" HorizontalAlignment="Left" VerticalContentAlignment="Center" IsChecked="{Binding Sticky}" IsEnabled="True">
                         <CheckBox.Style>
                             <Style TargetType="CheckBox">
                                 <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="CheckBox">
                                                 <Border x:Name="border" Background="{StaticResource Button.Static.Background}" BorderBrush="{StaticResource Button.Static.Border}" BorderThickness="1" Width="19" Height="19">
-                                                    <TextBlock FontSize="{TemplateBinding FontSize}" FontWeight="Regular" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF076;" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock FontSize="{TemplateBinding FontSize}" FontWeight="Regular" x:Name="textBox" FontFamily="/vMixControllerSkin;Component/#FontAwesome" Foreground="{StaticResource ComboBox.Static.Glyph}" Text="&#xF24A;" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -752,7 +747,8 @@
                                                     <Setter Property="Cursor" Value="Hand"/>
                                                 </Trigger>
                                                 <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Foreground" Value="Red" TargetName="textBox"/>
+                                                    <Setter Property="Foreground" Value="Yellow" TargetName="textBox"/>
+                                                    <Setter Property="Text" Value="&#xF249;" TargetName="textBox"/>
                                                 </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

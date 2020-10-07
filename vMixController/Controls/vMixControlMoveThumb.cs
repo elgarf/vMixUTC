@@ -68,11 +68,15 @@ namespace vMixController.Controls
 
             if (this.DataContext is vMixControl item && !item.Locked)
             {
+                var px = item.Left;
+                var py = item.Top;
+
                 item.Left = Math.Round(item.Left + e.HorizontalChange);
                 item.Top = Math.Round(item.Top + e.VerticalChange);
+
                 item.AlignByGrid();
 
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Triple<vMixControl, double, double>(item, e.HorizontalChange, e.VerticalChange));
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Triple<vMixControl, double, double>(item, item.Left - px, item.Top - py));
             }
 
 

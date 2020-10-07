@@ -56,32 +56,32 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
-        /// The <see cref="Magnet" /> property's name.
+        /// The <see cref="Sticky" /> property's name.
         /// </summary>
-        public const string MagnetPropertyName = "Magnet";
+        public const string StickyPropertyName = "Sticky";
 
-        private bool _magnet = false;
+        private bool _sticky = false;
 
         /// <summary>
         /// Sets and gets the Magnet property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public bool Magnet
+        public bool Sticky
         {
             get
             {
-                return _magnet;
+                return _sticky;
             }
 
             set
             {
-                if (_magnet == value)
+                if (_sticky == value)
                 {
                     return;
                 }
 
-                _magnet = value;
-                RaisePropertyChanged(MagnetPropertyName);
+                _sticky = value;
+                RaisePropertyChanged(StickyPropertyName);
             }
         }
 

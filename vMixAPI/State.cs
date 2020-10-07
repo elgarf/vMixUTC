@@ -106,7 +106,7 @@ namespace vMixAPI
             _port = port.Trim();
 
             //_configured = true;
-            _logger.Info("Configuring to {0}:{1}.", ip, port);
+            _logger.Debug("Configuring to {0}:{1}.", ip, port);
         }
 
         /// <summary>
@@ -125,7 +125,9 @@ namespace vMixAPI
             }
 
             IsInitializing = true;
-            _logger.Info("Creating vMix state form {0}.", textstate);
+            //_logger.Info(textstate);
+            _logger.SetProperty("APIReturn", textstate);
+            //_logger.Info("Creating vMix state form {0}.", textstate);
 
             try
             {
@@ -157,7 +159,7 @@ namespace vMixAPI
 
                     IsInitializing = false;
                     if (state != null)
-                        _logger.Info("vMix state created.");
+                        _logger.Debug("vMix state created.");
                     else
                         _logger.Error("vMix state not created.");
 
@@ -257,23 +259,23 @@ namespace vMixAPI
             try
             {
                 IsInitializing = true;
-                _logger.Info("Updating vMix state.");
+                _logger.Debug("Updating vMix state.");
                 var _temp = Create();
 
                 if (_temp == null)
                 {
-                    _logger.Info("vMix is offline");
-                    _logger.Info("Firing \"updated\" event.");
+                    _logger.Debug("vMix is offline");
+                    _logger.Debug("Firing \"updated\" event.");
 
                     OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
                     IsInitializing = false;
                     return false;
                 }
 
-                _logger.Info("Calculating difference.");
+                _logger.Debug("Calculating difference.");
                 Diff(this, _temp);
 
-                _logger.Info("Updating inputs.");
+                _logger.Debug("Updating inputs.");
 
                 Inputs.Clear();
                 foreach (var item in _temp.Inputs)
@@ -295,7 +297,7 @@ namespace vMixAPI
                 if (_currentStateText != _temp._currentStateText)
                     _currentStateText = _temp._currentStateText;
 
-                _logger.Info("Firing \"updated\" event.");
+                _logger.Debug("Firing \"updated\" event.");
 
                 OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
                 IsInitializing = false;
@@ -325,22 +327,22 @@ namespace vMixAPI
                     if (e.UserState == null)
                         return;
                     IsInitializing = true;
-                    _logger.Info("Updating vMix state.");
+                    _logger.Debug("Updating vMix state.");
                     var _temp = Create(e.Result);
 
                     if (_temp == null)
                     {
-                        _logger.Info("vMix is offline");
-                        _logger.Info("Firing \"updated\" event.");
+                        _logger.Debug("vMix is offline");
+                        _logger.Debug("Firing \"updated\" event.");
 
                         IsInitializing = false;
                         OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = false });
                     }
 
-                    _logger.Info("Calculating difference.");
+                    _logger.Debug("Calculating difference.");
                     Diff(this, _temp);
 
-                    _logger.Info("Updating inputs.");
+                    _logger.Debug("Updating inputs.");
                     if (Inputs == null)
                         Inputs = new List<Input>();
                     if (Overlays == null)
@@ -369,7 +371,7 @@ namespace vMixAPI
                     if (_currentStateText != _temp._currentStateText)
                         _currentStateText = _temp._currentStateText;
 
-                    _logger.Info("Firing \"updated\" event.");
+                    _logger.Debug("Firing \"updated\" event.");
 
                     IsInitializing = false;
                     OnStateSynced?.Invoke(this, new StateSyncedEventArgs() { Successfully = true, OldInputs = null, NewInputs = null });
@@ -385,7 +387,7 @@ namespace vMixAPI
 
         public string SendFunction(string textParameters, bool async = true, Action<DownloadStringCompletedEventArgs> handler = null)
         {
-            _logger.Info("Trying to send function <{0}> in {1} mode.", textParameters, async ? "async" : "sync");
+            _logger.Debug("Trying to send function <{0}> in {1} mode.", textParameters, async ? "async" : "sync");
 
 
             OnFunctionSend?.Invoke(this, new FunctionSendArgs() { Function = textParameters });
@@ -399,7 +401,7 @@ namespace vMixAPI
                 return "";
             }
 
-            _logger.Info("Function URL is <{0}>.", url);
+            _logger.Debug("Function URL is <{0}>.", url);
 
             if (async)
             {
@@ -415,7 +417,7 @@ namespace vMixAPI
                     if (e.Error != null)
                         _logger.Error(e.Error, "Error while sending async function.");
                     else
-                        _logger.Info("Async function sended, result is \"{0}\".", e.Result);
+                        _logger.Debug("Async function sended, result is \"{0}\".", e.Result);
 
                     handler?.Invoke(e);
 
@@ -452,7 +454,7 @@ namespace vMixAPI
                 _logger.Error(e.Error, string.Format("Error while sending async function with result {0}.", result));
             }
             else
-                _logger.Info("Async function sended, result is \"{0}\".", e.Result);
+                _logger.Debug("Async function sended, result is \"{0}\".", e.Result);
 
             ((Action<DownloadStringCompletedEventArgs>)e.UserState)?.Invoke(e);
 

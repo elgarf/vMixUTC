@@ -232,6 +232,7 @@
     <Compile Include="Converters\IntegersToVisibilityConverter.cs" />
     <Compile Include="Converters\ParametersToStringConverter.cs" />
     <Compile Include="Converters\LogarithmicConverter.cs" />
+    <Compile Include="Converters\ValueNullToStringConverter.cs" />
     <Compile Include="Converters\VariableListToInputListConverter.cs" />
     <Compile Include="Converters\ListItemTagToThicknessConverter.cs" />
     <Compile Include="Converters\ListItemTagToVisibilityConverter.cs" />

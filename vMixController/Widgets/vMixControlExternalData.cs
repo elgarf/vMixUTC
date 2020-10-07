@@ -311,39 +311,46 @@ namespace vMixController.Widgets
 
         private void InitializeDataProvider(byte[] value)
         {
-            AssemblyName name;
-            if (string.IsNullOrWhiteSpace(_dataProviderPath) || !File.Exists(_dataProviderPath))
+            try
             {
-                string fn = Path.GetTempFileName();
-                using (var fs = new FileStream(fn, FileMode.Create))
-                using (var sw = new BinaryWriter(fs))
-                    sw.Write(value);
-                name = AssemblyName.GetAssemblyName(fn);
-            }
-            else
-                name = AssemblyName.GetAssemblyName(_dataProviderPath);
-
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
-            var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
-            var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
-
-            if (DataProvider?.GetType() != type && type != null)
-            {
-                DataProvider = (IvMixDataProvider)assembly.CreateInstance(type.FullName);
-            }
-
-            if (_dataProviderProperties != null)
-            {
-                DataProvider.SetProperties(_dataProviderProperties);
-                if (DataProvider is IvMixDataProviderTextInput)
+                AssemblyName name;
+                if (string.IsNullOrWhiteSpace(_dataProviderPath) || !File.Exists(_dataProviderPath))
                 {
-                    ((IvMixDataProviderTextInput)DataProvider).PreviewKeyUp = PreviewKeyUp;
-                    ((IvMixDataProviderTextInput)DataProvider).GotFocus = GotFocus;
-                    ((IvMixDataProviderTextInput)DataProvider).LostFocus = LostFocus;
+                    string fn = Path.GetTempFileName();
+                    using (var fs = new FileStream(fn, FileMode.Create))
+                    using (var sw = new BinaryWriter(fs))
+                        sw.Write(value);
+                    name = AssemblyName.GetAssemblyName(fn);
                 }
-            }
+                else
+                    name = AssemblyName.GetAssemblyName(_dataProviderPath);
 
-            UpdateText(Paths);
+                var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
+                var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
+                var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
+
+                if (DataProvider?.GetType() != type && type != null)
+                {
+                    DataProvider = (IvMixDataProvider)assembly.CreateInstance(type.FullName);
+                }
+
+                if (_dataProviderProperties != null)
+                {
+                    DataProvider.SetProperties(_dataProviderProperties);
+                    if (DataProvider is IvMixDataProviderTextInput)
+                    {
+                        ((IvMixDataProviderTextInput)DataProvider).PreviewKeyUp = PreviewKeyUp;
+                        ((IvMixDataProviderTextInput)DataProvider).GotFocus = GotFocus;
+                        ((IvMixDataProviderTextInput)DataProvider).LostFocus = LostFocus;
+                    }
+                }
+
+                UpdateText(Paths);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error loading Data Provider!");
+            }
         }
 
         internal override void UpdateText(IList<Pair<string, string>> paths)

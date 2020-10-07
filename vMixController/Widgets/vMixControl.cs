@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace vMixController.Widgets
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
+        protected NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         internal static Dictionary<string, UserControl> ControlsStore = new Dictionary<string, UserControl>();
         internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();

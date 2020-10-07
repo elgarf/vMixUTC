@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace vMixController.Widgets
     public class vMixControlTextField : vMixControl
     {
 
+        protected string _defaultValue = null;
         protected static Queue<Triple<DependencyObject, DependencyProperty, DateTime>> DelayedUpdate = new Queue<Triple<DependencyObject, DependencyProperty, DateTime>>();
         private static DispatcherTimer DelayedUpdateTimer = new DispatcherTimer();
 
@@ -261,7 +263,7 @@ namespace vMixController.Widgets
         internal virtual IMultiValueConverter ConverterSelector()
         {
             if (!IsTable)
-                return new FirstValueConverter();
+                return new FirstValueConverter(def: _defaultValue);
             else
                 return new StringsToStringConverter();
         }
@@ -279,8 +281,9 @@ namespace vMixController.Widgets
             if (!_updating)
             {
                 _updating = true;
-
+                _text = Text;
                 BindingOperations.ClearBinding(this, TextProperty);
+                Text = _text;
                 MultiBinding binding = new MultiBinding
                 {
                     Converter = ConverterSelector(),
@@ -323,13 +326,18 @@ namespace vMixController.Widgets
                             {
                                 Source = val,
                                 Mode = BindingMode.TwoWay,
-                                UpdateSourceTrigger = UpdateSourceTrigger.Default
+                                UpdateSourceTrigger = UpdateSourceTrigger.Default,
+                                FallbackValue = _defaultValue,
+                                TargetNullValue = _defaultValue
                             };
+
                             binding.Bindings.Add(b);
+                            //PresentationTraceSources.SetTraceLevel(b, PresentationTraceLevel.High);
                         }
                     }
 
                 BindingOperations.SetBinding(this, TextProperty, binding);
+                //PresentationTraceSources.SetTraceLevel(binding, PresentationTraceLevel.High);
 
                 if (text != null && !_isTable)
                 {

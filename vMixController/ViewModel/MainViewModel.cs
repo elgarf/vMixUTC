@@ -318,7 +318,7 @@ namespace vMixController.ViewModel
                 _model = value;
 
 
-                _logger.Info("New model setted.");
+                _logger.Debug("New model setted.");
                 /*if (_model != null)
                     Status = "Online";
                 else
@@ -412,7 +412,7 @@ namespace vMixController.ViewModel
 
                 XmlDocumentMessenger.Sync = Status == Classes.Status.Online;
 
-                _logger.Info("Status changed to {0}.", value);
+                _logger.Debug("Status changed to {0}.", value);
 
                 RaisePropertyChanged(StatusPropertyName);
             }
@@ -1070,8 +1070,8 @@ namespace vMixController.ViewModel
                             var copy = p.Copy();
                             copy.Name += " copy";
                             copy.State = Model;
-                            copy.Left += 8;
-                            copy.Top += 8;
+                            copy.Left += 16;
+                            copy.Top += 16;
                             copy.Update();
                             if (copy.ZIndex < 0)
                                 InsertWidgetByZIndex(copy);
@@ -1177,7 +1177,7 @@ namespace vMixController.ViewModel
                     {
                         IsHotkeysEnabled = false;
 
-                        _logger.Info("Opening properties for widget {0}.", p.Name);
+                        _logger.Debug("Opening properties for widget {0}.", p.Name);
                         var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
                         viewModel.Widget = p;
                         viewModel.SetProperties(p);
@@ -1195,7 +1195,7 @@ namespace vMixController.ViewModel
                             SaveUndo(string.Format("Widget {1}[{0}] properties changed", p.Type, p.Name));
                             p.SetProperties(viewModel);
                         }
-                        _logger.Info("Properties updated.");
+                        _logger.Debug("Properties updated.");
                         _settings = null;
 
                         IsHotkeysEnabled = true;
@@ -1247,7 +1247,7 @@ namespace vMixController.ViewModel
                                     UndoState.CopyTo(beforeCreated);
 
                                     InsertWidgetByZIndex(widget);
-                                    _logger.Info("New {0} widget added.", widget.Type.ToLower());
+                                    _logger.Debug("New {0} widget added.", widget.Type.ToLower());
 
                                     OpenPropertiesCommand.Execute(widget);
                                     if (UndoState != null)
@@ -1469,7 +1469,7 @@ namespace vMixController.ViewModel
                                 ctrl.Page = PageIndex;
                                 ctrl.AlignByGrid();
                                 ctrl.Update();
-                                _logger.Info("Widget \"{0}\" was copied.", p.B.Name);
+                                _logger.Debug("Widget \"{0}\" was copied.", p.B.Name);
                                 InsertWidgetByZIndex(ctrl);
                             }
                             //_widgets.Add(ctrl);
@@ -1643,7 +1643,7 @@ namespace vMixController.ViewModel
                     item.Update();
 
                 RaisePropertyChanged(nameof(WindowSettings));
-                _logger.Info("Configuring API.");
+                _logger.Debug("Configuring API.");
 
                 ConnectTimer_Tick(null, new EventArgs());
 
@@ -1860,7 +1860,7 @@ namespace vMixController.ViewModel
 
         private void SyncTovMixState()
         {
-            _logger.Info("Syncing to vMix state.");
+            _logger.Debug("Syncing to vMix state.");
             {
                 if (Model == null || (Model.Ip != WindowSettings.IP || Model.Port != WindowSettings.Port))
                 {
@@ -2263,7 +2263,7 @@ namespace vMixController.ViewModel
             };
 
 
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<LIVEToggleMessage>(this, (msg) =>
+            Messenger.Default.Register<LIVEToggleMessage>(this, (msg) =>
             {
                 switch (msg.State)
                 {
@@ -2279,24 +2279,28 @@ namespace vMixController.ViewModel
                 {
                     item.Left = Math.Round(item.Left + t.B);
                     item.Top = Math.Round(item.Top + t.C);
-                    item.AlignByGrid();
                 }
             });
 
             Messenger.Default.Register<Pair<vMixControl, bool>>(this, (t) =>
             {
-                if (!(t.A is vMixControlRegion reg)) return;
-                if (!reg.Magnet) return;
-                
+                var selectedRegions = _widgets.Where(x => x.Selected && x is vMixControlRegion rgn && rgn.Sticky).ToList();
+                if (!(t.A is vMixControlRegion reg) || (selectedRegions.Count == 0 && (!reg?.Sticky ?? false))) return;
+                selectedRegions.Add(t.A);
+
 
                 if (!t.B)
                     _intersections.Clear();
                 else
-                    foreach (var item in _widgets.Where(x => t.A.Intersect(x) && x != t.A))
-                        _intersections.Add(item);
+                    foreach (var rgn in selectedRegions)
+                    {
+                        foreach (var item in _widgets.Where(x => rgn.Intersect(x) && !selectedRegions.Contains(x)))
+                            _intersections.Add(item);
+                    }
+                    
             });
 
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<Pair<string, bool>>(this, (t) =>
+            Messenger.Default.Register<Pair<string, bool>>(this, (t) =>
             {
                 switch (t.A)
                 {
@@ -2494,7 +2498,7 @@ namespace vMixController.ViewModel
 
         private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            _logger.Info("Checking vMix server.");
+            _logger.Debug("Checking vMix server.");
             if (e.Error != null)
             {
                 _logger.Error(e.Error, "Error while connecting vMix server.");
@@ -2766,8 +2770,8 @@ namespace vMixController.ViewModel
                         {
                             var copy = item.Copy();
                             dups.Add(copy);
-                            copy.Left += 8;
-                            copy.Top += 8;
+                            copy.Left += 16;
+                            copy.Top += 16;
                             copy.State = Model;
                             item.Selected = false;
                         }

@@ -47,8 +47,8 @@ namespace vMixController.Widgets
         private const string DEFAULTPRESSED = "Default+Pressed";
 
         Regex _isExpression = new Regex(@"([\+|\-])\=(\d+\.?\d*)");
-        [NonSerialized]
-        static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        //[NonSerialized]
+        //static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         const string VARIABLEPREFIX = "_var";
         const string parameterName = "P";
         object parameterValue = null;
@@ -748,7 +748,6 @@ namespace vMixController.Widgets
             _culture = new CultureInfo(CultureInfo.InvariantCulture.Name);
             _culture.NumberFormat.NumberDecimalDigits = 5;
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
-
 
             /*_stateDependentTimer = new DispatcherTimer(DispatcherPriority.Background);
             _stateDependentTimer.Interval = TimeSpan.FromSeconds(1);
