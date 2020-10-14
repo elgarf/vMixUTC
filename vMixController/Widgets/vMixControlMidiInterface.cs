@@ -229,6 +229,7 @@ namespace vMixController.Widgets
             {
                 if (Device != null)
                 {
+                    Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
                     Device.Reset();
                     Device.Dispose();
                 }

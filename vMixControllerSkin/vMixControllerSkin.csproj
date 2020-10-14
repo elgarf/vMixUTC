@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Resource Include="Segoe UI Mono.ttf" />
     <Resource Include="Material Design Icons.ttf" />
     <Resource Include="FontAwesome.ttf" />
     <None Include="Linearicons-Free.ttf" />

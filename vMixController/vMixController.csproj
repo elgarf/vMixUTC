@@ -152,6 +152,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="VirtualizingWrapPanel, Version=1.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtualizingWrapPanel.1.5.2\lib\net45\VirtualizingWrapPanel.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -463,6 +466,12 @@
     <None Include="Examples\ProxySample.vmix">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Examples\TimerEvents.vmc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\TimerEvents.vmix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -530,6 +539,10 @@
     <Folder Include="Design\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HighPrecisionTimer\HighPrecisionTimer.csproj">
+      <Project>{f67353d6-1e54-4b18-9bf2-53dd27867983}</Project>
+      <Name>HighPrecisionTimer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ncalc\Evaluant.Calculator\NCalc.csproj">
       <Project>{e70a0b09-f339-44f6-9551-a38565748904}</Project>
       <Name>NCalc</Name>

@@ -385,7 +385,7 @@ namespace vMixAPI
             });
         }
 
-        public string SendFunction(string textParameters, bool async = true, Action<DownloadStringCompletedEventArgs> handler = null)
+        public string SendFunction(string textParameters, bool async = true, Action<DownloadStringCompletedEventArgs> handler = null, int timeout = 1000)
         {
             _logger.Debug("Trying to send function <{0}> in {1} mode.", textParameters, async ? "async" : "sync");
 
@@ -405,13 +405,15 @@ namespace vMixAPI
 
             if (async)
             {
-                WebClient _webClient = new vMixWebClient();
+                vMixWebClient _webClient = new vMixWebClient();
+                _webClient.Timeout = timeout;
                 _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
                 _webClient.DownloadStringAsync(new Uri(url), handler);
             }
             else
             {
-                WebClient _webClient = new vMixWebClient();
+                vMixWebClient _webClient = new vMixWebClient();
+                _webClient.Timeout = timeout;
                 _webClient.DownloadStringCompleted += (sender, e) =>
                 {
                     if (e.Error != null)

@@ -352,7 +352,7 @@ namespace UTCNDIMonitorDataProvider
             _instances--;
             if (_instances <= 0)
             {
-                _finder.Dispose();
+                _finder?.Dispose();
                 _finder = null;
             }
         }
@@ -362,7 +362,7 @@ namespace UTCNDIMonitorDataProvider
             _instances++;
 
             _ui = new OnWidgetUI() { DataContext = this };
-            _ui.InitializeComponent();
+            //_ui.InitializeComponent();
 
             if (_finder == null)
                 _finder = new Finder(true);

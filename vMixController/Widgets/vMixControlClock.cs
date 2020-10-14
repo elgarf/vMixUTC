@@ -214,6 +214,7 @@ namespace vMixController.Widgets
             if (managed)
             {
                 _timer.Stop();
+                _timer.Tick -= Timer_Tick;
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);
             }

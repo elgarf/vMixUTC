@@ -9,6 +9,7 @@ namespace vMixController.Classes
     [Serializable]
     public class vMixFunctionReference
     {
+        public int Timeout { get; set; } = 5000;
         public string Description { get; set; }
         public string Function { get; set; }
         public bool Native { get; set; }

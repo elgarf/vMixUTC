@@ -23,6 +23,7 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return Colors.Transparent;
             switch ((Status)value)
             {
                 case Status.Offline:

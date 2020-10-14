@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UTCNDIMonitorDataProvider.Extensions;
+using vMixControllerSkin;
 
 namespace UTCNDIMonitorDataProvider
 {
@@ -24,6 +25,7 @@ namespace UTCNDIMonitorDataProvider
         public OnWidgetUI()
         {
             InitializeComponent();
+            //this.LoadViewFromUri("NdiMonitorDataProvider;component/OnWidgetUI.xaml");
         }
         public void UpdatePreview(BitmapSource src)
         {

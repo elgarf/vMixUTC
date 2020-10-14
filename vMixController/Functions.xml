@@ -1955,7 +1955,8 @@
     <Description>Wait for a Video Input to reach the end of playback.</Description>
     <Function>WaitForCompletion</Function>
     <FormatString>Function=WaitForCompletion&amp;Input={0}&amp;Duration={1}</FormatString>
-    <IntDescription>Description</IntDescription>
+    <Timeout>300000</Timeout>
+    <IntDescription>Duration</IntDescription>
   </vMixFunctionReference>
 
 

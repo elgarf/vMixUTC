@@ -14,6 +14,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <local:StringToNDISourceConverter x:Key="StringToSource"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="{StaticResource StdMargin}">
@@ -52,7 +53,7 @@
         <!--<Image e:SizeObserver.Observe="True" Grid.ColumnSpan="2" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
         <!--<ndi:ReceiveView ConnectedSource="{Binding Source}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
         <!--<MediaElement IsHitTestVisible="False" Source="{Binding Source.Uri}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="DownOnly"/>-->
-        <ndi:ReceiveView IsAudioEnabled="{Binding IsAudioEnabled}" IsLowBandwidth="{Binding IsLowBandwidth}" ReceiverName="UTC NDI MONITOR" ConnectedSource="{Binding NDISource}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="Both" IsVideoEnabled="True"/>
+        <ndi:ReceiveView IsAudioEnabled="{Binding IsAudioEnabled}" IsLowBandwidth="{Binding IsLowBandwidth}" ReceiverName="UTC NDI MONITOR" ConnectedSource="{Binding Source, Converter={StaticResource StringToSource}}" e:SizeObserver.Observe="True" x:Name="Preview" Grid.Row="2" HorizontalAlignment="Stretch" SizeChanged="Preview_SizeChanged" StretchDirection="Both" IsVideoEnabled="True"/>
         <!--<CheckBox Grid.Row="2" IsChecked="{Binding AudioEnabled, Mode=TwoWay}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8" Foreground="White">Audio</CheckBox>-->
         <ContentControl Grid.Row="2">
             <ContentControl.Template>

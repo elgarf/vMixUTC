@@ -13,33 +13,50 @@ using vMixController.ViewModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using GalaSoft.MvvmLight.Messaging;
+using HighPrecisionTimer;
 
 namespace vMixController.Widgets
 {
     public static class GlobalTimer
     {
         static long _workingTimers = 0;
+        static Stopwatch _stopwatch = new Stopwatch();
+        static TimeSpan _second = TimeSpan.FromSeconds(1);
+
         public static long WorkingTimers {
             get { return _workingTimers; }
             set { _workingTimers = value;
                 if (_workingTimers <= 0)
                 {
-                    _timer.Stop();
+                    if (_mtimer.IsRunning)
+                        _mtimer.Stop();
+
+                    _stopwatch.Stop();
+                    _stopwatch.Reset();
                     _workingTimers = 0;
                 }
-                else if (!_timer.IsEnabled) _timer.Start();
+                else if (!_mtimer.IsRunning)
+                {
+                    _stopwatch.Start();
+                    _mtimer.Start();
+                }
             }
         }
-        static DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Send);
+        static MultimediaTimer _mtimer = new MultimediaTimer();
         static GlobalTimer()
         {
-            _timer.Tick += _timer_Tick;
-            _timer.Interval = TimeSpan.FromSeconds(1);
+
+            _mtimer.Interval = 1000;
+            _mtimer.Resolution = 10;
+            _mtimer.Elapsed += _mtimer_Elapsed;
         }
 
-        private static void _timer_Tick(object sender, EventArgs e)
+        private static void _mtimer_Elapsed(object sender, EventArgs e)
         {
-            Messenger.Default.Send(TimeSpan.FromSeconds(1));
+            _stopwatch.Stop();
+            Messenger.Default.Send(_second);
+            Debug.WriteLine(_stopwatch.Elapsed);
+            _stopwatch.Restart();
         }
     }
     [Serializable]
@@ -56,7 +73,11 @@ namespace vMixController.Widgets
         {
             Messenger.Default.Register<TimeSpan>(this, (t) =>
             {
-                Tick(t);
+                Dispatcher.Invoke(() =>
+                {
+                    Tick(t);
+                });
+                
             });
 
             _width = 256;
@@ -123,7 +144,7 @@ namespace vMixController.Widgets
             if (!Reverse)
             {
                 var t = Time.Add(e);
-                if (t <= DefaultTime)
+                if (t < DefaultTime)
                     Time = t;
                 else
                 {

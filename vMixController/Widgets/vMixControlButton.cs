@@ -31,6 +31,7 @@ using Microsoft.Windows.Themes;
 using System.Xml.XPath;
 using System.IO.Pipes;
 using System.Reflection;
+using vMixController.Messages;
 
 namespace vMixController.Widgets
 {
@@ -1123,17 +1124,29 @@ namespace vMixController.Widgets
             if (string.IsNullOrWhiteSpace(s)) return false;
             NCalc.Expression exp = new NCalc.Expression(s);
             PopulateVariables(exp);
+
+            bool result = false;
+
             if (exp.HasErrors())
                 return false;
             else
                 try
                 {
-                    return (bool)exp.Evaluate();
+
+                    result = (bool)exp.Evaluate();
+                    exp.EvaluateFunction -= Exp_EvaluateFunction;
+                    exp.EvaluateParameter -= Exp_EvaluateParameter;
+                    exp = null;
+                    return result;
                 }
                 catch (Exception ex)
                 {
+                    exp.EvaluateFunction -= Exp_EvaluateFunction;
+                    exp.EvaluateParameter -= Exp_EvaluateParameter;
+                    exp = null;
                     return false;
                 }
+            
         }
 
         private object CalculateExpression(string s)
@@ -1142,6 +1155,7 @@ namespace vMixController.Widgets
             NCalc.Expression exp = new NCalc.Expression(s);
             exp.EvaluateParameter += Exp_EvaluateParameter;
             PopulateVariables(exp);
+            object result = null;
             if (exp.HasErrors())
                 return s;
             else
@@ -1149,10 +1163,17 @@ namespace vMixController.Widgets
 
                 try
                 {
-                    return exp.Evaluate();
+                    result = exp.Evaluate();
+                    exp.EvaluateFunction -= Exp_EvaluateFunction;
+                    exp.EvaluateParameter -= Exp_EvaluateParameter;
+                    exp = null;
+                    return result;
                 }
                 catch (Exception)
                 {
+                    exp.EvaluateFunction -= Exp_EvaluateFunction;
+                    exp.EvaluateParameter -= Exp_EvaluateParameter;
+                    exp = null;
                     return s;
                 }
             }
@@ -1414,7 +1435,7 @@ namespace vMixController.Widgets
                         var command = string.Format(cmd.Action.FormatString, key, CalculateExpression<int>(cmd.Parameter), Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
 
                         if (!cmd.Action.StateDirect)
-                            AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false), _pointer + 1);
+                            AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false, timeout: cmd.Action.Timeout), _pointer + 1);
                         else
                         {
                             var path = string.Format(cmd.Action.StatePath, key, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
@@ -1655,6 +1676,8 @@ namespace vMixController.Widgets
         {
             if (_disposed) return;
             XmlDocumentMessenger.OnDocumentDownloaded -= XmlDocumentMessenger_OnDocumentDownloaded;
+            _executionWorker.DoWork -= ExecutionWorker_DoWork;
+            Messenger.Default.Unregister(this);
             if (managed)
             {
                 //_blinker.Stop();

@@ -17,6 +17,12 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Media.Animation;
+using System.Diagnostics;
+using vMixControllerSkin;
+using System.Threading;
+using System.Windows.Threading;
+using GalaSoft.MvvmLight.Messaging;
+using vMixController.Messages;
 
 namespace vMixController.Controls
 {
@@ -25,6 +31,31 @@ namespace vMixController.Controls
     /// </summary>
     public partial class vMixControlContainer : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
+
+        static int _prevCount = 0;
+        static Queue<vMixControlContainer> _initList = new Queue<vMixControlContainer>();
+
+        static DispatcherTimer _timer = new DispatcherTimer() { };
+
+        static vMixControlContainer()
+        {
+            _timer.Interval = TimeSpan.FromMilliseconds(1);
+            _timer.Tick += _timer_Tick;
+            _timer.Start();
+        }
+
+        private static void _timer_Tick(object sender, EventArgs e)
+        {
+            
+            if (_initList.Count > 0)
+                _initList.Dequeue().LoadViewFromUri("vMixController;component/Controls/vMixControlContainer.xaml");
+            _prevCount = _initList.Count;
+            if (_initList.Count == 0)
+                _timer.Stop();
+
+            Messenger.Default.Send(new LoadingMessage() { Loading = _initList.Count > 0 });
+        }
+
         public Action<object, SizeChangedEventArgs> OnSizeChanged { get; set; }
 
         /// <summary>
@@ -64,7 +95,17 @@ namespace vMixController.Controls
 
         public vMixControlContainer()
         {
-            InitializeComponent();
+            _initList.Enqueue(this);
+            if (!_timer.IsEnabled)
+                _timer.Start();
+            //this.LoadViewFromUri("vMixController;component/Controls/vMixControlContainerPlaceholder.xaml");
+            //InitializeComponent();
+            //this.LoadViewFromUri("vMixController;component/Controls/vMixControlContainer.xaml");
+        }
+
+        private void VMixControlContainer_Loaded(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

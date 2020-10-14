@@ -1,0 +1,494 @@
+<XML>
+  <Version>9</Version>
+  <Input Type="9000" Position="0" RangeStart="0" RangeStop="0" State="1" OriginalTitle="Title 2- Action Blue.gtzip" ShortcutMappings="" Key="e9e4f721-b178-458a-a4d6-fca985c65167" Loop="False" VolumeF="1" Muted="True" BalanceF="0" AspectRatio="100" Category="0" MouseClickAction="0" Collapsed="False" Solo="False" HeadphonesVolumeF="1" BusMaster="True" FrameDelay="0" Positions="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfMatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;&lt;/ArrayOfMatrixPosition&gt;" PositionsExtended="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfMatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;&lt;/ArrayOfMatrixPosition&gt;" VirtualPTZPosition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;MatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;  &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;  &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;  &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;  &lt;RotateOrigin&gt;&#xD;&#xA;    &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;    &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;    &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;  &lt;/RotateOrigin&gt;&#xD;&#xA;  &lt;Rotate&gt;&#xD;&#xA;    &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;    &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;    &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;  &lt;/Rotate&gt;&#xD;&#xA;  &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;  &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;&lt;/MatrixPosition&gt;" Triggers="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfInputTrigger xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; /&gt;" TallyCOMPort="None" TallyNumber="0" AutoAudioMixing="True" AutoPause="True" AutoRestart="True" AutoPlay="True" Mirror="False" SelectedIndex="0" Rate="1" XML="&lt;items&gt;&lt;item name=&quot;Headline.Text&quot;&gt;&lt;value&gt;00:00:00&lt;/value&gt;&lt;/item&gt;&lt;item name=&quot;Description.Text&quot;&gt;&lt;value&gt;0&lt;/value&gt;&lt;/item&gt;&lt;/items&gt;" ShaderSource="00000000-0000-0000-0000-000000000000" PTZProvider="" PTZConnection="" PTZAutoConnect="False" PTZDefaultPanTiltSpeed="0.5" PTZDefaultZoomSpeed="0.5" PTZDefaultPositionSpeed="1" PTZDefaultFocusSpeed="0.5" PTZDefaultFocusEnabled="False" PTZAlwaysShowThumbnail="False" PresetsXML="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfTitlePreset xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; /&gt;" CountdownXML="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfCountdownSettings xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;CountdownSettings&gt;&#xD;&#xA;    &lt;StartString&gt;00:00:00&lt;/StartString&gt;&#xD;&#xA;    &lt;DurationString&gt;00:00:00&lt;/DurationString&gt;&#xD;&#xA;    &lt;Format&gt;HH:mm:ss&lt;/Format&gt;&#xD;&#xA;    &lt;Reverse&gt;false&lt;/Reverse&gt;&#xD;&#xA;    &lt;ReverseDisplay&gt;false&lt;/ReverseDisplay&gt;&#xD;&#xA;  &lt;/CountdownSettings&gt;&#xD;&#xA;  &lt;CountdownSettings&gt;&#xD;&#xA;    &lt;StartString&gt;00:00:00&lt;/StartString&gt;&#xD;&#xA;    &lt;DurationString&gt;00:00:00&lt;/DurationString&gt;&#xD;&#xA;    &lt;Format&gt;HH:mm:ss&lt;/Format&gt;&#xD;&#xA;    &lt;Reverse&gt;false&lt;/Reverse&gt;&#xD;&#xA;    &lt;ReverseDisplay&gt;false&lt;/ReverseDisplay&gt;&#xD;&#xA;  &lt;/CountdownSettings&gt;&#xD;&#xA;&lt;/ArrayOfCountdownSettings&gt;" DataSourcesXML="&lt;dataSources&gt;&lt;dataSource name=&quot;Headline.Text&quot; /&gt;&lt;dataSource name=&quot;Description.Text&quot; /&gt;&lt;/dataSources&gt;" VideoShader_ColorCorrectionSourceEnabled="0" VideoShader_White="1" VideoShader_Black="0" VideoShader_Red="0" VideoShader_Green="0" VideoShader_Blue="0" VideoShader_Alpha="1" VideoShader_Saturation="1" VideoShader_CCLiftR="0" VideoShader_CCLiftG="0" VideoShader_CCLiftB="0" VideoShader_CCGammaR="1" VideoShader_CCGammaG="1" VideoShader_CCGammaB="1" VideoShader_CCGainR="1" VideoShader_CCGainG="1" VideoShader_CCGainB="1" VideoShader_Saturation2="0" VideoShader_Hue="0" VideoShader_Rec601Fix="False" VideoShader_ColorKey="0" VideoShader_Deinterlace="False" VideoShader_Sharpen="False" VideoShader_ToleranceRed="0" VideoShader_ToleranceGreen="0" VideoShader_ToleranceBlue="0" VideoShader_ToleranceGreenGap="0" VideoShader_GreenFilter="False" VideoShader_GreenFilterTransparencyThreshold="1" VideoShader_LumaKeyThreshold="0" VideoShader_AntiAliasing="False" VideoShader_AntiAliasingFilter="0" VideoShader_ClippingX1="0" VideoShader_ClippingX2="1" VideoShader_ClippingY1="0" VideoShader_ClippingY2="1" VideoShader_PremultipliedAlpha="True">C:\Program Files (x86)\vMix\titles\GT Title\Title 2- Action Blue.gtzip</Input>
+  <Input Type="100" Position="0" RangeStart="0" RangeStop="0" State="1" OriginalTitle="Blank" ShortcutMappings="" Key="baedf3fb-de46-41f9-8fe4-3387ae3502f0" Loop="False" VolumeF="1" Muted="True" BalanceF="0" AspectRatio="100" Category="0" MouseClickAction="0" Collapsed="False" Solo="False" HeadphonesVolumeF="1" BusMaster="True" FrameDelay="0" Positions="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfMatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;&lt;/ArrayOfMatrixPosition&gt;" PositionsExtended="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfMatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;  &lt;MatrixPosition&gt;&#xD;&#xA;    &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;    &lt;MultiplyPosition&gt;&#xD;&#xA;      &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;      &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;      &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;      &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;      &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;      &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;      &lt;RotateOrigin&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/RotateOrigin&gt;&#xD;&#xA;      &lt;Rotate&gt;&#xD;&#xA;        &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;        &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;        &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;      &lt;/Rotate&gt;&#xD;&#xA;      &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;      &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;    &lt;/MultiplyPosition&gt;&#xD;&#xA;    &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;    &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;    &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;    &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;    &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;    &lt;RotateOrigin&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/RotateOrigin&gt;&#xD;&#xA;    &lt;Rotate&gt;&#xD;&#xA;      &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;      &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;      &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;    &lt;/Rotate&gt;&#xD;&#xA;    &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;    &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;  &lt;/MatrixPosition&gt;&#xD;&#xA;&lt;/ArrayOfMatrixPosition&gt;" VirtualPTZPosition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;MatrixPosition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;Hidden&gt;false&lt;/Hidden&gt;&#xD;&#xA;  &lt;Mirror&gt;false&lt;/Mirror&gt;&#xD;&#xA;  &lt;ZoomX&gt;1&lt;/ZoomX&gt;&#xD;&#xA;  &lt;ZoomY&gt;1&lt;/ZoomY&gt;&#xD;&#xA;  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;&#xD;&#xA;  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;&#xD;&#xA;  &lt;RotateOrigin&gt;&#xD;&#xA;    &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;    &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;    &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;  &lt;/RotateOrigin&gt;&#xD;&#xA;  &lt;Rotate&gt;&#xD;&#xA;    &lt;X&gt;0&lt;/X&gt;&#xD;&#xA;    &lt;Y&gt;0&lt;/Y&gt;&#xD;&#xA;    &lt;Z&gt;0&lt;/Z&gt;&#xD;&#xA;  &lt;/Rotate&gt;&#xD;&#xA;  &lt;PanX&gt;0&lt;/PanX&gt;&#xD;&#xA;  &lt;PanY&gt;0&lt;/PanY&gt;&#xD;&#xA;&lt;/MatrixPosition&gt;" Triggers="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ArrayOfInputTrigger xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; /&gt;" TallyCOMPort="None" TallyNumber="0" AutoAudioMixing="True" AutoPause="True" AutoRestart="True" AutoPlay="True" Mirror="False" SelectedIndex="0" Rate="1" XML="" ShaderSource="00000000-0000-0000-0000-000000000000" PTZProvider="" PTZConnection="" PTZAutoConnect="False" PTZDefaultPanTiltSpeed="0.5" PTZDefaultZoomSpeed="0.5" PTZDefaultPositionSpeed="1" PTZDefaultFocusSpeed="0.5" PTZDefaultFocusEnabled="False" PTZAlwaysShowThumbnail="False" VideoShader_ColorCorrectionSourceEnabled="0" VideoShader_White="1" VideoShader_Black="0" VideoShader_Red="0" VideoShader_Green="0" VideoShader_Blue="0" VideoShader_Alpha="1" VideoShader_Saturation="1" VideoShader_CCLiftR="0" VideoShader_CCLiftG="0" VideoShader_CCLiftB="0" VideoShader_CCGammaR="1" VideoShader_CCGammaG="1" VideoShader_CCGammaB="1" VideoShader_CCGainR="1" VideoShader_CCGainG="1" VideoShader_CCGainB="1" VideoShader_Saturation2="0" VideoShader_Hue="0" VideoShader_Rec601Fix="False" VideoShader_ColorKey="0" VideoShader_Deinterlace="False" VideoShader_Sharpen="False" VideoShader_ToleranceRed="0" VideoShader_ToleranceGreen="0" VideoShader_ToleranceBlue="0" VideoShader_ToleranceGreenGap="0" VideoShader_GreenFilter="False" VideoShader_GreenFilterTransparencyThreshold="1" VideoShader_LumaKeyThreshold="0" VideoShader_AntiAliasing="False" VideoShader_AntiAliasingFilter="0" VideoShader_ClippingX1="0" VideoShader_ClippingX2="1" VideoShader_ClippingY1="0" VideoShader_ClippingY2="1" VideoShader_PremultipliedAlpha="False">
+  </Input>
+  <State Main="0" Preview="1" PlayLists="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;PlayListCollection xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xD;&#xA;  &lt;PlayLists /&gt;&#xD;&#xA;  &lt;CurrentPlayList&gt;&#xD;&#xA;    &lt;Name&gt;Default&lt;/Name&gt;&#xD;&#xA;    &lt;Loop xsi:type=&quot;xsd:boolean&quot;&gt;false&lt;/Loop&gt;&#xD;&#xA;    &lt;ClearOverlays&gt;false&lt;/ClearOverlays&gt;&#xD;&#xA;    &lt;Manual&gt;false&lt;/Manual&gt;&#xD;&#xA;    &lt;PlayList /&gt;&#xD;&#xA;  &lt;/CurrentPlayList&gt;&#xD;&#xA;&lt;/PlayListCollection&gt;" />
+  <RecordingSettings>
+    <Size>1920x1080</Size>
+    <FrameRate>400000</FrameRate>
+    <FrameRateInterlaced>1</FrameRateInterlaced>
+    <CodecDevice>@device:dmo:{191FABD5-C275-45B8-9C75-57132CDEAB73}{33D9A760-90C8-11D0-BD43-00A0C911CE86}5947414d-0000-0010-8000-00aa00389b71</CodecDevice>
+    <Fragmented>0</Fragmented>
+    <HardwareAcceleration>1</HardwareAcceleration>
+    <MP4Format>0</MP4Format>
+    <Audio>1</Audio>
+    <AudioDelay>0</AudioDelay>
+    <Filename>C:\Users\V.Shirokov\Documents\vMixStorage\capture.avi</Filename>
+    <Interval>0</Interval>
+    <MPEGBitRate>8</MPEGBitRate>
+    <VideoFileFormat>0</VideoFileFormat>
+    <WMVAudioCodec>WMA 9.2 - 64 kbps, 44 kHz, stereo CBR</WMVAudioCodec>
+    <WMVVideoCodec>1</WMVVideoCodec>
+    <WMVPort>8080</WMVPort>
+    <WMVBitRate>800000</WMVBitRate>
+    <WMVQuality>90</WMVQuality>
+    <WMVFPS>25</WMVFPS>
+    <SelectedTab>0</SelectedTab>
+    <AudioBitRate>128</AudioBitRate>
+    <AudioChannel>0</AudioChannel>
+    <Channel>0</Channel>
+    <FFMPEGFormatXML>&lt;format&gt;&lt;name&gt;MPEG-2&lt;/name&gt;&lt;extensions selectedIndex="0"&gt;&lt;extension name="Transport Stream (.ts)" ext=".ts" type="mpegts" /&gt;&lt;extension name="Program Stream (.mpg)" ext=".mpg" type="mpeg" /&gt;&lt;/extensions&gt;&lt;video codec="mpeg2video" selectedIndex="0"&gt;&lt;bitRate&gt;8M&lt;/bitRate&gt;&lt;bitRate&gt;10M&lt;/bitRate&gt;&lt;bitRate&gt;12M&lt;/bitRate&gt;&lt;bitRate&gt;15M&lt;/bitRate&gt;&lt;bitRate&gt;25M&lt;/bitRate&gt;&lt;bitRate&gt;50M&lt;/bitRate&gt;&lt;bitRate&gt;75M&lt;/bitRate&gt;&lt;/video&gt;&lt;audio codec="mp2" selectedIndex="0"&gt;&lt;bitRate&gt;384k&lt;/bitRate&gt;&lt;bitRate&gt;192k&lt;/bitRate&gt;&lt;bitRate&gt;128k&lt;/bitRate&gt;&lt;bitRate&gt;64k&lt;/bitRate&gt;&lt;/audio&gt;&lt;command&gt;-pix_fmt yuv420p -vcodec {video_codec} -maxrate:v {video_bitrate} -minrate:v {video_bitrate} -b:v {video_bitrate} -acodec {audio_codec} -b:a {audio_bitrate} -f {extension_type}&lt;/command&gt;&lt;interlacedSupported /&gt;&lt;/format&gt;</FFMPEGFormatXML>
+  </RecordingSettings>
+  <RecordingSettings2>
+    <Size>1920x1080</Size>
+    <FrameRate>400000</FrameRate>
+    <FrameRateInterlaced>1</FrameRateInterlaced>
+  </RecordingSettings2>
+  <MultiCorderSettings />
+  <OverlaySettings>
+    <Mode0>0</Mode0>
+    <Effect0>100</Effect0>
+    <Duration0>1</Duration0>
+    <MatrixPosition0>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition0>
+    <CutPoint0>0</CutPoint0>
+    <BorderColor0>-1</BorderColor0>
+    <BorderThickness0>0</BorderThickness0>
+    <BorderRadius0>0</BorderRadius0>
+    <DisplayDuration0>0</DisplayDuration0>
+    <Alpha0>1</Alpha0>
+    <Input0>00000000-0000-0000-0000-000000000000</Input0>
+    <Mode1>0</Mode1>
+    <Effect1>100</Effect1>
+    <Duration1>1</Duration1>
+    <MatrixPosition1>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition1>
+    <CutPoint1>0</CutPoint1>
+    <BorderColor1>-1</BorderColor1>
+    <BorderThickness1>0</BorderThickness1>
+    <BorderRadius1>0</BorderRadius1>
+    <DisplayDuration1>0</DisplayDuration1>
+    <Alpha1>1</Alpha1>
+    <Input1>00000000-0000-0000-0000-000000000000</Input1>
+    <Mode2>0</Mode2>
+    <Effect2>100</Effect2>
+    <Duration2>1</Duration2>
+    <MatrixPosition2>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition2>
+    <CutPoint2>0</CutPoint2>
+    <BorderColor2>-1</BorderColor2>
+    <BorderThickness2>0</BorderThickness2>
+    <BorderRadius2>0</BorderRadius2>
+    <DisplayDuration2>0</DisplayDuration2>
+    <Alpha2>1</Alpha2>
+    <Input2>00000000-0000-0000-0000-000000000000</Input2>
+    <Mode3>0</Mode3>
+    <Effect3>100</Effect3>
+    <Duration3>1</Duration3>
+    <MatrixPosition3>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition3>
+    <CutPoint3>0</CutPoint3>
+    <BorderColor3>-1</BorderColor3>
+    <BorderThickness3>0</BorderThickness3>
+    <BorderRadius3>0</BorderRadius3>
+    <DisplayDuration3>0</DisplayDuration3>
+    <Alpha3>1</Alpha3>
+    <Input3>00000000-0000-0000-0000-000000000000</Input3>
+    <Mode4>0</Mode4>
+    <Effect4>0</Effect4>
+    <Duration4>10</Duration4>
+    <MatrixPosition4>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition4>
+    <CutPoint4>540</CutPoint4>
+    <BorderColor4>-1</BorderColor4>
+    <BorderThickness4>0</BorderThickness4>
+    <BorderRadius4>0</BorderRadius4>
+    <DisplayDuration4>1080</DisplayDuration4>
+    <Alpha4>1</Alpha4>
+    <Input4>c5272a5d-0691-4f75-a255-bf0ac3cac03e</Input4>
+    <Mode5>0</Mode5>
+    <Effect5>0</Effect5>
+    <Duration5>500</Duration5>
+    <MatrixPosition5>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;MatrixPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Hidden&gt;false&lt;/Hidden&gt;
+  &lt;Mirror&gt;false&lt;/Mirror&gt;
+  &lt;ZoomX&gt;1&lt;/ZoomX&gt;
+  &lt;ZoomY&gt;1&lt;/ZoomY&gt;
+  &lt;PostZoomX&gt;1&lt;/PostZoomX&gt;
+  &lt;PostZoomY&gt;1&lt;/PostZoomY&gt;
+  &lt;RotateOrigin&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/RotateOrigin&gt;
+  &lt;Rotate&gt;
+    &lt;X&gt;0&lt;/X&gt;
+    &lt;Y&gt;0&lt;/Y&gt;
+    &lt;Z&gt;0&lt;/Z&gt;
+  &lt;/Rotate&gt;
+  &lt;PanX&gt;0&lt;/PanX&gt;
+  &lt;PanY&gt;0&lt;/PanY&gt;
+&lt;/MatrixPosition&gt;</MatrixPosition5>
+    <CutPoint5>0</CutPoint5>
+    <BorderColor5>-1</BorderColor5>
+    <BorderThickness5>0</BorderThickness5>
+    <BorderRadius5>0</BorderRadius5>
+    <DisplayDuration5>0</DisplayDuration5>
+    <Alpha5>1</Alpha5>
+    <Input5>00000000-0000-0000-0000-000000000000</Input5>
+    <DisplayUnderneath0>0</DisplayUnderneath0>
+    <DisplayUnderneath1>0</DisplayUnderneath1>
+    <DisplayUnderneath2>0</DisplayUnderneath2>
+    <DisplayUnderneath3>0</DisplayUnderneath3>
+    <DisplayUnderneath4>0</DisplayUnderneath4>
+    <DisplayUnderneath5>0</DisplayUnderneath5>
+  </OverlaySettings>
+  <Shortcuts>
+    <ArrayOfShortcut xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+  </Shortcuts>
+  <AudioMaster AudioDelay="0" AudioChannel="0" AudioGain="1" AudioPad="False" AudioCompressorEnabled="False" AudioCompressorRatio="1" AudioCompressorThreshold="0.1258925" AudioNoiseGateEnabled="False" AudioNoiseGateThreshold="0" AudioEQEnabled="False" AudioEQGainDB0="0" AudioEQGainDB1="0" AudioEQGainDB2="0" AudioEQGainDB3="0" AudioEQGainDB4="0" AudioEQGainDB5="0" AudioEQGainDB6="0" AudioEQGainDB7="0" AudioEQGainDB8="0" AudioEQGainDB9="0" AudioAGCEnabled="False" AudioRackXML="&lt;plugins /&gt;" Volume="1" HeadphonesVolume="1" Muted="False" Collapsed="False" SendToMaster="False" />
+  <AudioBusA AudioDelay="0" AudioChannel="0" AudioGain="1" AudioPad="False" AudioCompressorEnabled="False" AudioCompressorRatio="1" AudioCompressorThreshold="0.1258925" AudioNoiseGateEnabled="False" AudioNoiseGateThreshold="0" AudioEQEnabled="False" AudioEQGainDB0="0" AudioEQGainDB1="0" AudioEQGainDB2="0" AudioEQGainDB3="0" AudioEQGainDB4="0" AudioEQGainDB5="0" AudioEQGainDB6="0" AudioEQGainDB7="0" AudioEQGainDB8="0" AudioEQGainDB9="0" AudioAGCEnabled="False" AudioRackXML="&lt;plugins /&gt;" Volume="1" Muted="False" Collapsed="False" SendToMaster="False" />
+  <AudioBusB AudioDelay="0" AudioChannel="0" AudioGain="1" AudioPad="False" AudioCompressorEnabled="False" AudioCompressorRatio="1" AudioCompressorThreshold="0.1258925" AudioNoiseGateEnabled="False" AudioNoiseGateThreshold="0" AudioEQEnabled="False" AudioEQGainDB0="0" AudioEQGainDB1="0" AudioEQGainDB2="0" AudioEQGainDB3="0" AudioEQGainDB4="0" AudioEQGainDB5="0" AudioEQGainDB6="0" AudioEQGainDB7="0" AudioEQGainDB8="0" AudioEQGainDB9="0" AudioAGCEnabled="False" AudioRackXML="&lt;plugins /&gt;" Volume="1" Muted="False" Collapsed="False" SendToMaster="False" />
+  <CategorySettings>
+    <All.Text>
+    </All.Text>
+    <Red.Text>
+    </Red.Text>
+    <Green.Text>
+    </Green.Text>
+    <Orange.Text>
+    </Orange.Text>
+    <Purple.Text>
+    </Purple.Text>
+    <Aqua.Text>
+    </Aqua.Text>
+    <Blue.Text>
+    </Blue.Text>
+  </CategorySettings>
+  <DataSources>
+    <datasources>
+      <datasource friendlyName="Excel/CSV">
+        <instance id="b25f6811-141c-4b03-acc4-c5c07cb2d602" title="ИНФОРМАЦИЯ">
+          <tables>
+            <table name="ХОЗЯЕВА" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+            <table name="ГОСТИ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+          </tables>
+          <state>
+            <xml>
+              <FirstRowColumnNames>True</FirstRowColumnNames>
+              <url>file:///E:/Волейбол 2020-2021/1 - ИНФОРМАЦИЯ О МАТЧЕ.xls</url>
+            </xml>
+          </state>
+          <timer>1000</timer>
+        </instance>
+      </datasource>
+      <datasource friendlyName="Excel/CSV">
+        <instance id="66f553a0-510a-4798-98ce-028dfb2106db" title="СОСТАВ ХОЗЯЕВА НА МАТЧ">
+          <tables>
+            <table name="СОСТАВ ЗАРЕЧЬЕ НА МАТЧ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+            <table name="СОСТАВ МЕТАР НА МАТЧ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+          </tables>
+          <state>
+            <xml>
+              <FirstRowColumnNames>True</FirstRowColumnNames>
+              <url>file:///E:/Волейбол 2020-2021/2 - СОСТАВ ХОЗЯЕВА НА МАТЧ.xls</url>
+            </xml>
+          </state>
+          <timer>100</timer>
+        </instance>
+      </datasource>
+      <datasource friendlyName="Excel/CSV">
+        <instance id="425c8e86-db1e-4daf-a663-294e47616ab1" title="СОСТАВ ГОСТИ НА МАТЧ">
+          <tables>
+            <table name="СОСТАВ ГОСТИ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+          </tables>
+          <state>
+            <xml>
+              <FirstRowColumnNames>True</FirstRowColumnNames>
+              <url>file:///E:/Волейбол 2020-2021/3 - СОСТАВ ГОСТИ НА МАТЧ.xls</url>
+            </xml>
+          </state>
+          <timer>100</timer>
+        </instance>
+      </datasource>
+      <datasource friendlyName="Excel/CSV">
+        <instance id="262888fe-41b6-4611-9da4-df59edd2628d" title="СЧЕТ ПО СЕТАМ">
+          <tables>
+            <table name="СЕТЫ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+          </tables>
+          <state>
+            <xml>
+              <FirstRowColumnNames>True</FirstRowColumnNames>
+              <url>file:///E:/Волейбол 2020-2021/4 - СЧЕТ ПО СЕТАМ.xls</url>
+            </xml>
+          </state>
+          <timer>1000</timer>
+        </instance>
+      </datasource>
+      <datasource friendlyName="Excel/CSV">
+        <instance id="e5fac743-d24e-41b8-97ff-cf149e515d61" title="">
+          <tables>
+            <table name="СОСТАВ КРАСНОДАР НА МАТЧ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+            <table name="СОСТАВ ГОСТИ" index="0">
+              <autoNext enabled="False" interval="5" loop="True" />
+            </table>
+          </tables>
+          <state>
+            <xml>
+              <FirstRowColumnNames>False</FirstRowColumnNames>
+              <url>file:///E:/Temp/2020-2021/Волейбол/3 - СОСТАВ ГОСТИ НА МАТЧ.xls</url>
+            </xml>
+          </state>
+          <timer>1000</timer>
+        </instance>
+      </datasource>
+    </datasources>
+  </DataSources>
+  <Activators>
+    <activators />
+  </Activators>
+  <ProductionClockSettings>
+    <ProductionClockSettings>
+      <Type>2</Type>
+      <Format>2</Format>
+      <StartTime>60600000</StartTime>
+      <EndTime>72000000</EndTime>
+      <EndTimeEnabled>true</EndTimeEnabled>
+      <TimeZoneOffset>0</TimeZoneOffset>
+    </ProductionClockSettings>
+  </ProductionClockSettings>
+  <ProductionClockSettings2>
+    <ProductionClockSettings>
+      <Type>1</Type>
+      <Format>2</Format>
+      <StartTime>0</StartTime>
+      <EndTime>0</EndTime>
+      <TimeZoneOffset>0</TimeZoneOffset>
+    </ProductionClockSettings>
+  </ProductionClockSettings2>
+  <ProductionClocksInverted>false</ProductionClocksInverted>
+  <MultiViewSettings>
+    <TitleLocation>0</TitleLocation>
+    <TitleHeadings>0</TitleHeadings>
+    <InputMapping0>0</InputMapping0>
+    <InputMapping1>1</InputMapping1>
+    <InputMapping2>2</InputMapping2>
+    <InputMapping3>3</InputMapping3>
+    <InputMapping4>4</InputMapping4>
+    <InputMapping5>5</InputMapping5>
+    <InputMapping6>6</InputMapping6>
+    <InputMapping7>7</InputMapping7>
+    <InputMapping8>8</InputMapping8>
+    <InputMapping9>9</InputMapping9>
+    <InputMapping10>10</InputMapping10>
+    <InputMapping11>11</InputMapping11>
+    <InputMapping12>12</InputMapping12>
+    <InputMapping13>13</InputMapping13>
+  </MultiViewSettings>
+  <MultiViewLayout>160</MultiViewLayout>
+  <SafeAreas>None</SafeAreas>
+  <WaveformPreview>None</WaveformPreview>
+  <WaveformInput>None</WaveformInput>
+  <StreamingSettings SelectedIndex="0">
+    <StreamingSetting />
+  </StreamingSettings>
+  <OutputFormat OutputSize="1920x1080" OutputFrameRate="400000" OutputFrameRateInterlaced="False" FullscreenEnabled="False" NDIOutputExternal="True" NDIOutputExternal2="True" NDIOutputExternal3="False" NDIOutputExternal4="False">
+    <OutputsExternal>
+      <VirtualFrameRate>400000</VirtualFrameRate>
+      <VirtualFrameRateInterlaced>1</VirtualFrameRateInterlaced>
+      <ExternalFrameRate>400000</ExternalFrameRate>
+      <ExternalFrameRateInterlaced>1</ExternalFrameRateInterlaced>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>0</Display>
+      <ExternalSize>1920x1080</ExternalSize>
+      <VirtualSize>1920x1080</VirtualSize>
+      <ExternalDevice>
+      </ExternalDevice>
+      <ExternalAudioDevice>
+      </ExternalAudioDevice>
+      <ExternalAudioDelay>0</ExternalAudioDelay>
+      <Virtual>0</Virtual>
+      <External>1</External>
+      <ExternalPort>0</ExternalPort>
+      <ExternalAudioChannel>0</ExternalAudioChannel>
+      <ExternalAlphaChannel>2</ExternalAlphaChannel>
+      <VirtualUseStreaming>0</VirtualUseStreaming>
+      <ExternalUseDisplay>0</ExternalUseDisplay>
+    </OutputsExternal>
+    <OutputsExternal2>
+      <VirtualFrameRate>400000</VirtualFrameRate>
+      <VirtualFrameRateInterlaced>0</VirtualFrameRateInterlaced>
+      <ExternalFrameRate>400000</ExternalFrameRate>
+      <ExternalFrameRateInterlaced>1</ExternalFrameRateInterlaced>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>20</Display>
+      <ExternalSize>1920x1080</ExternalSize>
+      <VirtualSize>1280x720</VirtualSize>
+      <ExternalDevice>
+      </ExternalDevice>
+      <ExternalAudioDevice>
+      </ExternalAudioDevice>
+      <ExternalAudioDelay>0</ExternalAudioDelay>
+      <Virtual>0</Virtual>
+      <External>0</External>
+      <ExternalPort>0</ExternalPort>
+      <ExternalAudioChannel>0</ExternalAudioChannel>
+      <ExternalAlphaChannel>0</ExternalAlphaChannel>
+      <VirtualUseStreaming>0</VirtualUseStreaming>
+      <ExternalUseDisplay>0</ExternalUseDisplay>
+    </OutputsExternal2>
+    <OutputsExternal3>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>0</Display>
+    </OutputsExternal3>
+    <OutputsExternal4>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>0</Display>
+    </OutputsExternal4>
+    <OutputsFullscreen>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>0</Display>
+    </OutputsFullscreen>
+    <OutputsFullscreen2>
+      <Overlay0>1</Overlay0>
+      <Overlay1>1</Overlay1>
+      <Overlay2>1</Overlay2>
+      <Overlay3>1</Overlay3>
+      <Overlay4>1</Overlay4>
+      <Overlay5>1</Overlay5>
+      <Input>0</Input>
+      <Display>0</Display>
+    </OutputsFullscreen2>
+  </OutputFormat>
+</XML>

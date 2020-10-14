@@ -75,7 +75,7 @@ namespace vMixController.Classes
                 _previousQuery = DateTime.Now;
                 _queries++;
 
-                ThreadPool.QueueUserWorkItem(async x =>
+                ThreadPool.QueueUserWorkItem(x =>
                 {
                     Uri uri = null;
                     if (Uri.TryCreate((Url ?? "http://127.0.0.1:8088") + "/api", UriKind.Absolute, out uri))

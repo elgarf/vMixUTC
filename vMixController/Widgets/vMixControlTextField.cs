@@ -82,7 +82,7 @@ namespace vMixController.Widgets
 
         public vMixControlTextField()
         {
-            _paths.CollectionChanged += _paths_CollectionChanged;
+            //_paths.CollectionChanged += _paths_CollectionChanged;
         }
 
         internal override void OnStateSynced()
@@ -90,12 +90,12 @@ namespace vMixController.Widgets
             UpdateText(_paths);
         }
 
-        private void _paths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        /*private void _paths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            /*if (e.NewItems != null)
+            if (e.NewItems != null)
                 foreach (var item in e.NewItems)
-                    UpdateText((sender as IList).OfType<Pair<int, string>>().ToList());*/
-        }
+                    UpdateText((sender as IList).OfType<Pair<int, string>>().ToList());
+        }*/
 
         internal virtual string MappedTextProperty { get { return "Text"; } }
 
@@ -492,6 +492,7 @@ namespace vMixController.Widgets
 
         protected override void Dispose(bool managed)
         {
+            //_paths.CollectionChanged -= _paths_CollectionChanged;
             base.Dispose(managed);
         }
 

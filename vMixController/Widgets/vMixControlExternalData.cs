@@ -314,7 +314,10 @@ namespace vMixController.Widgets
             try
             {
                 AssemblyName name;
-                if (string.IsNullOrWhiteSpace(_dataProviderPath) || !File.Exists(_dataProviderPath))
+                if (string.IsNullOrWhiteSpace(_dataProviderPath))
+                    return;
+
+                if (!File.Exists(_dataProviderPath))
                 {
                     string fn = Path.GetTempFileName();
                     using (var fs = new FileStream(fn, FileMode.Create))
@@ -467,6 +470,7 @@ namespace vMixController.Widgets
             if (managed)
             {
                 _timer.Stop();
+                _timer.Tick -= _timer_Tick;
                 if (DataProvider != null && DataProvider is IDisposable)
                     ((IDisposable)DataProvider).Dispose();
                 base.Dispose(managed);

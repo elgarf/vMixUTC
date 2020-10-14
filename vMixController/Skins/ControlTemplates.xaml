@@ -441,14 +441,14 @@
         </i:Interaction.Triggers>
     </ComboBox>
 
-    <Grid x:Shared="false"  x:Key="ScoreWidgetControl" Margin="{StaticResource StdMargin}">
+    <Grid x:Shared="false" x:Key="ScoreWidgetControl" Margin="{StaticResource StdMargin}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <TextBox IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetTextBox}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}">
+        <TextBox IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetTextBox}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -593,7 +593,7 @@
                         </i:Interaction.Triggers>
                     </toolkit:TimeSpanUpDown>
                 </Grid>
-                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}"/>
+                <CheckBox Tag="Reverse" Grid.Row="2" Grid.Column="2" Margin="{StaticResource LeftStdMargin}" IsChecked="{Binding Reverse, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}" HorizontalAlignment="Left"/>
             </CompositeCollection>
         </skin:PropertiesListView>
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">

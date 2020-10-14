@@ -26,6 +26,7 @@ using System.Xml;
 using Microsoft.SqlServer.Server;
 using System.Linq.Expressions;
 using System.IO.Compression;
+using vMixController.Messages;
 
 namespace vMixController.ViewModel
 {
@@ -78,6 +79,37 @@ namespace vMixController.ViewModel
 
                 _isHotkeysEnabled = value;
                 RaisePropertyChanged(IsHotkeysEnabledPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="IsLoading" /> property's name.
+        /// </summary>
+        public const string IsLoadingPropertyName = "IsLoading";
+
+        private bool _isLoading = false;
+
+        /// <summary>
+        /// Sets and gets the IsLoading property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsLoading
+        {
+            get
+            {
+                return _isLoading;
+            }
+
+            set
+            {
+                if (_isLoading == value)
+                {
+                    return;
+                }
+
+                _isLoading = value;
+                RaisePropertyChanged(IsLoadingPropertyName);
             }
         }
 
@@ -1636,6 +1668,7 @@ namespace vMixController.ViewModel
 
                 foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
                     _widgets.Add(item);
+                    
 
                 _windowSettings.OpenLastAtStart = ol;
 
@@ -2273,6 +2306,11 @@ namespace vMixController.ViewModel
                 }
             });
 
+            Messenger.Default.Register<LoadingMessage>(this, (msg) =>
+            {
+                IsLoading = msg.Loading;
+            });
+
             Messenger.Default.Register<Triple<vMixControl, double, double>>(this, (t) =>
             {
                 foreach (var item in _widgets.Where(x => x.Selected && x != t.A).Union(_intersections))
@@ -2294,7 +2332,7 @@ namespace vMixController.ViewModel
                 else
                     foreach (var rgn in selectedRegions)
                     {
-                        foreach (var item in _widgets.Where(x => rgn.Intersect(x) && !selectedRegions.Contains(x)))
+                        foreach (var item in _widgets.Where(x => rgn.Intersect(x) && x.Page == rgn.Page && !selectedRegions.Contains(x)))
                             _intersections.Add(item);
                     }
                     

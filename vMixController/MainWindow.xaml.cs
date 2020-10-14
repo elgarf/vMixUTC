@@ -1,8 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
+using vMixController.Messages;
 using vMixController.ViewModel;
 
 namespace vMixController
@@ -12,6 +15,7 @@ namespace vMixController
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool _loading = false;
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -37,6 +41,23 @@ namespace vMixController
                     App.Current.Shutdown();
                 }
             };
+
+            Messenger.Default.Register<LoadingMessage>(this, (msg) =>
+            {
+                var fadein = (Storyboard)FindResource("StoryboardFadeIn");
+                var fadeout = (Storyboard)FindResource("StoryboardFadeOut");
+
+                if (msg.Loading && !_loading)
+                {
+                    fadein.Begin(Loading);
+                    _loading = true;
+                }
+                else if (!msg.Loading && _loading)
+                {
+                    fadeout.Begin(Loading);
+                    _loading = false;
+                }
+            });
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

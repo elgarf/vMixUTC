@@ -36,6 +36,28 @@
             </ResourceDictionary.MergedDictionaries>
             <this:Help x:Key="Help"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
+            <Storyboard x:Key="StoryboardFadeIn">
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                    <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                            <Visibility>Visible</Visibility>
+                        </DiscreteObjectKeyFrame.Value>
+                    </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <DoubleAnimation Duration="0:0:0.5" To="1" Storyboard.TargetProperty="Opacity"/>
+            </Storyboard>
+
+            <Storyboard x:Key="StoryboardFadeOut">
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                        <DiscreteObjectKeyFrame.Value>
+                            <Visibility>Collapsed</Visibility>
+                        </DiscreteObjectKeyFrame.Value>
+                    </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <DoubleAnimation Duration="0:0:0.5" To="0" Storyboard.TargetProperty="Opacity"/>
+            </Storyboard>
+            
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
                 <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{e:Localize Add Widget}" Command="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 <Separator/>
@@ -656,7 +678,7 @@
                                 </SolidColorBrush>
                             </TextBlock.Foreground>
                         </TextBlock>
-                        <ListView x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent" ContextMenuOpening="Layout_ContextMenuOpening">
+                        <ListView VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard" VirtualizingPanel.IsContainerVirtualizable="True" x:Name="Layout" BorderThickness="0" ItemsSource="{Binding Widgets}" Background="Transparent" ContextMenuOpening="Layout_ContextMenuOpening">
                             <ListView.ContextMenu>
                                 <ContextMenu x:Name="CreateContextMenu" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ItemsSource="{DynamicResource CreateItems}">
                                     <ContextMenu.Resources>
@@ -729,7 +751,7 @@
                             </i:Interaction.Behaviors>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Grid IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Grid VirtualizingPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
                                         <Grid.LayoutTransform>
                                             <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
                                         </Grid.LayoutTransform>
@@ -906,5 +928,37 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
+        <Border x:Name="Loading" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="3" Cursor="Wait" Visibility="Collapsed">
+            <Border.Background>
+                <DrawingBrush Viewport="0,0,4,4" ViewportUnits="Absolute" TileMode="Tile">
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <GeometryDrawing Brush="{StaticResource Main.Background}">
+                                <GeometryDrawing.Geometry>
+                                    <GeometryGroup>
+                                        <RectangleGeometry Rect="0,0,8,8" />
+                                        <RectangleGeometry Rect="8,8,8,8" />
+                                    </GeometryGroup>
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing Brush="#AA000000">
+                                <GeometryDrawing.Geometry>
+                                    <GeometryGroup>
+                                        <RectangleGeometry Rect="8,0,8,8" />
+                                        <RectangleGeometry Rect="0,8,8,8" />
+                                    </GeometryGroup>
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Border.Background>
+            <Border Width="256" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{StaticResource Main.Background}" BorderBrush="{StaticResource Main.Foreground}" BorderThickness="4" Padding="{StaticResource StdMargin}">
+                <StackPanel>
+                    <TextBlock HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#Segoe UI Mono" Foreground="White" FontSize="48">loading</TextBlock>
+                    <ProgressBar BorderThickness="0" Background="Transparent" Foreground="White" IsIndeterminate="True" Height="16"/>
+                </StackPanel>
+            </Border>
+        </Border>
     </Grid>
 </Window>

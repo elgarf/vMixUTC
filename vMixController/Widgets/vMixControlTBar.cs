@@ -104,6 +104,7 @@ namespace vMixController.Widgets
             if (e.Property.Name == "Value" && !bar._reset)
             {
                 int value = Math.Min((int)e.NewValue, 255);
+                //value = value > 253 ? 255 : value;
                 bool reverse = bar._reverse;
                 value = reverse ? 255 - value : value;
                 bar.SendValue(value);
@@ -158,7 +159,7 @@ namespace vMixController.Widgets
 
         private void SendValue(int value)
         {
-            if (!_sending)
+            if (!_sending || value == 0 || value == 255)
             {
                 if (State != null)
                     _sending = true;

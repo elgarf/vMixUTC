@@ -225,6 +225,7 @@ namespace vMixController.Controls
         {
             /*var Caption = (((this.GetVisualChild(0) as Border).Child as Grid).Children[0] as StackPanel).Children[0] as Grid;
             var ContentControl = (((this.GetVisualChild(0) as Border).Child as Grid).Children[0] as StackPanel).Children[1] as ContentControl;*/
+
             if (!Control.IsResizeableVertical)
             {
                 if (!double.IsNaN(((vMixControlContainer)Content).ContentControl.ActualHeight) && ((vMixControlContainer)Content).ContentControl.ActualHeight != 0)

@@ -62,19 +62,21 @@ namespace vMixController.Widgets
             TextProperty.OverrideMetadata(typeof(vMixControlScore), new System.Windows.PropertyMetadata("", InternalPropertyChanged, CoerceValueCallback));
         }
 
-        public vMixControlScore():
+        public vMixControlScore() :
             base()
         {
-            Text = "0";
-            _defaultValue = "0";
-            
-            
+            //Text = "0\x200A";
+            //_defaultValue = "0\x200A";
+            Value = 0;
+
+
         }
 
         private static object CoerceValueCallback(DependencyObject d, object baseValue)
         {
             //Dirty hack for zero =(
-            return (string)baseValue == "0" ? "0\x200A" : baseValue;
+            //return (string)baseValue == "0" ? "0\x200A" : baseValue;
+            return baseValue;
         }
 
         internal override IMultiValueConverter ConverterSelector()
@@ -101,28 +103,56 @@ namespace vMixController.Widgets
             switch (index)
             {
                 case 0:
-                    Text = "0";
+                    Value = 0;
                     break;
                 case 1:
-                    Text = (i + 1).ToString();
+                    Value++;
                     break;
                 case 2:
-                    Text = (i + 2).ToString();
+                    Value += 2;
                     break;
                 case 3:
-                    Text = (i + 3).ToString();
+                    Value += 3;
                     break;
                 case 4:
-                    Text = (i + 5).ToString();
+                    Value += 5;
                     break;
                 case 5:
-                    Text = (i + 6).ToString();
+                    Value += 6;
                     break;
                 default:
                     break;
             }
+        }
 
-            //base.ExecuteHotkey(index);
+        /// <summary>
+        /// The <see cref="Value" /> property's name.
+        /// </summary>
+        public const string ValuePropertyName = "Value";
+
+        private int _value = 0;
+
+        /// <summary>
+        /// Sets and gets the Value property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int Value
+        {
+            get
+            {
+                return _value;
+            }
+
+            set
+            {
+                if (_value == value)
+                {
+                    return;
+                }
+                Text = value.ToString();
+                _value = value;
+                RaisePropertyChanged(ValuePropertyName);
+            }
         }
 
         [NonSerialized]
@@ -140,9 +170,10 @@ namespace vMixController.Widgets
                     ?? (_addScoreCommand = new RelayCommand<ControlIntParameter>(
                     p =>
                     {
-                        int.TryParse(((vMixControlTextField)p.A).Text, out int _out);
-                        _out += p.B;
-                        ((vMixControlTextField)p.A).Text = _out.ToString();
+                        //int.TryParse(((vMixControlTextField)p.A).Text, out int _out);
+                        //_out += p.B;
+                        //((vMixControlTextField)p.A).Text = _out.ToString();
+                        Value += p.B;
                     }));
             }
         }
@@ -162,7 +193,7 @@ namespace vMixController.Widgets
                     ?? (_resetScoreCommand = new RelayCommand(
                     () =>
                     {
-                        Text = "0";
+                        Value = 0;
                     }));
             }
         }
@@ -190,6 +221,19 @@ namespace vMixController.Widgets
         {
             Style = (string)((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
             base.SetProperties(_controls);
+        }
+
+        internal override void OnStateSynced()
+        {
+            int.TryParse(Text, out int val);
+            _value = val;
+            RaisePropertyChanged("Value");
+            base.OnStateSynced();
+        }
+
+        public override void Update()
+        {
+            base.Update();
         }
     }
 }
