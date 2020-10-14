@@ -1139,7 +1139,7 @@ namespace vMixController.Widgets
                     exp = null;
                     return result;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     exp.EvaluateFunction -= Exp_EvaluateFunction;
                     exp.EvaluateParameter -= Exp_EvaluateParameter;
@@ -1693,7 +1693,7 @@ namespace vMixController.Widgets
                     _executionWorker.Dispose();
                 }
 
-
+                _executionWorker = null;
 
                 //_activeStateUpdateWorker.Dispose();
 

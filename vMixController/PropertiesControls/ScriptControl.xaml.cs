@@ -346,7 +346,7 @@ namespace vMixController.PropertiesControls
                                 }
                                 RearrangeCommnads();
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
 
                             }

@@ -1641,6 +1641,7 @@ namespace vMixController.ViewModel
                                     wgt.Left += x.X - minleft;
                                     wgt.Top += x.Y - mintop;
                                     wgt.Selected = true;
+                                    wgt.Page = PageIndex;
                                     wgt.AlignByGrid();
                                     _widgets.Add(wgt);
                                 }

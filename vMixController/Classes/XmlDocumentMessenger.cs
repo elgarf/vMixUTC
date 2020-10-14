@@ -125,7 +125,7 @@ namespace vMixController.Classes
                         _queries--;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     _queries--;
                 }
