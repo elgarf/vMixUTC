@@ -34,7 +34,12 @@ namespace vMixAPI
         public string Image
         {
             get { return (string)GetValue(ImageProperty); }
-            set { SetValue(ImageProperty, value); RaisePropertyChanged("Image"); }
+            set { SetValue(ImageProperty, value);
+
+                if (!State.IsInitializing)
+                    ControlledState.TitleSetImage(InputKey, Environment.ExpandEnvironmentVariables(value), Index);
+
+                RaisePropertyChanged("Image"); }
         }
 
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...

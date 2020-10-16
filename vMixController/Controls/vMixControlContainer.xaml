@@ -47,7 +47,7 @@
             <FrameworkElement x:Key="ProxyElement" DataContext="{Binding ParentContainer, Source={x:Reference CC}}"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Tag="{Binding ParentContainer, ElementName=CC}" Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={wpfc:BoolToVisibilityConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+    <Border Tag="{Binding ParentContainer, ElementName=CC}" Background="#1E2328" Margin="0" Padding="0" IsHitTestVisible="{Binding ParentContainer.Control.IsGhosted, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
         <Border.Style>
             <Style TargetType="Border">
                 <!--Value=""-->

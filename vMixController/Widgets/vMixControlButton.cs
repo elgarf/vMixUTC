@@ -47,6 +47,8 @@ namespace vMixController.Widgets
         private const string DEFAULT = "Default";
         private const string DEFAULTPRESSED = "Default+Pressed";
 
+        static XmlDocument _latestDocument;
+
         Regex _isExpression = new Regex(@"([\+|\-])\=(\d+\.?\d*)");
         //[NonSerialized]
         //static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -927,6 +929,9 @@ namespace vMixController.Widgets
         private bool XPathStateDependent(XmlDocument doc)
         {
             if (doc == null) return false;
+
+            _latestDocument = doc;
+
             var result = false;
 
             HasScriptErrors = false;
@@ -1105,7 +1110,16 @@ namespace vMixController.Widgets
                     }
                     break;
                 //vMix functions
-                case "API":
+                case "xpath":
+                    if (_latestDocument != null)
+                    {
+                        args.HasResult = true;
+                        if (p.Length > 0 && p[0] is string par)
+                        {
+                            var node = _latestDocument.SelectSingleNode(par);
+                            args.Result = node is XmlAttribute ? node.Value : node.InnerText;
+                        }
+                    }
                     //state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0), false);
                     break;
                 //array functions
