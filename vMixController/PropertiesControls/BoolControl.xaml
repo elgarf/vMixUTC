@@ -42,6 +42,22 @@
             <TextBlock Padding="{StaticResource StdMargin}" VerticalAlignment="Center" Style="{StaticResource PropertyName}"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
             <Control Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource HelpBorder}" ToolTip="{Binding Help, ElementName=Me}" Visibility="{Binding Help.Length, ElementName=Me, FallbackValue=0, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0}"/>
         </Grid>
-        <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding Value, Mode=TwoWay, ElementName=Me}"/>
+        <ItemsControl ItemsSource="{Binding Values, ElementName=Me}" Grid.Column="1" Visibility="{Binding Values, Converter={wpfc:ICollectionNullOrEmptyToInverseVisibilityConverter}, ElementName=Me}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding A}">
+                        <Border Background="{StaticResource Button.Static.Background}" Margin="-5,0,2,0" Padding="2,0">
+                        <TextBlock Style="{StaticResource PropertyName}" Text="{Binding B}"/>
+                        </Border>
+                    </CheckBox>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding Value, Mode=TwoWay, ElementName=Me}" Visibility="{Binding Values, Converter={wpfc:ICollectionNullOrEmptyToVisibilityConverter}, ElementName=Me}"/>
     </Grid>
 </UserControl>

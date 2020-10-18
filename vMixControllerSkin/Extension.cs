@@ -29,6 +29,5 @@ namespace vMixControllerSkin
 
             typeof(XamlReader).GetMethod("LoadBaml", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { stream, parserContext, userControl, true });
         }
-
     }
 }

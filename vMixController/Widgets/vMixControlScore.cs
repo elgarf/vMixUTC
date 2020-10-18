@@ -57,6 +57,37 @@ namespace vMixController.Widgets
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="EnabledButtons" /> property's name.
+        /// </summary>
+        public const string EnabledButtonsPropertyName = "EnabledButtons";
+
+        private byte _enabledButtons = 1;
+
+        /// <summary>
+        /// Sets and gets the EnabledButtons property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public byte EnabledButtons
+        {
+            get
+            {
+                return _enabledButtons;
+            }
+
+            set
+            {
+                if (_enabledButtons == value)
+                {
+                    return;
+                }
+
+                _enabledButtons = value;
+                RaisePropertyChanged(EnabledButtonsPropertyName);
+            }
+        }
+
         static vMixControlScore()
         {
             TextProperty.OverrideMetadata(typeof(vMixControlScore), new System.Windows.PropertyMetadata("", InternalPropertyChanged, CoerceValueCallback));
@@ -93,9 +124,11 @@ namespace vMixController.Widgets
             new Classes.Hotkey() { Name = "+1" },
             new Classes.Hotkey() { Name = "+2" },
             new Classes.Hotkey() { Name = "+3" },
+            new Classes.Hotkey() { Name = "+4" },
             new Classes.Hotkey() { Name = "+5" },
-            new Classes.Hotkey() { Name = "+6" }};
-        }
+            new Classes.Hotkey() { Name = "+6" },
+            new Classes.Hotkey() { Name = "+10" }};
+    }
 
         public override void ExecuteHotkey(int index)
         {
@@ -115,10 +148,16 @@ namespace vMixController.Widgets
                     Value += 3;
                     break;
                 case 4:
-                    Value += 5;
+                    Value += 4;
                     break;
                 case 5:
+                    Value += 5;
+                    break;
+                case 6:
                     Value += 6;
+                    break;
+                case 7:
+                    Value += 10;
                     break;
                 default:
                     break;
@@ -210,16 +249,39 @@ namespace vMixController.Widgets
                 "Basic",
                 "Basketball",
                 "Rugby",
-                "American Football"
+                "American Football",
+                "Custom"
             };
             styleComboBox.Value = Style;
 
-            return (new UserControl[] { styleComboBox }).Concat(props).ToArray();
+            var customBool = GetPropertyControl<BoolControl>(Type + "CBC");
+
+            var vals = new List<Pair<bool, string>>();
+            for (byte i = 0; i < 7; i++)
+                vals.Add(new Pair<bool, string>(EnabledButtons.GetBit(i), GetHotkeys().Skip(1).ToArray()[i].Name ));
+            customBool.Values = vals;
+            customBool.Title = "Active Buttons";
+            customBool.Tag = 0;
+
+            var cbEnabled = new Binding("Value");
+            cbEnabled.Source = styleComboBox;
+            cbEnabled.Converter = NKristek.Wpf.Converters.ObjectToStringEqualsParameterToBoolConverter.Instance;
+            cbEnabled.ConverterParameter = "Custom";
+            BindingOperations.SetBinding(customBool, BoolControl.IsEnabledProperty, cbEnabled);
+
+            
+
+            return (new UserControl[] { styleComboBox, customBool }).Concat(props).ToArray();
         }
 
         public override void SetProperties(UserControl[] _controls)
         {
             Style = (string)((ComboBoxControl)_controls.Where(x => x is ComboBoxControl).FirstOrDefault()).Value;
+
+            var vals = (_controls.Where(x => x.Tag is int i && i == 0).FirstOrDefault() as BoolControl).Values;
+            for (byte i = 0; i < 7; i++)
+                EnabledButtons = EnabledButtons.SetBit(i, vals[i].A);
+
             base.SetProperties(_controls);
         }
 

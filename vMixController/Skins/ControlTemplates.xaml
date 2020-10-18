@@ -465,7 +465,7 @@
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="{StaticResource LeftStdMargin}">
-                        <Button x:Name="p1" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+1
+                        <Button x:Name="p1" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+1
                             <Button.Tag>
                                 <sys:Int32>1</sys:Int32>
                             </Button.Tag>
@@ -476,7 +476,7 @@
                                 </MultiBinding>
                             </Button.CommandParameter>
                         </Button>
-                        <Button x:Name="p2" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+2
+                        <Button x:Name="p2" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+2
                             <Button.Tag>
                                 <sys:Int32>2</sys:Int32>
                             </Button.Tag>
@@ -487,7 +487,7 @@
                                 </MultiBinding>
                             </Button.CommandParameter>
                         </Button>
-                        <Button x:Name="p3" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+3
+                        <Button x:Name="p3" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+3
                             <Button.Tag>
                                 <sys:Int32>3</sys:Int32>
                             </Button.Tag>
@@ -498,7 +498,18 @@
                                 </MultiBinding>
                             </Button.CommandParameter>
                         </Button>
-                        <Button x:Name="p5" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+5
+                        <Button x:Name="p4" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+4
+                            <Button.Tag>
+                                <sys:Int32>4</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button x:Name="p5" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+5
                             <Button.Tag>
                                 <sys:Int32>5</sys:Int32>
                             </Button.Tag>
@@ -509,9 +520,20 @@
                                 </MultiBinding>
                             </Button.CommandParameter>
                         </Button>
-                        <Button x:Name="p6" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}">+6
+                        <Button x:Name="p6" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+6
                             <Button.Tag>
                                 <sys:Int32>6</sys:Int32>
+                            </Button.Tag>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
+                                    <Binding/>
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button x:Name="p7" Width="32" Style="{StaticResource TitleButton}" Command="{Binding AddScoreCommand}" Visibility="Visible">+10
+                            <Button.Tag>
+                                <sys:Int32>10</sys:Int32>
                             </Button.Tag>
                             <Button.CommandParameter>
                                 <MultiBinding Converter="{c:TextFieldAndIntToControlIntParameterConverter}">
@@ -523,21 +545,42 @@
                     </StackPanel>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Style}" Value="Basic">
+                            <Setter Property="Visibility" TargetName="p1" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="p2" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p3" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p4" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p5" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p7" Value="Collapsed"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Style}" Value="Basketball">
+                            <Setter Property="Visibility" TargetName="p1" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="p2" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="p3" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="p4" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p5" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p7" Value="Collapsed"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Style}" Value="Rugby">
                             <Setter Property="Visibility" TargetName="p6" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="p1" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p7" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p4" Value="Collapsed"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Style}" Value="American Football">
                             <Setter Property="Visibility" TargetName="p5" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p7" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="p4" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Style}" Value="Custom">
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=0}" TargetName="p1"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=1}" TargetName="p2"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=2}" TargetName="p3"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=3}" TargetName="p4"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=4}" TargetName="p5"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=5}" TargetName="p6"/>
+                            <Setter Property="Visibility" Value="{Binding EnabledButtons, Converter={c:BitToVisibilityConverter}, ConverterParameter=6}" TargetName="p7"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

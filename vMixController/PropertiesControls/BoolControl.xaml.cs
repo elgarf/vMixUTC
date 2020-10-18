@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using vMixController.Classes;
 
 namespace vMixController.PropertiesControls
 {
@@ -52,6 +53,18 @@ namespace vMixController.PropertiesControls
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(bool), typeof(BoolControl), new PropertyMetadata(false));
+
+
+
+        public List<Pair<bool, string>> Values
+        {
+            get { return (List<Pair<bool, string>>)GetValue(ValuesProperty); }
+            set { SetValue(ValuesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Values.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ValuesProperty =
+            DependencyProperty.Register("Values", typeof(List<Pair<bool, string>>), typeof(BoolControl), new PropertyMetadata(null));
 
 
 

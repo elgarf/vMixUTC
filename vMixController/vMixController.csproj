@@ -215,6 +215,7 @@
     <Compile Include="Controls\vMixPathSelector.xaml.cs">
       <DependentUpon>vMixPathSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BitToVisibilityConverter.cs" />
     <Compile Include="Converters\AudiobusToBoolConverter.cs" />
     <Compile Include="Converters\AudiobusToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToSolidColorBrushConverter.cs" />

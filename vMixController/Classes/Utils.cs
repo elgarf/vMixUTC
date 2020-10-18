@@ -40,6 +40,22 @@ namespace vMixController.Classes
     }
     public static class Utils
     {
+
+        public static bool GetBit(this byte byt, byte index)
+        {
+            if (index < 0 || index > 7)
+                throw new ArgumentOutOfRangeException();
+
+            return (byt & (1 << index)) >> index != 0;
+        }
+
+        public static byte SetBit(this byte byt, byte index, bool value)
+        {
+            if (index < 0 || index > 7)
+                throw new ArgumentOutOfRangeException();
+            return (byte)((byt & ~(1 << index)) + (value ? 1 << index : 0));
+        }
+
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static ObservableCollection<vMixControl> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
         {

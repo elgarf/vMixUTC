@@ -87,7 +87,7 @@
                     <Grid Background="{StaticResource Main.Gradient}">
                         <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf031;</Run><Run Text=" "></Run><Run Text="{e:Localize Name}"/></TextBlock>
                     </Grid>
-                    <TextBox Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
+                    <TextBox Style="{StaticResource WidgetTextBox}" Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
                 </Grid>
                 <Grid Margin="{StaticResource TopBottomStdMargin}">
                     <Grid.ColumnDefinitions>

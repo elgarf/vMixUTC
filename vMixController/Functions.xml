@@ -43,6 +43,14 @@
 
   <vMixFunctionReference>
     <Native>true</Native>
+    <Description>Execute windows application</Description>
+    <Function>Win</Function>
+    <StringDescription>Path</StringDescription>
+    <HasStringProperty>true</HasStringProperty>
+  </vMixFunctionReference>
+
+  <vMixFunctionReference>
+    <Native>true</Native>
     <Description>Move to next page</Description>
     <Function>NextPage</Function>
   </vMixFunctionReference>

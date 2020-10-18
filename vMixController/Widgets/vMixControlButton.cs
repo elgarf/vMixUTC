@@ -200,33 +200,6 @@ namespace vMixController.Widgets
             }
         }
 
-        /*public new void ShadowUpdate()
-        {
-
-            if (IsStateDependent && _internalState != null && (DateTime.Now - _lastShadowUpdate).TotalSeconds > 0.01)
-            {
-                _internalState.UpdateAsync();
-                _lastShadowUpdate = DateTime.Now;
-            }
-        //base.ShadowUpdate();
-        }*/
-
-        /*private void State_OnStateUpdated(object sender, StateSyncedEventArgs e)
-        {
-            if (e.Successfully)
-                RealUpdateActiveProperty(false, null, State);
-
-        }*/
-
-        /*private void RealUpdateActiveProperty(bool skipStateDependency = false, vMixAPI.State stateToCheck = null, vMixAPI.State currentState = null)
-        {
-            stateToCheck = stateToCheck ?? _internalState;
-            currentState = currentState ?? State;
-
-            if ((!IsStateDependent && skipStateDependency) || stateToCheck == null || _activeStateUpdateWorker.IsBusy) return;
-            _activeStateUpdateWorker.RunWorkerAsync(new State[] { stateToCheck, currentState });
-        }*/
-
         public override string Type
         {
             get
@@ -752,20 +725,6 @@ namespace vMixController.Widgets
             _culture.NumberFormat.NumberDecimalDigits = 5;
             _culture.NumberFormat.CurrencyDecimalDigits = 5;
 
-            /*_stateDependentTimer = new DispatcherTimer(DispatcherPriority.Background);
-            _stateDependentTimer.Interval = TimeSpan.FromSeconds(1);
-            _stateDependentTimer.Start();
-            _stateDependentTimer.Tick += _stateDependentTimer_Tick;*/
-
-
-            /*Messenger.Default.Register<DocumentMessage>(this, x =>
-            {
-                ThreadPool.QueueUserWorkItem((t) =>
-                {
-                    if (IsStateDependent && x.Type == MessageType.Button)
-                        Active = XPathStateDependent(x.Document);
-                });
-            });*/
             XmlDocumentMessenger.OnDocumentDownloaded += XmlDocumentMessenger_OnDocumentDownloaded;
 
         }
@@ -780,6 +739,7 @@ namespace vMixController.Widgets
 
                 try
                 {
+                    _latestDocument = doc;
                     Active = XPathStateDependent(doc);
 
                 }
@@ -804,134 +764,16 @@ namespace vMixController.Widgets
             }
         }
 
-        /*private static void _stateDependentTimer_Tick(object sender, EventArgs e)
-        {
-            var t = DateTime.Now - _previousQuery;
-            if (t.TotalMilliseconds >= ShadowUpdatePollTime.TotalMilliseconds && !_querying)
-            {
-#if DEBUG
-                Debug.WriteLine("{0}, {1}", DateTime.Now, t.TotalMilliseconds);
-#endif
-                _previousQuery = DateTime.Now;
-                _querying = true;
-                
-                _webClient.DownloadStringAsync(new Uri((CommonServiceLocator.ServiceLocator.Current.GetInstance<MainViewModel>().Model?.GetUrl() ?? "http://127.0.0.1:8088") + "/api"));
-                _webClient.DownloadStringCompleted += Client_DownloadStringCompleted1;
-            }
-        }
-
-        private static void Client_DownloadStringCompleted1(object sender, DownloadStringCompletedEventArgs e)
-        {
-            if (e.Error == null)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(e.Result);
-                Messenger.Default.Send(new DocumentMessage() { Document = doc, Type = MessageType.Button, Timestamp = DateTime.Now });
-                _querying = false;
-            }
-            //((WebClient)sender).Dispose();
-            _previousQuery = DateTime.Now;
-        }*/
-
         private void ExecutionWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             ExecutionThread((State)e.Argument);
         }
-
-        /*private void ActiveStateUpdateWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-
-            var stateToCheck = ((State[])e.Argument)[0];
-            var currentState = ((State[])e.Argument)[1];
-
-#if !OBJECTDEPENDENCY
-            
-            else if (_xml != null)
-                Active = XPathStateDependent(_xml);
-#else
-            var result = false;
-
-            HasScriptErrors = false;
-
-            Stack<bool> conds = new Stack<bool>();
-            for (int i = 0; i < _commands.Count; i++)
-            {
-                var item = _commands[i];
-
-                if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
-                {
-                    if (currentState == null) return;
-
-                    var input = currentState.Inputs.Where(x => x.Key == item.InputKey).FirstOrDefault()?.Number;
-
-                    int intp = CalculateExpression<int>(item.Parameter);
-                    object strp = CalculateExpression(item.StringParameter);
-                    int strpasint = -1;
-                    if (strp != null)
-                        if (!int.TryParse(strp.ToString(), out strpasint))
-                            strpasint = int.MinValue;
-
-                    string keybystring = currentState.Inputs.Where(x => x.Number == strpasint).FirstOrDefault()?.Key ?? (strp?.ToString() ?? "");
-                    string keybyint = currentState.Inputs.Where(x => x.Number == intp).FirstOrDefault()?.Key ?? "";
-
-
-
-                    if (string.IsNullOrWhiteSpace(item.Action.ActiveStatePath) && item.Action.ActiveStatePathIntDependence == null) continue;
-                    var path = "";
-
-                    if (!string.IsNullOrWhiteSpace(item.Action.ActiveStatePath))
-                        path = string.Format(item.Action.ActiveStatePath, item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-
-                    if (item.Action.ActiveStatePathIntDependence != null)
-                        path = string.Format(item.Action.ActiveStatePathIntDependence[intp], item.InputKey, intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-
-                    if (string.IsNullOrWhiteSpace(path)) return;
-
-                    var nval = GetValueByPath(stateToCheck, path);
-                    var val = nval == null ? "" : nval.ToString();
-                    HasScriptErrors = HasScriptErrors || nval == null;
-                    var aval = string.Format(item.Action.ActiveStateValue, GetInputNumber(item.InputKey, stateToCheck), intp, strp, intp - 1, input ?? -1, "", keybyint, keybystring);
-                    var realval = aval;
-                    aval = aval.TrimStart('!', '~');
-                    //! - not
-                    //~ - contains
-                    //` - not contains
-                    bool mult = (aval == "-" && ((val is string && string.IsNullOrWhiteSpace((string)val)) || (val == null))) ||
-                        (aval == "*") ||
-                        (val != null && !(val is string) && aval == val.ToString()) ||
-                        (val is string && (string)val == aval) ||
-                        (realval[0] == '~' && (val is string && ((string)val).IndexOf(aval) >= 0)) ||
-                        (realval[0] == '`' && (val is string && ((string)val).IndexOf(aval) < 0));
-                    if (!string.IsNullOrWhiteSpace(aval) && realval[0] == '!')
-                        mult = !mult;
-                    result = result || mult;
-                }
-
-            }
-            e.Result = result;
-            Active = result;
-#endif
-        }
-
-        private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-        {
-            if (e.Error == null)
-            {
-                Active = XPathStateDependent(e.Result);
-                _xml = e.Result;
-                _previousQuery = DateTime.Now;
-
-            }
-            (sender as IDisposable).Dispose();
-        }*/
 
 
         private bool XPathStateDependent(XmlDocument doc)
         {
             if (doc == null) return false;
 
-            _latestDocument = doc;
-
             var result = false;
 
             HasScriptErrors = false;
@@ -945,7 +787,6 @@ namespace vMixController.Widgets
                 if (item.UseInActiveState && (conds.Count == 0 || conds.Peek()))
                 {
 
-                    //var input = Convert.ToInt32(nav.Select(string.Format(@"//inputs/input[@key='{0}']/@number", item.InputKey)).Current?.Value ?? "-1");
                     var input = Convert.ToInt32(doc.SelectSingleNode(string.Format(@"//inputs/input[@key='{0}']/@number", item.InputKey))?.Value ?? "-1");
 
                     int intp = CalculateExpression<int>(item.Parameter);
@@ -955,8 +796,6 @@ namespace vMixController.Widgets
                         if (!int.TryParse(strp.ToString(), out strpasint))
                             strpasint = int.MinValue;
 
-                    //string keybystring = nav.Select(string.Format(@"//inputs/input[@number='{0}']/@key", strpasint)).Current?.Value;
-                    //string keybyint = nav.Select(string.Format(@"//inputs/input[@number='{0}']/@key", intp)).Current?.Value;
                     string keybystring = doc.SelectSingleNode(string.Format(@"//inputs/input[@number='{0}']/@key", strpasint))?.Value;
                     string keybyint = doc.SelectSingleNode(string.Format(@"//inputs/input[@number='{0}']/@key", intp))?.Value;
 
@@ -1007,14 +846,6 @@ namespace vMixController.Widgets
             return result;
         }
 
-
-        /*private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-
-            //Active = (bool)(e.Result ?? false);
-
-        }*/
-
         public override Hotkey[] GetHotkeys()
         {
             return new Classes.Hotkey[] {
@@ -1025,34 +856,6 @@ namespace vMixController.Widgets
                 new Classes.Hotkey { Name = "Release" }
             };
         }
-
-        /*private string GetInputNumber(int input)
-        {
-            try
-            {
-                return State.Inputs[input].Number.ToString();
-            }
-            catch (Exception)
-            {
-                return "-1";
-            }
-        }
-
-        private string GetInputNumber(string key, vMixAPI.State state = null)
-        {
-            try
-            {
-                var input = (state ?? State).Inputs.Where(x => x.Key == key).FirstOrDefault();
-                if (input != null)
-                    return input.Number.ToString();
-                else
-                    return "-1";
-            }
-            catch (Exception)
-            {
-                return "-1";
-            }
-        }*/
 
         private void PopulateVariables(NCalc.Expression exp)
         {
@@ -1494,16 +1297,8 @@ namespace vMixController.Widgets
             }
             _conditions.Clear();
             BlinkBorderColor = BorderColor;
-            //new Thread(new ThreadStart(() =>
-            //{
             Enabled = true;
             _previousQuery = _previousQuery.AddMilliseconds(-ShadowUpdatePollTime.TotalMilliseconds * 2);
-            //_stateDependentTimer_Tick(null, null);
-            /*Thread.Sleep(_waitBeforeUpdate);
-            _waitBeforeUpdate = -1;
-            //NULL Check
-            Dispatcher.Invoke(() => _internalState?.UpdateAsync());
-        })).Start();*/
         }
 
         private object CalculateObjectParameter(vMixControlButtonCommand cmd)
@@ -1655,17 +1450,8 @@ namespace vMixController.Widgets
             ImageMax = (string)sg.Children.OfType<ComboBoxControl>().First().Value == DEFAULT ? 1 : 2;
 
             var u = _controls.OfType<FilePathControl>().First().Value;
-            /*if (!string.IsNullOrWhiteSpace(u) && File.Exists(u))
-            {
-
-                var uri = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), u)));
-                var dir = new Uri(Directory.GetCurrentDirectory() + @"\");
-                Image = Uri.UnescapeDataString(dir.MakeRelativeUri(uri).ToString());
-            }
-            else*/
             Image = u;
 
-            //RealUpdateActiveProperty(true, State);
             base.SetProperties(_controls);
             if (hasGoToOrTimer && Style != MOMENTARY)
             {
@@ -1683,7 +1469,6 @@ namespace vMixController.Widgets
             base.Update();
             if (AutoStart)
                 ExecuteScriptCommand.Execute(null);
-            //RealUpdateActiveProperty();
         }
 
         protected override void Dispose(bool managed)
@@ -1694,22 +1479,15 @@ namespace vMixController.Widgets
             Messenger.Default.Unregister(this);
             if (managed)
             {
-                //_blinker.Stop();
-                /*if (_internalState != null)
-                    _internalState.OnStateSynced -= State_OnStateUpdated;*/
                 _stopThread = true;
 
                 if (_executionWorker != null && _executionWorker.IsBusy)
                 {
                     _executionWorker.CancelAsync();
-                    //while (_executionWorker.CancellationPending)
-                    //    Thread.Sleep(100);
                     _executionWorker.Dispose();
                 }
 
                 _executionWorker = null;
-
-                //_activeStateUpdateWorker.Dispose();
 
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);

@@ -409,6 +409,7 @@ namespace vMixController.Widgets
         public static vMixControlButtonCommand FromString(string s)
         {
             var result = new vMixControlButtonCommand();
+            result.UseInActiveState = false;
 
             for (int i = 0; i < 10; i++)
                 result.AdditionalParameters.Add(new One<string>() { A = "" });
