@@ -27,6 +27,8 @@ namespace vMixController
         public MidiLearnWindow()
         {
             InitializeComponent();
+            Topmost = Application.Current?.MainWindow?.Topmost ?? false;
+            Activate();
         }
 
         public MidiLearnWindow(Sanford.Multimedia.Midi.InputDevice device, bool doNotDispose = true)

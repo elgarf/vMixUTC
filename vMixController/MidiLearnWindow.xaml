@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:vMixController"
         mc:Ignorable="d"
         ShowInTaskbar="False"
-        Title="MidiLearnWindow" Height="300" Width="300" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" KeyUp="Window_KeyUp" Closing="Window_Closing">
+        Title="MidiLearnWindow" Height="300" Width="300" WindowStyle="None" ResizeMode="NoResize" Topmost="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" KeyUp="Window_KeyUp" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

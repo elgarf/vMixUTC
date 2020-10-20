@@ -24,6 +24,8 @@ namespace vMixController
         public KeyLearnWindow()
         {
             InitializeComponent();
+            Topmost = Application.Current?.MainWindow?.Topmost ?? false;
+            Activate();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)

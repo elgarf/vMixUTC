@@ -52,7 +52,7 @@
                 <DataTemplate>
                     <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding A}">
                         <Border Background="{StaticResource Button.Static.Background}" Margin="-5,0,2,0" Padding="2,0">
-                        <TextBlock Style="{StaticResource PropertyName}" Text="{Binding B}"/>
+                        <TextBlock Style="{StaticResource PropertyName}" Text="{Binding B}" Visibility="{Binding B, Converter={wpfc:StringNullOrEmptyToInverseVisibilityConverter}}"/>
                         </Border>
                     </CheckBox>
                 </DataTemplate>

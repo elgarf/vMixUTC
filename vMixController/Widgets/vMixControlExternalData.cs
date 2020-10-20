@@ -138,7 +138,7 @@ namespace vMixController.Widgets
                     return;
                 }
 
-                _period = value >= 1000 ? value : 1000;
+                _period = value >= 100 ? value : 100;
                 _timer.Interval = TimeSpan.FromMilliseconds(value);
                 if (_dataProvider != null)
                     _dataProvider.Period = _period;
