@@ -14,7 +14,7 @@ using vMixControllerSkin;
 
 namespace UTCGoogleSheetsDataProvider
 {
-    public class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
+    public class GoogleSheetsDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
     {
         public object PreviewKeyUp { get; set; }
 
@@ -36,7 +36,7 @@ namespace UTCGoogleSheetsDataProvider
         {
             get
             {
-                _hasError = false;
+                /*_hasError = false;
                 if (File.Exists(FilePath))
                 {
                     var fileInfo = new FileInfo(FilePath);
@@ -93,7 +93,7 @@ namespace UTCGoogleSheetsDataProvider
 
                 }
                 _hasError = true;
-                RowsCount = 0;
+                RowsCount = 0;*/
                 return Array.Empty<string>();
             }
         }
@@ -103,7 +103,7 @@ namespace UTCGoogleSheetsDataProvider
 
         public System.Windows.UIElement CustomUI { get { return _customUI; } }
 
-        public ExcelDataProvider()
+        public GoogleSheetsDataProvider()
         {
             try
             {

@@ -68,6 +68,36 @@ namespace vMixController.Widgets
 
 
         /// <summary>
+        /// The <see cref="MaxMIDIValue" /> property's name.
+        /// </summary>
+        public const string MaxMIDIValuePropertyName = "MaxMIDIValue";
+
+        private int _maxMIDIValue = 127;
+
+        /// <summary>
+        /// Sets and gets the MaxMIDIValue property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int MaxMIDIValue
+        {
+            get
+            {
+                return _maxMIDIValue;
+            }
+
+            set
+            {
+                if (_maxMIDIValue == value)
+                {
+                    return;
+                }
+
+                _maxMIDIValue = value;
+                RaisePropertyChanged(MaxMIDIValuePropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="DeviceCaps" /> property's name.
         /// </summary>
         public const string DeviceCapsPropertyName = "DeviceCaps";
@@ -90,6 +120,14 @@ namespace vMixController.Widgets
                 if (_deviceCaps == value)
                 {
                     return;
+                }
+
+                if (Device != null)
+                {
+                    Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                    Device.Reset();
+                    Device.Dispose();
+                    Device = null;
                 }
 
                 _deviceCaps = value;
@@ -117,6 +155,7 @@ namespace vMixController.Widgets
                 {
                     Device.Close();
                     Device.Dispose();
+                    Device = null;
                 }
 
                 Device = CreateDeviceByName(_midiDeviceName);
@@ -133,19 +172,39 @@ namespace vMixController.Widgets
 
         private void Device_ChannelMessageReceived(object sender, ChannelMessageEventArgs e)
         {
+            
             foreach (var item in Midis)
             {
                 if (e.Message.MidiChannel == item.A && e.Message.Data1 == item.B && e.Message.Command == item.D)
-                    Messenger.Default.Send(new Pair<string, object>(item.C, null));
+                    Messenger.Default.Send(new Pair<string, object>(item.C, e.Message.Data2));
             }
         }
 
         private InputDevice CreateDeviceByName(string name)
         {
-            var deviceNumber = MidiDevices.Select((obj, idx) => new { obj, idx }).Where(x => x.obj == name).FirstOrDefault();
-            if (deviceNumber != null)
-                return new InputDevice(deviceNumber.idx);
-            return null;
+            try
+            {
+                var deviceNumber = MidiDevices.Select((obj, idx) => new { obj, idx }).Where(x => x.obj == name).FirstOrDefault();
+
+                if (deviceNumber != null)
+                    if (Device?.DeviceID != deviceNumber.idx)
+                    {
+                        if (Device != null)
+                        {
+                            Device.Close();
+                            Device.Dispose();
+                        }
+
+                        return new InputDevice(deviceNumber.idx);
+                    }
+                    else
+                        return Device;
+                return null;
+            }
+            catch (Exception e)
+            {
+                return Device;
+            }
         }
 
         public vMixControlMidiInterface()
@@ -176,7 +235,12 @@ namespace vMixController.Widgets
             midiDeviceComboBox.Title = "Device";
             midiDeviceComboBox.Items = MidiDevices;
             midiDeviceComboBox.Tag = "DeviceSelector";
-            midiDeviceComboBox.Value = Device != null ? InputDevice.GetDeviceCapabilities(Device.DeviceID).name : "";
+            var b = new Binding("DeviceCaps");
+            b.Source = this;
+            b.Mode = BindingMode.TwoWay;
+            b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            BindingOperations.SetBinding(midiDeviceComboBox, ComboBoxControl.ValueProperty, b);
+            //midiDeviceComboBox.Value = Device != null ? InputDevice.GetDeviceCapabilities(Device.DeviceID).name : "";
 
 
             var midiMappingCtrl = GetPropertyControl<MidiMappingControl>();
@@ -188,13 +252,19 @@ namespace vMixController.Widgets
             {
                 midiMappingCtrl.Midis.Add(item);
             }
+
+            /*var maxInt = GetPropertyControl<IntControl>("IntMidiMax");
+            maxInt.Value = MaxMIDIValue;
+            maxInt.Title = "Maximum MIDI Value (127/255)"; ;*/
+
+
             return base.GetPropertiesControls().Union(new UserControl[] { midiDeviceComboBox, midiMappingCtrl }).ToArray();
         }
 
         private MidiInterfaceKey Learn()
         {
 
-            var wnd = new MidiLearnWindow(Device ?? CreateDeviceByName(DeviceCaps));
+            var wnd = new MidiLearnWindow(Device = CreateDeviceByName(DeviceCaps));
             var result = wnd.ShowDialog();
             if (result ?? true)
             {

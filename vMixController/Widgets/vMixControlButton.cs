@@ -920,7 +920,10 @@ namespace vMixController.Widgets
                         if (p.Length > 0 && p[0] is string par)
                         {
                             var node = _latestDocument.SelectSingleNode(par);
-                            args.Result = node is XmlAttribute ? node.Value : node.InnerText;
+                            if (node != null)
+                                args.Result = node is XmlAttribute ? node.Value : node.InnerText;
+                            else
+                                args.Result = "XmlNode Not Found!";
                         }
                     }
                     //state.SendFunction(string.Format(cmd.Action.FormatString, cmd.InputKey, CalculateExpression<int>(cmd.Parameter), Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CalculateExpression<int>(cmd.Parameter) - 1, input.HasValue ? input.Value : 0), false);
@@ -1017,7 +1020,7 @@ namespace vMixController.Widgets
                 if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
                     ut = Nullable.GetUnderlyingType(targetType);
                 parse = ut.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "TryParse" && x.DeclaringType == ut && x.GetParameters().FirstOrDefault()?.ParameterType == typeof(string)).FirstOrDefault();
-                if (parse != null)
+                if (parse != null && result is string)
                 {
                     object[] parameters = new object[] { result, null };
                     object parseResult = parse.Invoke(targetType, parameters);

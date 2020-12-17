@@ -109,7 +109,8 @@ namespace vMixController {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Edit items, that will be shown in widget dropdown list..
+        ///   Ищет локализованную строку, похожую на Edit items, that will be shown in widget dropdown list.
+        ///Put ~ symbol to add description for list item..
         /// </summary>
         public static string List_Default {
             get {
@@ -118,7 +119,8 @@ namespace vMixController {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Here you can assign MIDI commands to hotkeys in another widgets..
+        ///   Ищет локализованную строку, похожую на Here you can assign MIDI commands to hotkeys in another widgets.
+        ///Use P as parameter in button script to access fader/knob value..
         /// </summary>
         public static string Midi_Default {
             get {

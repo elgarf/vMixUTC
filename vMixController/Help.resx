@@ -140,7 +140,8 @@ Link parameter is for calling events from scripts.</value>
 Put ~ symbol to add description for list item.</value>
   </data>
   <data name="Midi_Default" xml:space="preserve">
-    <value>Here you can assign MIDI commands to hotkeys in another widgets.</value>
+    <value>Here you can assign MIDI commands to hotkeys in another widgets.
+Use P as parameter in button script to access fader/knob value.</value>
   </data>
   <data name="SaveTemplate_Default" xml:space="preserve">
     <value>Save current widget with properties as template for fast access.</value>

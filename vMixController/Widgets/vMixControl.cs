@@ -1105,8 +1105,8 @@ namespace vMixController.Widgets
 
             SetProperties(viewModel.WidgetPropertiesControls);
 
-            if (this is IvMixAutoUpdateWidget)
-                (this as IvMixAutoUpdateWidget).Period = viewModel.Period;
+            /*if (this is IvMixAutoUpdateWidget)
+                (this as IvMixAutoUpdateWidget).Period = viewModel.Period;*/
             UpdateHotkeys();
 
             GC.Collect(1);

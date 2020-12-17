@@ -30,7 +30,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="2"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <ComboBox ItemsSource="{Binding Sources}" SelectedValue="{Binding Source, Mode=TwoWay}" x:Name="SourcesListBox">
@@ -201,15 +201,17 @@
             </ContentControl.Template>
         </ContentControl>
         <Border Background="{StaticResource Main.Background}" Grid.Row="3">
-            <Grid  Margin="4">
+            <Grid  Margin="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox IsChecked="{Binding IsAudioEnabled, Mode=TwoWay}" Foreground="White" FontSize="12">Audio</CheckBox>
                 <!--<Slider Value="{Binding Volume, ElementName=Preview, Mode=TwoWay}" Grid.Column="1" Margin="4,3,4,0" Maximum="1" Minimum="0"></Slider>-->
                 <CheckBox Grid.Column="2" FontSize="12" Foreground="White" IsChecked="{Binding IsLowBandwidth}" HorizontalAlignment="Right" VerticalAlignment="Bottom">Low Bandwidth Mode</CheckBox>
+                <Button Margin="4,0,0,0" Grid.Column="3" Command="{Binding ResetCommand}" Style="{StaticResource TitleButton}" ToolTip="Reset">&#xF453;</Button>
             </Grid>
         </Border>
 

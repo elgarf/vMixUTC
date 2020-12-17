@@ -11,7 +11,7 @@ namespace UTCGoogleSheetsDataProvider
         public OnWidgetUI()
         {
             //InitializeComponent();
-            this.LoadViewFromUri("/ExcelDataProvider;component/OnWidgetUI.xaml");
+            this.LoadViewFromUri("/GoogleSheetsDataProvider;component/OnWidgetUI.xaml");
         }
     }
 }

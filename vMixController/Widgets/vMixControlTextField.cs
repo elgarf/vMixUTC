@@ -415,6 +415,7 @@ namespace vMixController.Widgets
 
             var titleMapper = GetPropertyControl<TitleMappingControl>();
             titleMapper.Titles.Clear();
+            titleMapper.Visibility = Visibility.Visible;
             foreach (var item in _paths)
                 titleMapper.Titles.Add(new Pair<string, string>(item.A, item.B));
 

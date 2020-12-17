@@ -4,6 +4,7 @@ using NewTek.NDI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace UTCNDIMonitorDataProvider
         private static Random _random = new Random();
         private static Finder _finder;
         private static int _instances;
+
+        private static event EventHandler OnReset;
+
         //private string _sourcePath;
         /// <summary>
         /// The <see cref="Source" /> property's name.
@@ -343,31 +347,50 @@ namespace UTCNDIMonitorDataProvider
             return;
         }
 
+        ~NDIMonitorDataProvider()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _ui.Preview.ConnectedSource = null;
+                _ui.Preview.Disconnect();
+                _ui.Preview.Dispose();
+                OnReset -= NDIMonitorDataProvider_OnReset;
+                _instances--;
+                if (_instances <= 0)
+                {
+                    if (_finder != null)
+                        _finder.Sources.CollectionChanged -= Sources_CollectionChanged;
+
+                    _finder?.Dispose();
+                    _finder = null;
+                }
+            }
+        }
+
         public void Dispose()
         {
-            _ui.Preview.ConnectedSource = null;
-            _ui.Preview.Disconnect();
-            _ui.Preview.Dispose();
-            
-            _instances--;
-            if (_instances <= 0)
-            {
-                _finder?.Dispose();
-                _finder = null;
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public NDIMonitorDataProvider()
         {
             _instances++;
-
+            OnReset += NDIMonitorDataProvider_OnReset;
             _ui = new OnWidgetUI() { DataContext = this };
             //_ui.InitializeComponent();
 
             if (_finder == null)
                 _finder = new Finder(true);
             else
+            {
                 Sources = new ObservableCollection<string>(_finder.Sources.Select(x => x.Name).ToArray());
+            }
             _finder.Sources.CollectionChanged += Sources_CollectionChanged;
 
             // Not required, but "correct". (see the SDK documentation)
@@ -390,6 +413,15 @@ namespace UTCNDIMonitorDataProvider
             /*foreach (var b in ((Grid)_ui.FindName("Multiview8")).Children.OfType<Button>())
                 b.Command = PlayInput;*/
 
+        }
+
+        private void NDIMonitorDataProvider_OnReset(object sender, EventArgs e)
+        {
+            _ui.Preview.Disconnect();
+            if (_finder != null)
+                _finder.Sources.CollectionChanged += Sources_CollectionChanged;
+
+            RaisePropertyChanged("Source");
         }
 
         private void Sources_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -433,6 +465,31 @@ namespace UTCNDIMonitorDataProvider
                     p =>
                     {
                         MultiViewLayout = Convert.ToByte(p);
+                    }));
+            }
+        }
+
+        private RelayCommand _resetCommand;
+
+        /// <summary>
+        /// Gets the Reset.
+        /// </summary>
+        public RelayCommand ResetCommand
+        {
+            get
+            {
+                return _resetCommand
+                    ?? (_resetCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (_finder != null)
+                        {
+                            _finder.Dispose();
+                            _finder = null;
+
+                            _finder = new Finder(true);
+                            OnReset?.Invoke(this, new EventArgs());
+                        }
                     }));
             }
         }
