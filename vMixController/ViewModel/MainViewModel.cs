@@ -1984,7 +1984,10 @@ namespace vMixController.ViewModel
             foreach (var ctrl in _widgets)
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
                     if (item.obj.Link == link)
-                        ctrl.ExecuteHotkey(item.idx, parameter);
+                        if (parameter != null)
+                            ctrl.ExecuteHotkey(item.idx, parameter);
+                        else
+                            ctrl.ExecuteHotkey(item.idx);
         }
 
         private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
