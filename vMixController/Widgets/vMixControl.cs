@@ -840,9 +840,14 @@ namespace vMixController.Widgets
 
         }
 
-        public virtual void ExecuteHotkey(int index, object parameter) { }
+        public virtual void ExecuteHotkey(int index, object parameter) {
+            if (parameter == null)
+                ExecuteHotkey(index);
+        }
 
-        public virtual void ExecuteHotkey(int index) { }
+        public virtual void ExecuteHotkey(int index) {
+            
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
