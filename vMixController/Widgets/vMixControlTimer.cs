@@ -23,9 +23,12 @@ namespace vMixController.Widgets
         static Stopwatch _stopwatch = new Stopwatch();
         static TimeSpan _second = TimeSpan.FromSeconds(1);
 
-        public static long WorkingTimers {
+        public static long WorkingTimers
+        {
             get { return _workingTimers; }
-            set { _workingTimers = value;
+            set
+            {
+                _workingTimers = value;
                 if (_workingTimers <= 0)
                 {
                     if (_mtimer.IsRunning)
@@ -77,7 +80,7 @@ namespace vMixController.Widgets
                 {
                     Tick(t);
                 });
-                
+
             });
 
             _width = 256;
@@ -102,8 +105,9 @@ namespace vMixController.Widgets
             StringControl formatString = GetPropertyControl<StringControl>();
             formatString.Title = "Format";
             formatString.Value = Format;
-            var props = base.GetPropertiesControls();
-            props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
+            var props = base.GetPropertiesControls().ToList();
+            //Return IsTable
+            //props.OfType<BoolControl>().First().Visibility = System.Windows.Visibility.Collapsed;
 
 
             StringControl[] links = new StringControl[] {
@@ -112,6 +116,12 @@ namespace vMixController.Widgets
                 GetPropertyControl<StringControl>(Type + "3"),
                 GetPropertyControl<StringControl>(Type + "4")
             };
+
+
+            var splittext = GetPropertyControl<BoolControl>(Type + "BC");
+            splittext.Title = "Split Text";
+            splittext.Help = "Split text by chars: if your text is 11:22, you will get 1|1|:|2|2. \nUseful for creating animated timers.";
+            splittext.Value = SplitText;
 
             var lbl = GetPropertyControl<LabelControl>();
             lbl.Title = "Events";
@@ -128,7 +138,7 @@ namespace vMixController.Widgets
             links[3].Title = "On Completion";
             links[3].Value = Links.Length > 3 ? Links[3] : "";
             //links[3].Tag = "3";
-
+            props.Insert(2, splittext);
             return props.Concat(new UserControl[] { formatString, lbl }.Union(links)).ToArray();
         }
 
@@ -181,6 +191,36 @@ namespace vMixController.Widgets
                 Time = TimeSpan.Zero;//TimeSpan.FromMilliseconds(Time.Milliseconds);
                 if (Reverse)
                     Time = DefaultTime.Add(Time);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="SplitText" /> property's name.
+        /// </summary>
+        public const string SplitTextPropertyName = "SplitText";
+
+        private bool _splitText = false;
+
+        /// <summary>
+        /// Sets and gets the SplitText property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool SplitText
+        {
+            get
+            {
+                return _splitText;
+            }
+
+            set
+            {
+                if (_splitText == value)
+                {
+                    return;
+                }
+
+                _splitText = value;
+                RaisePropertyChanged(SplitTextPropertyName);
             }
         }
 
@@ -377,7 +417,7 @@ namespace vMixController.Widgets
                         t[0] = string.Format("{0:00}", _time.Hours * 60 + _time.Minutes);
                         _text = t.Aggregate((a, b) => a + ":" + b);
                     }
-                    Text = _text;
+                    Text = _text.Select(x => x.ToString()).Aggregate((x, y) => x + "|" + y);
                 }
                 catch (Exception)
                 {
@@ -581,6 +621,8 @@ namespace vMixController.Widgets
 
             if (Links.Length < 4)
                 Links = new string[] { "", "", "", "" };
+
+            SplitText = (_controls.Where(x => (x.Tag is string) &&  x.Tag.ToString() == Type + "BC").FirstOrDefault() as BoolControl).Value;
 
             Links[0] = _controls.FindPropertyControl<StringControl>(Type + "1").Value;
             Links[1] = _controls.FindPropertyControl<StringControl>(Type + "2").Value;

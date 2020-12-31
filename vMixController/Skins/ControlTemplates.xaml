@@ -37,6 +37,73 @@
     </Style>
 
     <!--Inner Controls-->
+    <Grid Margin="{StaticResource StdMargin}"  x:Shared="false" x:Key="PlayListWidgetControl">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ListView DataContext="{Binding}" Background="Transparent" BorderThickness="0" ItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex}" HorizontalContentAlignment="Stretch" x:Name="Me" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Content="&#xF374;" IsEnabled="{Binding DataContext.Locked, RelativeSource={RelativeSource AncestorType=ListView}, Converter={wpfc:BoolToInverseBoolConverter}}"/>
+                        </StackPanel>
+                        <TextBlock TextTrimming="CharacterEllipsis" Style="{StaticResource CaptionText}" Text="{Binding}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Margin" Value="0,1,0,1"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <Button Grid.Row="1" Width="Auto" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand}" Content="{e:Localize Append Item}" IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}"/>
+        <Border Grid.Row="2" BorderBrush="White" BorderThickness="0,1" Margin="0,2"/>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Width="Auto" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding PrevItemCommand}" ToolTip="{e:Localize Previous}">
+                <TextBlock>
+                    <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF048;"/>
+                </TextBlock>
+            </Button>
+            <Button Width="Auto" Grid.Column="1" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding ShuffleCommand}" ToolTip="{e:Localize Shuffle}">
+                <TextBlock>
+                    <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF074;"/>
+                </TextBlock>
+            </Button>
+            <Button Width="Auto" Grid.Column="2" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding PlayOutCommand}" ToolTip="{e:Localize Play Out}">
+                <TextBlock>
+                    <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF04E;"/>
+                </TextBlock>
+            </Button>
+            <Button Width="Auto" Grid.Column="3" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding PlayCommand}" ToolTip="{e:Localize Play/Pause}">
+                <TextBlock>
+                    <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF04B;"/> / <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF04C;"/>
+                </TextBlock>
+            </Button>
+            <Button Width="Auto" Grid.Column="4" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding NextItemCommand}" ToolTip="{e:Localize Next}">
+                <TextBlock>
+                    <Run FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xF051;"/>
+                </TextBlock>
+            </Button>
+        </Grid>
+    </Grid>
+
+
     <Button ClickMode="Release" Tag="{Binding IsColorized}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ButtonWidgetControl" Margin="{StaticResource StdMargin}" IsEnabled="{Binding Enabled}" Grid.Column="1">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -695,6 +762,24 @@
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ContentControl Content="{StaticResource ListWidgetControl}"/>
+            </ctrls:vMixControlContainerDummy.MainContent>
+        </ctrls:vMixControlContainerDummy>
+    </DataTemplate>
+
+    <DataTemplate x:Key="vMixControlPlaylist">
+        <ctrls:vMixControlContainerDummy Caption="{Binding Name}" BorderColorProxy="{Binding BorderColor}" Control="{Binding}" ScaleUpCommand="{Binding Main.ScaleUpCommand, Source={StaticResource Locator}}" ScaleDownCommand="{Binding Main.ScaleDownCommand, Source={StaticResource Locator}}" CopyCommand="{Binding Main.CopyWidgetCommand, Source={StaticResource Locator}}" CloseCommand="{Binding Main.RemoveWidgetCommand, Source={StaticResource Locator}}" SettingsCommand="{Binding Main.OpenPropertiesCommand, Source={StaticResource Locator}}" ToggleCaptionCommand="{Binding Main.ToggleCaptionCommand, Source={StaticResource Locator}}" SwitchPasswordLockableCommand="{Binding Main.SwitchPasswordLockableCommand, Source={StaticResource Locator}}"
+                                         MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
+            <ctrls:vMixControlContainerDummy.MainContent>
+                <Grid Height="{Binding Height}">
+                    <ContentControl Content="{StaticResource PlayListWidgetControl}"/>
+                    <ctrls:vMixControlResizeThumb IsEnabled="{Binding Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Margin="0,4,0,-4"  Height="4" Cursor="SizeNS" DataContext="{Binding}" VerticalAlignment="Bottom">
+                        <ctrls:vMixControlResizeThumb.Template>
+                            <ControlTemplate TargetType="{x:Type ctrls:vMixControlResizeThumb}">
+                                <Rectangle Fill="Transparent"/>
+                            </ControlTemplate>
+                        </ctrls:vMixControlResizeThumb.Template>
+                    </ctrls:vMixControlResizeThumb>
+                </Grid>
             </ctrls:vMixControlContainerDummy.MainContent>
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>

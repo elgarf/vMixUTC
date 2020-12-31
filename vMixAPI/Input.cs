@@ -233,7 +233,7 @@ namespace vMixAPI
 
 
         [XmlArray("list"), XmlArrayItem(ElementName = "item")]
-        public ObservableCollection<string> Items { get; set; }
+        public ObservableCollection<ListItem> Items { get; set; }
 
         public Input()
         {

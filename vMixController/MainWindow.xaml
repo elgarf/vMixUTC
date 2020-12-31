@@ -149,6 +149,13 @@
                         </Border>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem x:Name="Playlist" Command="{Binding CreateWidgetCommand}" CommandParameter="Playlist" Header="{e:Localize Playlist}">
+                    <MenuItem.Icon>
+                        <Border Width="16" Height="16">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf00b;</TextBlock>
+                        </Border>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem x:Name="Container" Command="{Binding CreateWidgetCommand}" CommandParameter="Container" Header="{e:Localize Container}">
                     <MenuItem.Icon>

@@ -48,7 +48,8 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlRegion)),
         XmlInclude(typeof(vMixControlVolume)),
         XmlInclude(typeof(vMixControlSlider)),
-        XmlInclude(typeof(vMixControlTBar))]
+        XmlInclude(typeof(vMixControlTBar)),
+        XmlInclude(typeof(vMixControlPlaylist))]
     public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 

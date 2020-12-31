@@ -64,6 +64,7 @@
     <Compile Include="BusA.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="InputBase.cs" />
+    <Compile Include="ListItem.cs" />
     <Compile Include="Master.cs" />
     <Compile Include="InputPosition.cs" />
     <Compile Include="InputOverlay.cs" />
