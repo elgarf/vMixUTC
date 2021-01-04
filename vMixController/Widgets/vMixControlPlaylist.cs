@@ -122,6 +122,7 @@ namespace vMixController.Widgets
         public vMixControlPlaylist()
         {
             XmlDocumentMessenger.OnDocumentDownloaded += XmlDocumentMessenger_OnDocumentDownloaded;
+            Height = 128;
         }
 
         public override Hotkey[] GetHotkeys()

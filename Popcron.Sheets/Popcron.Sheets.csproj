@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Popcron.Sheets</RootNamespace>
+    <AssemblyName>Popcron.Sheets</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HighLevel\Cell.cs" />
+    <Compile Include="HighLevel\Sheet.cs" />
+    <Compile Include="HighLevel\SheetsSerializer.cs" />
+    <Compile Include="HighLevel\Spreadsheet.cs" />
+    <Compile Include="OAuth\AuthorizationType.cs" />
+    <Compile Include="OAuth\OAuth.cs" />
+    <Compile Include="OAuth\OAuthToken.cs" />
+    <Compile Include="Requests\AddBandingRequest.cs" />
+    <Compile Include="Responses\AddBandingResponse.cs" />
+    <Compile Include="Requests\AddChartRequest.cs" />
+    <Compile Include="Responses\AddChartResponse.cs" />
+    <Compile Include="Requests\AddConditionalFormatRuleRequest.cs" />
+    <Compile Include="Requests\AddDimensionGroupRequest.cs" />
+    <Compile Include="BandedRange.cs" />
+    <Compile Include="BandingProperties.cs" />
+    <Compile Include="BasicChartAxis.cs" />
+    <Compile Include="BasicChartDomain.cs" />
+    <Compile Include="BasicChartSeries.cs" />
+    <Compile Include="BasicChartSpec.cs" />
+    <Compile Include="BasicFilter.cs" />
+    <Compile Include="BooleanCondition.cs" />
+    <Compile Include="BooleanRule.cs" />
+    <Compile Include="Border.cs" />
+    <Compile Include="Borders.cs" />
+    <Compile Include="BubbleChartSpec.cs" />
+    <Compile Include="CandlestickChartSpec.cs" />
+    <Compile Include="CandlestickData.cs" />
+    <Compile Include="CandlestickDomain.cs" />
+    <Compile Include="CandlestickSeries.cs" />
+    <Compile Include="CellData.cs" />
+    <Compile Include="CellFormat.cs" />
+    <Compile Include="ChartData.cs" />
+    <Compile Include="ChartSourceRange.cs" />
+    <Compile Include="ChartSpec.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="ConditionalFormatRule.cs" />
+    <Compile Include="ConditionValue.cs" />
+    <Compile Include="DataFilter.cs" />
+    <Compile Include="DataValidationRule.cs" />
+    <Compile Include="Responses\AddDimensionGroupResponse.cs" />
+    <Compile Include="Requests\AddFilterViewRequest.cs" />
+    <Compile Include="Responses\AddFilterViewResponse.cs" />
+    <Compile Include="Requests\AddNamedRangeRequest.cs" />
+    <Compile Include="Responses\AddNamedRangeResponse.cs" />
+    <Compile Include="Requests\AddProtectedRangeRequest.cs" />
+    <Compile Include="Responses\AddProtectedRangeResponse.cs" />
+    <Compile Include="Requests\AddSheetRequest.cs" />
+    <Compile Include="Responses\AddSheetResponse.cs" />
+    <Compile Include="Requests\AppendCellsRequest.cs" />
+    <Compile Include="Requests\AppendDimensionRequest.cs" />
+    <Compile Include="Requests\AutoFillRequest.cs" />
+    <Compile Include="Requests\AutoResizeDimensionsRequest.cs" />
+    <Compile Include="Requests\ClearBasicFilterRequest.cs" />
+    <Compile Include="Requests\CopyPasteRequest.cs" />
+    <Compile Include="Requests\CreateDeveloperMetadataRequest.cs" />
+    <Compile Include="Responses\CreateDeveloperMetadataResponse.cs" />
+    <Compile Include="Requests\CutPasteRequest.cs" />
+    <Compile Include="Requests\DeleteBandingRequest.cs" />
+    <Compile Include="Requests\DeleteConditionalFormatRuleRequest.cs" />
+    <Compile Include="Responses\DeleteConditionalFormatRuleResponse.cs" />
+    <Compile Include="Requests\DeleteDeveloperMetadataRequest.cs" />
+    <Compile Include="DeveloperMetadata.cs" />
+    <Compile Include="DeveloperMetadataLocation.cs" />
+    <Compile Include="DeveloperMetadataLookup.cs" />
+    <Compile Include="DimensionGroup.cs" />
+    <Compile Include="DimensionProperties.cs" />
+    <Compile Include="DimensionRange.cs" />
+    <Compile Include="Editors.cs" />
+    <Compile Include="EmbeddedChart.cs" />
+    <Compile Include="EmbeddedObjectPosition.cs" />
+    <Compile Include="ErrorValue.cs" />
+    <Compile Include="ExtendedValue.cs" />
+    <Compile Include="FilterCriteria.cs" />
+    <Compile Include="FilterView.cs" />
+    <Compile Include="GradientRule.cs" />
+    <Compile Include="GridCoordinate.cs" />
+    <Compile Include="GridData.cs" />
+    <Compile Include="GridProperties.cs" />
+    <Compile Include="GridRange.cs" />
+    <Compile Include="HistogramChartSpec.cs" />
+    <Compile Include="HistogramSeries.cs" />
+    <Compile Include="InterpolationPoint.cs" />
+    <Compile Include="IterativeCalculationSettings.cs" />
+    <Compile Include="LineStyle.cs" />
+    <Compile Include="NamedRange.cs" />
+    <Compile Include="NumberFormat.cs" />
+    <Compile Include="OrgChartSpec.cs" />
+    <Compile Include="OverlayPosition.cs" />
+    <Compile Include="Padding.cs" />
+    <Compile Include="PieChartSpec.cs" />
+    <Compile Include="PivotFilterCriteria.cs" />
+    <Compile Include="PivotTable.cs" />
+    <Compile Include="PivotValue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtectedRange.cs" />
+    <Compile Include="Responses\DeleteDeveloperMetadataResponse.cs" />
+    <Compile Include="Requests\DeleteDimensionGroupRequest.cs" />
+    <Compile Include="Responses\DeleteDimensionGroupResponse.cs" />
+    <Compile Include="Requests\DeleteDimensionRequest.cs" />
+    <Compile Include="Requests\DeleteEmbeddedObjectRequest.cs" />
+    <Compile Include="Requests\DeleteFilterViewRequest.cs" />
+    <Compile Include="Requests\DeleteNamedRangeRequest.cs" />
+    <Compile Include="Requests\DeleteProtectedRangeRequest.cs" />
+    <Compile Include="Requests\DeleteRangeRequest.cs" />
+    <Compile Include="Requests\DeleteSheetRequest.cs" />
+    <Compile Include="Requests\DuplicateFilterViewRequest.cs" />
+    <Compile Include="Responses\DuplicateFilterViewResponse.cs" />
+    <Compile Include="Requests\DuplicateSheetRequest.cs" />
+    <Compile Include="Responses\DuplicateSheetResponse.cs" />
+    <Compile Include="Requests\FindReplaceRequest.cs" />
+    <Compile Include="Responses\FindReplaceResponse.cs" />
+    <Compile Include="Requests\InsertDimensionRequest.cs" />
+    <Compile Include="Requests\InsertRangeRequest.cs" />
+    <Compile Include="Requests\MergeCellsRequest.cs" />
+    <Compile Include="Requests\MoveDimensionRequest.cs" />
+    <Compile Include="Requests\PasteDataRequest.cs" />
+    <Compile Include="Requests\RandomizeRangeRequest.cs" />
+    <Compile Include="Requests\RepeatCellRequest.cs" />
+    <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\RequestBatchUpdate.cs" />
+    <Compile Include="Responses\RequestBatchUpdateResponse.cs" />
+    <Compile Include="Responses\Response.cs" />
+    <Compile Include="Requests\SetBasicFilterRequest.cs" />
+    <Compile Include="Requests\SetDataValidationRequest.cs" />
+    <Compile Include="Requests\SortRangeRequest.cs" />
+    <Compile Include="Requests\SourceAndDestination.cs" />
+    <Compile Include="Requests\TextToColumnsRequest.cs" />
+    <Compile Include="Requests\UnmergeCellsRequest.cs" />
+    <Compile Include="Requests\UpdateBandingRequest.cs" />
+    <Compile Include="Requests\UpdateBordersRequest.cs" />
+    <Compile Include="Requests\UpdateCellsRequest.cs" />
+    <Compile Include="Requests\UpdateChartSpecRequest.cs" />
+    <Compile Include="Requests\UpdateConditionalFormatRuleRequest.cs" />
+    <Compile Include="Responses\UpdateConditionalFormatRuleResponse.cs" />
+    <Compile Include="Requests\UpdateDeveloperMetadataRequest.cs" />
+    <Compile Include="Responses\UpdateDeveloperMetadataResponse.cs" />
+    <Compile Include="Requests\UpdateDimensionGroupRequest.cs" />
+    <Compile Include="Requests\UpdateDimensionPropertiesRequest.cs" />
+    <Compile Include="Requests\UpdateEmbeddedObjectPositionRequest.cs" />
+    <Compile Include="Responses\UpdateEmbeddedObjectPositionResponse.cs" />
+    <Compile Include="Requests\UpdateFilterViewRequest.cs" />
+    <Compile Include="Requests\UpdateNamedRangeRequest.cs" />
+    <Compile Include="Requests\UpdateProtectedRangeRequest.cs" />
+    <Compile Include="Requests\UpdateSheetPropertiesRequest.cs" />
+    <Compile Include="Requests\UpdateSpreadsheetPropertiesRequest.cs" />
+    <Compile Include="RowData.cs" />
+    <Compile Include="SheetRaw.cs" />
+    <Compile Include="SheetProperties.cs" />
+    <Compile Include="HighLevel\SheetsClient.cs" />
+    <Compile Include="OAuth\Authorization.cs" />
+    <Compile Include="SortSpec.cs" />
+    <Compile Include="SpreadsheetRaw.cs" />
+    <Compile Include="SpreadsheetProperties.cs" />
+    <Compile Include="TextFormat.cs" />
+    <Compile Include="TextFormatRun.cs" />
+    <Compile Include="TextPosition.cs" />
+    <Compile Include="TextRotation.cs" />
+    <Compile Include="TreemapChartColorScale.cs" />
+    <Compile Include="TreemapChartSpec.cs" />
+    <Compile Include="WaterfallChartColumnStyle.cs" />
+    <Compile Include="WaterfallChartCustomSubtotal.cs" />
+    <Compile Include="WaterfallChartDomain.cs" />
+    <Compile Include="WaterfallChartSpec.cs" />
+    <Compile Include="WaterfallChartSpecies.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

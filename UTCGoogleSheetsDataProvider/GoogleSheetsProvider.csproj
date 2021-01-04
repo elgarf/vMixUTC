@@ -50,7 +50,12 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,6 +73,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JsonSheetsSerializer.cs" />
     <Compile Include="OnWidgetUI.xaml.cs">
       <DependentUpon>OnWidgetUI.xaml</DependentUpon>
     </Compile>
@@ -75,6 +81,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Popcron.Sheets\Popcron.Sheets.csproj">
+      <Project>{c16deca7-0a86-4285-9b3a-99dfd499b4fd}</Project>
+      <Name>Popcron.Sheets</Name>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
     <ProjectReference Include="..\vMixControllerDataProvider\vMixControllerDataProvider.csproj">
       <Project>{21c1a5ec-9fd2-44f5-bdac-98f0787102c3}</Project>
       <Name>vMixControllerDataProvider</Name>
@@ -109,7 +121,7 @@ for /f %25%25F in ('dir /b /a-d ^| findstr /vile "DataProvider.dll"') do del "%2
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.6.2.6\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.2.6\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.3.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.3.0\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Fody.6.2.6\build\Fody.targets" Condition="Exists('..\packages\Fody.6.2.6\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.6.3.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.3.0\build\Fody.targets')" />
 </Project>

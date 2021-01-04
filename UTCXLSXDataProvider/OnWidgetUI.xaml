@@ -17,6 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <!--<TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome" Margin="16" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="128" Foreground="Lime" Opacity="0.25" Text="&#xf1c3;"/>-->
         <StackPanel>
         <skin:PropertiesListView>
             <CompositeCollection>

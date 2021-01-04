@@ -314,21 +314,24 @@ namespace vMixController.Widgets
             try
             {
                 AssemblyName name;
-                if (string.IsNullOrWhiteSpace(_dataProviderPath))
-                    return;
-
-                if (!File.Exists(_dataProviderPath))
+                Assembly assembly;
+                if (!string.IsNullOrWhiteSpace(_dataProviderPath))
                 {
-                    string fn = Path.GetTempFileName();
-                    using (var fs = new FileStream(fn, FileMode.Create))
-                    using (var sw = new BinaryWriter(fs))
-                        sw.Write(value);
-                    name = AssemblyName.GetAssemblyName(fn);
+
+                    if (!File.Exists(_dataProviderPath))
+                    {
+                        string fn = Path.GetTempFileName();
+                        using (var fs = new FileStream(fn, FileMode.Create))
+                        using (var sw = new BinaryWriter(fs))
+                            sw.Write(value);
+                        name = AssemblyName.GetAssemblyName(fn);
+                    }
+                    else
+                        name = AssemblyName.GetAssemblyName(_dataProviderPath);
+                    assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
                 }
                 else
-                    name = AssemblyName.GetAssemblyName(_dataProviderPath);
-
-                var assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
+                    assembly = Assembly.Load(value);
                 var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
                 var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
 

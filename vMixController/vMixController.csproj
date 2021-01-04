@@ -553,6 +553,10 @@
       <Project>{7195bfa6-8095-4618-96f6-8577db13fb43}</Project>
       <Name>NDILibDotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Popcron.Sheets\Popcron.Sheets.csproj">
+      <Project>{c16deca7-0a86-4285-9b3a-99dfd499b4fd}</Project>
+      <Name>Popcron.Sheets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vMixAPI\vMixAPI.csproj">
       <Project>{41b25f7d-b035-401b-a50a-c5bb3983c2ac}</Project>
       <Name>vMixAPI</Name>

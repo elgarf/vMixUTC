@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using GoogleSheetsDataProvider;
+using Popcron.Sheets;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +18,11 @@ namespace UTCGoogleSheetsDataProvider
 {
     public class GoogleSheetsDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
     {
+
+        static Dictionary<string, Authorization> _authCache = new Dictionary<string, Authorization>();
+
+        static object _lock = new object();
+
         public object PreviewKeyUp { get; set; }
 
         public object GotFocus { get; set; }
@@ -36,65 +43,123 @@ namespace UTCGoogleSheetsDataProvider
         {
             get
             {
-                /*_hasError = false;
-                if (File.Exists(FilePath))
+                if (string.IsNullOrWhiteSpace(APIKey) || string.IsNullOrWhiteSpace(SheetKey))
+                    return Array.Empty<string>();
+                lock (_lock)
                 {
-                    var fileInfo = new FileInfo(FilePath);
-                    if (fileInfo.LastWriteTimeUtc > _lastModified)
+                    SheetsSerializer.Serializer = new JsonSheetsSerializer();
+                    Authorization auth = null;
+                    if (!_authCache.ContainsKey(APIKey))
                     {
-                        _lastModified = fileInfo.LastWriteTimeUtc;
-
-                        using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        try
                         {
-                            try
-                            {
-                                var reader = ExcelDataReader.ExcelReaderFactory.CreateReader(xls);
-                                List<string> results = new List<string>();
-                                int row = 0;
-                                int sheet = 0;
-                                do
-                                {
-                                    if (sheet == SheetIndex)
-                                        while (reader.Read())
-                                        {
-                                            if (row >= StartRow)
-                                            {
-                                                string line = "";
-                                                for (int i = StartCol; i < (EndCol >= 0 ? Math.Min(reader.FieldCount, EndCol) : reader.FieldCount); i++)
-                                                    if (IsTable)
-                                                        line += "|" + (reader.GetValue(i)?.ToString() ?? "");
-                                                    else
-                                                        results.Add((reader.GetValue(i)?.ToString() ?? ""));
-                                                if (IsTable)
-                                                    results.Add(line.Substring(1));
-                                            }
-                                            row++;
-                                            if (EndRow >= 0 && row >= EndRow)
-                                                break;
-                                        }
-                                    sheet++;
-                                }
-                                while (reader.NextResult());
-                                Cached = results.ToArray();
-                                RowsCount = Cached.Length;
-                                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FilePathPropertyName));
-                                return Cached;
-                            }
-                            catch (ExcelDataReader.Exceptions.ExcelReaderException)
-                            {
-                                _hasError = true;
-                                RowsCount = 0;
-                                return Array.Empty<string>();
-                            }
+                            auth = Popcron.Sheets.Authorization.Authorize(APIKey).Result;
+                            if (auth == null) return Array.Empty<string>();
+                            _authCache.Add(APIKey, auth);
+                        }
+                        catch (Exception)
+                        {
+                            return Array.Empty<string>();
                         }
                     }
                     else
-                        return Cached;
+                        auth = _authCache[APIKey];
 
+                    List<string> results = new List<string>();
+
+                    try
+                    {
+                        var sst = Popcron.Sheets.Spreadsheet.Get(SheetKey, auth).Result;//AsyncHelpers.RunSync(() => );
+                        if (sst.Sheets.Count > SheetIndex)
+                        {
+                            var sheet = sst.Sheets[SheetIndex];
+                            for (int y = 0; y < sheet.Rows; y++)
+                            {
+                                string line = "";
+                                for (int x = 0; x < sheet.Columns; x++)
+                                {
+                                    if (y >= StartRow && (y <= EndRow || EndRow < 0))
+                                        if (x >= StartCol && (x <= EndCol || EndCol < 0))
+                                        {
+                                            var val = sheet.Data[x, y].Value;
+                                            val = string.IsNullOrEmpty(val) ? "" : val;
+                                            if (IsTable)
+                                                line += "|" + val;
+                                            else
+                                                results.Add(val);
+                                        }
+                                }
+                                if (!string.IsNullOrWhiteSpace(line))
+                                    results.Add(line.Substring(1));
+                            }
+                            Cached = results.ToArray();
+                            RowsCount = Cached.Length;
+                            return results.ToArray();
+
+                        }
+                    } catch (Exception) { return Array.Empty<string>(); }
+
+
+                    /*_hasError = false;
+                    if (File.Exists(FilePath))
+                    {
+                        var fileInfo = new FileInfo(FilePath);
+                        if (fileInfo.LastWriteTimeUtc > _lastModified)
+                        {
+                            _lastModified = fileInfo.LastWriteTimeUtc;
+
+                            using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                try
+                                {
+                                    var reader = ExcelDataReader.ExcelReaderFactory.CreateReader(xls);
+                                    List<string> results = new List<string>();
+                                    int row = 0;
+                                    int sheet = 0;
+                                    do
+                                    {
+                                        if (sheet == SheetIndex)
+                                            while (reader.Read())
+                                            {
+                                                if (row >= StartRow)
+                                                {
+                                                    string line = "";
+                                                    for (int i = StartCol; i < (EndCol >= 0 ? Math.Min(reader.FieldCount, EndCol) : reader.FieldCount); i++)
+                                                        if (IsTable)
+                                                            line += "|" + (reader.GetValue(i)?.ToString() ?? "");
+                                                        else
+                                                            results.Add((reader.GetValue(i)?.ToString() ?? ""));
+                                                    if (IsTable)
+                                                        results.Add(line.Substring(1));
+                                                }
+                                                row++;
+                                                if (EndRow >= 0 && row >= EndRow)
+                                                    break;
+                                            }
+                                        sheet++;
+                                    }
+                                    while (reader.NextResult());
+                                    Cached = results.ToArray();
+                                    RowsCount = Cached.Length;
+                                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FilePathPropertyName));
+                                    return Cached;
+                                }
+                                catch (ExcelDataReader.Exceptions.ExcelReaderException)
+                                {
+                                    _hasError = true;
+                                    RowsCount = 0;
+                                    return Array.Empty<string>();
+                                }
+                            }
+                        }
+                        else
+                            return Cached;
+
+                    }
+                    _hasError = true;
+                    RowsCount = 0;*/
+                    return Array.Empty<string>();
                 }
-                _hasError = true;
-                RowsCount = 0;*/
-                return Array.Empty<string>();
             }
         }
 
@@ -116,33 +181,64 @@ namespace UTCGoogleSheetsDataProvider
         }
 
         /// <summary>
-        /// The <see cref="FilePath" /> property's name.
+        /// The <see cref="APIKey" /> property's name.
         /// </summary>
-        public const string FilePathPropertyName = "FilePath";
+        public const string APIKeyPropertyName = "APIKey";
 
-        private string _filePath = "";
+        private string _APIKey = "";
 
         /// <summary>
         /// Sets and gets the FilePath property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public string FilePath
+        public string APIKey
         {
             get
             {
-                return _filePath;
+                return _APIKey;
             }
 
             set
             {
-                if (_filePath == value)
+                if (_APIKey == value)
                 {
                     return;
                 }
 
-                _filePath = value;
+                _APIKey = value;
                 _lastModified = DateTime.MinValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(FilePathPropertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(APIKeyPropertyName));
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="SheetKey" /> property's name.
+        /// </summary>
+        public const string SheetKeyPropertyName = "SheetKey";
+
+        private string _sheetKey = "";
+
+        /// <summary>
+        /// Sets and gets the SheetKey property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string SheetKey
+        {
+            get
+            {
+                return _sheetKey;
+            }
+
+            set
+            {
+                if (_sheetKey == value)
+                {
+                    return;
+                }
+
+                _sheetKey = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(SheetKeyPropertyName));
             }
         }
 
@@ -414,19 +510,20 @@ namespace UTCGoogleSheetsDataProvider
 
         public List<object> GetProperties()
         {
-            return new List<object> { FilePath, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable };
+            return new List<object> { APIKey, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable, SheetKey };
             //throw new NotImplementedException();
         }
 
         public void SetProperties(List<object> props)
         {
-            FilePath = (string)props?.ElementAt(0) ?? "";
+            APIKey = (string)props?.ElementAt(0) ?? "";
             StartRow = (int?)props?.ElementAt(1) ?? 0;
             EndRow = (int?)props?.ElementAt(2) ?? -1;
             StartCol = (int?)props?.ElementAt(3) ?? 0;
             EndCol = (int?)props?.ElementAt(4) ?? -1;
             SheetIndex = (int?)props?.ElementAt(5) ?? 0;
             IsTable = (bool?)props?.ElementAt(6) ?? true;
+            SheetKey = (string)props?.ElementAt(7) ?? "";
             //throw new NotImplementedException();
         }
 

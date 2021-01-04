@@ -123,11 +123,6 @@
                         </Border>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<MenuItem x:Name="Timecode" Command="{Binding CreateWidgetCommand}" CommandParameter="Timecode" Header="{e:Localize Timecode}">
-                    <MenuItem.Icon>
-                        <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xF150;</TextBlock>
-                    </MenuItem.Icon>
-                </MenuItem>-->
                 <MenuItem x:Name="Clock" Command="{Binding CreateWidgetCommand}" CommandParameter="Clock" Header="{e:Localize Clock}">
                     <MenuItem.Icon>
                         <Border Width="16" Height="16">

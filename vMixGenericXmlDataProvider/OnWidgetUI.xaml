@@ -36,7 +36,7 @@
                     <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding XPath}" TextWrapping="Wrap" Height="Auto" AcceptsReturn="True">
                         <TextBox.Tag>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Style="{StaticResource CaptionText}">XPath</TextBlock>
+                                <TextBlock Style="{StaticResource CaptionText}" FontWeight="Normal">XPath</TextBlock>
                                 <Control Margin="{StaticResource LeftStdMargin}" Style="{StaticResource HelpBorder}" ToolTip="Press Ctrl+Return to enter new line"/>
                             </StackPanel>
                         </TextBox.Tag>

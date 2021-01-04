@@ -23,9 +23,9 @@ namespace vMixController.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if ((bool)value)
-                return new SolidColorBrush(Colors.Lime);
-            else
                 return new SolidColorBrush(Colors.Red);
+            else
+                return new SolidColorBrush(Colors.SlateGray);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

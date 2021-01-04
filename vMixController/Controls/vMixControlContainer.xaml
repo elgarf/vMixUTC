@@ -60,7 +60,7 @@
                                 <DrawingBrush Viewport="0,0,16,16" ViewportUnits="Absolute" TileMode="Tile">
                                     <DrawingBrush.Drawing>
                                         <DrawingGroup>
-                                            <GeometryDrawing Brush="Red">
+                                            <GeometryDrawing Brush="OrangeRed">
                                                 <GeometryDrawing.Geometry>
                                                     <GeometryGroup>
                                                         <RectangleGeometry Rect="0,0,50,50" />

@@ -61,8 +61,6 @@ namespace vMixController.Widgets
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(ObservableCollection<string>), typeof(vMixControlTextField), new PropertyMetadata(null));
 
-
-
         public Triple<string, string, bool> DataSource { get; set; }
 
         public override UserControl[] GetPropertiesControls()
@@ -92,6 +90,9 @@ namespace vMixController.Widgets
                 {
                     itemsList.Items.Add(new Classes.DummyStringProperty() { Value = item });
                 }
+
+
+
             return base.GetPropertiesControls().Concat(new UserControl[] { itemsList, dataSource }).ToArray();
             //return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray(); ;
         }

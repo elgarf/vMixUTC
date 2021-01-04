@@ -46,7 +46,7 @@
                         <Border Padding="{StaticResource StdMargin}">
                             <Grid>
                                 <ContentControl x:Name="label" Margin="8,0,0,0" Content="{Binding Tag}"/>
-                                <TextBlock Visibility="Collapsed" x:Name="textLabel" Margin="8,0,0,0" Style="{StaticResource PropertyName}" Text="{Binding Tag}"/>
+                                <TextBlock Visibility="Collapsed" x:Name="textLabel" Margin="8,0,0,0" Style="{StaticResource PropertyName}" Text="{Binding Tag}" FontWeight="Normal"/>
                             </Grid>
                         </Border>
                     </Grid>

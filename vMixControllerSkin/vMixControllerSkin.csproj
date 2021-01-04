@@ -64,7 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncHelpers.cs" />
     <Compile Include="Converters\ObjectToTypeString.cs" />
+    <Compile Include="Converters\StringToGridTable.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="PropertiesListView.xaml.cs">
       <DependentUpon>PropertiesListView.xaml</DependentUpon>

@@ -417,7 +417,10 @@ namespace vMixController.Widgets
                         t[0] = string.Format("{0:00}", _time.Hours * 60 + _time.Minutes);
                         _text = t.Aggregate((a, b) => a + ":" + b);
                     }
-                    Text = _text.Select(x => x.ToString()).Aggregate((x, y) => x + "|" + y);
+                    if (SplitText)
+                        Text = _text.Select(x => x.ToString()).Aggregate((x, y) => x + "|" + y);
+                    else
+                        Text = _text;
                 }
                 catch (Exception)
                 {
@@ -578,9 +581,12 @@ namespace vMixController.Widgets
 
                                 break;
                             case "Stop":
-                                Active = false;
+                                if (Active)
+                                {
+                                    GlobalTimer.WorkingTimers--;
+                                    Active = false;
+                                }
                                 Paused = false;
-                                GlobalTimer.WorkingTimers--;
                                 UpdateTimer();
                                 Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
                                 break;

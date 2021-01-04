@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixControllerSkin"
+             xmlns:conv="clr-namespace:vMixControllerSkin.Converters"
              mc:Ignorable="d" 
         Title="Rows Viewer"
              d:DesignHeight="512" d:DesignWidth="512" Width="512" Height="512" WindowStyle="ToolWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
+            <conv:StringToGridTable x:Key="StringToGridConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -23,12 +25,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView BorderThickness="0"  HorizontalContentAlignment="Stretch" Background="Transparent" ItemsSource="{Binding Rows}">
+        <ListView BorderThickness="0"  HorizontalContentAlignment="Stretch" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Rows}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border Background="{StaticResource Main.Gradient}" Margin="0, 2">
-
-                        <TextBlock Style="{StaticResource CaptionText}" Text="{Binding}"/>
+                        <ContentControl Content="{Binding Converter={StaticResource StringToGridConverter}}"/>
+                        <!--<TextBlock Style="{StaticResource CaptionText}" Text="{Binding}"/>-->
+                        
 
                     </Border>
                 </DataTemplate>

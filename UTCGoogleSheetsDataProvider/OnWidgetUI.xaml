@@ -20,14 +20,10 @@
         <StackPanel>
         <skin:PropertiesListView>
             <CompositeCollection>
-                <TextBox Style="{StaticResource WidgetTextBox}" Tag="File Path">
+                <TextBox Style="{StaticResource WidgetTextBox}" Tag="API Key">
                     <TextBox.Text>
-                        <Binding Path="FilePath" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule/>
-                                <DataErrorValidationRule/>
-                            </Binding.ValidationRules>
-                        </Binding>
+                            <Binding Path="APIKey" UpdateSourceTrigger="PropertyChanged">
+                            </Binding>
                     </TextBox.Text>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewKeyUp">
@@ -41,7 +37,26 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBox>
-                <TextBox Style="{StaticResource WidgetTextBox}" Tag="Start Row">
+                    <TextBox Style="{StaticResource WidgetTextBox}" Tag="Sheet Key">
+                        <TextBox.Text>
+                            <Binding Path="SheetKey" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyUp">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="GotFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <TextBox Style="{StaticResource WidgetTextBox}" Tag="Start Row">
                     <Binding Path="StartRow" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <ExceptionValidationRule/>
