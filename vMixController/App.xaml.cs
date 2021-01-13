@@ -23,13 +23,17 @@ namespace vMixController
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            
-
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            this.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
             base.OnStartup(e);
+        }
+
+        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            _logger.Error(e.Exception, "First Chance exception.");
         }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

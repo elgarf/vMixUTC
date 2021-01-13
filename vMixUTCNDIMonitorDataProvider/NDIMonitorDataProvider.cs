@@ -30,6 +30,7 @@ namespace UTCNDIMonitorDataProvider
         private static Random _random = new Random();
         private static Finder _finder;
         private static int _instances;
+        private static bool _initialized = false;
 
         private static event EventHandler OnReset;
 
@@ -368,6 +369,9 @@ namespace UTCNDIMonitorDataProvider
 
                     _finder?.Dispose();
                     _finder = null;
+
+                    NDIlib.destroy();
+                    _initialized = false;
                 }
             }
         }
@@ -394,22 +398,25 @@ namespace UTCNDIMonitorDataProvider
             _finder.Sources.CollectionChanged += Sources_CollectionChanged;
 
             // Not required, but "correct". (see the SDK documentation)
-            if (!NDIlib.initialize())
-            {
-                // Cannot run NDI. Most likely because the CPU is not sufficient (see SDK documentation).
-                // you can check this directly with a call to NDIlib.is_supported_CPU()
-                if (!NDIlib.is_supported_CPU())
+            if (!_initialized)
+                if (!NDIlib.initialize())
                 {
-                    MessageBox.Show("CPU unsupported.");
+                    // Cannot run NDI. Most likely because the CPU is not sufficient (see SDK documentation).
+                    // you can check this directly with a call to NDIlib.is_supported_CPU()
+                    if (!NDIlib.is_supported_CPU())
+                    {
+                        MessageBox.Show("CPU unsupported.");
+                    }
+                    else
+                    {
+                        // not sure why, but it's not going to run
+                        MessageBox.Show("Cannot run NDI.");
+                    }
+
+                    // we can't go on
                 }
                 else
-                {
-                    // not sure why, but it's not going to run
-                    MessageBox.Show("Cannot run NDI.");
-                }
-
-                // we can't go on
-            }
+                    _initialized = true;
             /*foreach (var b in ((Grid)_ui.FindName("Multiview8")).Children.OfType<Button>())
                 b.Command = PlayInput;*/
 

@@ -21,7 +21,11 @@ namespace vMixController.Classes
     public static class XmlDocumentMessenger
     {
         public static bool Sync { get; set; }
-        public static string Url { get; set; }
+        public static string Url { get => url; set {
+                _queries = 0;
+                url = value;
+            }
+        }
         public delegate void DocumentDownloaded(XmlDocument doc, DateTime timestamp);
         static int _subscribers = 0;
 
@@ -50,6 +54,7 @@ namespace vMixController.Classes
         static DateTime _previousQuery = DateTime.Now;
         static DispatcherTimer _stateDependentTimer;
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger(typeof(XmlDocumentMessenger));
+        private static string url;
 
         static XmlDocumentMessenger()
         {

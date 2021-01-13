@@ -304,7 +304,7 @@ namespace vMixController.Classes
         /// </summary>
         public const string EnableLogPropertyName = "EnableLog";
 
-        private bool _enableLog = false;
+        private bool _enableLog = true;
 
         /// <summary>
         /// Sets and gets the EnableLog property.

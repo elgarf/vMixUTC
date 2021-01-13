@@ -297,7 +297,6 @@ namespace vMixController.Widgets
                             ((IDisposable)DataProvider).Dispose();
 
                         DataProviderContent = Convert.ToBase64String(File.ReadAllBytes(value));
-
                         InitializeDataProvider(File.ReadAllBytes(value));
                     }
                 }
@@ -331,7 +330,7 @@ namespace vMixController.Widgets
                     assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
                 }
                 else
-                    assembly = Assembly.Load(value);
+                    return;
                 var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
                 var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
 
@@ -392,8 +391,6 @@ namespace vMixController.Widgets
                                 State.SendFunction(string.Format(command, item.A, item.B));
                             continue;
                         }
-
-                        //var obj = GetValueByPath(State, string.Format("Inputs[{0}].Elements[{1}]", item.A, item.B));
 
                         var input = (Input)GetValueByPath(State, string.Format("Inputs[{0}]", item.A));
                         if (input != null)

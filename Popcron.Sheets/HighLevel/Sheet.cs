@@ -23,7 +23,7 @@ namespace Popcron.Sheets
         {
             get
             {
-                return raw.data[0].rowData.Length;
+                return rows;//raw.data[0].rowData.Length;
             }
         }
 
@@ -84,12 +84,13 @@ namespace Popcron.Sheets
 
         private SheetRaw raw;
         public int columns;
+        int rows;
         private Cell[,] data;
 
         public Sheet(SheetRaw raw)
         {
             this.raw = raw;
-
+            rows = raw.data[0].rowData.Length;
             //cache columns
             for (int i = 0; i < raw.data[0].rowData.Length; i++)
             {
@@ -98,7 +99,7 @@ namespace Popcron.Sheets
                 {
                     if (!string.IsNullOrEmpty(raw.data[0].rowData[i].values[v].formattedValue)) values++;
                 }*/
-                if (raw.data[0].rowData[i].values.Length > columns)
+                if ((raw.data[0].rowData[i].values?.Length ?? 0) > columns)
                 {
                     columns = raw.data[0].rowData[i].values.Length;
                 }
@@ -106,20 +107,34 @@ namespace Popcron.Sheets
 
             //cache data
             data = new Cell[Columns, Rows];
-            for (int y = 0; y < Rows; y++)
+            for (int y = 0; y < raw.data[0].rowData.Length; y++)
             {
                 for (int x = 0; x < Columns; x++)
                 {
-                    if (raw.data[0].rowData.Length > y && raw.data[0].rowData[y].values.Length > x)
-                    {
-                        data[x, y] = new Cell(raw.data[0].rowData[y].values[x]);
-                    }
-                    else
-                    {
-                        data[x, y] = Cell.Empty;
-                    }
+                        if (raw.data[0].rowData.Length > y && (raw.data[0].rowData[y].values?.Length ?? 0) > x)
+                        {
+                            data[x, y] = new Cell(raw.data[0].rowData[y].values[x]);
+                        }
+                        else
+                        {
+                            data[x, y] = Cell.Empty;
+                        }
                 }
             }
+
+
+            for (int y = Rows - 1; y >= 0; y--)
+            {
+                bool empty = true;
+                for (int x = 0; x < Columns; x++)
+                    empty = empty && (data[x, y].IsEmpty || string.IsNullOrWhiteSpace(data[x, y].Value));
+                if (empty)
+                    rows--;
+                else
+                    break;
+            }
+
+
         }
     }
 }

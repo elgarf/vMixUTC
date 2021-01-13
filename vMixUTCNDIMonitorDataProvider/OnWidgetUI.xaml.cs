@@ -24,8 +24,8 @@ namespace UTCNDIMonitorDataProvider
     {
         public OnWidgetUI()
         {
-            InitializeComponent();
-            //this.LoadViewFromUri("NdiMonitorDataProvider;component/OnWidgetUI.xaml");
+            //InitializeComponent();
+            this.LoadViewFromUri("NdiMonitorDataProvider;component/OnWidgetUI.xaml");
         }
         public void UpdatePreview(BitmapSource src)
         {
