@@ -468,7 +468,7 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>-->
                             <CompositeCollection>
-                                <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}}">
+                                <TextBox Style="{StaticResource WidgetTextBox}" Tag="IP" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
                                             <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
@@ -481,7 +481,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
-                                <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}}">
+                                <TextBox Style="{StaticResource WidgetTextBox}" Tag="Port" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
                                             <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
@@ -513,9 +513,11 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="Auto" MinWidth="64"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Slider Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="1" Maximum="5"/>
+                                    <Slider Value="{Binding WindowSettings.UIScale, Mode=TwoWay}" Minimum="0.5" Maximum="5"/>
                                     <TextBlock Grid.Column="1" Style="{StaticResource PropertyName}" Margin="{StaticResource LeftStdMargin}" Text="{Binding WindowSettings.UIScale, StringFormat=0.00}"/>
+                                    <Button Grid.Column="2" Padding="8,0" Command="{Binding ResetScalingCommand}">Reset</Button>
                                 </Grid>
                                 <CheckBox Tag="Open Last At Start" IsChecked="{Binding WindowSettings.OpenLastAtStart, Mode=TwoWay}"/>
                                 <CheckBox Tag="Is Topmost" IsChecked="{Binding WindowSettings.IsTopmost, Mode=TwoWay}"/>

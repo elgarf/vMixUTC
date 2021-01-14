@@ -482,8 +482,8 @@
         </ContentPresenter>
     </Grid>
 
-    <ComboBox IsEditable="{Binding IsEditable}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
-        <ComboBox.ItemTemplate>
+    <ctrls:ComboBox Style="{DynamicResource {x:Type ComboBox}}" IsEditable="{Binding IsEditable}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl"  Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+        <ctrls:ComboBox.ItemTemplate>
             <DataTemplate>
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
@@ -494,7 +494,7 @@
                     <TextBlock Margin="{Binding Converter={c:ListItemTagToThicknessConverter}}" Grid.Row="1" Text="{Binding Converter={c:ListItemTagConverter}}" TextTrimming="CharacterEllipsis"/>
                 </Grid>
             </DataTemplate>
-        </ComboBox.ItemTemplate>
+        </ctrls:ComboBox.ItemTemplate>
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="PreviewKeyUp">
                 <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -506,7 +506,7 @@
                 <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
-    </ComboBox>
+    </ctrls:ComboBox>
 
     <Grid x:Shared="false" x:Key="ScoreWidgetControl" Margin="{StaticResource StdMargin}">
         <Grid.ColumnDefinitions>
@@ -515,7 +515,8 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
-        <TextBox IsEnabled="{Binding IsEditable}" Grid.Column="1" Style="{StaticResource WidgetTextBox}" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+        <!--Style="{StaticResource WidgetTextBox}"-->
+        <toolkit:IntegerUpDown IsEnabled="{Binding IsEditable}" Style="{StaticResource WidgetIntegerUpDown}" Grid.Column="1" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -527,7 +528,7 @@
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </TextBox>
+        </toolkit:IntegerUpDown>
         <ContentPresenter Grid.Column="2" Content="{Binding}">
             <ContentPresenter.ContentTemplate>
                 <DataTemplate>

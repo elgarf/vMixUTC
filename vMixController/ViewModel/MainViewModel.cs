@@ -2113,6 +2113,25 @@ namespace vMixController.ViewModel
             }
         }
 
+        private RelayCommand _resetScalingCommand;
+
+        /// <summary>
+        /// Gets the ResetScalingCommand.
+        /// </summary>
+        public RelayCommand ResetScalingCommand
+        {
+            get
+            {
+                return _resetScalingCommand
+                    ?? (_resetScalingCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (WindowSettings != null)
+                            WindowSettings.UIScale = 1;
+                    }));
+            }
+        }
+
         DispatcherTimer _connectTimer = new DispatcherTimer();
 
         string _documentsPath;

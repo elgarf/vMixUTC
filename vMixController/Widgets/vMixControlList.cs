@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -61,6 +62,7 @@ namespace vMixController.Widgets
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(ObservableCollection<string>), typeof(vMixControlTextField), new PropertyMetadata(null));
 
+
         public Triple<string, string, bool> DataSource { get; set; }
 
         public override UserControl[] GetPropertiesControls()
@@ -90,8 +92,6 @@ namespace vMixController.Widgets
                 {
                     itemsList.Items.Add(new Classes.DummyStringProperty() { Value = item });
                 }
-
-
 
             return base.GetPropertiesControls().Concat(new UserControl[] { itemsList, dataSource }).ToArray();
             //return base.GetPropertiesControls().Concat(new UserControl[] { control }).ToArray(); ;
@@ -123,7 +123,8 @@ namespace vMixController.Widgets
             var tb = BindingOperations.GetBindingBase(this, TextProperty);
             BindingOperations.ClearBinding(this, TextProperty);
 
-            if (Items == null) Items = new ObservableCollection<string>();
+            if (Items == null)
+                Items = new ObservableCollection<string>();
 
             //Update Items instead of clearing
             var newItems = (_controls.OfType<ListControl>().First()).Items;
@@ -163,14 +164,19 @@ namespace vMixController.Widgets
             Binding b = new Binding(DataSource.B)
             {
                 Converter = new StringToCollectionConverter(),
-                Source = Singleton<SharedData>.Instance.GetDataSource(DataSource.A)
+                Source = Singleton<SharedData>.Instance.GetDataSource(DataSource.A),
+                NotifyOnTargetUpdated = true,
+                NotifyOnSourceUpdated = true
             };
             BindingOperations.SetBinding(this, ItemsProperty, b);
+            
+            
         }
 
         public vMixControlList()
         {
             Items = new ObservableCollection<string>();
         }
+
     }
 }

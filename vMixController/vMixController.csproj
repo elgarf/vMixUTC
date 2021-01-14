@@ -202,6 +202,7 @@
     <Compile Include="Classes\Utils.cs" />
     <Compile Include="Classes\vMixFunctionReference.cs" />
     <Compile Include="Classes\XmlDocumentMessenger.cs" />
+    <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\ReleaseButton.cs" />
     <Compile Include="Controls\TBarSlider.cs" />
     <Compile Include="Controls\TwoColumnGrid.cs" />

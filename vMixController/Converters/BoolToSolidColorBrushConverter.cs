@@ -22,7 +22,10 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value)
+            var t = (bool)value;
+            if (parameter != null)
+                t = !t;
+            if (t)
                 return new SolidColorBrush(Colors.Red);
             else
                 return new SolidColorBrush(Colors.SlateGray);
