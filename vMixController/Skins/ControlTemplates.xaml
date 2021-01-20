@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:cls="clr-namespace:vMixController.Classes"
+                    xmlns:cls="clr-namespace:vMixController.Classes"
         xmlns:c="clr-namespace:vMixController.Converters"
         xmlns:ctrls="clr-namespace:vMixController.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -361,7 +361,7 @@
                                 </i:Interaction.Triggers>
                             </CheckBox>
                         </StackPanel>
-                        <Slider Visibility="{Binding ShowSlider, Converter={wpfc:BoolToVisibilityConverter}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={c:LogarithmicConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
+                        <ctrls:VolumeSlider Style="{DynamicResource {x:Type Slider}}" Visibility="{Binding ShowSlider, Converter={wpfc:BoolToVisibilityConverter}}" TickPlacement="Both" Ticks="0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100" Minimum="0" Maximum="100" LargeChange="0.01" SmallChange="0.001" x:Name="Slider" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged, Converter={c:LogarithmicConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}" e:ThumbColorizer.Color="Red">
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewKeyUp">
@@ -373,8 +373,14 @@
                                 <i:EventTrigger EventName="LostFocus">
                                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
                                 </i:EventTrigger>
+                                <i:EventTrigger EventName="ThumbDragStarted">
+                                    <cmd:EventToCommand Command="{Binding DragStarted}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="ThumbDragCompleted">
+                                    <cmd:EventToCommand Command="{Binding DragCompleted}"/>
+                                </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </Slider>
+                        </ctrls:VolumeSlider>
                         <!--Left-->
                         <Border x:Name="Border" HorizontalAlignment="Stretch" Margin="1" Visibility="{Binding ShowMeters, Converter={wpfc:BoolToVisibilityConverter}}">
                             <Border.Tag>

@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="Me"
@@ -17,9 +18,11 @@
     <Grid Margin="{StaticResource StdMargin}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
-        <Border  BorderBrush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" VerticalAlignment="Center"  Grid.Column="1" BorderThickness="0,2,0,0"/>
+        <Control Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource HelpBorder}" ToolTip="{Binding Help, ElementName=Me}" Visibility="{Binding Help.Length, ElementName=Me, FallbackValue=0, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0}"/>
+        <Border  BorderBrush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" VerticalAlignment="Center"  Grid.Column="2" BorderThickness="0,2,0,0"/>
     </Grid>
 </UserControl>

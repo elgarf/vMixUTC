@@ -114,7 +114,8 @@ namespace vMixController.Widgets
                 GetPropertyControl<StringControl>(Type + "1"),
                 GetPropertyControl<StringControl>(Type + "2"),
                 GetPropertyControl<StringControl>(Type + "3"),
-                GetPropertyControl<StringControl>(Type + "4")
+                GetPropertyControl<StringControl>(Type + "4"),
+                GetPropertyControl<StringControl>(Type + "5"),
             };
 
 
@@ -125,6 +126,7 @@ namespace vMixController.Widgets
 
             var lbl = GetPropertyControl<LabelControl>();
             lbl.Title = "Events";
+            lbl.Help = "Execute ExecLink on corresponding event";
 
             links[0].Title = "On Start";
             links[0].Value = Links[0];
@@ -138,6 +140,8 @@ namespace vMixController.Widgets
             links[3].Title = "On Completion";
             links[3].Value = Links.Length > 3 ? Links[3] : "";
             //links[3].Tag = "3";
+            links[4].Title = "On Tick";
+            links[4].Value = Links.Length > 4 ? Links[4] : "";
             props.Insert(2, splittext);
             return props.Concat(new UserControl[] { formatString, lbl }.Union(links)).ToArray();
         }
@@ -151,6 +155,7 @@ namespace vMixController.Widgets
         private void Tick(TimeSpan e)
         {
             if (!Active) return;
+
             if (!Reverse)
             {
                 var t = Time.Add(e);
@@ -162,8 +167,10 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     GlobalTimer.WorkingTimers--;
-                    Messenger.Default.Send(new Pair<string, object>(Links[2], null));
-                    Messenger.Default.Send(new Pair<string, object>(Links[3], null));
+                    if (!string.IsNullOrWhiteSpace(Links[2]))
+                        Messenger.Default.Send(new Pair<string, object>(Links[2], null));
+                    if (!string.IsNullOrWhiteSpace(Links[3]))
+                        Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
             }
             else
@@ -177,10 +184,14 @@ namespace vMixController.Widgets
                     Paused = false;
                     Active = false;
                     GlobalTimer.WorkingTimers--;
-                    Messenger.Default.Send(new Pair<string, object>(Links[2], null));
-                    Messenger.Default.Send(new Pair<string, object>(Links[3], null));
+                    if (!string.IsNullOrWhiteSpace(Links[2]))
+                        Messenger.Default.Send(new Pair<string, object>(Links[2], null));
+                    if (!string.IsNullOrWhiteSpace(Links[3]))
+                        Messenger.Default.Send(new Pair<string, object>(Links[3], null));
                 }
             }
+            if (!string.IsNullOrWhiteSpace(Links[4]))
+                Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[4], null));
         }
 
         private void UpdateTimer()
@@ -556,7 +567,8 @@ namespace vMixController.Widgets
                                 Paused = false;
                                 Active = true;
                                 GlobalTimer.WorkingTimers++;
-                                Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
+                                if (!string.IsNullOrWhiteSpace(Links[0]))
+                                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 break;
                             case "Pause":
 
@@ -567,7 +579,8 @@ namespace vMixController.Widgets
                                         Paused = true;
                                         Active = false;
                                         GlobalTimer.WorkingTimers--;
-                                        Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[1], null));
+                                        if (!string.IsNullOrWhiteSpace(Links[1]))
+                                            Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[1], null));
                                     }
 
                                 }
@@ -576,7 +589,8 @@ namespace vMixController.Widgets
                                     Paused = false;
                                     Active = true;
                                     GlobalTimer.WorkingTimers++;
-                                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
+                                    if (!string.IsNullOrWhiteSpace(Links[0]))
+                                        Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[0], null));
                                 }
 
                                 break;
@@ -588,7 +602,8 @@ namespace vMixController.Widgets
                                 }
                                 Paused = false;
                                 UpdateTimer();
-                                Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
+                                if (!string.IsNullOrWhiteSpace(Links[2]))
+                                    Messenger.Default.Send<Pair<string, object>>(new Pair<string, object>(Links[2], null));
                                 break;
                             case "+1 Hour":
                                 Time = Time.Add(TimeSpan.FromHours(1));
@@ -625,8 +640,8 @@ namespace vMixController.Widgets
             base.SetProperties(_controls);
             Format = _controls.OfType<StringControl>().First().Value;
 
-            if (Links.Length < 4)
-                Links = new string[] { "", "", "", "" };
+            if (Links.Length < 5)
+                Links = new string[] { "", "", "", "", "" };
 
             SplitText = (_controls.Where(x => (x.Tag is string) &&  x.Tag.ToString() == Type + "BC").FirstOrDefault() as BoolControl).Value;
 
@@ -634,6 +649,7 @@ namespace vMixController.Widgets
             Links[1] = _controls.FindPropertyControl<StringControl>(Type + "2").Value;
             Links[2] = _controls.FindPropertyControl<StringControl>(Type + "3").Value;
             Links[3] = _controls.FindPropertyControl<StringControl>(Type + "4").Value;
+            Links[4] = _controls.FindPropertyControl<StringControl>(Type + "5").Value;
         }
 
         protected override void Dispose(bool managed)

@@ -2813,6 +2813,32 @@ namespace vMixController.ViewModel
         }
 
 
+        private RelayCommand<int> _editPageNameCommand;
+
+        /// <summary>
+        /// Gets the EditPagenameCommand.
+        /// </summary>
+        public RelayCommand<int> EditPageNameCommand
+        {
+            get
+            {
+                return _editPageNameCommand
+                    ?? (_editPageNameCommand = new RelayCommand<int>(
+                    p =>
+                    {
+                        //WindowSettings.Pages[p] = "PAGE 2";
+                        TextInputWindow ti = new TextInputWindow() { Text = WindowSettings.Pages[p] };
+                        IsHotkeysEnabled = false;
+                        if (ti.ShowDialog() ?? false)
+                        {
+                            WindowSettings.Pages[p] = ti.Text;
+                            WindowSettings.UpdatePages();
+                        }
+                        IsHotkeysEnabled = true;
+                    }));
+            }
+        }
+
         private RelayCommand _duplicateSelectedCommand;
 
         /// <summary>

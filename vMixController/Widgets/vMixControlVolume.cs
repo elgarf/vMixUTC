@@ -35,6 +35,8 @@ namespace vMixController.Widgets
         private static DateTime _previousQuery;
         private static uint _instances = 0;
         private bool _disposing = false;
+        private bool _updating = false;
+        private bool _dragging = false;
 
 
         public vMixControlVolume() : base()
@@ -53,7 +55,8 @@ namespace vMixController.Widgets
 
         private void UpdateVolumeByXPath(XmlDocument document)
         {
-            if (document == null) return;
+            if (document == null || _updating) return;
+            _updating = true;
             _previousQuery = DateTime.Now;
             XmlNode input = null;
             switch (Target)
@@ -68,7 +71,11 @@ namespace vMixController.Widgets
                 case "Bus F": input = document.SelectSingleNode("//audio/busF"); break;
                 case "Bus G": input = document.SelectSingleNode("//audio/busG"); break;
             }
-            if (input == null) return;
+            if (input == null)
+            {
+                _updating = false;
+                return;
+            }
 
             //Update all properties
 
@@ -82,14 +89,14 @@ namespace vMixController.Widgets
             {
                 F1 = Math.Pow(f1, 1 / 4d);
                 F2 = Math.Pow(f2, 1 / 4d);
-
-                if (!App.Current?.MainWindow?.IsActive ?? false)
+                if (!_dragging)
                 {
                     IsMuted = muted;
                     Value = volume;
                     AudioBusses = audiobusses;
                 }
             });
+            _updating = false;
         }
 
         /*private void _meterTimer_Tick(object sender, EventArgs e)
@@ -139,6 +146,44 @@ namespace vMixController.Widgets
                         var cb = ((CheckBox)args.Source);
                         UpdateBus(cb.IsChecked.Value, (string)cb.Tag);
                         return;
+                    }));
+            }
+        }
+
+        [NonSerialized]
+        private RelayCommand _dragStarted;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand DragStarted
+        {
+            get
+            {
+                return _dragStarted
+                    ?? (_dragStarted = new RelayCommand(
+                    () =>
+                    {
+                        _dragging = true;
+                    }));
+            }
+        }
+
+        [NonSerialized]
+        private RelayCommand _dragCompleted;
+
+        /// <summary>
+        /// Gets the DragCompleted.
+        /// </summary>
+        public RelayCommand DragCompleted
+        {
+            get
+            {
+                return _dragCompleted
+                    ?? (_dragCompleted = new RelayCommand(
+                    () =>
+                    {
+                        _dragging = false;
                     }));
             }
         }

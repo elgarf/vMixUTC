@@ -159,7 +159,7 @@
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61839;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="MoveToMenu" Tag="{Binding}" Header="Move To" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" ItemsSource="{StaticResource Pages}">
+                    <MenuItem x:Name="MoveToMenu" Tag="{Binding}" Header="Move To" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" ItemsSource="{Binding Source={StaticResource Locator}, Path=Main.WindowSettings.Pages}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xf061;</TextBlock>
                         </MenuItem.Icon>

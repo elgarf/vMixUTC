@@ -216,11 +216,13 @@
     <Compile Include="Controls\vMixPathSelector.xaml.cs">
       <DependentUpon>vMixPathSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VolumeSlider.cs" />
     <Compile Include="Converters\BitToVisibilityConverter.cs" />
     <Compile Include="Converters\AudiobusToBoolConverter.cs" />
     <Compile Include="Converters\AudiobusToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\BoolToOrientationConverter.cs" />
+    <Compile Include="Converters\StringListToStringConverter.cs" />
     <Compile Include="Converters\ColorsListToColorConverter.cs" />
     <Compile Include="Converters\ColorToBlackOrWhiteConverter.cs" />
     <Compile Include="Converters\ColorToDarkerSolidBrushConverter.cs" />
@@ -309,6 +311,9 @@
     </Compile>
     <Compile Include="PropertiesControls\TitleMappingControl.xaml.cs">
       <DependentUpon>TitleMappingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextInputWindow.xaml.cs">
+      <DependentUpon>TextInputWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\GlobalVariablesViewModel.cs" />
     <Compile Include="vMixControlUtils.cs" />
@@ -423,6 +428,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Skins\ControlTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TextInputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

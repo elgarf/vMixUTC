@@ -41,6 +41,14 @@ namespace vMixController.Classes
     public static class Utils
     {
 
+        public static string MAINPAGENAME = "MAIN";
+        public static string DATAPAGENAME = "DATA";
+        public static string PAGE1PAGENAME = "PAGE 1";
+        public static string PAGE2PAGENAME = "PAGE 2";
+        public static string PAGE3PAGENAME = "PAGE 3";
+        public static string PAGE4PAGENAME = "PAGE 4";
+        public static string PAGE5PAGENAME = "PAGE 5";
+
         public static bool GetBit(this byte byt, byte index)
         {
             if (index < 0 || index > 7)
@@ -117,6 +125,18 @@ namespace vMixController.Classes
                 s = new XmlSerializer(typeof(MainWindowSettings));
 
                 var settings = (MainWindowSettings)s.Deserialize(reader);
+
+                if (settings.Pages.Count != 7)
+                {
+                    settings.Pages.Clear();
+                    settings.Pages.Add(MAINPAGENAME);
+                    settings.Pages.Add(DATAPAGENAME);
+                    settings.Pages.Add(PAGE1PAGENAME);
+                    settings.Pages.Add(PAGE2PAGENAME);
+                    settings.Pages.Add(PAGE3PAGENAME);
+                    settings.Pages.Add(PAGE4PAGENAME);
+                    settings.Pages.Add(PAGE5PAGENAME);
+                }
 
                 windowSettings = settings;
 

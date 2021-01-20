@@ -16,11 +16,7 @@ namespace vMixController.Classes
 
         public MainWindowSettings()
         {
-            Pages.Add("Main");
-            Pages.Add("Data");
-            Pages.Add("Page 1");
-            Pages.Add("Page 2");
-            Pages.Add("Page 3");
+
         }
         /// <summary>
         /// The <see cref="State" /> property's name.
@@ -539,6 +535,11 @@ namespace vMixController.Classes
                 _pages = value;
                 RaisePropertyChanged(PagesPropertyName);
             }
+        }
+
+        public void UpdatePages()
+        {
+            RaisePropertyChanged(PagesPropertyName);
         }
 
     }
