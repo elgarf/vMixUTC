@@ -35,7 +35,7 @@ namespace vMixController.Widgets
         private static DateTime _previousQuery;
         private static uint _instances = 0;
         private bool _disposing = false;
-        private bool _updating = false;
+        //private bool _updating = false;
         private bool _dragging = false;
 
 

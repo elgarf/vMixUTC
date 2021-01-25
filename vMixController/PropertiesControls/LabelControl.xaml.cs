@@ -50,7 +50,7 @@ namespace vMixController.PropertiesControls
 
         // Using a DependencyProperty as the backing store for Help.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HelpProperty =
-            DependencyProperty.Register("Help", typeof(string), typeof(LabelControl), new PropertyMetadata(null));
+            DependencyProperty.Register("Help", typeof(string), typeof(LabelControl), new PropertyMetadata(""));
 
 
 

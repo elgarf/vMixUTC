@@ -95,20 +95,6 @@ namespace vMixController.Classes
                         {
                             _queries--;
                         }
-                        /*ServicePointManager.FindServicePoint(uri).ConnectionLimit = 10;
-
-                        try
-                        {
-                            var result = await _client.GetAsync(uri);
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(await result.Content.ReadAsStringAsync());
-                            _onDocumentDownloaded?.Invoke(doc, DateTime.Now);
-                            _queries--;
-                        }
-                        catch (Exception)
-                        {
-                            _queries--;
-                        }*/
                     }
                 });
 

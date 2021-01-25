@@ -674,7 +674,7 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Style="{StaticResource TitleButton}" Command="{Binding EditPageNameCommand}" CommandParameter="{Binding PageIndex}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
+                            <Button ToolTip="{e:Localize Rename Page}" Style="{StaticResource TitleButton}" Command="{Binding EditPageNameCommand}" CommandParameter="{Binding PageIndex}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}">
                                 <TextBlock FontFamily="/vMixControllerSkin;Component/#FontAwesome" Text="&#xf040;"/>
                             </Button>
                         </StackPanel>

@@ -6,20 +6,25 @@
         xmlns:local="clr-namespace:vMixController"
         mc:Ignorable="d"
         x:Name="Me"
-        Title="Input Page Name" Height="450" Width="600" ResizeMode="NoResize" WindowStyle="ToolWindow" SizeToContent="Height" Background="#1e2328" WindowStartupLocation="CenterScreen" Activated="Me_Activated">
+        Title="Input Request" Height="450" Width="600" SizeToContent="Height" Background="#1e2328" WindowStartupLocation="CenterScreen" Activated="Me_Activated" WindowStyle="None" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
     </Window.Resources>
-    <StackPanel Margin="4">
-        <TextBox x:Name="tb" Style="{StaticResource WidgetTextBox}" Text="{Binding Text, ElementName=Me}"/>
-        <Grid Margin="{StaticResource StdMargin}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Button IsCancel="True" Grid.Column="1" Margin="{StaticResource LeftRightStdMargin}">_Cancel</Button>
-            <Button IsDefault="True" Grid.Column="2" Click="Button_Click">_OK</Button>
-        </Grid>
-    </StackPanel>
+    <Border BorderThickness="2" BorderBrush="{StaticResource Main.Border}">
+        <StackPanel>
+            <Border Padding="4" Background="{StaticResource Main.Border}" Margin="0,0,0,4" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                <TextBlock Style="{StaticResource CaptionText}">Input Page Name</TextBlock>
+            </Border>
+            <TextBox Margin="{StaticResource StdMargin}" x:Name="tb" Style="{StaticResource WidgetTextBox}" Text="{Binding Text, ElementName=Me}"/>
+            <Grid Margin="{StaticResource StdMargin}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button IsCancel="True" Grid.Column="1" Margin="{StaticResource LeftRightStdMargin}">_Cancel</Button>
+                <Button IsDefault="True" Grid.Column="2" Click="Button_Click">_OK</Button>
+            </Grid>
+        </StackPanel>
+    </Border>
 </Window>

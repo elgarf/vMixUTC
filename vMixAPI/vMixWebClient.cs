@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -9,6 +10,8 @@ namespace vMixAPI
 {
     public class vMixWebClient : WebClient
     {
+        public static int _requests = 0;
+
         public int Timeout { get; set; }
 
         public vMixWebClient()
@@ -22,7 +25,14 @@ namespace vMixAPI
             WebRequest webRequest = base.GetWebRequest(address);
             ((HttpWebRequest)webRequest).KeepAlive = false;
             webRequest.Timeout = Timeout;
+            Debug.WriteLine(++_requests);
             return webRequest;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Debug.WriteLine(--_requests);
+            base.Dispose(disposing);
         }
     }
 }

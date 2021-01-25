@@ -21,8 +21,8 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,8,0"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
-        <Control Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource HelpBorder}" ToolTip="{Binding Help, ElementName=Me}" Visibility="{Binding Help.Length, ElementName=Me, FallbackValue=0, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0}"/>
+        <TextBlock Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,4,0"><Run Text="{Binding Title, ElementName=Me}"/></TextBlock>
+        <Control Margin="4,0" Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource HelpBorder}" ToolTip="{Binding Help, ElementName=Me}" Visibility="{Binding Help.Length, ElementName=Me, FallbackValue=0, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0}"/>
         <Border  BorderBrush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" VerticalAlignment="Center"  Grid.Column="2" BorderThickness="0,2,0,0"/>
     </Grid>
 </UserControl>

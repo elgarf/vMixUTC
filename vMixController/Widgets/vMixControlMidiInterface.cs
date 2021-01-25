@@ -201,7 +201,7 @@ namespace vMixController.Widgets
                         return Device;
                 return null;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Device;
             }

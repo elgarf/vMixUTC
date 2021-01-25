@@ -67,5 +67,10 @@ namespace vMixController
             tb.Focus();
             tb.SelectAll();
         }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }
