@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixController", "vMixController\vMixController.csproj", "{84AB3528-B120-4E4F-AB37-223475747FA8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -33,8 +33,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Providers", "Data Prov
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonDataProvider", "JsonDataProvider\JsonDataProvider.csproj", "{09761118-8D8D-462C-A841-6D6B84986EB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCalc", "ncalc\Evaluant.Calculator\NCalc.csproj", "{E70A0B09-F339-44F6-9551-A38565748904}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighPrecisionTimer", "HighPrecisionTimer\HighPrecisionTimer.csproj", "{F67353D6-1E54-4B18-9BF2-53DD27867983}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}"
@@ -42,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSheetsProvider", "UTCGoogleSheetsDataProvider\GoogleSheetsProvider.csproj", "{E05F35A3-085F-4FA2-B602-CBE0BE5F84C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Popcron.Sheets", "Popcron.Sheets\Popcron.Sheets.csproj", "{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCalc", "..\ncalc\Evaluant.Calculator\NCalc.csproj", "{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -173,18 +173,6 @@ Global
 		{09761118-8D8D-462C-A841-6D6B84986EB1}.Release|x64.Build.0 = Release|Any CPU
 		{09761118-8D8D-462C-A841-6D6B84986EB1}.Release|x86.ActiveCfg = Release|Any CPU
 		{09761118-8D8D-462C-A841-6D6B84986EB1}.Release|x86.Build.0 = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|x64.Build.0 = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Debug|x86.Build.0 = Debug|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|x64.ActiveCfg = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|x64.Build.0 = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|x86.ActiveCfg = Release|Any CPU
-		{E70A0B09-F339-44F6-9551-A38565748904}.Release|x86.Build.0 = Release|Any CPU
 		{F67353D6-1E54-4B18-9BF2-53DD27867983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F67353D6-1E54-4B18-9BF2-53DD27867983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F67353D6-1E54-4B18-9BF2-53DD27867983}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -221,6 +209,18 @@ Global
 		{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}.Release|x64.Build.0 = Release|Any CPU
 		{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}.Release|x86.ActiveCfg = Release|Any CPU
 		{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}.Release|x86.Build.0 = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|x64.Build.0 = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Debug|x86.Build.0 = Debug|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|x64.ActiveCfg = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|x64.Build.0 = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|x86.ActiveCfg = Release|Any CPU
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -233,12 +233,15 @@ Global
 		{7195BFA6-8095-4618-96F6-8577DB13FB43} = {E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}
 		{5688C574-EE3C-46FA-A07A-929911663DBA} = {3F500D83-895F-4D44-9CA7-251D4B17B6FE}
 		{09761118-8D8D-462C-A841-6D6B84986EB1} = {3F500D83-895F-4D44-9CA7-251D4B17B6FE}
-		{E70A0B09-F339-44F6-9551-A38565748904} = {E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}
 		{F67353D6-1E54-4B18-9BF2-53DD27867983} = {E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}
 		{E05F35A3-085F-4FA2-B602-CBE0BE5F84C2} = {3F500D83-895F-4D44-9CA7-251D4B17B6FE}
 		{C16DECA7-0A86-4285-9B3A-99DFD499B4FD} = {E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}
+		{252E5F34-FA82-488A-939D-EF8DDAAB7D2A} = {E322E6DA-3818-4CBD-A2F6-A94D6C8393BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8B4D40E3-FBA6-430B-9834-FFFAFAE95B36}
+		SolutionGuid = {27068E02-1682-44D7-819A-74759A261167}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = NCalc.vsmdi
 	EndGlobalSection
 EndGlobal

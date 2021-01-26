@@ -2255,6 +2255,18 @@ namespace vMixController.ViewModel
                 _windowSettings = new MainWindowSettings();
             }
 
+            if (_windowSettings.Pages.Count != 7)
+            {
+                _windowSettings.Pages.Clear();
+                _windowSettings.Pages.Add(Utils.MAINPAGENAME);
+                _windowSettings.Pages.Add(Utils.DATAPAGENAME);
+                _windowSettings.Pages.Add(Utils.PAGE1PAGENAME);
+                _windowSettings.Pages.Add(Utils.PAGE2PAGENAME);
+                _windowSettings.Pages.Add(Utils.PAGE3PAGENAME);
+                _windowSettings.Pages.Add(Utils.PAGE4PAGENAME);
+                _windowSettings.Pages.Add(Utils.PAGE5PAGENAME);
+            }
+
             try
             {
                 _logger.Info("Loading variables.");

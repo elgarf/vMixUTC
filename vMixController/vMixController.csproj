@@ -140,9 +140,9 @@
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
@@ -547,13 +547,13 @@
     <Folder Include="Design\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ncalc\Evaluant.Calculator\NCalc.csproj">
+      <Project>{252e5f34-fa82-488a-939d-ef8ddaab7d2a}</Project>
+      <Name>NCalc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HighPrecisionTimer\HighPrecisionTimer.csproj">
       <Project>{f67353d6-1e54-4b18-9bf2-53dd27867983}</Project>
       <Name>HighPrecisionTimer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ncalc\Evaluant.Calculator\NCalc.csproj">
-      <Project>{e70a0b09-f339-44f6-9551-a38565748904}</Project>
-      <Name>NCalc</Name>
     </ProjectReference>
     <ProjectReference Include="..\NDILibDotNet2\NDILibDotNet2.csproj">
       <Project>{7195bfa6-8095-4618-96f6-8577db13fb43}</Project>

@@ -33,7 +33,8 @@ namespace vMixController
 
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
-            _logger.Error(e.Exception, "First Chance exception.");
+            if (e.Exception.Source != "mscorlib")
+                _logger.Error(e.Exception, "First Chance exception.");
         }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

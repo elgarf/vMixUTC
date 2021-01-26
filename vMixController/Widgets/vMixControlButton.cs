@@ -27,7 +27,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using Microsoft.Windows.Themes;
 using System.Xml.XPath;
 using System.IO.Pipes;
 using System.Reflection;
