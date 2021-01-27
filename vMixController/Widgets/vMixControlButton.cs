@@ -1251,7 +1251,7 @@ namespace vMixController.Widgets
                         var key = Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher);
 
                         var input = state.Inputs.Where(x => x.Key == key).FirstOrDefault()?.Number;
-                        var command = string.Format(cmd.Action.FormatString, key, CalculateExpression<int>(cmd.Parameter), Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
+                        var command = string.Format(cmd.Action.FormatString, key, CalculateExpression<int>(cmd.Parameter), System.Web.HttpUtility.UrlEncode(Convert.ToString(Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), CultureInfo.InvariantCulture)), CalculateExpression<int>(cmd.Parameter) - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
 
                         if (!cmd.Action.StateDirect)
                             AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false, timeout: cmd.Action.Timeout), _pointer + 1);
