@@ -21,7 +21,8 @@ namespace vMixController.Widgets
     {
         static long _workingTimers = 0;
         static Stopwatch _stopwatch = new Stopwatch();
-        static TimeSpan _second = TimeSpan.FromSeconds(1);
+        static TimeSpan _second = TimeSpan.FromSeconds(1/10f);
+        static double _tickSecond = 0;
 
         public static long WorkingTimers
         {
@@ -49,7 +50,7 @@ namespace vMixController.Widgets
         static GlobalTimer()
         {
 
-            _mtimer.Interval = 1000;
+            _mtimer.Interval = (int)_second.TotalMilliseconds;
             _mtimer.Resolution = 10;
             _mtimer.Elapsed += _mtimer_Elapsed;
         }
@@ -58,6 +59,13 @@ namespace vMixController.Widgets
         {
             _stopwatch.Stop();
             Messenger.Default.Send(_second);
+            _tickSecond += _second.TotalMilliseconds;
+            if (_tickSecond > 950)
+            {
+                Messenger.Default.Send(TimeSpan.FromMilliseconds(_tickSecond));
+                _tickSecond = 0;
+            }
+            
             Debug.WriteLine(_stopwatch.Elapsed);
             _stopwatch.Restart();
         }
@@ -78,7 +86,14 @@ namespace vMixController.Widgets
             {
                 Dispatcher.Invoke(() =>
                 {
-                    Tick(t);
+                    if (IsHighPrecision)
+                    {
+                        if (t.TotalMilliseconds < 900)
+                            Tick(t);
+                    }
+                    else if (t.TotalMilliseconds > 950)
+                        Tick(t);
+
                 });
 
             });
@@ -124,6 +139,11 @@ namespace vMixController.Widgets
             splittext.Help = "Split text by chars: if your text is 11:22, you will get 1|1|:|2|2. \nUseful for creating animated timers.";
             splittext.Value = SplitText;
 
+            var highpc = GetPropertyControl<BoolControl>(Type + "HPC");
+            highpc.Title = "High Precision";
+            highpc.Help = "1/10 millisecond";
+            highpc.Value = IsHighPrecision;
+
             var lbl = GetPropertyControl<LabelControl>();
             lbl.Title = "Events";
             lbl.Help = "Execute ExecLink on corresponding event";
@@ -143,7 +163,7 @@ namespace vMixController.Widgets
             links[4].Title = "On Tick";
             links[4].Value = Links.Length > 4 ? Links[4] : "";
             props.Insert(2, splittext);
-            return props.Concat(new UserControl[] { formatString, lbl }.Union(links)).ToArray();
+            return props.Concat(new UserControl[] { highpc, formatString, lbl }.Union(links)).ToArray();
         }
 
         /*private void _timer_Tick(object sender, EventArgs e)
@@ -232,6 +252,36 @@ namespace vMixController.Widgets
 
                 _splitText = value;
                 RaisePropertyChanged(SplitTextPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="IsHighPrecision" /> property's name.
+        /// </summary>
+        public const string IsHighPrecisionPropertyName = "IsHighPrecision";
+
+        private bool _isHighPrecision = false;
+
+        /// <summary>
+        /// Sets and gets the IsHighPrecision property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsHighPrecision
+        {
+            get
+            {
+                return _isHighPrecision;
+            }
+
+            set
+            {
+                if (_isHighPrecision == value)
+                {
+                    return;
+                }
+
+                _isHighPrecision = value;
+                RaisePropertyChanged(IsHighPrecisionPropertyName);
             }
         }
 
@@ -644,6 +694,7 @@ namespace vMixController.Widgets
                 Links = new string[] { "", "", "", "", "" };
 
             SplitText = (_controls.Where(x => (x.Tag is string) &&  x.Tag.ToString() == Type + "BC").FirstOrDefault() as BoolControl).Value;
+            IsHighPrecision = (_controls.Where(x => (x.Tag is string) && x.Tag.ToString() == Type + "HPC").FirstOrDefault() as BoolControl).Value;
 
             Links[0] = _controls.FindPropertyControl<StringControl>(Type + "1").Value;
             Links[1] = _controls.FindPropertyControl<StringControl>(Type + "2").Value;

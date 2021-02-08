@@ -159,7 +159,7 @@
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#61839;</TextBlock>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="MoveToMenu" Tag="{Binding}" Header="Move To" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" ItemsSource="{Binding Source={StaticResource Locator}, Path=Main.WindowSettings.Pages}">
+                    <MenuItem x:Name="MoveToMenu" Tag="{Binding}" Header="Move To" IsEnabled="{Binding Control.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" ItemsSource="{StaticResource Pages}">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="/vMixControllerSkin;Component/#Material Design Icons">&#xf061;</TextBlock>
                         </MenuItem.Icon>
@@ -170,6 +170,14 @@
                                         <cls:ControlIntParameter A="{Binding Tag, Source={StaticResource ControlHandler}}" B=""/>
                                     </Setter.Value>
                                 </Setter>-->
+                                <Setter Property="Header">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{conv:StringListToStringConverter}">
+                                            <Binding Source="{StaticResource Locator}" Path="Main.WindowSettings.Pages"/>
+                                            <Binding Converter="{conv:ObjectToIndexConverter}" ConverterParameter="{StaticResource Pages}"/>
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
                                 <Setter Property="Command" Value="{Binding Tag.MoveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}}"/>
                                 <Setter Property="CommandParameter">
                                     <Setter.Value>

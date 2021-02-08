@@ -682,7 +682,7 @@
         </Grid.ColumnDefinitions>
         <skin:PropertiesListView Grid.ColumnSpan="3">
             <CompositeCollection>
-                <toolkit:TimeSpanUpDown Tag="Default Time" FontWeight="Normal" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
+                <toolkit:TimeSpanUpDown FractionalSecondsDigitsCount="{Binding IsHighPrecision}" Tag="Default Time" FontWeight="Normal" Style="{StaticResource WidgetTimeSpanUpDown}" Minimum="0" Grid.Row="2" Value="{Binding DefaultTime, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}" ext:FocusExtension.IsFocused="{Binding IsFocused}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewKeyUp">
                             <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -696,7 +696,7 @@
                     </i:Interaction.Triggers>
                 </toolkit:TimeSpanUpDown>
                 <Grid IsEnabled="{Binding IsEditable}" Tag="Current Time" Grid.Row="2" Grid.Column="1">
-                    <toolkit:TimeSpanUpDown Style="{StaticResource WidgetTimeSpanUpDown}" FontWeight="Normal" Minimum="0" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}">
+                    <toolkit:TimeSpanUpDown FractionalSecondsDigitsCount="{Binding IsHighPrecision}" Style="{StaticResource WidgetTimeSpanUpDown}" FontWeight="Normal" Minimum="0" Value="{Binding Time, Mode=TwoWay}" IsEnabled="{Binding Active, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyUp">
                                 <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
