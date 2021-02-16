@@ -1399,17 +1399,20 @@
   <vMixFunctionReference>
     <Description></Description>
     <Function>StartCountdown</Function>
-    <FormatString>Function=StartCountdown&amp;Input={0}</FormatString>
+    <FormatString>Function=StartCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Stop and Reset Countdown</Description>
     <Function>StopCountdown</Function>
-    <FormatString>Function=StopCountdown&amp;Input={0}</FormatString>
+    <FormatString>Function=StopCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Pause Countdown Only</Description>
     <Function>SuspendCountdown</Function>
-    <FormatString>Function=SuspendCountdown&amp;Input={0}</FormatString>
+    <FormatString>Function=SuspendCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Function>TitleBeginAnimation</Function>
