@@ -1270,14 +1270,16 @@
   <vMixFunctionReference>
     <Description>Seconds to add or subtract from current Countdown time</Description>
     <Function>AdjustCountdown</Function>
-    <FormatString>Function=AdjustCountdown&amp;Value={1}&amp;Input={0}</FormatString>
+    <FormatString>Function=AdjustCountdown&amp;Value={1}&amp;Input={0}&amp;SelectedIndex={2}</FormatString>
     <IntDescription>Seconds</IntDescription>
+    <StringDescription>Index</StringDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change countdown time according to Value as hh:mm:ss (00:00:00)</Description>
     <Function>ChangeCountdown</Function>
-    <FormatString>Function=ChangeCountdown&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=ChangeCountdown&amp;Value={2}&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <StringDescription>Time</StringDescription>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -1288,7 +1290,8 @@
   <vMixFunctionReference>
     <Description>Pause or Resume Countdown or if complete, Start from beginning.</Description>
     <Function>PauseCountdown</Function>
-    <FormatString>Function=PauseCountdown&amp;Input={0}</FormatString>
+    <FormatString>Function=PauseCountdown&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
 
   <vMixFunctionReference>
@@ -1317,8 +1320,9 @@
   <vMixFunctionReference>
     <Description>Set countdown duration according to Value as hh:mm:ss (00:00:00)</Description>
     <Function>SetCountdown</Function>
-    <FormatString>Function=SetCountdown&amp;Value={2}&amp;Input={0}</FormatString>
+    <FormatString>Function=SetCountdown&amp;Value={2}&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
     <StringDescription>Duration</StringDescription>
+    <IntDescription>Index</IntDescription>
   </vMixFunctionReference>
   <vMixFunctionReference>
     <Description>Change Image in Title according to Filename or empty to clear.</Description>
