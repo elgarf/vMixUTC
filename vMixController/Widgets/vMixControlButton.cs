@@ -1157,7 +1157,16 @@ namespace vMixController.Widgets
                             case NativeFunctions.TIMER:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
                                 AddLog("{2}) TIMER {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
-                                Thread.Sleep(parameter);
+                                while (parameter > 0)
+                                {
+                                    if (_stopThread)
+                                    {
+                                        BlinkBorderColor = BorderColor;
+                                        return;
+                                    }
+                                    Thread.Sleep(parameter > 10 ? 10 : parameter);
+                                    parameter -= parameter > 10 ? 10 : parameter;
+                                }
                                 break;
                             case NativeFunctions.UPDATESTATE:
                             case NativeFunctions.SYNC:
