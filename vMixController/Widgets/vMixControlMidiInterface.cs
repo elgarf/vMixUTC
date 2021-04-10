@@ -3,6 +3,7 @@ using Sanford.Multimedia.Midi;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,21 +53,13 @@ namespace vMixController.Widgets
         {
             get
             {
-                if (_midiDevices == null)
-                {
-                    //Melanchall.DryWetMidi.Devices.InputDevice.
 
-                    _midiDevices = new string[InputDevice.DeviceCount];
-                    for (int i = 0; i < _midiDevices.Length; i++)
-                        _midiDevices[i] = InputDevice.GetDeviceCapabilities(i).name;
-                }
-
-                return _midiDevices;
+                return Melanchall.DryWetMidi.Devices.InputDevice.GetAll().Select(x => x.Name).ToArray();
             }
         }
 
         [XmlIgnore]
-        public InputDevice Device { get; set; }
+        public Melanchall.DryWetMidi.Devices.InputDevice Device { get; set; }
 
 
         /// <summary>
@@ -126,7 +119,10 @@ namespace vMixController.Widgets
 
                 if (Device != null)
                 {
-                    Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                    //Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                    Device.EventReceived -= Device_EventReceived;
+                    if (Device.IsListeningForEvents)
+                        Device.StopEventsListening();
                     Device.Reset();
                     Device.Dispose();
                     Device = null;
@@ -155,7 +151,8 @@ namespace vMixController.Widgets
                 _midiDeviceName = value;
                 if (Device != null)
                 {
-                    Device.Close();
+                    //Device.Close();
+                    Device.Reset();
                     Device.Dispose();
                     Device = null;
                 }
@@ -165,39 +162,72 @@ namespace vMixController.Widgets
                 if (Device != null)
                 {
                     Device.Reset();
-                    Device.StartRecording();
-                    Device.ChannelMessageReceived += Device_ChannelMessageReceived;
-
+                    Device.EventReceived += Device_EventReceived;
+                    Device.StartEventsListening();
                 }
             }
+        }
+
+        private void Device_EventReceived(object sender, Melanchall.DryWetMidi.Devices.MidiEventReceivedEventArgs e)
+        {
+
+            Dispatcher.Invoke(() =>
+            {
+                foreach (var item in Midis)
+                {
+                    switch (e.Event.EventType)
+                    {
+
+                        case Melanchall.DryWetMidi.Core.MidiEventType.NoteOff:
+                        case Melanchall.DryWetMidi.Core.MidiEventType.NoteOn:
+                        case Melanchall.DryWetMidi.Core.MidiEventType.NoteAftertouch:
+                            var note = (e.Event as Melanchall.DryWetMidi.Core.NoteEvent);
+                            if (note.Channel == item.A && item.B == note.NoteNumber)
+                                Messenger.Default.Send(new Pair<string, object>(item.C, (byte)note.Velocity));
+                            break;
+                        case Melanchall.DryWetMidi.Core.MidiEventType.ControlChange:
+                            var cc = (e.Event as Melanchall.DryWetMidi.Core.ControlChangeEvent);
+                            if (cc.Channel == item.A && item.B == cc.ControlNumber)
+                                Messenger.Default.Send(new Pair<string, object>(item.C, (byte)cc.ControlValue));
+                            break;
+                        case Melanchall.DryWetMidi.Core.MidiEventType.ProgramChange:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+
+                /*if (e.Message.MidiChannel == item.A && e.Message.Data1 == item.B && e.Message.Command == item.D)
+                    Messenger.Default.Send(new Pair<string, object>(item.C, e.Message.Data2));*/
         }
 
         private void Device_ChannelMessageReceived(object sender, ChannelMessageEventArgs e)
         {
             
-            foreach (var item in Midis)
+            /*foreach (var item in Midis)
             {
                 if (e.Message.MidiChannel == item.A && e.Message.Data1 == item.B && e.Message.Command == item.D)
                     Messenger.Default.Send(new Pair<string, object>(item.C, e.Message.Data2));
-            }
+            }*/
         }
 
-        private InputDevice CreateDeviceByName(string name)
+        private Melanchall.DryWetMidi.Devices.InputDevice CreateDeviceByName(string name)
         {
             try
             {
                 var deviceNumber = MidiDevices.Select((obj, idx) => new { obj, idx }).Where(x => x.obj == name).FirstOrDefault();
 
                 if (deviceNumber != null)
-                    if (Device?.DeviceID != deviceNumber.idx)
+                    if (Device?.Id != deviceNumber.idx)
                     {
                         if (Device != null)
                         {
-                            Device.Close();
+                            Device.Reset();
                             Device.Dispose();
                         }
 
-                        return new InputDevice(deviceNumber.idx);
+                        return Melanchall.DryWetMidi.Devices.InputDevice.GetById(deviceNumber.idx);//new InputDevice(deviceNumber.idx);
                     }
                     else
                         return Device;
@@ -228,8 +258,9 @@ namespace vMixController.Widgets
             if (Device != null)
             {
                 Device.Reset();
-                Device.StartRecording();
-                Device.ChannelMessageReceived += Device_ChannelMessageReceived;
+                if (!Device.IsListeningForEvents)
+                    Device.StartEventsListening();//StartRecording();
+                Device.EventReceived += Device_EventReceived;
 
             }
 
@@ -301,9 +332,12 @@ namespace vMixController.Widgets
             {
                 if (Device != null)
                 {
-                    Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                    //Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                    Device.EventReceived -= Device_EventReceived;
+                    if (Device.IsListeningForEvents)
+                        Device.StopEventsListening();
                     Device.Reset();
-                    Device.Close();
+                    //Device.Close();
                     Device.Dispose();
                 }
                 base.Dispose(managed);
@@ -312,7 +346,7 @@ namespace vMixController.Widgets
         }
     }
 
-    public class MidiInterfaceKey : Quadriple<int, int, string, Sanford.Multimedia.Midi.ChannelCommand>
+    public class MidiInterfaceKey : Quadriple<int, int, string, /*Sanford.Multimedia.Midi.ChannelCommand*/Melanchall.DryWetMidi.Core.MidiEventType>
     {
 
     }

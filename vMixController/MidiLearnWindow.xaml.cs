@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace vMixController
     /// </summary>
     public partial class MidiLearnWindow : Window
     {
-        private Sanford.Multimedia.Midi.InputDevice _device;
+        private Melanchall.DryWetMidi.Devices.InputDevice _device;//Sanford.Multimedia.Midi.InputDevice _device;
         private bool _doNotDispose;
 
         public Widgets.MidiInterfaceKey Key { get; set; }
@@ -31,23 +32,58 @@ namespace vMixController
             Activate();
         }
 
-        public MidiLearnWindow(Sanford.Multimedia.Midi.InputDevice device, bool doNotDispose = true)
+        public MidiLearnWindow(Melanchall.DryWetMidi.Devices.InputDevice device, bool doNotDispose = true)
         {
             InitializeComponent();
             _doNotDispose = doNotDispose;
             if (device != null)
             {
                 _device = device;
-                _device.ChannelMessageReceived += Device_ChannelMessageReceived;
-                _device.Reset();
-                _device.StartRecording();
+                //_device.ChannelMessageReceived += Device_ChannelMessageReceived;
+                //_device.Reset();
+                if (!_device.IsListeningForEvents)
+                    _device.StartEventsListening();
+                _device.EventReceived += _device_EventReceived;
             }
+        }
+
+        private void _device_EventReceived(object sender, Melanchall.DryWetMidi.Devices.MidiEventReceivedEventArgs e)
+        {
+            Debug.WriteLine(e.Event.ToString());
+            int A = 0;
+            int B = 0;
+            switch (e.Event.EventType)
+            {
+                case Melanchall.DryWetMidi.Core.MidiEventType.NoteOff:
+                case Melanchall.DryWetMidi.Core.MidiEventType.NoteOn:
+                case Melanchall.DryWetMidi.Core.MidiEventType.NoteAftertouch:
+                    var note = (Melanchall.DryWetMidi.Core.NoteEvent)e.Event;
+                    A = note.Channel;
+                    B = note.NoteNumber;
+                    break;
+                case Melanchall.DryWetMidi.Core.MidiEventType.ControlChange:
+                    var control = (Melanchall.DryWetMidi.Core.ControlChangeEvent)e.Event;
+                    A = control.Channel;
+                    B = control.ControlNumber;
+                    break;
+
+                default:
+                    break;
+            }
+            Dispatcher.Invoke(() => Key = new Widgets.MidiInterfaceKey() { A = A, B = B, D = e.Event.EventType });
+            try
+            {
+                Dispatcher.Invoke(() => DialogResult = true);
+            }
+            catch (Exception) { }
+            //throw new NotImplementedException();
         }
 
         private void Device_ChannelMessageReceived(object sender, Sanford.Multimedia.Midi.ChannelMessageEventArgs e)
         {
             //Data1 = control
-            Key = new Widgets.MidiInterfaceKey() { A = e.Message.MidiChannel, B = e.Message.Data1, D = e.Message.Command };
+
+            //Key = new Widgets.MidiInterfaceKey() { A = e.Message.MidiChannel, B = e.Message.Data1, D = e.Message.Command };
             try
             {
                 DialogResult = true;
@@ -55,7 +91,7 @@ namespace vMixController
             catch (Exception) { }
         }
 
-        
+
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
@@ -66,7 +102,8 @@ namespace vMixController
         {
             if (_device != null)
             {
-                _device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                //_device.ChannelMessageReceived -= Device_ChannelMessageReceived;
+                _device.EventReceived -= _device_EventReceived;
                 if (!_doNotDispose)
                 {
                     _device.Reset();

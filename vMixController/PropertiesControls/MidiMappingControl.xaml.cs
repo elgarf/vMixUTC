@@ -94,7 +94,7 @@ namespace vMixController.PropertiesControls
                     ?? (_addPathCommand = new RelayCommand(
                     () =>
                     {
-                        Midis.Add(new Widgets.MidiInterfaceKey() { A = -1, B = -1, C = "", D = Sanford.Multimedia.Midi.ChannelCommand.Controller });
+                        Midis.Add(new Widgets.MidiInterfaceKey() { A = -1, B = -1, C = "", D = Melanchall.DryWetMidi.Core.MidiEventType.ControlChange });//Sanford.Multimedia.Midi.ChannelCommand.Controller });
                     }));
             }
         }

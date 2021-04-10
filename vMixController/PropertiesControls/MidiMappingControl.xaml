@@ -7,6 +7,7 @@
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:sanford="clr-namespace:Sanford.Multimedia.Midi;assembly=Sanford.Multimedia.Midi"
+             xmlns:midi="clr-namespace:Melanchall.DryWetMidi.Core;assembly=Melanchall.DryWetMidi"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="496"
@@ -18,7 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
             <ObjectDataProvider x:Key="MidiValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="sanford:ChannelCommand"/>
+                    <x:Type TypeName="midi:MidiEventType"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             <this:Help x:Key="Help"/>
@@ -61,7 +62,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="{e:Localize Control}" Width="50">
+                            <GridViewColumn Header="{e:Localize Control/Note}" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding B}" Margin="-5,0"/>
