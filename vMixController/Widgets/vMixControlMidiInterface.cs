@@ -191,8 +191,17 @@ namespace vMixController.Widgets
                                 Messenger.Default.Send(new Pair<string, object>(item.C, (byte)cc.ControlValue));
                             break;
                         case Melanchall.DryWetMidi.Core.MidiEventType.ProgramChange:
+                            var pc = (e.Event as Melanchall.DryWetMidi.Core.ProgramChangeEvent);
+                            if (pc.Channel == item.A)
+                                Messenger.Default.Send(new Pair<string, object>(item.C, (byte)pc.ProgramNumber));
+                            break;
+                        case Melanchall.DryWetMidi.Core.MidiEventType.PitchBend:
+                            var pb = (e.Event as Melanchall.DryWetMidi.Core.PitchBendEvent);
+                            if (pb.Channel == item.A)
+                                Messenger.Default.Send(new Pair<string, object>(item.C, (byte)pb.PitchValue));
                             break;
                         default:
+                            
                             break;
                     }
                 }

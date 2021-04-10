@@ -50,8 +50,8 @@ namespace vMixController
         private void _device_EventReceived(object sender, Melanchall.DryWetMidi.Devices.MidiEventReceivedEventArgs e)
         {
             Debug.WriteLine(e.Event.ToString());
-            int A = 0;
-            int B = 0;
+            int A = -1;
+            int B = -1;
             switch (e.Event.EventType)
             {
                 case Melanchall.DryWetMidi.Core.MidiEventType.NoteOff:
@@ -66,8 +66,17 @@ namespace vMixController
                     A = control.Channel;
                     B = control.ControlNumber;
                     break;
-
+                case Melanchall.DryWetMidi.Core.MidiEventType.ProgramChange:
+                    var pc = (Melanchall.DryWetMidi.Core.ChannelEvent)e.Event;
+                    A = pc.Channel;
+                    B = -1;
+                    break;
+                case Melanchall.DryWetMidi.Core.MidiEventType.PitchBend:
+                    var pb = (Melanchall.DryWetMidi.Core.PitchBendEvent)e.Event;
+                    A = pb.Channel;
+                    break;
                 default:
+                    //B = mm.;
                     break;
             }
             Dispatcher.Invoke(() => Key = new Widgets.MidiInterfaceKey() { A = A, B = B, D = e.Event.EventType });
