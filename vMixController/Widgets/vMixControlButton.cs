@@ -1157,6 +1157,7 @@ namespace vMixController.Widgets
                             case NativeFunctions.TIMER:
                                 parameter = CalculateExpression<int>(cmd.Parameter);
                                 AddLog("{2}) TIMER {0} [{1}]", cmd.Parameter, parameter, _pointer + 1);
+                                var bs = DateTime.Now;
                                 while (parameter > 0)
                                 {
                                     if (_stopThread)
@@ -1167,6 +1168,7 @@ namespace vMixController.Widgets
                                     Thread.Sleep(parameter > 10 ? 10 : parameter);
                                     parameter -= parameter > 10 ? 10 : parameter;
                                 }
+                                AddLog("{1}) TIMER СOMPLETED IN {0}ms", (DateTime.Now - bs).TotalMilliseconds, _pointer + 1);
                                 break;
                             case NativeFunctions.UPDATESTATE:
                             case NativeFunctions.SYNC:

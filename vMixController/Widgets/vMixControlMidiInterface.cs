@@ -54,6 +54,8 @@ namespace vMixController.Widgets
             {
                 if (_midiDevices == null)
                 {
+                    //Melanchall.DryWetMidi.Devices.InputDevice.
+
                     _midiDevices = new string[InputDevice.DeviceCount];
                     for (int i = 0; i < _midiDevices.Length; i++)
                         _midiDevices[i] = InputDevice.GetDeviceCapabilities(i).name;
@@ -301,6 +303,7 @@ namespace vMixController.Widgets
                 {
                     Device.ChannelMessageReceived -= Device_ChannelMessageReceived;
                     Device.Reset();
+                    Device.Close();
                     Device.Dispose();
                 }
                 base.Dispose(managed);
