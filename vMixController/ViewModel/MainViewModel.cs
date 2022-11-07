@@ -392,12 +392,12 @@ namespace vMixController.ViewModel
                 if (_windowSettings.EnableLog)
                 {
                     if (!NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.EnableLogging();
+                        NLog.LogManager.ResumeLogging();
                 }
                 else
                 {
                     if (NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.DisableLogging();
+                        NLog.LogManager.SuspendLogging();
                 }
 
                 _windowSettings.PropertyChanged += WindowSettings_PropertyChanged;

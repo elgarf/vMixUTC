@@ -324,12 +324,12 @@ namespace vMixController.Classes
                 if (value)
                 {
                     if (!NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.EnableLogging();
+                        NLog.LogManager.ResumeLogging();
                 }
                 else
                 {
                     if (NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.DisableLogging();
+                        NLog.LogManager.SuspendLogging();
                 }
                 RaisePropertyChanged(EnableLogPropertyName);
             }

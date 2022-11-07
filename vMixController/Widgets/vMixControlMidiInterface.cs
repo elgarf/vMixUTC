@@ -48,18 +48,18 @@ namespace vMixController.Widgets
             }
         }
 
-        private static string[] _midiDevices = null;
+        //private static string[] _midiDevices = null;
         public static string[] MidiDevices
         {
             get
             {
 
-                return Melanchall.DryWetMidi.Devices.InputDevice.GetAll().Select(x => x.Name).ToArray();
+                return Melanchall.DryWetMidi.Multimedia.InputDevice.GetAll().Select(x => x.Name).ToArray();
             }
         }
 
         [XmlIgnore]
-        public Melanchall.DryWetMidi.Devices.InputDevice Device { get; set; }
+        public Melanchall.DryWetMidi.Multimedia.InputDevice Device { get; set; }
 
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace vMixController.Widgets
                     Device.EventReceived -= Device_EventReceived;
                     if (Device.IsListeningForEvents)
                         Device.StopEventsListening();
-                    Device.Reset();
+                    //Device.Reset();
                     Device.Dispose();
                     Device = null;
                 }
@@ -152,7 +152,7 @@ namespace vMixController.Widgets
                 if (Device != null)
                 {
                     //Device.Close();
-                    Device.Reset();
+                    //Device.Reset();
                     Device.Dispose();
                     Device = null;
                 }
@@ -161,14 +161,14 @@ namespace vMixController.Widgets
 
                 if (Device != null)
                 {
-                    Device.Reset();
+                    //Device.Reset();
                     Device.EventReceived += Device_EventReceived;
                     Device.StartEventsListening();
                 }
             }
         }
 
-        private void Device_EventReceived(object sender, Melanchall.DryWetMidi.Devices.MidiEventReceivedEventArgs e)
+        private void Device_EventReceived(object sender, Melanchall.DryWetMidi.Multimedia.MidiEventReceivedEventArgs e)
         {
 
             Dispatcher.Invoke(() =>
@@ -221,22 +221,22 @@ namespace vMixController.Widgets
             }*/
         }
 
-        private Melanchall.DryWetMidi.Devices.InputDevice CreateDeviceByName(string name)
+        private Melanchall.DryWetMidi.Multimedia.InputDevice CreateDeviceByName(string name)
         {
             try
             {
                 var deviceNumber = MidiDevices.Select((obj, idx) => new { obj, idx }).Where(x => x.obj == name).FirstOrDefault();
 
                 if (deviceNumber != null)
-                    if (Device?.Id != deviceNumber.idx)
+                    if (Device?.Name != name)
                     {
                         if (Device != null)
                         {
-                            Device.Reset();
+                            //Device.Reset();
                             Device.Dispose();
                         }
 
-                        return Melanchall.DryWetMidi.Devices.InputDevice.GetById(deviceNumber.idx);//new InputDevice(deviceNumber.idx);
+                        return Melanchall.DryWetMidi.Multimedia.InputDevice.GetByIndex(deviceNumber.idx);//new InputDevice(deviceNumber.idx);
                     }
                     else
                         return Device;
@@ -258,7 +258,7 @@ namespace vMixController.Widgets
 
             if (Device != null)
             {
-                Device.Reset();
+                //Device.Reset();
                 Device.Dispose();
                 Device = null;
             }
@@ -266,7 +266,7 @@ namespace vMixController.Widgets
             Device = CreateDeviceByName(_midiDeviceName);
             if (Device != null)
             {
-                Device.Reset();
+                //Device.Reset();
                 if (!Device.IsListeningForEvents)
                     Device.StartEventsListening();//StartRecording();
                 Device.EventReceived += Device_EventReceived;
@@ -345,7 +345,7 @@ namespace vMixController.Widgets
                     Device.EventReceived -= Device_EventReceived;
                     if (Device.IsListeningForEvents)
                         Device.StopEventsListening();
-                    Device.Reset();
+                    //Device.Reset();
                     //Device.Close();
                     Device.Dispose();
                 }

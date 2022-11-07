@@ -20,7 +20,7 @@ namespace vMixController
     /// </summary>
     public partial class MidiLearnWindow : Window
     {
-        private Melanchall.DryWetMidi.Devices.InputDevice _device;//Sanford.Multimedia.Midi.InputDevice _device;
+        private Melanchall.DryWetMidi.Multimedia.InputDevice _device;//Sanford.Multimedia.Midi.InputDevice _device;
         private bool _doNotDispose;
 
         public Widgets.MidiInterfaceKey Key { get; set; }
@@ -32,7 +32,7 @@ namespace vMixController
             Activate();
         }
 
-        public MidiLearnWindow(Melanchall.DryWetMidi.Devices.InputDevice device, bool doNotDispose = true)
+        public MidiLearnWindow(Melanchall.DryWetMidi.Multimedia.InputDevice device, bool doNotDispose = true)
         {
             InitializeComponent();
             _doNotDispose = doNotDispose;
@@ -47,7 +47,7 @@ namespace vMixController
             }
         }
 
-        private void _device_EventReceived(object sender, Melanchall.DryWetMidi.Devices.MidiEventReceivedEventArgs e)
+        private void _device_EventReceived(object sender, Melanchall.DryWetMidi.Multimedia.MidiEventReceivedEventArgs e)
         {
             Debug.WriteLine(e.Event.ToString());
             int A = -1;
@@ -115,7 +115,7 @@ namespace vMixController
                 _device.EventReceived -= _device_EventReceived;
                 if (!_doNotDispose)
                 {
-                    _device.Reset();
+                    _device.StopEventsListening();
                     _device.Dispose();
                 }
             }

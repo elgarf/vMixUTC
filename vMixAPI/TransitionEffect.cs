@@ -24,8 +24,12 @@ namespace vMixAPI
         SlideReverse = 42,
         VerticalWipeReverse = 44,
         VerticalSlideReverse = 46,
+        BarnDoor,
+        RollerDoor,
         Cut = 100,
         Stinger1,
-        Stinger2
+        Stinger2,
+        Stinger3,
+        Stinger4
     }
 }

@@ -126,7 +126,7 @@ namespace vMixAPI
 
             IsInitializing = true;
             //_logger.Info(textstate);
-            _logger.SetProperty("APIReturn", textstate);
+            _logger.WithProperty("APIReturn", textstate);
             //_logger.Info("Creating vMix state form {0}.", textstate);
 
             try
