@@ -37,6 +37,8 @@ namespace vMixController.Widgets
 
         private ObservableCollection<Pair<DateTime, string>> _events = new ObservableCollection<Pair<DateTime, string>>();
 
+        private List<Pair<DateTime, string>> _firedEvents = new List<Pair<DateTime, string>>();
+
         /// <summary>
         /// Sets and gets the Events property.
         /// Changes to that property's value raise the PropertyChanged event. 
@@ -118,9 +120,23 @@ namespace vMixController.Widgets
             return false;
         }
 
+        private bool IsEventFired(Pair<DateTime, string> e)
+        {
+            //limit fired events to 32
+            while (_firedEvents.Count > 32)
+                _firedEvents.RemoveAt(0);
+
+            foreach (var item in _firedEvents)
+            {
+                if (item.A == e.A && item.B == e.B)
+                    return true;
+            }
+            return false;
+        }
+
         private string GetDayOfWeek(DateTime date)
         {
-            
+
             int d = (int)date.DayOfWeek - 1;
             if (d < 0)
                 d = 6;
@@ -130,10 +146,11 @@ namespace vMixController.Widgets
         private void Timer_Tick(object sender, EventArgs e)
         {
             var now = DateTime.Now;
-            if (_eventQueue.Count > 0 &&  _eventQueue.Peek().A.Hour == now.Hour && _eventQueue.Peek().A.Minute == now.Minute && _eventQueue.Peek().A.Second <= now.Second && ExecuteToday(_eventQueue.Peek().A, DateTime.Now))
+            if (_eventQueue.Count > 0 && _eventQueue.Peek().A.Hour == now.Hour && _eventQueue.Peek().A.Minute == now.Minute && _eventQueue.Peek().A.Second <= now.Second && ExecuteToday(_eventQueue.Peek().A, DateTime.Now) && !IsEventFired(_eventQueue.Peek()))
             {
                 var ev = _eventQueue.Dequeue();
                 Messenger.Default.Send(new Pair<string, object>(ev.B, null));
+                _firedEvents.Add(ev);
                 Debug.Print("{0} is fired", ev.B);
             }
 

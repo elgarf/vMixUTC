@@ -256,7 +256,7 @@ namespace vMixController.Widgets
                 {
 
                 }
-                _dataProviderContent = value;
+                _dataProviderContent = String.Intern(value);
                 RaisePropertyChanged(DataProviderContentPropertyName);
             }
         }
@@ -299,6 +299,8 @@ namespace vMixController.Widgets
                         DataProviderContent = Convert.ToBase64String(File.ReadAllBytes(value));
                         InitializeDataProvider(File.ReadAllBytes(value));
                     }
+                    else
+                        InitializeDataProvider(Convert.FromBase64String(DataProviderContent));
                 }
                 catch (Exception)
                 {
