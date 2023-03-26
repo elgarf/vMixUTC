@@ -65,5 +65,8 @@
                 <Setter Property="Background" Value="Transparent"/>
             </Style>
         </ListView.Style>
+        <ListView.Triggers>
+            
+        </ListView.Triggers>
     </ListView>
 </UserControl>

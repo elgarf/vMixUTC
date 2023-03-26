@@ -522,7 +522,7 @@
         </Grid.ColumnDefinitions>
         <Button Margin="{StaticResource RightStdMargin}" ToolTip="{e:Localize Reset}" Style="{StaticResource TitleButton}" Command="{Binding ResetScoreCommand}">&#xF453;</Button>
         <!--Style="{StaticResource WidgetTextBox}"-->
-        <toolkit:IntegerUpDown IsEnabled="{Binding IsEditable}" Style="{StaticResource WidgetIntegerUpDown}" Grid.Column="1" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+        <toolkit:IntegerUpDown IsEnabled="{Binding IsEditable}" Style="{StaticResource WidgetIntegerUpDown}" Grid.Column="1" ext:FocusExtension.IsFocused="{Binding IsFocused}" FontWeight="Normal" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" FormatString="{Binding FormatString}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
@@ -950,13 +950,13 @@
                                          MoveCommand="{Binding Main.MoveWidgetCommand, Source={StaticResource Locator}}">
             <ctrls:vMixControlContainerDummy.MainContent>
                 <ItemsControl ItemsSource="{Binding Controls}" HorizontalContentAlignment="Stretch">
-                    <ItemsControl.Resources>
+                    <!--<ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
                                 <ResourceDictionary Source="/vMixController;component/Skins/ControlTemplates.xaml"/>
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
-                    </ItemsControl.Resources>
+                    </ItemsControl.Resources>-->
                     <ItemsControl.ItemTemplateSelector>
                         <ctrls:TypeTemplateSelector/>
                     </ItemsControl.ItemTemplateSelector>

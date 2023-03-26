@@ -23,7 +23,6 @@ using Microsoft.VisualBasic.Devices;
 using System.Timers;
 using vMixController.ViewModel;
 using System.Threading;
-using NAudio.CoreAudioApi;
 using GalaSoft.MvvmLight.Messaging;
 using System.Globalization;
 

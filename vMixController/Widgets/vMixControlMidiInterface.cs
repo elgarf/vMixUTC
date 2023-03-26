@@ -177,6 +177,7 @@ namespace vMixController.Widgets
                 {
                     switch (e.Event.EventType)
                     {
+                        
 
                         case Melanchall.DryWetMidi.Core.MidiEventType.NoteOff:
                         case Melanchall.DryWetMidi.Core.MidiEventType.NoteOn:

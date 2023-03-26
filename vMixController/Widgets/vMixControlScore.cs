@@ -88,6 +88,27 @@ namespace vMixController.Widgets
             }
         }
 
+        public const string FormatStringPropertyName = "FormatString";
+        private string _formatString = "0";
+        public string FormatString
+        {
+            get
+            {
+                return _formatString;
+            }
+
+            set
+            {
+                if (_formatString == value)
+                {
+                    return;
+                }
+
+                _formatString = value;
+                RaisePropertyChanged(FormatStringPropertyName);
+            }
+        }
+
         static vMixControlScore()
         {
             TextProperty.OverrideMetadata(typeof(vMixControlScore), new System.Windows.PropertyMetadata("", InternalPropertyChanged, CoerceValueCallback));
@@ -127,7 +148,8 @@ namespace vMixController.Widgets
             new Classes.Hotkey() { Name = "+4" },
             new Classes.Hotkey() { Name = "+5" },
             new Classes.Hotkey() { Name = "+6" },
-            new Classes.Hotkey() { Name = "+10" }};
+            new Classes.Hotkey() { Name = "+10" },
+            new Classes.Hotkey() { Name = "-1" }};
     }
 
         public override void ExecuteHotkey(int index)
@@ -159,6 +181,9 @@ namespace vMixController.Widgets
                 case 7:
                     Value += 10;
                     break;
+                case 8:
+                    Value -= 1;
+                    break;
                 default:
                     break;
             }
@@ -188,7 +213,7 @@ namespace vMixController.Widgets
                 {
                     return;
                 }
-                Text = value.ToString();
+                Text = value.ToString(_formatString);
                 _value = value;
                 RaisePropertyChanged(ValuePropertyName);
             }
@@ -269,9 +294,11 @@ namespace vMixController.Widgets
             cbEnabled.ConverterParameter = "Custom";
             BindingOperations.SetBinding(customBool, BoolControl.IsEnabledProperty, cbEnabled);
 
-            
+            var formatControl = GetPropertyControl<StringControl>(Type + "FmtString");
+            formatControl.Value = _formatString;
+            formatControl.Title = "Format String";
 
-            return (new UserControl[] { styleComboBox, customBool }).Concat(props).ToArray();
+            return (new UserControl[] { styleComboBox, customBool, formatControl }).Concat(props).ToArray();
         }
 
         public override void SetProperties(UserControl[] _controls)
@@ -281,6 +308,8 @@ namespace vMixController.Widgets
             var vals = (_controls.Where(x => x.Tag is int i && i == 0).FirstOrDefault() as BoolControl).Values;
             for (byte i = 0; i < 7; i++)
                 EnabledButtons = EnabledButtons.SetBit(i, vals[i].A);
+
+            FormatString = (string)((StringControl)_controls.Where(x=>x is StringControl).FirstOrDefault()).Value;
 
             base.SetProperties(_controls);
         }

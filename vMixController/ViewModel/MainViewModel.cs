@@ -27,6 +27,9 @@ using Microsoft.SqlServer.Server;
 using System.Linq.Expressions;
 using System.IO.Compression;
 using vMixController.Messages;
+using vMixControllerSkin;
+using static System.Net.Mime.MediaTypeNames;
+using System.Security.Policy;
 
 namespace vMixController.ViewModel
 {
@@ -1669,7 +1672,7 @@ namespace vMixController.ViewModel
 
                 foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
                     _widgets.Add(item);
-                    
+
 
                 _windowSettings.OpenLastAtStart = ol;
 
@@ -2370,7 +2373,7 @@ namespace vMixController.ViewModel
                         foreach (var item in _widgets.Where(x => rgn.Intersect(x) && x.Page == rgn.Page && !selectedRegions.Contains(x)))
                             _intersections.Add(item);
                     }
-                    
+
             });
 
             Messenger.Default.Register<Pair<string, bool>>(this, (t) =>
@@ -2452,8 +2455,32 @@ namespace vMixController.ViewModel
             ///html/body/form/div/div[3]/div/table[3]/tbody/tr[2]/td[2]/div/div/div/div[1]
 
             _logger.Info("Checking for updates");
+            try
+            {
+                Octokit.GitHubClient client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("vMixUTC"));
+                IReadOnlyList<Octokit.Release> _releases = AsyncHelpers.RunSync(() => client.Repository.Release.GetAll("elgarf", "vMixUTC"));
+                foreach (var release in _releases)
+                {
+                    var version = DateTime.Parse(release.Name, new CultureInfo("RU-ru"));
+                    var build = GetBuildDateTime(Assembly.GetExecutingAssembly());
 
-            HtmlAgilityPack.HtmlWeb w = new HtmlAgilityPack.HtmlWeb();
+                    if (build < version)
+                    {
+                        Title += " [Update Available]";
+                        UpdateLink = release.HtmlUrl;
+                        AvailableVersion = version;
+                        return;
+                    }
+
+                    Debug.WriteLine(release.Name);
+
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error while checking updates. {0}");
+            }
+            /*HtmlAgilityPack.HtmlWeb w = new HtmlAgilityPack.HtmlWeb();
             w.LoadFromWebAsync("https://forums.vmix.com/posts/t6468--FREE--Universal-Title-Controller").ContinueWith(doc =>
             {
                 if (doc.Exception != null)
@@ -2504,7 +2531,7 @@ namespace vMixController.ViewModel
                 {
                     _logger.Error(e, "Error while checking updates. {0}");
                 }
-            });
+            });*/
         }
 
         private void MainViewModel_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -2865,7 +2892,7 @@ namespace vMixController.ViewModel
                     () =>
                     {
                         List<vMixControl> dups = new List<vMixControl>();
-                        foreach (var item in _widgets.Where(x=>x.Selected))
+                        foreach (var item in _widgets.Where(x => x.Selected))
                         {
                             var copy = item.Copy();
                             dups.Add(copy);

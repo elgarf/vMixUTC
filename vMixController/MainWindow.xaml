@@ -34,7 +34,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <this:Help x:Key="Help"/>
+            <!--<this:Help x:Key="Help"/>-->
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <Storyboard x:Key="StoryboardFadeIn">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
@@ -311,7 +311,7 @@
                         </Style>
                     </MenuItem.Style>
                 </MenuItem>
-                <MenuItem Command="{Binding ViewChangelogCommand}">
+                <!--<MenuItem Command="{Binding ViewChangelogCommand}">
                     <MenuItem.Header>
                         <TextBlock FontWeight="Bold">View Changelog</TextBlock>
                     </MenuItem.Header>
@@ -329,7 +329,7 @@
                             </Style.Triggers>
                         </Style>
                     </MenuItem.Style>
-                </MenuItem>
+                </MenuItem>-->
                 <MenuItem Command="{Binding AboutCommand}" Header="{e:Localize About}">
                     <MenuItem.Icon>
                         <Border Width="16" Height="16">
@@ -564,7 +564,7 @@
                                         <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" Text="{e:Localize Static Global Variables}" FontSize="14"/>
                                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                                             <Button ToolTip="{e:Localize Add Variable}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand}" Content="&#xF415;"/>
-                                            <Control Style="{StaticResource HelpBorder}" Margin="{StaticResource LeftRightStdMargin}" ToolTip="{Binding StaticVariables_Default, Source={StaticResource Help}}"/>
+                                            <Control Style="{StaticResource HelpBorder}" Margin="{StaticResource LeftRightStdMargin}" ToolTip="{x:Static this:Help.StaticVariables_Default}"/>
                                         </StackPanel>
                                         <Border VerticalAlignment="Center" Grid.Column="3" BorderThickness="0,2,0,0" BorderBrush="White"/>
                                     </Grid>
