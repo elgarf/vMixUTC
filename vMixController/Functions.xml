@@ -339,6 +339,20 @@
 		<Function>SendKeys</Function>
 		<FormatString>Function=SendKeys&amp;Value={2}</FormatString>
 	</vMixFunctionReference>
+	<vMixFunctionReference>
+		<Function>SetDynamicValueX</Function>
+		<FormatString>Function=SetDynamicValue{1}&amp;Value={2}</FormatString>
+		<StringDescription>Value</StringDescription>
+		<IntDescription>Number</IntDescription>
+		<IntValues>
+			<int>1</int>
+			<int>2</int>
+			<int>3</int>
+			<int>4</int>
+		</IntValues>
+		<ActiveStateXPath>//dynamic/value{1}</ActiveStateXPath>
+		<ActiveStateValue>{2}</ActiveStateValue>
+	</vMixFunctionReference>
 
 	<!--Audio-->
 	<vMixFunctionReference>
@@ -1635,6 +1649,24 @@
 		<Function>InputPreviewShowHide</Function>
 		<FormatString>Function=InputPreviewShowHide&amp;Input={0}</FormatString>
 	</vMixFunctionReference>
+
+
+	<vMixFunctionReference>
+		<Description>Turn Off Layer For Input At Index (starting from 1)</Description>
+		<Function>LayerOff</Function>
+		<FormatString>Function=LayerOff&amp;Input={0}&amp;Value={1}</FormatString>
+	</vMixFunctionReference>
+	<vMixFunctionReference>
+		<Description>Turn On Layer For Input At Index (starting from 1)</Description>
+		<Function>LayerOn</Function>
+		<FormatString>Function=LayerOn&amp;Input={0}&amp;Value={1}</FormatString>
+	</vMixFunctionReference>
+	<vMixFunctionReference>
+		<Description>Toggle On/Off Layer For Input At Index (starting from 1)</Description>
+		<Function>LayerOnOff</Function>
+		<FormatString>Function=LayerOnOff&amp;Input={0}&amp;Value={1}</FormatString>
+	</vMixFunctionReference>
+
 	<vMixFunctionReference>
 		<Description>Add Filename to List</Description>
 		<Function>ListAdd</Function>
@@ -1647,6 +1679,7 @@
 		<FormatString>Function=ListExport&amp;Value={2}&amp;Input={0}</FormatString>
 		<StringDescription>FileName</StringDescription>
 	</vMixFunctionReference>
+	
 	<vMixFunctionReference>
 		<Function>ListPlayOut</Function>
 		<FormatString>Function=ListPlayOut&amp;Input={0}</FormatString>
@@ -1965,6 +1998,42 @@
 		<StringDescription>Saturation</StringDescription>
 	</vMixFunctionReference>
 
+	<vMixFunctionReference>
+		<Function>SetDynamicInputX</Function>
+		<FormatString>Function=SetDynamicInput{1}&amp;Value={0}</FormatString>
+		<IntDescription>Number</IntDescription>
+		<IntValues>
+			<int>1</int>
+			<int>2</int>
+			<int>3</int>
+			<int>4</int>
+		</IntValues>
+		<ActiveStateXPath>//dynamic/input{1}</ActiveStateXPath>
+		<ActiveStateValue>{0}</ActiveStateValue>
+	</vMixFunctionReference>
+
+	<vMixFunctionReference>
+		<Description>Change Layer in Input according to Value parameter</Description>
+		<Function>SetLayer</Function>
+		<FormatString>Function=SetLayer&amp;Value={1},{2}&amp;Input={0}</FormatString>
+		<StringDescription>Input</StringDescription>
+		<IntDescription>Index</IntDescription>
+		<ActiveStateXPath>//inputs/input[@key='{0}']/overlay[@index='{3}']/@key</ActiveStateXPath>
+		<ActiveStateValue>{7}</ActiveStateValue>
+		<IntValues>
+			<int>1</int>
+			<int>2</int>
+			<int>3</int>
+			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+		</IntValues>
+	</vMixFunctionReference>
+	
 	<vMixFunctionReference>
 		<Description>Set the Display Name of the Input</Description>
 		<Function>SetInputName</Function>
@@ -2338,6 +2407,8 @@
 		<FormatString>Function=StopPlayList</FormatString>
 	</vMixFunctionReference>
 
+	<!--Scripting-->
+	
 	<vMixFunctionReference>
 		<Function>Scripting Functions</Function>
 		<IsGroup>true</IsGroup>
@@ -2386,6 +2457,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 		<StringValues>
 			<string>A</string>
@@ -2394,16 +2469,26 @@
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayChangeDirection</Function>
-		<FormatString>Function=ReplayChangeDirection</FormatString>
+		<FormatString>Function=ReplayChangeDirection&amp;Channel={2}</FormatString>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>			
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayChangeSpeed</Function>
-		<FormatString>Function=ReplayChangeSpeed&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayChangeSpeed&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>Speed</IntDescription>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayCopyLastEvent</Function>
-		<FormatString>Function=ReplayCopyLastEvent&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayCopyLastEvent&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>EventList</IntDescription>
 		<IntValues>
 			<int>0</int>
@@ -2414,11 +2499,28 @@
 			<int>5</int>
 			<int>6</int>
 			<int>7</int>
+			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+			<int>11</int>
+			<int>12</int>
+			<int>13</int>
+			<int>14</int>
+			<int>15</int>
+			<int>16</int>
+			<int>17</int>
+			<int>18</int>
+			<int>19</int>
 		</IntValues>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayCopySelectedEvent</Function>
-		<FormatString>Function=ReplayCopySelectedEvent&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayCopySelectedEvent&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>EventList</IntDescription>
 		<IntValues>
 			<int>0</int>
@@ -2429,7 +2531,24 @@
 			<int>5</int>
 			<int>6</int>
 			<int>7</int>
+			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+			<int>11</int>
+			<int>12</int>
+			<int>13</int>
+			<int>14</int>
+			<int>15</int>
+			<int>16</int>
+			<int>17</int>
+			<int>18</int>
+			<int>19</int>
 		</IntValues>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayExportLastEvent</Function>
@@ -2438,26 +2557,64 @@
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayFastBackward</Function>
-		<FormatString>Function=ReplayFastBackward&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayFastBackward&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>Speed</IntDescription>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayFastForward</Function>
-		<FormatString>Function=ReplayFastForward&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayFastForward&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>Speed</IntDescription>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Function>ReplayJumpFrames</Function>
-		<FormatString>Function=ReplayJumpFrames&amp;Value={1}</FormatString>
+		<FormatString>Function=ReplayJumpFrames&amp;Value={1}&amp;Channel={2}</FormatString>
 		<IntDescription>Frames</IntDescription>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
+	</vMixFunctionReference>
+	<vMixFunctionReference>
+		<Function>ReplayJumpFramesFastOff</Function>
+		<FormatString>Function=ReplayJumpFramesFastOff&amp;Channel={2}</FormatString>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
+	</vMixFunctionReference>
+	<vMixFunctionReference>
+		<Function>ReplayJumpFramesFastOn</Function>
+		<FormatString>Function=ReplayJumpFramesFastOn&amp;Channel={2}</FormatString>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
 		<Description></Description>
 		<Function>ReplayJumpToNow</Function>
-		<FormatString>Function=ReplayJumpToNow</FormatString>
+		<FormatString>Function=ReplayJumpToNow&amp;Channel={2}</FormatString>
+		<StringDescription>Bus</StringDescription>
+		<StringValues>
+			<string>A</string>
+			<string>B</string>
+		</StringValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
-		<Description>Turns off the specified camera angle (1-4)</Description>
+		<Description>Turns off the specified camera angle (1-8)</Description>
 		<Function>ReplayLastEventCameraOff</Function>
 		<FormatString>Function=ReplayLastEventCameraOff&amp;Value={1}</FormatString>
 		<IntDescription>Camera</IntDescription>
@@ -2466,10 +2623,14 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
-		<Description>Turns on the specified camera angle (1-4)</Description>
+		<Description>Turns on the specified camera angle (1-8)</Description>
 		<Function>ReplayLastEventCameraOn</Function>
 		<FormatString>Function=ReplayLastEventCameraOn&amp;Value={1}</FormatString>
 		<IntDescription>Camera</IntDescription>
@@ -2478,10 +2639,14 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
-		<Description>Turns on only the specified camera angle (1-4)</Description>
+		<Description>Turns on only the specified camera angle (1-8)</Description>
 		<Function>ReplayLastEventSingleCameraOn</Function>
 		<FormatString>Function=ReplayLastEventSingleCameraOn&amp;Value={1}</FormatString>
 		<IntDescription>Camera</IntDescription>
@@ -2490,6 +2655,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2563,6 +2732,18 @@
 			<int>5</int>
 			<int>6</int>
 			<int>7</int>
+			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+			<int>11</int>
+			<int>12</int>
+			<int>13</int>
+			<int>14</int>
+			<int>15</int>
+			<int>16</int>
+			<int>17</int>
+			<int>18</int>
+			<int>19</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2578,6 +2759,18 @@
 			<int>5</int>
 			<int>6</int>
 			<int>7</int>
+			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+			<int>11</int>
+			<int>12</int>
+			<int>13</int>
+			<int>14</int>
+			<int>15</int>
+			<int>16</int>
+			<int>17</int>
+			<int>18</int>
+			<int>19</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2688,6 +2881,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2700,6 +2897,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2712,6 +2913,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2728,6 +2933,18 @@
 			<int>6</int>
 			<int>7</int>
 			<int>8</int>
+			<int>9</int>
+			<int>10</int>
+			<int>11</int>
+			<int>12</int>
+			<int>13</int>
+			<int>14</int>
+			<int>15</int>
+			<int>16</int>
+			<int>17</int>
+			<int>18</int>
+			<int>19</int>
+			<int>20</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2760,7 +2977,7 @@
 		<StringDescription>Text</StringDescription>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
-		<Description>Changes the text of the specified angle (1-4).</Description>
+		<Description>Changes the text of the specified angle (1-8).</Description>
 		<Function>ReplaySetLastEventTextCamera</Function>
 		<FormatString>Function=ReplaySetLastEventTextCamera&amp;Value={1},{2}</FormatString>
 		<StringDescription>Text</StringDescription>
@@ -2770,6 +2987,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2778,7 +2999,7 @@
 		<StringDescription>Text</StringDescription>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
-		<Description>Changes the text of the specified angle (1-4)</Description>
+		<Description>Changes the text of the specified angle (1-8)</Description>
 		<Function>ReplaySetSelectedEventTextCamera</Function>
 		<FormatString>Function=ReplaySetSelectedEventTextCamera&amp;Value={1},{2}</FormatString>
 		<StringDescription>Text</StringDescription>
@@ -2788,6 +3009,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2821,6 +3046,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
@@ -2833,6 +3062,10 @@
 			<int>2</int>
 			<int>3</int>
 			<int>4</int>
+			<int>5</int>
+			<int>6</int>
+			<int>7</int>
+			<int>8</int>
 		</IntValues>
 	</vMixFunctionReference>
 	<vMixFunctionReference>

@@ -16,6 +16,7 @@
         xmlns:this="clr-namespace:vMixController"
         xmlns:pctrl="clr-namespace:vMixController.PropertiesControls"
         xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
+        xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
         mc:Ignorable="d ignore"
         Title="{e:Localize Properties}"
         Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="364.71"
@@ -28,14 +29,16 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml" />
+                <!--<x:Static Member="skin:ExportResourceDictionary.Instance"/>-->
+
             </ResourceDictionary.MergedDictionaries>
             <ObjectDataProvider x:Key="KeyValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="Key"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-            <this:Help x:Key="Help"/>
+            <!--<this:Help x:Key="Help"/>-->
             <Style TargetType="{x:Type ListView}">
                 <Setter Property="Background" Value="Black"/>
             </Style>
@@ -87,7 +90,7 @@
                     <Grid Background="{StaticResource Main.Gradient}">
                         <TextBlock Padding="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run FontWeight="Normal" FontFamily="/vMixControllerSkin;Component/#FontAwesome">&#xf031;</Run><Run Text=" "></Run><Run Text="{e:Localize Name}"/></TextBlock>
                     </Grid>
-                    <TextBox Style="{StaticResource WidgetTextBox}" Grid.Column="1" Text="{Binding Name, Mode=TwoWay}"/>
+                    <TextBox Style="{StaticResource WidgetTextBox}" Grid.Column="1" Text="{Binding Name}" AcceptsReturn="True" Height="Auto"/>
                 </Grid>
                 <Grid Margin="{StaticResource TopBottomStdMargin}">
                     <Grid.ColumnDefinitions>
@@ -139,7 +142,7 @@
                             </CheckBox.Template>
                         </CheckBox>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Style="{StaticResource PropertyName}" Margin="-4,0,0,0"><Run Text="{e:Localize Hotkeys}"/></TextBlock>
-                        <Control Grid.Column="2" Style="{StaticResource HelpBorder}" ToolTip="{Binding Hotkeys_Default, Source={StaticResource Help}}" Margin="{StaticResource LeftRightStdMargin}"/>
+                        <Control Grid.Column="2" Style="{StaticResource HelpBorder}" ToolTip="{x:Static this:Help.Hotkeys_Default}" Margin="{StaticResource LeftRightStdMargin}"/>
                         <Border VerticalAlignment="Center"  Grid.Column="3" BorderThickness="0,2,0,0" BorderBrush="White"/>
                     </Grid>
                     <Grid>
@@ -243,7 +246,7 @@
                     </Grid>
                 </StackPanel>
 
-                <pctrl:LabelControl Foreground="Orange" Title="{e:Localize Individual Properties}" Visibility="{Binding WidgetPropertiesControls.Count, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0, Mode=OneWay}"></pctrl:LabelControl>
+                <pctrl:LabelControl Foreground="Orange" Title="{e:Localize Individual Properties}" Visibility="{Binding WidgetPropertiesControls.Length, Converter={wpfc:ObjectToStringEqualsParameterToInverseVisibilityConverter}, ConverterParameter=0, Mode=OneWay}"></pctrl:LabelControl>
                 <ItemsControl VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VerticalContentAlignment="Stretch" ItemsSource="{Binding WidgetPropertiesControls}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -254,7 +257,7 @@
             </StackPanel>
         </ScrollViewer>
         <StackPanel Margin="2" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1">
-            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Widget.IsTemplate, Converter={wpfc:BoolToInverseBoolConverter}}" ToolTip="{Binding SaveTemplate_Default, Source={StaticResource Help}}"/>
+            <Button Margin="0,0,4,0" Command="{Binding SaveTemplateCommand}" Content="{e:Localize Save Template}" IsEnabled="{Binding Widget.IsTemplate, Converter={wpfc:BoolToInverseBoolConverter}}" ToolTip="{x:Static this:Help.SaveTemplate_Default}"/>
             <Button Margin="0,0,4,0" Command="{Binding CancelCommand}" IsCancel="True" Content="{e:Localize Cancel}"/>
             <Button Command="{Binding OkCommand}" Content="{e:Localize Ok}" IsDefault="True"/>
         </StackPanel>

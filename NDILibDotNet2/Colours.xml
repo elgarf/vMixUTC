@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<ArrayOfTripleOfColorColorString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TripleOfColorColorString>
+    <A>
+      <A>255</A>
+      <R>255</R>
+      <G>255</G>
+      <B>255</B>
+      <ScA>1</ScA>
+      <ScR>1</ScR>
+      <ScG>1</ScG>
+      <ScB>1</ScB>
+    </A>
+    <B>
+      <A>255</A>
+      <R>255</R>
+      <G>255</G>
+      <B>255</B>
+      <ScA>1</ScA>
+      <ScR>1</ScR>
+      <ScG>1</ScG>
+      <ScB>1</ScB>
+    </B>
+    <C>White</C>
+  </TripleOfColorColorString>
+</ArrayOfTripleOfColorColorString>

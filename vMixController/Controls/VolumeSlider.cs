@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace vMixController.Controls
 {
@@ -24,6 +25,12 @@ namespace vMixController.Controls
         {
             ThumbDragCompleted?.Invoke(this, new EventArgs());
             base.OnThumbDragCompleted(e);
+        }
+
+        protected override void OnTouchDown(TouchEventArgs e)
+        {
+            e.Handled = true;
+            base.OnTouchDown(e);
         }
     }
 }

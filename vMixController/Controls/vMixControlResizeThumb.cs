@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using vMixControllerSkin;
 
 namespace vMixController.Controls
 {
-    public class vMixControlResizeThumb : Thumb
+    public class vMixControlResizeThumb : DraggableThumb
     {
         public vMixControlResizeThumb()
         {

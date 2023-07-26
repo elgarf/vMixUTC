@@ -8,10 +8,11 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using vMixController.Classes;
 using vMixController.Widgets;
+using vMixControllerSkin;
 
 namespace vMixController.Controls
 {
-    public class vMixControlMoveThumb : Thumb, INotifyPropertyChanged
+    public class vMixControlMoveThumb : DraggableThumb, INotifyPropertyChanged
     {
 
 
