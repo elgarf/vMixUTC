@@ -8,7 +8,7 @@ namespace NewTek.NDI
     {
         // the simple constructor only deals with BGRA. For other color formats you'll need to handle it manually.
         // Defaults to progressive but can be changed.
-        public VideoFrame( int width, int height, float aspectRatio, int frameRateNumerator, int frameRateDenominator,
+        public VideoFrame(int width, int height, float aspectRatio, int frameRateNumerator, int frameRateDenominator,
                             NDIlib.frame_format_type_e format = NDIlib.frame_format_type_e.frame_format_type_progressive)
         {
             // we have to know to free it later
@@ -105,7 +105,7 @@ namespace NewTek.NDI
         {
             get
             {
-                if(_ndiVideoFrame.p_metadata == IntPtr.Zero)
+                if (_ndiVideoFrame.p_metadata == IntPtr.Zero)
                     return null;
 
                 String mdString = UTF.Utf8ToString(_ndiVideoFrame.p_metadata);
@@ -122,26 +122,24 @@ namespace NewTek.NDI
             GC.SuppressFinalize(this);
         }
 
-        ~VideoFrame() 
+        ~VideoFrame()
         {
             Dispose(false);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing) 
+            if (disposing)
             {
                 if (_memoryOwned)
                 {
                     Marshal.FreeHGlobal(_ndiVideoFrame.p_data);
                     _ndiVideoFrame.p_data = IntPtr.Zero;
                 }
-
-                NDIlib.destroy();
             }
         }
 
         internal NDIlib.video_frame_v2_t _ndiVideoFrame;
         bool _memoryOwned = false;
-    }    
+    }
 }

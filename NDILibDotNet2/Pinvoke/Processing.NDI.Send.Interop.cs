@@ -1,11 +1,11 @@
 // NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
 // for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
-// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
-// terms. The full NDI SDK may be downloaded at http://ndi.tv/
+// online at http://ndi.link/ndisdk_license. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at http://ndi.video/
 //
 //*************************************************************************************************************************************
 // 
-// Copyright(c) 2014-2020, NewTek, inc.
+// Copyright (C) 2023 Vizrt NDI AB. All rights reserved.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
 // files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
@@ -107,8 +107,17 @@ namespace NewTek
 				 UnsafeNativeMethods.send_send_audio_v2_32( p_instance, ref p_audio_data);
 		}
 
-		// This will add a metadata frame
-		public static void send_send_metadata(IntPtr p_instance, ref metadata_frame_t p_metadata)
+        // This will add an audio frame
+        public static void send_send_audio_v3(IntPtr p_instance, ref audio_frame_v3_t p_audio_data)
+        {
+            if (IntPtr.Size == 8)
+                UnsafeNativeMethods.send_send_audio_v3_64(p_instance, ref p_audio_data);
+            else
+                UnsafeNativeMethods.send_send_audio_v3_32(p_instance, ref p_audio_data);
+        }
+
+        // This will add a metadata frame
+        public static void send_send_metadata(IntPtr p_instance, ref metadata_frame_t p_metadata)
 		{
 			if (IntPtr.Size == 8)
 				 UnsafeNativeMethods.send_send_metadata_64( p_instance, ref p_metadata);
@@ -186,6 +195,16 @@ namespace NewTek
 				 UnsafeNativeMethods.send_set_failover_32( p_instance, ref p_failover_source);
 		}
 
+		// Retrieve the source information for the given sender instance.
+		// This can throw an ArgumentException or ArgumentNullException!
+		public static source_t send_get_source_name(IntPtr p_instance, ref source_t p_failover_source)
+		{
+			if (IntPtr.Size == 8)
+				return (source_t)Marshal.PtrToStructure(UnsafeNativeMethods.send_get_source_name_64(p_instance), typeof(source_t));
+			else
+				return (source_t)Marshal.PtrToStructure(UnsafeNativeMethods.send_get_source_name_32(p_instance), typeof(source_t));
+		}
+
 		[SuppressUnmanagedCodeSecurity]
 		internal static partial class UnsafeNativeMethods
 		{
@@ -219,8 +238,14 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_audio_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_audio_v2_32(IntPtr p_instance, ref audio_frame_v2_t p_audio_data);
 
-			// send_send_metadata 
-			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+            // send_send_audio_v3 
+            [DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_audio_v3", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+            internal static extern void send_send_audio_v3_64(IntPtr p_instance, ref audio_frame_v3_t p_audio_data);
+            [DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_audio_v3", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+            internal static extern void send_send_audio_v3_32(IntPtr p_instance, ref audio_frame_v3_t p_audio_data);
+
+            // send_send_metadata 
+            [DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_send_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_metadata_64(IntPtr p_instance, ref metadata_frame_t p_metadata);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_send_metadata", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_send_metadata_32(IntPtr p_instance, ref metadata_frame_t p_metadata);
@@ -268,6 +293,12 @@ namespace NewTek
 			internal static extern void send_set_failover_64(IntPtr p_instance, ref source_t p_failover_source);
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_set_failover", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			internal static extern void send_set_failover_32(IntPtr p_instance, ref source_t p_failover_source);
+
+			// Retrieve the source information for the given sender instance.  This pointer is valid until NDIlib_send_destroy is called.
+			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_send_get_source_name", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern IntPtr send_get_source_name_64(IntPtr p_instance);
+			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_send_get_source_name", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern IntPtr send_get_source_name_32(IntPtr p_instance);
 
 		} // UnsafeNativeMethods
 

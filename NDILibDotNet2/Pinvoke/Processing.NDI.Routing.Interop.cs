@@ -1,11 +1,11 @@
 // NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
 // for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
-// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
-// terms. The full NDI SDK may be downloaded at http://ndi.tv/
+// online at http://ndi.link/ndisdk_license. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at http://ndi.video/
 //
 //*************************************************************************************************************************************
 // 
-// Copyright(c) 2014-2020, NewTek, inc.
+// Copyright (C) 2023 Vizrt NDI AB. All rights reserved.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
 // files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
@@ -76,6 +76,27 @@ namespace NewTek
 				return  UnsafeNativeMethods.routing_clear_32( p_instance);
 		}
 
+		// Get the current number of receivers connected to this source. This can be used to avoid even rendering when nothing is connected to the video source. 
+		// which can significantly improve the efficiency if you want to make a lot of sources available on the network. If you specify a timeout that is not
+		// 0 then it will wait until there are connections for this amount of time.
+		public static int routing_clear(IntPtr p_instance, UInt32 timeout_in_ms)
+		{
+			if (IntPtr.Size == 8)
+				return UnsafeNativeMethods.routing_get_no_connections_64(p_instance, timeout_in_ms);
+			else
+				return UnsafeNativeMethods.routing_get_no_connections_32(p_instance, timeout_in_ms);
+		}
+
+		// Retrieve the source information for the given router instance.
+		// This can throw an ArgumentException or ArgumentNullException!
+		public static source_t routing_get_source_name(IntPtr p_instance, ref source_t p_failover_source)
+		{
+			if (IntPtr.Size == 8)
+				return (source_t)Marshal.PtrToStructure(UnsafeNativeMethods.routing_get_source_name_64(p_instance), typeof(source_t));
+			else
+				return (source_t)Marshal.PtrToStructure(UnsafeNativeMethods.routing_get_source_name_32(p_instance), typeof(source_t));
+		}
+
 		[SuppressUnmanagedCodeSecurity]
 		internal static partial class UnsafeNativeMethods
 		{
@@ -106,6 +127,20 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_routing_clear", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			[return: MarshalAsAttribute(UnmanagedType.U1)]
 			internal static extern bool routing_clear_32(IntPtr p_instance);
+
+			// Get the current number of receivers connected to this source. This can be used to avoid even rendering when nothing is connected to the video source. 
+			// which can significantly improve the efficiency if you want to make a lot of sources available on the network. If you specify a timeout that is not
+			// 0 then it will wait until there are connections for this amount of time.
+			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_routing_get_no_connections", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern int routing_get_no_connections_64(IntPtr p_instance, UInt32 timeout_in_ms);
+			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_routing_get_no_connections", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern int routing_get_no_connections_32(IntPtr p_instance, UInt32 timeout_in_ms);
+
+			// Retrieve the source information for the given router instance.  This pointer is valid until NDIlib_routing_destroy is called.
+			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_routing_get_source_name", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern IntPtr routing_get_source_name_64(IntPtr p_instance);
+			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_routing_get_source_name", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			internal static extern IntPtr routing_get_source_name_32(IntPtr p_instance);
 
 		} // UnsafeNativeMethods
 

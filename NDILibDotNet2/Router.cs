@@ -20,7 +20,7 @@ namespace NewTek.NDI
                 if (value.Name != _selectedSource.Name)
                 {
                     _selectedSource = value;
-                    
+
                     UpdateRouting();
 
                     NotifyPropertyChanged("FromSource");
@@ -48,18 +48,10 @@ namespace NewTek.NDI
         }
 
         // Constructor
-        public Router(String routingName="Routing", String[] groups = null)
+        public Router(String routingName = "Routing", String[] groups = null)
         {
             _groups = groups;
             _routingName = routingName;
-
-            if (!NDIlib.initialize())
-            {
-                if (!NDIlib.is_supported_CPU())
-                    throw new InvalidOperationException("CPU incompatible with NDI.");
-                else
-                    throw new InvalidOperationException("Unable to initialize NDI.");
-            }
 
             CreateRouting();
         }
@@ -67,7 +59,7 @@ namespace NewTek.NDI
         // Route to nowhere (black)
         public void Clear()
         {
-            if(_routingInstancePtr != IntPtr.Zero)
+            if (_routingInstancePtr != IntPtr.Zero)
                 NDIlib.routing_clear(_routingInstancePtr);
         }
 
@@ -123,7 +115,7 @@ namespace NewTek.NDI
             GC.SuppressFinalize(this);
         }
 
-        ~Router() 
+        ~Router()
         {
             Dispose(false);
         }
@@ -142,8 +134,6 @@ namespace NewTek.NDI
                     NDIlib.routing_destroy(_routingInstancePtr);
                     _routingInstancePtr = IntPtr.Zero;
                 }
-
-                NDIlib.destroy();
 
                 _disposed = true;
             }
@@ -207,7 +197,7 @@ namespace NewTek.NDI
 
             // update in case we have enough info to start routing
             UpdateRouting();
-        }        
+        }
 
         private String[] _groups = null;
         private IntPtr _routingInstancePtr = IntPtr.Zero;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -82,6 +83,59 @@ namespace vMixController.Widgets
 
                 _sticky = value;
                 RaisePropertyChanged(StickyPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="IsEditable" /> property's name.
+        /// </summary>
+        public const string IsEditablePropertyName = "IsEditable";
+
+        private bool _isEditable = false;
+
+        /// <summary>
+        /// Sets and gets the Magnet property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsEditable
+        {
+            get
+            {
+                return _isEditable;
+            }
+
+            set
+            {
+                if (_isEditable == value)
+                {
+                    return;
+                }
+
+                _isEditable = value;
+                RaisePropertyChanged(IsEditablePropertyName);
+            }
+        }
+
+        [NonSerialized]
+        private RelayCommand<object> _mouseDoubleClick;
+
+        /// <summary>
+        /// Gets the ExecutePushOn.
+        /// </summary>
+        public RelayCommand<object> MouseDoubleClick
+        {
+            get
+            {
+                return _mouseDoubleClick
+                    ?? (_mouseDoubleClick = new RelayCommand<object>(
+                    (p) =>
+                    {
+                        //MouseEventArgs
+
+                        IsEditable = true;
+                        //p.Handled = true;
+
+                    }));
             }
         }
 

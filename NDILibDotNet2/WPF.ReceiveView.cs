@@ -47,42 +47,47 @@ namespace NewTek.NDI.WPF
         Description("If true (default) received audio will be sent to the default Windows audio playback device.")]
         public bool IsAudioEnabled
         {
-            get { return (bool)GetValue(IsAudioEnabledProperty); }
-            set { SetValue(IsAudioEnabledProperty, value); }
+            get { return (bool)GetValue(IsAudioEnabledProperty); ; }
+            set
+            {
+                SetValue(IsAudioEnabledProperty, value);
+            }
         }
-
-        // Using a DependencyProperty as the backing store for IsAudioEnabled.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsAudioEnabledProperty =
-            DependencyProperty.Register("IsAudioEnabled", typeof(bool), typeof(ReceiveView), new PropertyMetadata(false, DependencyPropertyChanged));
-
-
+    DependencyProperty.Register("IsAudioEnabled", typeof(bool), typeof(ReceiveView), new PropertyMetadata(true));
 
         [Category("NewTek NDI"),
         Description("If true (default) received video will be sent to the screen.")]
         public bool IsVideoEnabled
         {
-            get { return (bool)GetValue(IsVideoEnabledProperty); }
-            set { SetValue(IsVideoEnabledProperty, value); }
+            get { return _videoEnabled; }
+            set
+            {
+                if (value != _videoEnabled)
+                {
+                    NotifyPropertyChanged("IsVideoEnabled");
+                }
+            }
         }
-
-        // Using a DependencyProperty as the backing store for IsVideoEnabled.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsVideoEnabledProperty =
-            DependencyProperty.Register("IsVideoEnabled", typeof(bool), typeof(ReceiveView), new PropertyMetadata(true, DependencyPropertyChanged));
-
-
 
         [Category("NewTek NDI"),
         Description("Set or get the current audio volume. Range is 0.0 to 1.0")]
         public float Volume
         {
-            get { return (float)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get { return _volume; }
+            set
+            {
+                if (value != _volume)
+                {
+                    _volume = Math.Max(0.0f, Math.Min(1.0f, value));
+
+                    if (_wasapiOut != null)
+                        _wasapiOut.Volume = _volume;
+
+                    NotifyPropertyChanged("Volume");
+                }
+            }
         }
-        // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Volume", typeof(float), typeof(ReceiveView), new PropertyMetadata(1.0f, DependencyPropertyChanged));
-
-
 
         [Category("NewTek NDI"),
         Description("Does the current source support PTZ functionality?")]
@@ -133,35 +138,8 @@ namespace NewTek.NDI.WPF
             get { return (bool)GetValue(IsLowBandwidthProperty); }
             set { SetValue(IsLowBandwidthProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for IsLowBandwidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsLowBandwidthProperty =
-            DependencyProperty.Register("IsLowBandwidth", typeof(bool), typeof(WPF.ReceiveView), new PropertyMetadata(true, DependencyPropertyChanged));
-
-        private static void DependencyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var recv = (d as ReceiveView);
-            switch (e.Property.Name)
-            {
-                case "IsLowBandwidth":
-                    recv.Disconnect();
-                    recv._lowBandwidth = (bool)e.NewValue;
-                    recv.Connect((d as ReceiveView).ConnectedSource);
-                    break;
-                case "IsAudioEnabled":
-                    recv._audioEnabled = (bool)e.NewValue;
-                    break;
-                case "IsVideoEnabled":
-                    recv._videoEnabled = (bool)e.NewValue;
-                    break;
-                case "Volume":
-                    recv._volume = Math.Max(0.0f, Math.Min(1.0f, (float)e.NewValue));
-                    if (recv._wasapiOut != null)
-                    recv._wasapiOut.Volume = recv._volume;
-
-                    break;
-            }
-        }
+            DependencyProperty.Register("IsLowBandwidth", typeof(bool), typeof(ReceiveView), new PropertyMetadata(true));
 
         public ReceiveView()
         {
@@ -426,6 +404,10 @@ namespace NewTek.NDI.WPF
             {
                 if (disposing)
                 {
+                    // This call happens when the window is closing, so we set the
+                    // Id to 0 to signal we don't want to process any more frames.
+                    Interlocked.Exchange(ref _receiverId, 0);
+
                     // tell the thread to exit
                     _exitThread = true;
 
@@ -453,9 +435,6 @@ namespace NewTek.NDI.WPF
                     _recvInstancePtr = IntPtr.Zero;
                 }
 
-                // Not required, but "correct". (see the SDK documentation)
-                NDIlib.destroy();
-
                 _disposed = true;
             }
         }
@@ -475,26 +454,28 @@ namespace NewTek.NDI.WPF
         // connect to an NDI source in our Dictionary by name
         private void Connect(Source source)
         {
+            // Increment the receiver Id, meaning we have a new source to work with. If
+            // there's already another receiver thread running, the commands it has
+            // sent to the UI won't be processed.
+            int receiverId = Interlocked.Increment(ref _receiverId);
+
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 return;
-
-            if (String.IsNullOrEmpty(ReceiverName))
-                throw new ArgumentException("sourceName can not be null or empty.", ReceiverName);
-
-            using (var volOut = new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, 50))
-                _volume = volOut.Volume;
-
-            // just in case we're already connected
-            Disconnect();
 
             // before we are connected, we need to set up our image
             // it's bad practice to do this in the constructor
             if (Child == null)
                 Child = VideoSurface;
 
+            // just to be safe
+            Disconnect();
+
             // Sanity
             if (source == null || String.IsNullOrEmpty(source.Name))
                 return;
+
+            if (String.IsNullOrEmpty(ReceiverName))
+                throw new ArgumentException("ReceiverName can not be null or empty.", ReceiverName);
 
             // a source_t to describe the source to connect to.
             NDIlib.source_t source_t = new NDIlib.source_t()
@@ -512,7 +493,7 @@ namespace NewTek.NDI.WPF
                 color_format = NDIlib.recv_color_format_e.recv_color_format_BGRX_BGRA,
 
                 // we want full quality - for small previews or limited bandwidth, choose lowest
-                bandwidth = _lowBandwidth ? NDIlib.recv_bandwidth_e.recv_bandwidth_lowest : NDIlib.recv_bandwidth_e.recv_bandwidth_highest,
+                bandwidth = IsLowBandwidth ? NDIlib.recv_bandwidth_e.recv_bandwidth_lowest : NDIlib.recv_bandwidth_e.recv_bandwidth_highest,
 
                 // let NDIlib deinterlace for us if needed
                 allow_video_fields = false,
@@ -540,7 +521,8 @@ namespace NewTek.NDI.WPF
 
                 // start up a thread to receive on
                 _receiveThread = new Thread(ReceiveThreadProc) { IsBackground = true, Name = "NdiExampleReceiveThread" };
-                _receiveThread.Start();
+                // Pass the current receiver Id to the new thread
+                _receiveThread.Start(receiverId);
             }
         }
 
@@ -593,8 +575,11 @@ namespace NewTek.NDI.WPF
         }
 
         // the receive thread runs though this loop until told to exit
-        void ReceiveThreadProc()
+        void ReceiveThreadProc(object param)
         {
+            // Here we keep track of the receiver Id used for this thread.
+            int currReceiverId = (int)param;
+
             while (!_exitThread && _recvInstancePtr != IntPtr.Zero)
             {
                 // The descriptors
@@ -653,24 +638,31 @@ namespace NewTek.NDI.WPF
                         int xres = (int)videoFrame.xres;
 
                         // quick and dirty aspect ratio correction for non-square pixels - SD 4:3, 16:9, etc.
-                        double dpiX = 96.0 * (((double)xres / (double)yres) / videoFrame.picture_aspect_ratio);
+                        double dpiX = 96.0 * (videoFrame.picture_aspect_ratio / ((double)xres / (double)yres));
 
                         int stride = (int)videoFrame.line_stride_in_bytes;
                         int bufferSize = yres * stride;
 
                         // We need to be on the UI thread to write to our bitmap
                         // Not very efficient, but this is just an example
-                        Dispatcher.BeginInvoke(new Action(delegate
+                        Dispatcher.BeginInvoke(new Action(() =>
                         {
+                        // If the local receiver Id is not the same as the global receiver Id,
+                        // then that means that either the connection source has changed, or
+                        // the window has closed, in which case the latest receiver Id
+                        // will be 0. If either is true, we stop processing data.
+                        if (currReceiverId != _receiverId
+                                || _receiverId == 0)
+                            {
+                                return;
+                            }
+
                         // resize the writeable if needed
                         if (VideoBitmap == null ||
                                 VideoBitmap.PixelWidth != xres ||
                                 VideoBitmap.PixelHeight != yres ||
                                 Math.Abs(VideoBitmap.DpiX - dpiX) > 0.001)
                             {
-
-                                VideoBitmap = null;
-                                GC.Collect(1);
                                 VideoBitmap = new WriteableBitmap(xres, yres, dpiX, 96.0, PixelFormats.Pbgra32, null);
                                 VideoSurface.Source = VideoBitmap;
                             }
@@ -819,7 +811,7 @@ namespace NewTek.NDI.WPF
         private WriteableBitmap VideoBitmap;
 
         // should we send audio to Windows or not?
-        private bool _audioEnabled = false;
+        private bool _audioEnabled = true;
 
         // should we send video to Windows or not?
         private bool _videoEnabled = true;
@@ -839,8 +831,12 @@ namespace NewTek.NDI.WPF
 
         private bool _isPtz = false;
         private bool _canRecord = false;
-        private bool _lowBandwidth = true;
         private String _webControlUrl = String.Empty;
         private String _receiverName = String.Empty;
+
+        // This variable keeps track of the current Id of the receiver object. This
+        // is a way to avoid processing frames on the UI thread when either the
+        // connection source gets changed or the window closes.
+        private int _receiverId = 0;
     }
 }

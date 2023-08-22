@@ -529,6 +529,7 @@
                                 </Border>
 
                                 <CheckBox Tag="Show Widget Lock" IsChecked="{Binding WindowSettings.ShowIndividualLock, Mode=TwoWay}"/>
+                                <CheckBox Tag="Blink Lights (need restart)" IsChecked="{Binding WindowSettings.BlinkLights, Mode=TwoWay}"/>
                             </CompositeCollection>
                         </skin:PropertiesListView>
                         <Grid Background="Transparent" DataContext="{Binding GlobalSettings, Source={StaticResource Locator}}">
@@ -561,14 +562,26 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
                                         <TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" Text="{e:Localize Static Global Variables}" FontSize="14"/>
                                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                                             <Button ToolTip="{e:Localize Add Variable}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand}" Content="&#xF415;"/>
                                             <Control Style="{StaticResource HelpBorder}" Margin="{StaticResource LeftRightStdMargin}" ToolTip="{x:Static this:Help.StaticVariables_Default}"/>
                                         </StackPanel>
                                         <Border VerticalAlignment="Center" Grid.Column="3" BorderThickness="0,2,0,0" BorderBrush="White"/>
+                                        <Grid HorizontalAlignment="Stretch" Grid.Row="1" Grid.ColumnSpan="4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock HorizontalAlignment="Center">Name</TextBlock>
+                                            <TextBlock HorizontalAlignment="Center" Grid.Column="1">Value</TextBlock>
+                                        </Grid>
                                     </Grid>
-                                    <ListView BorderBrush="Transparent" ItemsSource="{Binding Variables}">
+                                    <ListView BorderBrush="Transparent" ItemsSource="{Binding Variables}" Background="Transparent">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
@@ -617,19 +630,40 @@
 
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="ListViewItem">
-                                                <Setter Property="Template">
+                                        <ListView.Style>
+                                            <Style>
+                                                <Setter Property="ListView.ItemContainerStyle">
                                                     <Setter.Value>
-                                                        <ControlTemplate TargetType="ListViewItem">
-                                                            <Border Margin="0,2">
-                                                                <ContentPresenter/>
-                                                            </Border>
-                                                        </ControlTemplate>
+                                                        <Style TargetType="ListViewItem">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ListViewItem">
+                                                                        <Border Margin="0,2">
+                                                                            <ContentPresenter/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
                                                     </Setter.Value>
                                                 </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Variables.Count}" Value="0">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="ListView.Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ListView">
+                                                                        <Border Margin="0,2">
+                                                                            <TextBlock TextAlignment="Center" Style="{StaticResource CaptionText}">CLICK "Append Variable" TO ADD NEW VARIABLE</TextBlock>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
                                             </Style>
-                                        </ListView.ItemContainerStyle>
+                                        </ListView.Style>
                                     </ListView>
                                     <Button Width="Auto" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding AddItemCommand}" Content="Append Variable"/>
                                 </StackPanel>

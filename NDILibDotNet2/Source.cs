@@ -37,17 +37,17 @@ namespace NewTek.NDI
             private set
             {
                 _name = value;
-                
+
                 int parenIdx = _name.IndexOf(" (");
                 _computerName = _name.Substring(0, parenIdx);
-                
+
                 _sourceName = Regex.Match(_name, @"(?<=\().+?(?=\))").Value;
 
                 String uriString = String.Format("ndi://{0}/{1}", _computerName, System.Net.WebUtility.UrlEncode(_sourceName));
 
                 if (!Uri.TryCreate(uriString, UriKind.Absolute, out _uri))
                     _uri = null;
-                
+
             }
         }
 
@@ -60,7 +60,7 @@ namespace NewTek.NDI
         {
             get { return _sourceName; }
         }
-        
+
         public Uri Uri
         {
             get { return _uri; }

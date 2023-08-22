@@ -603,7 +603,7 @@ namespace vMixController.Widgets
 
             var input = GetPropertyControl<InputSelectorControl>();
             input.Items = null;
-            input.Items = _internalState?.Inputs;
+            input.Items = State?.Inputs;
             input.Title = "Input";
             input.Value = InputKey;
 

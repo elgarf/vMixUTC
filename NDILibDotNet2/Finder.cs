@@ -14,17 +14,9 @@ namespace NewTek.NDI
         {
             get { return _sourceList; }
         }
-        
+
         public Finder(bool showLocalSources = false, String[] groups = null, String[] extraIps = null)
         {
-            if (!NDIlib.initialize())
-            {
-                if (!NDIlib.is_supported_CPU())
-                    throw new InvalidOperationException("CPU incompatible with NDI.");
-                else
-                    throw new InvalidOperationException("Unable to initialize NDI.");
-            }
-
             BindingOperations.EnableCollectionSynchronization(_sourceList, _sourceLock);
 
             IntPtr groupsNamePtr = IntPtr.Zero;
@@ -43,7 +35,7 @@ namespace NewTek.NDI
                 }
 
                 groupsNamePtr = UTF.StringToUtf8(flatGroups.ToString());
-            }  
+            }
 
             // This is also optional.
             // The list of additional IP addresses that exist that we should query for 
@@ -71,7 +63,7 @@ namespace NewTek.NDI
                 }
 
                 extraIpsPtr = UTF.StringToUtf8(flatIps.ToString());
-            }  
+            }
 
             // how we want our find to operate
             NDIlib.find_create_t findDesc = new NDIlib.find_create_t()
@@ -100,14 +92,14 @@ namespace NewTek.NDI
             _findThread = new Thread(FindThreadProc) { IsBackground = true, Name = "NdiFindThread" };
             _findThread.Start();
         }
-        
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        ~Finder() 
+        ~Finder()
         {
             Dispose(false);
         }
@@ -136,8 +128,6 @@ namespace NewTek.NDI
                     _findInstancePtr = IntPtr.Zero;
                 }
 
-                NDIlib.destroy();
-
                 _disposed = true;
             }
         }
@@ -152,7 +142,7 @@ namespace NewTek.NDI
             while (!_exitThread)
             {
                 // Wait up to 500ms sources to change
-                if(NDIlib.find_wait_for_sources(_findInstancePtr, 500))
+                if (NDIlib.find_wait_for_sources(_findInstancePtr, 500))
                 {
                     uint NumSources = 0;
                     IntPtr SourcesPtr = NDIlib.find_get_current_sources(_findInstancePtr, ref NumSources);
@@ -184,11 +174,11 @@ namespace NewTek.NDI
         private IntPtr _findInstancePtr = IntPtr.Zero;
 
         private ObservableCollection<Source> _sourceList = new ObservableCollection<Source>();
-        private object _sourceLock = new object();        
+        private object _sourceLock = new object();
 
         // a thread to find on so that the UI isn't dragged down
         Thread _findThread = null;
-        
+
         // a way to exit the thread safely
         bool _exitThread = false;
     }

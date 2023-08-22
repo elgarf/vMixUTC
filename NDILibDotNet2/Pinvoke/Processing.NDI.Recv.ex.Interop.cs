@@ -1,11 +1,11 @@
 // NOTE : The following MIT license applies to this file ONLY and not to the SDK as a whole. Please review the SDK documentation 
 // for the description of the full license terms, which are also provided in the file "NDI License Agreement.pdf" within the SDK or 
-// online at http://new.tk/ndisdk_license/. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
-// terms. The full NDI SDK may be downloaded at http://ndi.tv/
+// online at http://ndi.link/ndisdk_license. Your use of any part of this SDK is acknowledgment that you agree to the SDK license 
+// terms. The full NDI SDK may be downloaded at http://ndi.video/
 //
 //*************************************************************************************************************************************
 // 
-// Copyright(c) 2014-2020, NewTek, inc.
+// Copyright (C) 2023 Vizrt NDI AB. All rights reserved.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation 
 // files(the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, 
@@ -222,6 +222,18 @@ namespace NewTek
 				return  UnsafeNativeMethods.recv_ptz_exposure_manual_64( p_instance,  exposure_level);
 			else
 				return  UnsafeNativeMethods.recv_ptz_exposure_manual_32( p_instance,  exposure_level);
+		}
+
+		// Manually set the camera exposure parameters
+		// iris = 0.0(dark) ... 1.0(light)
+		// gain = 0.0(dark) ... 1.0(light)
+		// shutter_speed = 0.0(slow) ... 1.0(fast)
+		public static bool recv_ptz_exposure_manual_v2(IntPtr p_instance, float iris, float gain, float shutter_speed)
+		{
+			if (IntPtr.Size == 8)
+				return UnsafeNativeMethods.recv_ptz_exposure_manual_v2_64(p_instance, iris, gain, shutter_speed);
+			else
+				return UnsafeNativeMethods.recv_ptz_exposure_manual_v2_32(p_instance, iris, gain, shutter_speed);
 		}
 
 		//****************************************************************************************************************************************************
@@ -444,6 +456,17 @@ namespace NewTek
 			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_recv_ptz_exposure_manual", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
 			[return: MarshalAsAttribute(UnmanagedType.U1)]
 			internal static extern bool recv_ptz_exposure_manual_32(IntPtr p_instance, float exposure_level);
+
+			// Manually set the camera exposure parameters
+			// iris = 0.0(dark) ... 1.0(light)
+			// gain = 0.0(dark) ... 1.0(light)
+			// shutter_speed = 0.0(slow) ... 1.0(fast)
+			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_recv_ptz_exposure_manual_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			[return: MarshalAsAttribute(UnmanagedType.U1)]
+			internal static extern bool recv_ptz_exposure_manual_v2_64(IntPtr p_instance, float iris, float gain, float shutter_speed);
+			[DllImport("Processing.NDI.Lib.x86.dll", EntryPoint = "NDIlib_recv_ptz_exposure_manual_v2", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+			[return: MarshalAsAttribute(UnmanagedType.U1)]
+			internal static extern bool recv_ptz_exposure_manual_v2_32(IntPtr p_instance, float iris, float gain, float shutter_speed);
 
 			// recv_recording_start 
 			[DllImport("Processing.NDI.Lib.x64.dll", EntryPoint = "NDIlib_recv_recording_start", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]

@@ -7,19 +7,11 @@ namespace NewTek.NDI
 {
     public class Sender : IDisposable
     {
-        public Sender(String sourceName, bool clockVideo=true, bool clockAudio=false, String[] groups = null, String failoverName=null)
+        public Sender(String sourceName, bool clockVideo = true, bool clockAudio = false, String[] groups = null, String failoverName = null)
         {
             if (String.IsNullOrEmpty(sourceName))
             {
                 throw new ArgumentException("sourceName can not be null or empty.", sourceName);
-            }
-
-            if (!NDIlib.initialize())
-            {
-                if(!NDIlib.is_supported_CPU())
-                    throw new InvalidOperationException("CPU incompatible with NDI.");
-                else
-                    throw new InvalidOperationException("Unable to initialize NDI.");
             }
 
             // .Net interop doesn't handle UTF-8 strings, so do it manually
@@ -29,7 +21,7 @@ namespace NewTek.NDI
             IntPtr groupsNamePtr = IntPtr.Zero;
 
             // make a flat list of groups if needed
-            if(groups != null)
+            if (groups != null)
             {
                 StringBuilder flatGroups = new StringBuilder();
                 foreach (String group in groups)
@@ -42,7 +34,7 @@ namespace NewTek.NDI
                 }
 
                 groupsNamePtr = UTF.StringToUtf8(flatGroups.ToString());
-            }            
+            }
 
             // Create an NDI source description
             NDIlib.send_create_t createDesc = new NDIlib.send_create_t()
@@ -108,7 +100,7 @@ namespace NewTek.NDI
 
             return NDIlib.send_get_tally(_sendInstancePtr, ref tally, (uint)timeout);
         }
-        
+
         // The number of current connections
         public int Connections
         {
@@ -164,26 +156,24 @@ namespace NewTek.NDI
             GC.SuppressFinalize(this);
         }
 
-        ~Sender() 
+        ~Sender()
         {
             Dispose(false);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing) 
+            if (disposing)
             {
                 if (_sendInstancePtr != IntPtr.Zero)
                 {
                     NDIlib.send_destroy(_sendInstancePtr);
                     _sendInstancePtr = IntPtr.Zero;
                 }
-
-                NDIlib.destroy();
             }
         }
 
         private IntPtr _sendInstancePtr = IntPtr.Zero;
-        private NDIlib.tally_t _ndiTally = new NDIlib.tally_t();                    
+        private NDIlib.tally_t _ndiTally = new NDIlib.tally_t();
     }
 }

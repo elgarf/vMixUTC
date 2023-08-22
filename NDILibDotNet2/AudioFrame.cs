@@ -148,8 +148,6 @@ namespace NewTek.NDI
                     Marshal.FreeHGlobal(_ndiAudioFrame.p_data);
                     _ndiAudioFrame.p_data = IntPtr.Zero;
                 }
-
-                NDIlib.destroy();
             }
         }
 

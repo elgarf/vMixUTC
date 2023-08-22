@@ -447,6 +447,36 @@ namespace vMixController.Classes
         }
 
         /// <summary>
+        /// The <see cref="BlinkLights" /> property's name.
+        /// </summary>
+        public const string BlinkLightsPropertyName = "BlinkLights";
+
+        private bool _blinkLights = true;
+
+        /// <summary>
+        /// Sets and gets the ShowIndividualLock property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool BlinkLights
+        {
+            get
+            {
+                return _blinkLights;
+            }
+
+            set
+            {
+                if (_blinkLights == value)
+                {
+                    return;
+                }
+
+                _blinkLights = value;
+                RaisePropertyChanged(BlinkLightsPropertyName);
+            }
+        }
+
+        /// <summary>
         /// The <see cref="Password" /> property's name.
         /// </summary>
         public const string PasswordPropertyName = "Password";

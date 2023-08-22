@@ -29,7 +29,7 @@ namespace NewTek.NDI
 
         // this version will also return the length of the utf8 string
         // This REQUIRES you to use Marshal.FreeHGlobal() on the returned pointer!
-        public static IntPtr StringToUtf8(String managedString, out int utf8Length )
+        public static IntPtr StringToUtf8(String managedString, out int utf8Length)
         {
             utf8Length = Encoding.UTF8.GetByteCount(managedString);
 
