@@ -1453,6 +1453,13 @@
 		<StringDescription>Colour</StringDescription>
 	</vMixFunctionReference>
 	<vMixFunctionReference>
+		<Description>Change Colour of Text in Title in HTML format (#xxxxxx)</Description>
+		<Function>SetColor</Function>
+		<FormatString>Function=SetColor&amp;Value={2}&amp;Input={0}&amp;SelectedIndex={1}</FormatString>
+		<IntDescription>Index</IntDescription>
+		<StringDescription>Colour</StringDescription>
+	</vMixFunctionReference>
+	<vMixFunctionReference>
 		<Description>Change Ticker Speed.</Description>
 		<Function>SetTickerSpeed</Function>
 		<IntDescription>Index</IntDescription>

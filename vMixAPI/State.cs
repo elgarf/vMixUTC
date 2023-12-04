@@ -674,6 +674,14 @@ namespace vMixAPI
                 "SelectedIndex", index.ToString());
         }
 
+        public static void TitleSetColor(this State state, string input, string value, int index)
+        {
+            state?.SendFunction("Function", "SetColor",
+                "Value", value,
+                "Input", input.ToString(),
+                "SelectedIndex", index.ToString());
+        }
+
         public static void TitleSetImage(this State state, string input, string value, int index)
         {
             state?.SendFunction("Function", "SetImage",

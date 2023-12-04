@@ -28,7 +28,8 @@ namespace vMixAPI
         [XmlElement(typeof(InputText), ElementName = "text"),
     XmlElement(typeof(InputOverlay), ElementName = "overlay"),
     XmlElement(typeof(InputPosition), ElementName = "position"),
-    XmlElement(typeof(InputImage), ElementName = "image")]
+    XmlElement(typeof(InputImage), ElementName = "image"),
+    XmlElement(typeof(InputColor), ElementName = "color")]
         public ObservableCollection<InputBase> Elements { get; set; }
 
         // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
