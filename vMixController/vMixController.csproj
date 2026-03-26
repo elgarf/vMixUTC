@@ -13,7 +13,6 @@
     <Deterministic>false</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
     <DebugType>pdbonly</DebugType>
@@ -32,14 +30,12 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Design" />
     <Reference Include="System.Web" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ncalc\Evaluant.Calculator\NCalc.csproj" />
     <ProjectReference Include="..\HighPrecisionTimer\HighPrecisionTimer.csproj" />
@@ -49,66 +45,64 @@
     <ProjectReference Include="..\vMixControllerSkin\vMixControllerSkin.csproj" />
     <ProjectReference Include="..\vMixStreamDeckLibrary\vMixStreamDeckLibrary.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
-    <PackageReference Include="Common.Logging" Version="3.4.1" />
-    <PackageReference Include="Common.Logging.Core" Version="3.4.1" />
-    <PackageReference Include="CommonServiceLocator" Version="2.0.7" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Costura.Fody" Version="6.0.0">
+    <PackageReference Include="AvalonEdit" />
+    <PackageReference Include="Common.Logging" />
+    <PackageReference Include="Common.Logging.Core" />
+    <PackageReference Include="CommonServiceLocator" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Costura.Fody">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
-    <PackageReference Include="ExtendedNumerics.BigDecimal" Version="3003.0.0.346" />
-    <PackageReference Include="Fody" Version="6.9.3">
+    <PackageReference Include="Extended.Wpf.Toolkit" />
+    <PackageReference Include="ExtendedNumerics.BigDecimal" />
+    <PackageReference Include="Fody">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-    <PackageReference Include="Melanchall.DryWetMidi" Version="8.0.3" />
-    <PackageReference Include="MemoryMessagePipe" Version="1.0.5.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="MouseKeyHook" Version="5.7.1" />
-    <PackageReference Include="NKristek.Wpf.Converters" Version="2.0.2" />
-    <PackageReference Include="NLog" Version="6.1.1" />
-    <PackageReference Include="NLog.Schema" Version="6.1.1" />
-    <PackageReference Include="Octokit" Version="14.0.0" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-    <PackageReference Include="Parlot" Version="1.5.7" />
-    <PackageReference Include="Sanford.Multimedia.Midi" Version="6.7.3" />
-    <PackageReference Include="SplashScreenGdip" Version="1.0.8" />
-    <PackageReference Include="System.Buffers" Version="4.6.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="10.0.5" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="10.0.5" />
-    <PackageReference Include="System.IO.Pipelines" Version="10.0.5" />
-    <PackageReference Include="System.Memory" Version="4.6.3" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.5" />
-    <PackageReference Include="System.Text.Json" Version="10.0.5" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.6.2" />
-    <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
-    <PackageReference Include="WatsonWebsocket" Version="4.1.8" />
-    <PackageReference Include="WpfScreenHelper" Version="2.1.1" />
-    <PackageReference Include="WriteableBitmapEx" Version="1.6.11" />
+    <PackageReference Include="HtmlAgilityPack" />
+    <PackageReference Include="Melanchall.DryWetMidi" />
+    <PackageReference Include="MemoryMessagePipe" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+    <PackageReference Include="MouseKeyHook" />
+    <PackageReference Include="NKristek.Wpf.Converters" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="NLog.Schema" />
+    <PackageReference Include="Octokit" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" />
+    <PackageReference Include="Parlot" />
+    <PackageReference Include="Sanford.Multimedia.Midi" />
+    <PackageReference Include="SplashScreenGdip" />
+    <PackageReference Include="System.Buffers" />
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="System.IO.Pipelines" />
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Numerics.Vectors" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+    <PackageReference Include="System.Text.Encodings.Web" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" />
+    <PackageReference Include="System.ValueTuple" />
+    <PackageReference Include="VirtualizingWrapPanel" />
+    <PackageReference Include="WatsonWebsocket" />
+    <PackageReference Include="WpfScreenHelper" />
+    <PackageReference Include="WriteableBitmapEx" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="costura-mac-x64\Melanchall_DryWetMidi_Native64.dylib" />
     <EmbeddedResource Include="costura-win-x86\Melanchall_DryWetMidi_Native32.dll" />
@@ -119,7 +113,6 @@
     <EmbeddedResource Include="costura-win-x64\Processing.NDI.Lib.x64.dll" />
     <EmbeddedResource Include="costura-win-x86\Processing.NDI.Lib.x86.dll" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Images\Function.png" />
     <Resource Include="Images\Input.png" />
@@ -127,7 +120,6 @@
     <Resource Include="settings-gears.ico" />
     <Resource Include="Grid.png" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="Colours.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -148,13 +140,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Examples\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -175,16 +165,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
-
   <Target Name="CleanupDataProvidersFolder" AfterTargets="Build" Condition="Exists('$(TargetDir)DataProviders')">
     <ItemGroup>
-      <_ProviderFiles
-        Include="$(TargetDir)DataProviders\*DataProvider.dll"
-        Exclude="$(TargetDir)DataProviders\vMixControllerDataProvider.dll" />
+      <_ProviderFiles Include="$(TargetDir)DataProviders\*DataProvider.dll" Exclude="$(TargetDir)DataProviders\vMixControllerDataProvider.dll" />
       <_AllProviderFiles Include="$(TargetDir)DataProviders\**\*.*" />
       <_DeleteProviderFiles Include="@(_AllProviderFiles)" Exclude="@(_ProviderFiles)" />
       <_ProviderSubdirs Include="$(TargetDir)DataProviders\**\" Exclude="$(TargetDir)DataProviders\" />
@@ -192,11 +178,9 @@
     <Delete Files="@(_DeleteProviderFiles)" TreatErrorsAsWarnings="true" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Get-ChildItem -LiteralPath '$(TargetDir)DataProviders' -Directory -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | ForEach-Object { if (-not (Get-ChildItem -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue } }&quot;" />
   </Target>
-
   <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
-    <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
+    <Delete Files="@(ReferenceCopyLocalPaths-&gt;'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
-
   <Target Name="CleanupLegacyMelanchallFiles" AfterTargets="Build">
     <Delete Files="$(TargetDir)Melanchall*.dll;$(TargetDir)Melanchall*.dylib" TreatErrorsAsWarnings="true" />
     <RemoveDir Directories="$(TargetDir)net472" Condition="Exists('$(TargetDir)net472')" />

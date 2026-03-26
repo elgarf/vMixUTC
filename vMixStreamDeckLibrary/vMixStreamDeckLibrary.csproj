@@ -9,7 +9,6 @@
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -19,7 +18,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>TRACE</DefineConstants>
@@ -28,17 +26,14 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Resources.resources" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="My\MySettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -50,8 +45,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="WatsonWebsocket" Version="4.1.8" />
+    <PackageReference Include="WatsonWebsocket" />
   </ItemGroup>
 </Project>
