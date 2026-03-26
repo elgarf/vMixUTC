@@ -1,5 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,28 +22,28 @@ namespace vMixController.Widgets
         public override string Type => "Clock";
         public override int MaxCount => 1;
 
-        // --- Поля ---
+        // --- ���� ---
 
-        // Таймер остается прежним, но с интервалом в 1 секунду - чаще не нужно.
+        // ������ �������� �������, �� � ���������� � 1 ������� - ���� �� �����.
         [NonSerialized]
         private DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Render) { Interval = TimeSpan.FromSeconds(1) };
 
-        // Храним отсортированную копию для быстрой обработки
+        // ������ ��������������� ����� ��� ������� ���������
         [NonSerialized]
         private List<ScheduledEvent> _sortedEvents = new List<ScheduledEvent>();
 
-        // Используем HashSet для быстрой проверки сработавших событий (O(1) в среднем)
+        // ���������� HashSet ��� ������� �������� ����������� ������� (O(1) � �������)
         [NonSerialized]
         private HashSet<ScheduledEvent> _firedEventsToday = new HashSet<ScheduledEvent>();
 
         [NonSerialized]
         private DateTime _lastTickDate = DateTime.MinValue;
 
-        // --- Свойства MVVM ---
+        // --- �������� MVVM ---
 
         /// <summary>
-        /// Основная коллекция событий для привязки к UI.
-        /// Используем новую, строго типизированную модель.
+        /// �������� ��������� ������� ��� �������� � UI.
+        /// ���������� �����, ������ �������������� ������.
         /// </summary>
         public ObservableCollection<ScheduledEvent> Events { get; set; } = new ObservableCollection<ScheduledEvent>();
 
@@ -55,37 +55,24 @@ namespace vMixController.Widgets
         /// </summary>
         public string NextEventAt
         {
-            get
-            {
-                return _nextEventAt;
-            }
-
-            set
-            {
-                if (_nextEventAt == value)
-                {
-                    return;
-                }
-
-                _nextEventAt = value;
-                RaisePropertyChanged(nameof(NextEventAt));
-            }
+            get => _nextEventAt;
+            set => SetPropertyValue(ref _nextEventAt, value, nameof(NextEventAt));
         }
 
 
-        // --- Конструктор и методы ---
+        // --- ����������� � ������ ---
 
         public vMixControlClock()
         {
             _timer.Tick += Timer_Tick;
-            // Подписываемся на изменение коллекции, чтобы поддерживать _sortedEvents в актуальном состоянии
+            // ������������� �� ��������� ���������, ����� ������������ _sortedEvents � ���������� ���������
             Events.CollectionChanged += (s, e) => UpdateSortedEvents();
         }
 
         private void UpdateSortedEvents()
         {
             _sortedEvents = Events.OrderBy(x => x.TimeOfDay).ToList();
-            // После изменения списка событий нужно пересчитать следующее событие
+            // ����� ��������� ������ ������� ����� ����������� ��������� �������
             UpdateNextEventDisplay();
         }
 
@@ -93,7 +80,7 @@ namespace vMixController.Widgets
         {
             var now = DateTime.Now;
 
-            // 1. Проверяем, не наступил ли новый день
+            // 1. ���������, �� �������� �� ����� ����
             if (now.Date > _lastTickDate.Date)
             {
                 _firedEventsToday.Clear();
@@ -101,30 +88,30 @@ namespace vMixController.Widgets
             }
             _lastTickDate = now;
 
-            // 2. Определяем сегодняшний день недели
+            // 2. ���������� ����������� ���� ������
             var today = ToDaysOfWeek(now.DayOfWeek);
 
-            // 3. Ищем и запускаем события, которые должны были сработать
+            // 3. ���� � ��������� �������, ������� ������ ���� ���������
             foreach (var ev in _sortedEvents)
             {
-                // Условия срабатывания:
-                // - Событие запланировано на сегодня
-                // - Время события уже наступило
-                // - Событие еще не срабатывало сегодня
+                // ������� ������������:
+                // - ������� ������������� �� �������
+                // - ����� ������� ��� ���������
+                // - ������� ��� �� ����������� �������
                 if (ev.Days.HasFlag(today) && now >= ev.TimeOfDay && !_firedEventsToday.Contains(ev))
                 {
-                    Messenger.Default.Send(new HotkeyLinkMessage() { Link = ev.Command, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
+                    Messenger.Send(new HotkeyLinkMessage() { Link = ev.Command, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
                     _firedEventsToday.Add(ev);
                     Debug.Print($"Event '{ev.Command}' at {ev.TimeOfDay} fired.");
 
-                    // После срабатывания события, немедленно обновляем информацию о следующем
+                    // ����� ������������ �������, ���������� ��������� ���������� � ���������
                     UpdateNextEventDisplay();
                 }
             }
         }
 
         /// <summary>
-        /// Находит следующее запланированное событие и обновляет свойство NextEventAt.
+        /// ������� ��������� ��������������� ������� � ��������� �������� NextEventAt.
         /// </summary>
         private void UpdateNextEventDisplay()
         {
@@ -133,7 +120,7 @@ namespace vMixController.Widgets
             {
                 string dayString = next?.Date.Date == DateTime.Today ? "Today" : next?.Date.ToString("dddd", CultureInfo.InvariantCulture);
                 NextEventAt = $"Next Event: <{next?.Event.Command}> at {next?.Event.TimeOfDay:HH\\:mm\\:ss} on {dayString}";
-                // Локализация может быть добавлена здесь
+                // ����������� ����� ���� ��������� �����
                 // NextEventAt = string.Format("{0}: <{1}> {2} {3:hh\\:mm\\:ss} {4} {5}", 
                 //      LocalizationManager.Get("Next Event"), next.Event.Command, LocalizationManager.Get("at"), 
                 //      next.Event.TimeOfDay, LocalizationManager.Get("on"), dayString);
@@ -146,7 +133,7 @@ namespace vMixController.Widgets
         }
 
         /// <summary>
-        /// Ищет следующее по расписанию событие в течение ближайшей недели.
+        /// ���� ��������� �� ���������� ������� � ������� ��������� ������.
         /// </summary>
         private (ScheduledEvent Event, DateTime Date)? FindNextScheduledEvent()
         {
@@ -154,14 +141,14 @@ namespace vMixController.Widgets
 
             var now = DateTime.Now;
 
-            // Ищем событие сегодня, но позже текущего времени
+            // ���� ������� �������, �� ����� �������� �������
             foreach (var ev in _sortedEvents)
             {
                 if (ev.Days.HasFlag(ToDaysOfWeek(now.DayOfWeek)) && ev.TimeOfDay > now)
                     return (ev, now);
             }
 
-            // Если сегодня больше ничего нет, ищем в последующие 7 дней
+            // ���� ������� ������ ������ ���, ���� � ����������� 7 ����
             for (int i = 1; i <= 7; i++)
             {
                 var nextDay = now.AddDays(i);
@@ -169,35 +156,35 @@ namespace vMixController.Widgets
                 foreach (var ev in _sortedEvents)
                 {
                     if (ev.Days.HasFlag(dayOfWeek))
-                        return (ev, nextDay); // Нашли первое событие на этот день
+                        return (ev, nextDay); // ����� ������ ������� �� ���� ����
                 }
             }
 
-            return null; // Ничего не найдено в течение недели
+            return null; // ������ �� ������� � ������� ������
         }
 
-        // Вспомогательный метод для конвертации DayOfWeek в наш enum
+        // ��������������� ����� ��� ����������� DayOfWeek � ��� enum
         private static DaysOfWeek ToDaysOfWeek(DayOfWeek day)
         {
             return (DaysOfWeek)(1 << (((int)day + 6) % 7));
         }
 
 
-        // --- Переопределенные методы базового класса ---
+        // --- ���������������� ������ �������� ������ ---
 
         public override void Update()
         {
             if (!_timer.IsEnabled)
             {
-                UpdateSortedEvents(); // Первоначальная сортировка
+                UpdateSortedEvents(); // �������������� ����������
                 _timer.Start();
             }
             base.Update();
         }
 
-        // Методы GetPropertiesControls и SetProperties потребуют адаптации под новую структуру ScheduledEvent.
-        // Это зависит от реализации PropertiesControls.SchedulerControl.
-        // Предположим, что он теперь работает с ObservableCollection<ScheduledEvent>.
+        // ������ GetPropertiesControls � SetProperties ��������� ��������� ��� ����� ��������� ScheduledEvent.
+        // ��� ������� �� ���������� PropertiesControls.SchedulerControl.
+        // �����������, ��� �� ������ �������� � ObservableCollection<ScheduledEvent>.
         public override void BeforePropertiesChanged()
         {
             _timer.Stop();
@@ -207,7 +194,7 @@ namespace vMixController.Widgets
         public override void AfterPropertiesChanged()
         {
             base.AfterPropertiesChanged();
-            UpdateSortedEvents(); // Обновляем отсортированный список
+            UpdateSortedEvents(); // ��������� ��������������� ������
             _timer.Start();
         }
 
@@ -224,3 +211,5 @@ namespace vMixController.Widgets
         }
     }
 }
+
+

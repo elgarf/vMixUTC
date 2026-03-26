@@ -1,24 +1,15 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace vMixController.PropertiesControls
 {
-    /// <summary>
-    /// Логика взаимодействия для PathsControl.xaml
-    /// </summary>
-    public partial class MidiMappingControl : UserControl, INotifyPropertyChanged
+    public partial class MidiMappingControl : UserControl
     {
-
         public static readonly DependencyProperty LearnFunctionProperty =
-    DependencyProperty.Register(
-        nameof(LearnFunction),
-        typeof(Func<Widgets.MidiInterfaceKey>),
-        typeof(MidiMappingControl),
-        new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(LearnFunction), typeof(Func<Widgets.MidiInterfaceKey>), typeof(MidiMappingControl), new PropertyMetadata(null));
 
         public Func<Widgets.MidiInterfaceKey> LearnFunction
         {
@@ -27,11 +18,7 @@ namespace vMixController.PropertiesControls
         }
 
         public static readonly DependencyProperty MidisProperty =
-    DependencyProperty.Register(
-        nameof(Midis),
-        typeof(ObservableCollection<Widgets.MidiInterfaceKey>),
-        typeof(MidiMappingControl),
-        new PropertyMetadata(new ObservableCollection<Widgets.MidiInterfaceKey>()));
+            DependencyProperty.Register(nameof(Midis), typeof(ObservableCollection<Widgets.MidiInterfaceKey>), typeof(MidiMappingControl), new PropertyMetadata(new ObservableCollection<Widgets.MidiInterfaceKey>()));
 
         public ObservableCollection<Widgets.MidiInterfaceKey> Midis
         {
@@ -39,61 +26,27 @@ namespace vMixController.PropertiesControls
             set => SetValue(MidisProperty, value);
         }
 
-        private RelayCommand<Widgets.MidiInterfaceKey> _removePathCommand;
-
-        public RelayCommand<Widgets.MidiInterfaceKey> RemovePathCommand
+        [RelayCommand]
+        private void RemovePath(Widgets.MidiInterfaceKey p)
         {
-            get
-            {
-                return _removePathCommand
-                    ?? (_removePathCommand = new RelayCommand<Widgets.MidiInterfaceKey>(
-                    p =>
-                    {
-                        Midis.Remove(p);
-                    }));
-            }
+            Midis.Remove(p);
         }
 
-        private RelayCommand _addPathCommand;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        internal void RaisePropertyChanged(string property)
+        [RelayCommand]
+        private void AddPath()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            Midis.Add(new Widgets.MidiInterfaceKey { A = -1, B = -1, C = "", D = Melanchall.DryWetMidi.Core.MidiEventType.ControlChange });
         }
 
-        public RelayCommand AddPathCommand
+        [RelayCommand]
+        private void LearnMidiKey(Widgets.MidiInterfaceKey p)
         {
-            get
+            var result = LearnFunction?.Invoke();
+            if (result != null)
             {
-                return _addPathCommand
-                    ?? (_addPathCommand = new RelayCommand(
-                    () =>
-                    {
-                        Midis.Add(new Widgets.MidiInterfaceKey() { A = -1, B = -1, C = "", D = Melanchall.DryWetMidi.Core.MidiEventType.ControlChange });
-                    }));
-            }
-        }
-
-
-        private RelayCommand<Widgets.MidiInterfaceKey> _learnmidiKey;
-
-        public RelayCommand<Widgets.MidiInterfaceKey> LearnMidiKey
-        {
-            get
-            {
-                return _learnmidiKey
-                    ?? (_learnmidiKey = new RelayCommand<Widgets.MidiInterfaceKey>(
-                    p =>
-                    {
-                        var result = LearnFunction?.Invoke();
-                        if (result != null)
-                        {
-                            p.A = result.A;
-                            p.B = result.B;
-                            p.D = result.D;
-                        }
-                    }));
+                p.A = result.A;
+                p.B = result.B;
+                p.D = result.D;
             }
         }
 

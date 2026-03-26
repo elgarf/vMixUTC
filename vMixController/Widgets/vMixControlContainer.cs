@@ -64,21 +64,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<vMixControl> Controls
         {
-            get
-            {
-                return _controls;
-            }
-
-            set
-            {
-                if (_controls == value)
-                {
-                    return;
-                }
-
-                _controls = value;
-                RaisePropertyChanged(nameof(Controls));
-            }
+            get => _controls;
+            set => SetPropertyValue(ref _controls, value, nameof(Controls));
         }
 
         public string FilePath { get; set; }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using vMixController.Classes;
 using vMixController.ViewModel;
 
 namespace vMixController.Widgets
@@ -19,7 +20,7 @@ namespace vMixController.Widgets
 
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(vMixControlVariableViewer), new PropertyMetadata("", InternalPropertyChanged));
+            DependencyProperty.Register(nameof(Text), typeof(string), typeof(vMixControlVariableViewer), new PropertyMetadata("", InternalPropertyChanged));
 
         public bool ShowVariableName
         {
@@ -30,17 +31,12 @@ namespace vMixController.Widgets
         // Using a DependencyProperty as the backing store for ShowVariableName.  
         // This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowVariableNameProperty =
-            DependencyProperty.Register("ShowVariableName", typeof(bool), typeof(vMixControlVariableViewer), new PropertyMetadata(true, InternalPropertyChanged));
+            DependencyProperty.Register(nameof(ShowVariableName), typeof(bool), typeof(vMixControlVariableViewer), new PropertyMetadata(true, InternalPropertyChanged));
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// The <see cref="Variable" /> property's name.
-        /// </summary>
-        public const string VariablePropertyName = "Variable";
 
         private string _variable = "";//Basic, Basketball, American Football
 
@@ -50,33 +46,34 @@ namespace vMixController.Widgets
         /// </summary>
         public string Variable
         {
-            get
+            get => _variable;
+            set => SetPropertyValue(ref _variable, value, nameof(Variable), _ =>
             {
-                return _variable;
-            }
-
-            set
-            {
-                if (_variable == value)
-                {
-                    return;
-                }
-
-                _variable = value;
-
                 BindingOperations.ClearBinding(this, TextProperty);
-                var globalSettings = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings;
+                var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                    ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                    : null;
+                if (globalSettings == null)
+                    return;
+
                 Binding b = new Binding("B");
                 foreach (var variable in globalSettings.Variables)
                     if (variable.A == _variable)
                         b.Source = variable;
                 BindingOperations.SetBinding(this, TextProperty, b);
-
-                RaisePropertyChanged(VariablePropertyName);
-            }
+            });
         }
 
-        public List<string> VariableList { get => ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings.Variables.Select(x => x.A).ToList(); }
+        public List<string> VariableList
+        {
+            get
+            {
+                var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                    ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                    : null;
+                return globalSettings?.Variables.Select(x => x.A).ToList() ?? new List<string>();
+            }
+        }
 
         public override string Type
         {

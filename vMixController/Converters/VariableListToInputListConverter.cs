@@ -1,4 +1,3 @@
-﻿using CommonServiceLocator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,7 +40,7 @@ namespace vMixController.Converters
 
                 if (!v.A.StartsWith(VARIABLEPREFIX)) continue;
 
-                var state = ServiceLocator.Current.GetInstance<MainViewModel>().Model;
+                var state = vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().Model;
                 if (state == null) break;
 
                 var prefix = LocalizationManager.Instance["Converter.VariableListToInputList.VarPrefix"];
@@ -84,3 +83,5 @@ namespace vMixController.Converters
         }
     }
 }
+
+

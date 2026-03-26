@@ -1,5 +1,7 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -11,19 +13,17 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using vMixController.Extensions;
-using CommonServiceLocator;
 using System.Xml.Serialization;
 using System.Threading;
+using vMixController.Classes.Scripting;
+using vMixAPI;
 
 namespace vMixController.ViewModel
 {
     /// <summary>
     /// This class contains properties that a View can data bind to.
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
     /// </summary>
-    public class vMixWidgetSettingsViewModel : ViewModelBase
+    public partial class vMixWidgetSettingsViewModel : ViewModelBase
     {
 
         public static List<Triple<Color, Color, string>> Colors = new List<Triple<Color, Color, string>>()
@@ -42,444 +42,146 @@ namespace vMixController.ViewModel
             new Triple<Color, Color, string>(Color.FromRgb(255, 215, 0), Color.FromRgb(255, 255, 0), "Yellow")
         };
 
-        private Quadriple<double?, double?, double?, double?> _windowProperties = new Quadriple<double?, double?, double?, double?>() { A = 512, B = 512, C = 0, D = 0 };
+        [ObservableProperty]
+        private Quadriple<double?, double?, double?, double?> windowProperties = new Quadriple<double?, double?, double?, double?>() { A = 512, B = 512, C = 0, D = 0 };
 
-        /// <summary>
-        /// Sets and gets the WindowProperties property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Quadriple<double?, double?, double?, double?> WindowProperties
+        [ObservableProperty]
+        private Visibility periodVisibility = Visibility.Visible;
+
+        [ObservableProperty]
+        private vMixAPI.State model = null;
+
+        [ObservableProperty]
+        private ObservableCollection<Input> availableInputs = new ObservableCollection<Input>();
+
+        private vMixAPI.State _subscribedModel;
+
+        partial void OnModelChanged(vMixAPI.State value)
         {
-            get
+            if (!ReferenceEquals(_subscribedModel, value))
             {
-                return _windowProperties;
+                if (_subscribedModel != null)
+                    _subscribedModel.OnStateSynced -= Model_OnStateSynced;
+
+                _subscribedModel = value;
+
+                if (_subscribedModel != null)
+                    _subscribedModel.OnStateSynced += Model_OnStateSynced;
             }
 
-            set
-            {
-                if (_windowProperties == value)
-                {
-                    return;
-                }
-
-                _windowProperties = value;
-                RaisePropertyChanged(nameof(WindowProperties));
-            }
+            RefreshAvailableInputs();
         }
 
-        private Visibility _periodVisibility = Visibility.Visible;
-
-        /// <summary>
-        /// Sets and gets the PeriodVisibility property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Visibility PeriodVisibility
+        private void Model_OnStateSynced(object sender, StateSyncedEventArgs e)
         {
-            get
-            {
-                return _periodVisibility;
-            }
-
-            set
-            {
-                if (_periodVisibility == value)
-                {
-                    return;
-                }
-
-                _periodVisibility = value;
-                RaisePropertyChanged(nameof(PeriodVisibility));
-            }
+            var dispatcher = App.Current?.Dispatcher;
+            if (dispatcher == null || dispatcher.CheckAccess())
+                RefreshAvailableInputs();
+            else
+                dispatcher.BeginInvoke(new System.Action(RefreshAvailableInputs));
         }
 
-        private vMixAPI.State _model = null;
-
-        /// <summary>
-        /// Sets and gets the Model property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public vMixAPI.State Model
+        private void RefreshAvailableInputs()
         {
-            get
-            {
-                return _model;
-            }
+            var source = Model;
+            if ((source?.Inputs == null || source.Inputs.Count == 0) && AppServices.IsRegistered<MainViewModel>())
+                source = AppServices.GetRequiredService<MainViewModel>().Model;
 
-            set
-            {
-                if (_model == value)
-                {
-                    return;
-                }
-
-                _model = value;
-                RaisePropertyChanged(nameof(Model));
-            }
+            AvailableInputs = new ObservableCollection<Input>(source?.Inputs ?? new List<Input>());
         }
 
-        private string _name = "";
+        public ObservableCollection<Pair<string, string>> GlobalVariables =>
+            AppServices.GetRequiredService<GlobalVariablesViewModel>().Variables;
 
-        /// <summary>
-        /// Sets and gets the Name property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string Name
+        public ObservableCollection<vMixFunctionReference> Functions =>
+            AppServices.GetRequiredService<MainViewModel>().Functions;
+
+        public ObservableCollection<vMixNewFunctionReference> NewFunctions =>
+            AppServices.GetRequiredService<MainViewModel>().NewFunctions;
+
+        [ObservableProperty]
+        private string name = "";
+
+        [ObservableProperty]
+        private Color color = Colors[0].A;
+
+        [ObservableProperty]
+        private ObservableCollection<Hotkey> hotkey = new ObservableCollection<Classes.Hotkey>();
+
+        [ObservableProperty]
+        private bool isHotkeysVisible = true;
+
+        [ObservableProperty]
+        private int period = 0;
+
+        [ObservableProperty]
+        private int zIndex = 0;
+
+        [ObservableProperty]
+        private UserControl[] widgetPropertiesControls = null;
+
+        [ObservableProperty]
+        private string type = "";
+
+        [ObservableProperty]
+        private vMixControl widget = null;
+
+        [RelayCommand]
+        private void Ok()
         {
-            get
-            {
-                return _name;
-            }
-
-            set
-            {
-                if (_name == value)
-                {
-                    return;
-                }
-
-                _name = value;
-                RaisePropertyChanged(nameof(Name));
-            }
+            Messenger.Send(new ValueChangedMessage<bool>(true));
         }
 
-        private Color _color = Colors[0].A;
-
-        /// <summary>
-        /// Sets and gets the Color property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Color Color
+        [RelayCommand]
+        private void Cancel()
         {
-            get
-            {
-                return _color;
-            }
-
-            set
-            {
-                if (_color == value)
-                {
-                    return;
-                }
-
-                _color = value;
-                RaisePropertyChanged(nameof(Color));
-            }
+            Messenger.Send(new ValueChangedMessage<bool>(false));
         }
 
-        private ObservableCollection<Hotkey> _hotkey = new ObservableCollection<Classes.Hotkey>();
-
-        /// <summary>
-        /// Sets and gets the Hotkey property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<Hotkey> Hotkey
+        [RelayCommand]
+        private void SaveTemplate()
         {
-            get
+            var viewModel = vMixController.Classes.AppServices.GetRequiredService<vMixController.ViewModel.MainViewModel>();
+            var obj = viewModel.WidgetTemplates.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.A == Name).FirstOrDefault();
+            var cpy = Widget.Copy();
+            if (cpy != null)
             {
-                return _hotkey;
-            }
-
-            set
-            {
-                if (_hotkey == value)
-                {
-                    return;
-                }
-
-                _hotkey = value;
-                RaisePropertyChanged(nameof(Hotkey));
-            }
-        }
-
-        private bool _isHotkeysVisible = true;
-
-        /// <summary>
-        /// Sets and gets the IsHotkeysVisible property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsHotkeysVisible
-        {
-            get
-            {
-                return _isHotkeysVisible;
-            }
-
-            set
-            {
-                if (_isHotkeysVisible == value)
-                {
-                    return;
-                }
-
-                _isHotkeysVisible = value;
-                RaisePropertyChanged(nameof(IsHotkeysVisible));
-            }
-        }
-
-        private int _period = 0;
-
-        /// <summary>
-        /// Sets and gets the Period property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int Period
-        {
-            get
-            {
-                return _period;
-            }
-
-            set
-            {
-                if (_period == value)
-                {
-                    return;
-                }
-
-                _period = value;
-                RaisePropertyChanged(nameof(Period));
-            }
-        }
-
-        private int _zIndex = 0;
-
-        /// <summary>
-        /// Sets and gets the ZIndex property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int ZIndex
-        {
-            get
-            {
-                return _zIndex;
-            }
-
-            set
-            {
-                if (_zIndex == value)
-                {
-                    return;
-                }
-
-                _zIndex = value;
-                RaisePropertyChanged(nameof(ZIndex));
-            }
-        }
-
-
-        private UserControl[] _widgetPropertiesControls = null;
-
-        /// <summary>
-        /// Sets and gets the WidgetPropertiesControls property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public UserControl[] WidgetPropertiesControls
-        {
-            get
-            {
-                return _widgetPropertiesControls;
-            }
-
-            set
-            {
-                if (_widgetPropertiesControls == value)
-                {
-                    return;
-                }
-
-                _widgetPropertiesControls = value;
-                RaisePropertyChanged(nameof(WidgetPropertiesControls));
-            }
-        }
-
-        private string _type = "";
-
-        /// <summary>
-        /// Sets and gets the Type property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string Type
-        {
-            get
-            {
-                return _type;
-            }
-
-            set
-            {
-                if (_type == value)
-                {
-                    return;
-                }
-
-                _type = value;
-                RaisePropertyChanged(nameof(Type));
-            }
-        }
-
-        private vMixControl _widget = null;
-
-        /// <summary>
-        /// Sets and gets the Control property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public vMixControl Widget
-        {
-            get
-            {
-                return _widget;
-            }
-
-            set
-            {
-                if (_widget == value)
-                {
-                    return;
-                }
-
-                _widget = value;
-                RaisePropertyChanged(nameof(Widget));
-            }
-        }
-
-        private RelayCommand _okCommand;
-
-        /// <summary>
-        /// Gets the OkCommand.
-        /// </summary>
-        public RelayCommand OkCommand
-        {
-            get
-            {
-                return _okCommand
-                    ?? (_okCommand = new RelayCommand(
-                    () =>
-                    {
-                        MessengerInstance.Send(true);
-                    }));
-            }
-        }
-
-
-        private RelayCommand _cancelCommand;
-
-        /// <summary>
-        /// Gets the CancelCommand.
-        /// </summary>
-        public RelayCommand CancelCommand
-        {
-            get
-            {
-                return _cancelCommand
-                    ?? (_cancelCommand = new RelayCommand(
-                    () =>
-                    {
-                        MessengerInstance.Send(false);
-                    }));
-            }
-        }
-
-        private RelayCommand _saveTemplateCommand;
-
-        /// <summary>
-        /// Gets the SaveTemplateCommand.
-        /// </summary>
-        public RelayCommand SaveTemplateCommand
-        {
-            get
-            {
-                return _saveTemplateCommand
-                    ?? (_saveTemplateCommand = new RelayCommand(
-                    () =>
-                    {
-                        var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.MainViewModel>();
-                        var obj = viewModel.WidgetTemplates.Select((x, i) => new { obj = x, idx = i }).Where(x => x.obj.A == Name).FirstOrDefault();
-                        var cpy = Widget.Copy();
-                        //cpy.SetProperties(this);
-                        cpy.IsTemplate = true;
-                        if (obj != null)
-                            viewModel.WidgetTemplates[obj.idx].B = cpy;
-                        else
-                            viewModel.WidgetTemplates.Add(new Pair<string, vMixControl>(Name, cpy));
-                        MessengerInstance.Send(true);
-                    }));
+                cpy.IsTemplate = true;
+                if (obj != null)
+                    viewModel.WidgetTemplates[obj.idx].B = cpy;
+                else
+                    viewModel.WidgetTemplates.Add(new Pair<string, vMixControl>(Name, cpy));
+                Messenger.Send(new ValueChangedMessage<bool>(true));
             }
         }
 
 
         public void SetProperties(vMixControl p)
         {
-            /*Model = p.State;
-            Name = p.Name;
-            Color = p.Color;
-            Hotkey = new ObservableCollection<Classes.Hotkey>(p.Hotkey);
-            Type = p.Type;
-            ZIndex = p.ZIndex;*/
-
-            /*WindowProperties = p.WindowProperties;
-
-            if (!WindowProperties.A.HasValue ||
-                !WindowProperties.B.HasValue ||
-                !WindowProperties.C.HasValue ||
-                !WindowProperties.D.HasValue)
-            {
-                WindowProperties.A = 512;
-                WindowProperties.B = 512;
-                WindowProperties.C = 0;
-                WindowProperties.D = 0;
-            }*/
+            Model = p?.State ?? (AppServices.IsRegistered<MainViewModel>() ? AppServices.GetRequiredService<MainViewModel>().Model : null);
+            RefreshAvailableInputs();
 
 
             if (p is IvMixAutoUpdateWidget)
                 Period = (p as IvMixAutoUpdateWidget).Period;
 
             PeriodVisibility = p is IvMixAutoUpdateWidget ? Visibility.Visible : Visibility.Collapsed;
-
-            //WidgetPropertiesControls = p.GetPropertiesControls();
-
         }
 
-        private RelayCommand _closingCommand;
-
-        /// <summary>
-        /// Gets the ClosingCommand.
-        /// </summary>
-        public RelayCommand ClosingCommand
+        [RelayCommand]
+        private void Closing()
         {
-            get
-            {
-                return _closingCommand
-                    ?? (_closingCommand = new RelayCommand(
-                    () =>
-                    {
-
-                    }));
-            }
         }
 
-
-        private RelayCommand<Hotkey> _learnKeyCommand;
-
-        /// <summary>
-        /// Gets the LearnKeyCommand.
-        /// </summary>
-        public RelayCommand<Hotkey> LearnKeyCommand
+        [RelayCommand]
+        private void LearnKey(Hotkey p)
         {
-            get
+            var wnd = new KeyLearnWindow();
+            var result = wnd.ShowDialog();
+            if (result ?? true)
             {
-                return _learnKeyCommand
-                    ?? (_learnKeyCommand = new RelayCommand<Hotkey>(
-                    p =>
-                    {
-                        var wnd = new KeyLearnWindow();
-                        var result = wnd.ShowDialog();
-                        if (result ?? true)
-                        {
-                            p.Key = wnd.PressedKey;
-                            wnd.Close();
-                        }
-                    }));
+                p.Key = wnd.PressedKey;
+                wnd.Close();
             }
         }
 
@@ -515,3 +217,4 @@ namespace vMixController.ViewModel
         }
     }
 }
+

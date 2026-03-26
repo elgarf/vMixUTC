@@ -1,5 +1,6 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -8,6 +9,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using vMixController.Classes;
 using vMixController.Extensions;
+using vMixController.ViewModel;
 
 namespace vMixController
 {
@@ -16,6 +18,10 @@ namespace vMixController
     /// </summary>
     public partial class vMixWidgetSettingsView : Window
     {
+        private IMessenger Messenger => AppServices.IsRegistered<IMessenger>()
+            ? AppServices.GetRequiredService<IMessenger>()
+            : WeakReferenceMessenger.Default;
+
         private const int GWL_STYLE = -16;
         private const int WS_MINIMIZEBOX = 0x20000;
         [DllImport("user32.dll", SetLastError = true)]
@@ -34,13 +40,13 @@ namespace vMixController
         /// </summary>
         public vMixWidgetSettingsView()
         {
-
+            DataContext = AppServices.GetRequiredService<vMixWidgetSettingsViewModel>();
             InitializeComponent();
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<bool>(this, x =>
+            Messenger.Register<vMixWidgetSettingsView, ValueChangedMessage<bool>>(this, (r, m) =>
             {
-                DialogResult = x;
+                r.DialogResult = m.Value;
             });
-            Closed += (o, e) => Messenger.Default.Unregister(this);
+            Closed += (o, e) => Messenger.UnregisterAll(this);
 
             
         }
@@ -71,8 +77,8 @@ namespace vMixController
             {
                 var templateRootElement = VisualTreeHelper.GetChild(this.WidgetProperties, 0);
 
-                // Теперь вызываем наш хелпер, но в качестве стартовой точки
-                // передаем не все окно (this), а только корневой элемент шаблона.
+                // ������ �������� ��� ������, �� � �������� ��������� �����
+                // �������� �� ��� ���� (this), � ������ �������� ������� �������.
                 templateRootElement?.UpdateAllExplicitSources();
                 CommonProperties.UpdateAllExplicitSources();
             }
@@ -90,8 +96,8 @@ namespace vMixController
             {
                 var templateRootElement = VisualTreeHelper.GetChild(this.WidgetProperties, 0);
 
-                // Теперь вызываем наш хелпер, но в качестве стартовой точки
-                // передаем не все окно (this), а только корневой элемент шаблона.
+                // ������ �������� ��� ������, �� � �������� ��������� �����
+                // �������� �� ��� ���� (this), � ������ �������� ������� �������.
                 templateRootElement?.UpdateAllExplicitSources();
 
                 CommonProperties.UpdateAllExplicitSources();
@@ -102,3 +108,4 @@ namespace vMixController
         }
     }
 }
+

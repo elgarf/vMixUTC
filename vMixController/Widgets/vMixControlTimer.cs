@@ -1,5 +1,6 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using HighPrecisionTimer;
 using System;
 using System.ComponentModel;
@@ -25,6 +26,21 @@ namespace vMixController.Widgets
 
     public static class GlobalTimer
     {
+        private static IMessenger _messenger;
+        private static IMessenger Messenger
+        {
+            get
+            {
+                if (_messenger != null)
+                    return _messenger;
+
+                _messenger = AppServices.IsRegistered<IMessenger>()
+                    ? AppServices.GetRequiredService<IMessenger>()
+                    : WeakReferenceMessenger.Default;
+                return _messenger;
+            }
+        }
+
         private static int _refCount = 0;
         private static int _highPrecisionRefCount = 0;
         private static bool _isTimerRunning = false;
@@ -40,7 +56,7 @@ namespace vMixController.Widgets
         static GlobalTimer()
         {
             _mtimer.Interval = (int)HighPrecisionTick.TotalMilliseconds;
-            _mtimer.Resolution = 5;
+            _mtimer.Resolution = 1;
             _mtimer.Elapsed += OnElapsed;
         }
 
@@ -156,16 +172,16 @@ namespace vMixController.Widgets
 
         private static void DispatchTick(TimeSpan elapsed, int oneSecondTicks)
         {
-            Messenger.Default.Send(elapsed, TimerTokens.HighPrecision);
+            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(elapsed), TimerTokens.HighPrecision);
             for (var i = 0; i < oneSecondTicks; i++)
             {
-                Messenger.Default.Send(OneSecond, TimerTokens.OneSecond);
+                Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(OneSecond), TimerTokens.OneSecond);
             }
         }
     }
 
     [Serializable]
-    public class vMixControlTimer : vMixControlTextField
+    public partial class vMixControlTimer : vMixControlTextField
     {
         bool _changingTime = false;
         public override string Type
@@ -177,13 +193,13 @@ namespace vMixController.Widgets
         }
         public vMixControlTimer()
         {
-            Messenger.Default.Register<TimeSpan>(this, TimerTokens.HighPrecision, t =>
+            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimeSpan>, string>(this, TimerTokens.HighPrecision, (r, m) =>
             {
-                if (IsHighPrecision) RunOnUiThread(() => Tick(t));
+                if (r.IsHighPrecision) r.RunOnUiThread(() => r.Tick(m.Value), DispatcherPriority.Send);
             });
-            Messenger.Default.Register<TimeSpan>(this, TimerTokens.OneSecond, t =>
+            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimeSpan>, string>(this, TimerTokens.OneSecond, (r, m) =>
             {
-                if (!IsHighPrecision) RunOnUiThread(() => Tick(t));
+                if (!r.IsHighPrecision) r.RunOnUiThread(() => r.Tick(m.Value), DispatcherPriority.Send);
             });
 
             _width = 256;
@@ -235,7 +251,7 @@ namespace vMixController.Widgets
             }
 
             if (Links.Length > 4 && !string.IsNullOrWhiteSpace(Links[4]))
-                Messenger.Default.Send(new HotkeyLinkMessage() { Link = Links[4], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
+                Messenger.Send(new HotkeyLinkMessage() { Link = Links[4], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
         }
 
         private void Finish()
@@ -253,7 +269,7 @@ namespace vMixController.Widgets
         private void SendLink(int index)
         {
             if (!string.IsNullOrWhiteSpace(Links[index]))
-                Messenger.Default.Send(new HotkeyLinkMessage() { Link = Links[index], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
+                Messenger.Send(new HotkeyLinkMessage() { Link = Links[index], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
         }
 
         private void UpdateTimer()
@@ -270,21 +286,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool SplitText
         {
-            get
-            {
-                return _splitText;
-            }
-
-            set
-            {
-                if (_splitText == value)
-                {
-                    return;
-                }
-
-                _splitText = value;
-                RaisePropertyChanged(nameof(SplitText));
-            }
+            get => _splitText;
+            set => SetPropertyValue(ref _splitText, value, nameof(SplitText));
         }
 
         private bool _isHighPrecision = false;
@@ -295,23 +298,15 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsHighPrecision
         {
-            get
-            {
-                return _isHighPrecision;
-            }
-
+            get => _isHighPrecision;
             set
             {
-                if (_isHighPrecision == value)
-                {
-                    return;
-                }
-
                 var oldValue = _isHighPrecision;
-                _isHighPrecision = value;
+                if (!SetPropertyValue(ref _isHighPrecision, value, nameof(IsHighPrecision)))
+                    return;
+
                 if (Active)
                     GlobalTimer.UpdatePrecisionMode(oldValue, _isHighPrecision);
-                RaisePropertyChanged(nameof(IsHighPrecision));
             }
         }
 
@@ -323,21 +318,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool RecoverOnSync
         {
-            get
-            {
-                return _recoverOnSync;
-            }
-
-            set
-            {
-                if (_recoverOnSync == value)
-                {
-                    return;
-                }
-
-                _recoverOnSync = value;
-                RaisePropertyChanged(nameof(RecoverOnSync));
-            }
+            get => _recoverOnSync;
+            set => SetPropertyValue(ref _recoverOnSync, value, nameof(RecoverOnSync));
         }
 
         private string _format = @"hh\:mm\:ss";
@@ -348,21 +330,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Format
         {
-            get
-            {
-                return _format;
-            }
-
-            set
-            {
-                if (_format == value)
-                {
-                    return;
-                }
-
-                _format = value;
-                RaisePropertyChanged(nameof(Format));
-            }
+            get => _format;
+            set => SetPropertyValue(ref _format, value, nameof(Format));
         }
 
         private string[] _links = new string[] { "", "", "", "", "" };
@@ -373,21 +342,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string[] Links
         {
-            get
-            {
-                return _links;
-            }
-
-            set
-            {
-                if (_links == value)
-                {
-                    return;
-                }
-
-                _links = value;
-                RaisePropertyChanged(nameof(Links));
-            }
+            get => _links;
+            set => SetPropertyValue(ref _links, value, nameof(Links));
         }
 
         private bool _reverse = false;
@@ -398,24 +354,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Reverse
         {
-            get
-            {
-                return _reverse;
-            }
-
-            set
-            {
-                if (_reverse == value)
-                {
-                    return;
-                }
-
-                _reverse = value;
-
-                UpdateTimer();
-
-                RaisePropertyChanged(nameof(Reverse));
-            }
+            get => _reverse;
+            set => SetPropertyValue(ref _reverse, value, nameof(Reverse), _ => UpdateTimer());
         }
 
         [NonSerialized]
@@ -428,21 +368,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool Active
         {
-            get
-            {
-                return _active;
-            }
-
-            set
-            {
-                if (_active == value)
-                {
-                    return;
-                }
-
-                _active = value;
-                RaisePropertyChanged(nameof(Active));
-            }
+            get => _active;
+            set => SetPropertyValue(ref _active, value, nameof(Active));
         }
 
         [NonSerialized]
@@ -455,21 +382,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool Paused
         {
-            get
-            {
-                return _paused;
-            }
-
-            set
-            {
-                if (_paused == value)
-                {
-                    return;
-                }
-
-                _paused = value;
-                RaisePropertyChanged(nameof(Paused));
-            }
+            get => _paused;
+            set => SetPropertyValue(ref _paused, value, nameof(Paused));
         }
 
         private TimeSpan _time = TimeSpan.Zero;
@@ -547,22 +461,8 @@ namespace vMixController.Widgets
         [Browsable(false)]
         public long TimeTicks
         {
-            get
-            {
-                return _time.Ticks;
-            }
-
-            set
-            {
-                if (_timeTicks == value)
-                {
-                    return;
-                }
-
-                _timeTicks = value;
-                Time = new TimeSpan(value);
-                RaisePropertyChanged(nameof(TimeTicks));
-            }
+            get => _time.Ticks;
+            set => SetPropertyValue(ref _timeTicks, value, nameof(TimeTicks), ticks => Time = new TimeSpan(ticks));
         }
 
         private TimeSpan _defaultTime = TimeSpan.Zero;
@@ -574,22 +474,8 @@ namespace vMixController.Widgets
         [XmlIgnore()]
         public TimeSpan DefaultTime
         {
-            get
-            {
-                return _defaultTime;
-            }
-
-            set
-            {
-                if (_defaultTime == value)
-                {
-                    return;
-                }
-
-                _defaultTime = value;
-                UpdateTimer();
-                RaisePropertyChanged(nameof(DefaultTime));
-            }
+            get => _defaultTime;
+            set => SetPropertyValue(ref _defaultTime, value, nameof(DefaultTime), _ => UpdateTimer());
         }
 
         private long _defaultTimeTicks = 0;
@@ -601,22 +487,8 @@ namespace vMixController.Widgets
         [Browsable(false)]
         public long DefaultTimeTicks
         {
-            get
-            {
-                return _defaultTime.Ticks;
-            }
-
-            set
-            {
-                if (_defaultTimeTicks == value)
-                {
-                    return;
-                }
-
-                _defaultTimeTicks = value;
-                DefaultTime = new TimeSpan(value);
-                RaisePropertyChanged(nameof(DefaultTimeTicks));
-            }
+            get => _defaultTime.Ticks;
+            set => SetPropertyValue(ref _defaultTimeTicks, value, nameof(DefaultTimeTicks), ticks => DefaultTime = new TimeSpan(ticks));
         }
 
         public override void ExecuteHotkey(int index)
@@ -625,81 +497,67 @@ namespace vMixController.Widgets
             //base.ExecuteHotkey(index);
         }
 
-        [NonSerialized]
-        private RelayCommand<string> _timerCommand;
-
-        /// <summary>
-        /// Gets the TimerCommand.
-        /// </summary>
-        public RelayCommand<string> TimerCommand
+        [RelayCommand]
+        private void Timer(string p)
         {
-            get
+            switch (p)
             {
-                return _timerCommand
-                    ?? (_timerCommand = new RelayCommand<string>(
-                    p =>
+                case "Start":
+                    if (!Active)
                     {
-                        switch (p)
-                        {
-                            case "Start":
-                                if (!Active)
-                                {
-                                    if (!Paused) UpdateTimer();
-                                    Paused = false;
-                                    Active = true;
-                                    GlobalTimer.Increment(IsHighPrecision);
-                                    SendLink(0);
-                                }
-                                break;
+                        if (!Paused) UpdateTimer();
+                        Paused = false;
+                        Active = true;
+                        GlobalTimer.Increment(IsHighPrecision);
+                        SendLink(0);
+                    }
+                    break;
 
-                            case "Pause":
-                                if (Active)
-                                {
-                                    Paused = true;
-                                    Active = false;
-                                    GlobalTimer.Decrement(IsHighPrecision);
-                                    SendLink(1);
-                                }
-                                else if (Paused)
-                                {
-                                    Paused = false;
-                                    Active = true;
-                                    GlobalTimer.Increment(IsHighPrecision);
-                                    SendLink(0);
-                                }
-                                break;
+                case "Pause":
+                    if (Active)
+                    {
+                        Paused = true;
+                        Active = false;
+                        GlobalTimer.Decrement(IsHighPrecision);
+                        SendLink(1);
+                    }
+                    else if (Paused)
+                    {
+                        Paused = false;
+                        Active = true;
+                        GlobalTimer.Increment(IsHighPrecision);
+                        SendLink(0);
+                    }
+                    break;
 
-                            case "Stop":
-                                if (Active)
-                                {
-                                    GlobalTimer.Decrement(IsHighPrecision);
-                                    Active = false;
-                                }
-                                Paused = false;
-                                UpdateTimer();
-                                SendLink(2);
-                                break;
-                            case "+1 Hour":
-                                Time = Time.Add(TimeSpan.FromHours(1));
-                                break;
-                            case "-1 Hour":
-                                Time = Time.Subtract(TimeSpan.FromHours(1));
-                                break;
-                            case "+1 Minute":
-                                Time = Time.Add(TimeSpan.FromMinutes(1));
-                                break;
-                            case "-1 Minute":
-                                Time = Time.Subtract(TimeSpan.FromMinutes(1));
-                                break;
-                            case "+1 Second":
-                                Time = Time.Add(TimeSpan.FromSeconds(1));
-                                break;
-                            case "-1 Second":
-                                Time = Time.Subtract(TimeSpan.FromSeconds(1));
-                                break;
-
-                        }
-                    }));
+                case "Stop":
+                    if (Active)
+                    {
+                        GlobalTimer.Decrement(IsHighPrecision);
+                        Active = false;
+                    }
+                    Paused = false;
+                    UpdateTimer();
+                    SendLink(2);
+                    break;
+                case "+1 Hour":
+                    Time = Time.Add(TimeSpan.FromHours(1));
+                    break;
+                case "-1 Hour":
+                    Time = Time.Subtract(TimeSpan.FromHours(1));
+                    break;
+                case "+1 Minute":
+                    Time = Time.Add(TimeSpan.FromMinutes(1));
+                    break;
+                case "-1 Minute":
+                    Time = Time.Subtract(TimeSpan.FromMinutes(1));
+                    break;
+                case "+1 Second":
+                    Time = Time.Add(TimeSpan.FromSeconds(1));
+                    break;
+                case "-1 Second":
+                    Time = Time.Subtract(TimeSpan.FromSeconds(1));
+                    break;
             }
         }
 
@@ -713,7 +571,7 @@ namespace vMixController.Widgets
             if (_disposed) return;
             if (managed)
             {
-                Messenger.Default.Unregister(this);
+                Messenger.UnregisterAll(this);
                 if (Active) GlobalTimer.Decrement(IsHighPrecision); // а не безусловный --
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);
@@ -721,3 +579,5 @@ namespace vMixController.Widgets
         }
     }
 }
+
+

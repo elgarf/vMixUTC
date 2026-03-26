@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Xaml.Behaviors;
 
 namespace vMixController.Extensions
 {
@@ -34,7 +35,7 @@ namespace vMixController.Extensions
         [DllImport("user32.dll")]
         public static extern IntPtr DestroyMenu(IntPtr hWnd);
     }
-    public class HideCloseButtonOnWindow : System.Windows.Interactivity.Behavior<Window>, IDisposable
+    public class HideCloseButtonOnWindow : Behavior<Window>, IDisposable
     {
 
 
@@ -135,3 +136,4 @@ namespace vMixController.Extensions
         
     }
 }
+

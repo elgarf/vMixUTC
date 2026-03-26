@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="vMixController.PropertiesControls.MidiMappingControl"
+<UserControl x:Class="vMixController.PropertiesControls.MidiMappingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:sanford="clr-namespace:Sanford.Multimedia.Midi;assembly=Sanford.Multimedia.Midi"
              xmlns:midi="clr-namespace:Melanchall.DryWetMidi.Core;assembly=Melanchall.DryWetMidi"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="496"
@@ -86,7 +86,7 @@
                             <GridViewColumn Header="">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Command="{Binding LearnMidiKey, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0,-6,0" Content="{loc:Loc Key=MidiMapping.Button.Learn}"/>
+                        <Button Command="{Binding LearnMidiKeyCommand, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0,-6,0" Content="{loc:Loc Key=MidiMapping.Button.Learn}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -105,3 +105,4 @@
         </StackPanel>
     </Border>
 </UserControl>
+

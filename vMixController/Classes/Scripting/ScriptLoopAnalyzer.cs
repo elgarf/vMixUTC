@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,12 +85,12 @@ namespace vMixController.Widgets
         {
             // Avoid forcing MainViewModel creation while it may still be constructing.
             // Calling locator.Main from this path can recurse and overflow stack on startup.
-            if (!SimpleIoc.Default.ContainsCreated<MainViewModel>())
+            if (!vMixController.Classes.AppServices.IsRegistered<MainViewModel>())
                 return Enumerable.Empty<vMixControl>();
 
             try
             {
-                var main = ServiceLocator.Current.GetInstance<MainViewModel>();
+                var main = vMixController.Classes.AppServices.GetRequiredService<MainViewModel>();
                 return main?.Widgets ?? Enumerable.Empty<vMixControl>();
             }
             catch
@@ -361,3 +360,6 @@ namespace vMixController.Widgets
         }
     }
 }
+
+
+

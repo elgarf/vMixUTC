@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Melanchall.DryWetMidi.Core;
 using System;
 using System.Collections.Generic;
@@ -26,21 +26,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<MidiInterfaceKey> Midis
         {
-            get
-            {
-                return _midis;
-            }
-
-            set
-            {
-                if (_midis == value)
-                {
-                    return;
-                }
-
-                _midis = value;
-                RaisePropertyChanged(nameof(Midis));
-            }
+            get => _midis;
+            set => SetPropertyValue(ref _midis, value, nameof(Midis));
         }
 
         //private static string[] _midiDevices = null;
@@ -64,21 +51,8 @@ namespace vMixController.Widgets
         /// </summary>
         public int MaxMIDIValue
         {
-            get
-            {
-                return _maxMIDIValue;
-            }
-
-            set
-            {
-                if (_maxMIDIValue == value)
-                {
-                    return;
-                }
-
-                _maxMIDIValue = value;
-                RaisePropertyChanged(nameof(MaxMIDIValue));
-            }
+            get => _maxMIDIValue;
+            set => SetPropertyValue(ref _maxMIDIValue, value, nameof(MaxMIDIValue));
         }
 
         private string _deviceCaps = "";
@@ -96,16 +70,11 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_deviceCaps == value)
+                SetPropertyValue(ref _deviceCaps, value, nameof(DeviceCaps), _ =>
                 {
-                    return;
-                }
-
-                if (Device != null)
-                    Device.EventReceived -= Device_EventReceived;
-
-                _deviceCaps = value;
-                RaisePropertyChanged(nameof(DeviceCaps));
+                    if (Device != null)
+                        Device.EventReceived -= Device_EventReceived;
+                });
             }
         }
 
@@ -151,22 +120,22 @@ namespace vMixController.Widgets
                         case Melanchall.DryWetMidi.Core.MidiEventType.NoteAftertouch:
                             var note = (e.Event as Melanchall.DryWetMidi.Core.NoteEvent);
                             if (note.Channel == item.A && item.B == note.NoteNumber)
-                                Messenger.Default.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)note.Velocity) });
+                                Messenger.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)note.Velocity) });
                             break;
                         case Melanchall.DryWetMidi.Core.MidiEventType.ControlChange:
                             var cc = (e.Event as Melanchall.DryWetMidi.Core.ControlChangeEvent);
                             if (cc.Channel == item.A && item.B == cc.ControlNumber)
-                                Messenger.Default.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)cc.ControlValue) });
+                                Messenger.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)cc.ControlValue) });
                             break;
                         case Melanchall.DryWetMidi.Core.MidiEventType.ProgramChange:
                             var pc = (e.Event as Melanchall.DryWetMidi.Core.ProgramChangeEvent);
                             if (pc.Channel == item.A)
-                                Messenger.Default.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)pc.ProgramNumber) });
+                                Messenger.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)pc.ProgramNumber) });
                             break;
                         case Melanchall.DryWetMidi.Core.MidiEventType.PitchBend:
                             var pb = (e.Event as Melanchall.DryWetMidi.Core.PitchBendEvent);
                             if (pb.Channel == item.A)
-                                Messenger.Default.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)pb.PitchValue) });
+                                Messenger.Send(new HotkeyLinkMessage() { Link = item.C, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter((byte)pb.PitchValue) });
                             break;
                         default:
 
@@ -264,3 +233,5 @@ namespace vMixController.Widgets
         }
     }
 }
+
+

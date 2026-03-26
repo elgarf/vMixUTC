@@ -250,3 +250,12 @@ ModelManifest.xml
 
 # Local config overrides
 *.config.user
+
+# Local SDK/tool caches (Codex/sandbox)
+.dotnet/
+.dotnet-home/
+.nuget/
+.sandbox-profile/
+.userprofile/
+NuGet/Migrations/
+build_diag.log

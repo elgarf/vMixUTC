@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -10,9 +10,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualBasic;
 using vMixController.Messages;
+using vMixController.Classes;
 using vMixController.ViewModel;
 using vMixController.Widgets;
 
@@ -20,6 +21,10 @@ namespace vMixController.Controls
 {
     public partial class WidgetLinksOverlay : UserControl
     {
+        private IMessenger Messenger => AppServices.IsRegistered<IMessenger>()
+            ? AppServices.GetRequiredService<IMessenger>()
+            : WeakReferenceMessenger.Default;
+
         private readonly HashSet<vMixControl> _subscribedWidgets = new HashSet<vMixControl>();
         private readonly Dictionary<vMixControl, Size> _actualWidgetSizes = new Dictionary<vMixControl, Size>();
         private readonly Popup _legendPopup;
@@ -48,7 +53,7 @@ namespace vMixController.Controls
                 SubscribeCollection(Items);
                 UpdateWidgetSubscriptions(Items);
                 UpdateLegendPopupPresentation();
-                Messenger.Default.Register<HoveredWidgetMessage>(this, OnHoveredWidgetChanged);
+                Messenger.Register<HoveredWidgetMessage>(this, (r, m) => OnHoveredWidgetChanged(m));
                 ScheduleRender();
             };
             SizeChanged += (_, __) => ScheduleRender();
@@ -715,8 +720,10 @@ namespace vMixController.Controls
         {
             try
             {
-                var locator = Application.Current?.TryFindResource("Locator") as vMixController.ViewModel.ViewModelLocator;
-                var pages = locator?.Main?.WindowSettings?.Pages;
+                var mainViewModel = vMixController.Classes.AppServices.IsRegistered<vMixController.ViewModel.MainViewModel>()
+                    ? vMixController.Classes.AppServices.GetRequiredService<vMixController.ViewModel.MainViewModel>()
+                    : null;
+                var pages = mainViewModel?.WindowSettings?.Pages;
                 if (pages != null && pageIndex >= 0 && pageIndex < pages.Count && !string.IsNullOrWhiteSpace(pages[pageIndex]))
                     return pages[pageIndex];
             }
@@ -1012,7 +1019,7 @@ namespace vMixController.Controls
         private void DisposeSubscriptions()
         {
             HideLegendPopup();
-            Messenger.Default.Unregister<HoveredWidgetMessage>(this);
+            Messenger.UnregisterAll(this);
             DetachOwnerWindowHandlers();
             if (ScrollHost != null)
                 ScrollHost.ScrollChanged -= ScrollHostScrollChanged;
@@ -1132,3 +1139,5 @@ namespace vMixController.Controls
         }
     }
 }
+
+

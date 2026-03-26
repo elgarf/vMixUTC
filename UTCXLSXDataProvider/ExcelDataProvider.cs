@@ -1,6 +1,6 @@
-﻿using ExcelDataReader;
+using CommunityToolkit.Mvvm.Input;
+using ExcelDataReader;
 using ExcelDataReader.Exceptions;
-using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,208 +9,120 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using vMixControllerSkin;
 
 namespace UTCGoogleSheetsDataProvider
 {
-    public class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
+    public partial class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
     {
-        private DateTime _lastModified = DateTime.MinValue;
-        private string[] _cached = Array.Empty<string>();
-        private bool _hasError = false;
-        private System.Windows.UIElement _customUI;
         private static readonly Regex ColumnRegex = new Regex("^[A-Z]+$", RegexOptions.Compiled);
-        private readonly DispatcherTimer _refreshTimer;
-        private int _period = 1000;
 
-        public object PreviewKeyUp { get; set; }
-        public object GotFocus { get; set; }
-        public object LostFocus { get; set; }
+        private readonly DispatcherTimer _refreshTimer;
+        private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
+
+        private DateTime _lastModifiedUtc = DateTime.MinValue;
+        private string[] _valuesCache = Array.Empty<string>();
+        private bool _hasError;
+        private int _refreshScheduled;
+        private int _period = 1000;
+        private UIElement _customUI;
+
+        private string _filePath = "";
+        private int _startRow;
+        private int _endRow = -1;
+        private string _startCol = "0";
+        private string _endCol = "-1";
+        private string _sheet = "0";
+        private bool _isTable = true;
+
+        public ICommand PreviewKeyUp { get; set; }
+        public ICommand GotFocus { get; set; }
+        public ICommand LostFocus { get; set; }
+
+        public bool IsProvidingCustomProperties => false;
+        public string Error => null;
+        public UIElement CustomUI => _customUI;
+        public string[] Values => _valuesCache;
+
         public int Period
         {
             get => _period;
             set
             {
                 var normalized = Math.Max(250, value);
-                if (_period == normalized)
+                SetPropertyValue(ref _period, normalized, nameof(Period), p =>
                 {
-                    return;
-                }
-
-                _period = normalized;
-                if (_refreshTimer != null)
-                {
-                    _refreshTimer.Interval = TimeSpan.FromMilliseconds(_period);
-                }
-
-                _lastModified = DateTime.MinValue;
+                    _refreshTimer.Interval = TimeSpan.FromMilliseconds(p);
+                    InvalidateAndScheduleRefresh();
+                });
             }
         }
-        public bool IsProvidingCustomProperties => false;
 
-        private int ParseExcelColumn(string input)
+        public string FilePath
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return -1;
-
-            input = input.Trim();
-
-            // Если входная строка состоит только из цифр - это номер столбца
-            if (int.TryParse(input, out int number))
-            {
-                /*if (number <= 0)
-                    throw new ArgumentException("Column number must be positive");*/
-                return number;
-            }
-
-            // Если есть буквы - это буквенное обозначение
-            input = input.ToUpper();
-
-            if (!ColumnRegex.IsMatch(input))
-                return -1;//throw new ArgumentException("Input must contain only letters A-Z or only digits");
-
-            int result = 0;
-
-            foreach (char c in input)
-            {
-                result = result * 26 + (c - 'A' + 1);
-            }
-
-            return result - 1;
+            get => _filePath;
+            set => SetPropertyValue(ref _filePath, value, nameof(FilePath), _ => InvalidateAndScheduleRefresh());
         }
 
-        public string[] Values
+        public int StartRow
         {
-            get
-            {
-                _hasError = false;
-                try
-                {
-
-                    if (File.Exists(FilePath))
-                    {
-                        var fileInfo = new FileInfo(FilePath);
-                        if (fileInfo.LastWriteTimeUtc > _lastModified)
-                        {
-                            _lastModified = fileInfo.LastWriteTimeUtc;
-
-                            using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            {
-                                try
-                                {
-                                    using (var reader = ExcelReaderFactory.CreateReader(xls))
-                                    {
-                                        List<string> results = new List<string>();
-                                        int sheet = 0;
-                                        int startColIndex = ParseExcelColumn(StartCol);
-                                        int endColIndex = ParseExcelColumn(EndCol);
-                                        do
-                                        {
-                                            int row = 0;
-                                            int sheetIndex = 0;
-                                            if ((int.TryParse(SheetIndex, out sheetIndex) && sheet == sheetIndex) || reader.Name == SheetIndex)
-                                                while (reader.Read())
-                                                {
-                                                    if (row >= StartRow)
-                                                    {
-                                                        var safeStartCol = Math.Max(0, startColIndex);
-                                                        var endExclusive = endColIndex >= 0
-                                                            ? Math.Min(reader.FieldCount, endColIndex + 1)
-                                                            : reader.FieldCount;
-                                                        StringBuilder lineBuilder = IsTable ? new StringBuilder() : null;
-                                                        for (int i = safeStartCol; i < endExclusive; i++)
-                                                        {
-                                                            var value = reader.GetValue(i)?.ToString() ?? "";
-                                                            if (IsTable)
-                                                            {
-                                                                if (lineBuilder.Length > 0)
-                                                                {
-                                                                    lineBuilder.Append('|');
-                                                                }
-                                                                lineBuilder.Append(value);
-                                                            }
-                                                            else
-                                                            {
-                                                                results.Add(value);
-                                                            }
-                                                        }
-                                                        if (IsTable)
-                                                            results.Add(lineBuilder?.ToString() ?? string.Empty);
-                                                    }
-                                                    row++;
-                                                    if (EndRow >= 0 && row > EndRow)
-                                                        break;
-                                                }
-                                            sheet++;
-                                        }
-                                        while (reader.NextResult());
-
-                                        Cached = results.ToArray();
-                                        RowsCount = Cached.Length;
-                                        RaisePropertyChanged(nameof(Values));
-                                        return Cached;
-                                    }
-                                }
-                                catch (ExcelReaderException ex)
-                                {
-                                    _hasError = true;
-                                    RowsCount = 0;
-                                    Cached = Array.Empty<string>();
-                                    RaisePropertyChanged(nameof(Values));
-                                    Debug.Print($"Error reading Excel file: {ex.Message}");
-                                    return Array.Empty<string>();
-                                }
-                                catch (Exception ex)
-                                {
-                                    _hasError = true;
-                                    RowsCount = 0;
-                                    Cached = Array.Empty<string>();
-                                    RaisePropertyChanged(nameof(Values));
-                                    Debug.Print($"Unexpected error: {ex.Message}");
-                                    return Array.Empty<string>();
-                                }
-                            }
-                        }
-                        else
-                            return Cached;
-                    }
-                    else
-                    {
-                        _hasError = true;
-                        RowsCount = 0;
-                        Cached = Array.Empty<string>();
-                        RaisePropertyChanged(nameof(Values));
-                        Debug.Print("File not found.");
-                        return Array.Empty<string>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _hasError = true;
-                    RowsCount = 0;
-                    Cached = Array.Empty<string>();
-                    RaisePropertyChanged(nameof(Values));
-                    Debug.Print($"An error occurred: {ex.Message}");
-                    return Array.Empty<string>();
-                }
-            }
+            get => _startRow;
+            set => SetPropertyValue(ref _startRow, value, nameof(StartRow), _ => InvalidateAndScheduleRefresh());
         }
 
+        public int EndRow
+        {
+            get => _endRow;
+            set => SetPropertyValue(ref _endRow, value, nameof(EndRow), _ => InvalidateAndScheduleRefresh());
+        }
 
-        public System.Windows.UIElement CustomUI => _customUI;
+        public string StartCol
+        {
+            get => _startCol;
+            set => SetPropertyValue(ref _startCol, value, nameof(StartCol), _ => InvalidateAndScheduleRefresh());
+        }
+
+        public string EndCol
+        {
+            get => _endCol;
+            set => SetPropertyValue(ref _endCol, value, nameof(EndCol), _ => InvalidateAndScheduleRefresh());
+        }
+
+        public string SheetIndex
+        {
+            get => _sheet;
+            set => SetPropertyValue(ref _sheet, value, nameof(SheetIndex), _ => InvalidateAndScheduleRefresh());
+        }
+
+        public bool IsTable
+        {
+            get => _isTable;
+            set => SetPropertyValue(ref _isTable, value, nameof(IsTable), _ => InvalidateAndScheduleRefresh());
+        }
 
         public ExcelDataProvider()
         {
             try
             {
-                _customUI = new OnWidgetUI() { DataContext = this };
+                _customUI = new OnWidgetUI { DataContext = this };
             }
             catch (Exception e)
             {
-                _customUI = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                _customUI = new TextBox
+                {
+                    Text = e.ToString(),
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
+                    Height = 256,
+                    FontWeight = FontWeights.Normal,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
             }
 
             _refreshTimer = new DispatcherTimer
@@ -219,156 +131,237 @@ namespace UTCGoogleSheetsDataProvider
             };
             _refreshTimer.Tick += RefreshTimer_Tick;
             _refreshTimer.Start();
+
+            ScheduleRefresh();
         }
 
-        public string FilePath
+        [RelayCommand]
+        private void HandlePreviewKeyUp(KeyEventArgs p)
         {
-            get => _filePath;
-            set
+            if (p == null)
             {
-                if (_filePath == value)
+                return;
+            }
+
+            if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
+            {
+                if (PreviewKeyUp != null && PreviewKeyUp.CanExecute(p))
+                {
+                    PreviewKeyUp.Execute(p);
+                }
+            }
+        }
+
+        [RelayCommand]
+        private void HandleGotFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (GotFocus != null && GotFocus.CanExecute(p))
+            {
+                GotFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void HandleLostFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (LostFocus != null && LostFocus.CanExecute(p))
+            {
+                LostFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void ShowRows()
+        {
+            new RowsViewer().Bind(this, nameof(Values));
+        }
+
+        private void RefreshTimer_Tick(object sender, EventArgs e)
+        {
+            ScheduleRefresh();
+        }
+
+        private void InvalidateAndScheduleRefresh()
+        {
+            _lastModifiedUtc = DateTime.MinValue;
+            ScheduleRefresh();
+        }
+
+        private void ScheduleRefresh()
+        {
+            if (Interlocked.CompareExchange(ref _refreshScheduled, 1, 0) != 0)
+            {
+                return;
+            }
+
+            _ = RefreshValuesAsync();
+        }
+
+        private async Task RefreshValuesAsync()
+        {
+            try
+            {
+                await _asyncLock.WaitAsync();
+                LoadValuesCore();
+            }
+            finally
+            {
+                _asyncLock.Release();
+                Interlocked.Exchange(ref _refreshScheduled, 0);
+            }
+        }
+
+        private void LoadValuesCore()
+        {
+            _hasError = false;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath))
+                {
+                    _hasError = true;
+                    UpdateValuesCache(Array.Empty<string>());
+                    return;
+                }
+
+                var fileInfo = new FileInfo(FilePath);
+                if (fileInfo.LastWriteTimeUtc <= _lastModifiedUtc)
                 {
                     return;
                 }
 
-                _filePath = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(FilePath));
+                using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var reader = ExcelReaderFactory.CreateReader(xls))
+                {
+                    var results = ReadRows(reader);
+                    _lastModifiedUtc = fileInfo.LastWriteTimeUtc;
+                    UpdateValuesCache(results.ToArray());
+                }
+            }
+            catch (ExcelReaderException ex)
+            {
+                _hasError = true;
+                UpdateValuesCache(Array.Empty<string>());
+                Debug.Print($"Error reading Excel file: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _hasError = true;
+                UpdateValuesCache(Array.Empty<string>());
+                Debug.Print($"Unexpected error: {ex.Message}");
             }
         }
-        private string _filePath = "";
 
-        public int StartRow
+        private List<string> ReadRows(IExcelDataReader reader)
         {
-            get => _startRow;
-            set
+            var results = new List<string>();
+            int startColIndex = ParseExcelColumn(StartCol);
+            int endColIndex = ParseExcelColumn(EndCol);
+            int sheet = 0;
+
+            do
             {
-                if (_startRow == value)
+                int row = 0;
+                int parsedSheetIndex;
+                bool sheetMatches = (int.TryParse(SheetIndex, out parsedSheetIndex) && sheet == parsedSheetIndex) || reader.Name == SheetIndex;
+
+                if (sheetMatches)
                 {
-                    return;
+                    while (reader.Read())
+                    {
+                        if (row >= StartRow)
+                        {
+                            var safeStartCol = Math.Max(0, startColIndex);
+                            var endExclusive = endColIndex >= 0
+                                ? Math.Min(reader.FieldCount, endColIndex + 1)
+                                : reader.FieldCount;
+
+                            if (IsTable)
+                            {
+                                var lineBuilder = new StringBuilder();
+                                for (int i = safeStartCol; i < endExclusive; i++)
+                                {
+                                    var value = reader.GetValue(i)?.ToString() ?? string.Empty;
+                                    if (lineBuilder.Length > 0)
+                                    {
+                                        lineBuilder.Append('|');
+                                    }
+                                    lineBuilder.Append(value);
+                                }
+                                results.Add(lineBuilder.ToString());
+                            }
+                            else
+                            {
+                                for (int i = safeStartCol; i < endExclusive; i++)
+                                {
+                                    results.Add(reader.GetValue(i)?.ToString() ?? string.Empty);
+                                }
+                            }
+                        }
+
+                        row++;
+                        if (EndRow >= 0 && row > EndRow)
+                        {
+                            break;
+                        }
+                    }
                 }
 
-                _startRow = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(StartRow));
+                sheet++;
             }
+            while (reader.NextResult());
+
+            return results;
         }
-        private int _startRow = 0;
 
-        public int EndRow
+        private void UpdateValuesCache(string[] newValues)
         {
-            get => _endRow;
-            set
+            var normalized = newValues ?? Array.Empty<string>();
+            if (_valuesCache.SequenceEqual(normalized))
             {
-                if (_endRow == value)
-                {
-                    return;
-                }
-
-                _endRow = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(EndRow));
+                return;
             }
+
+            _valuesCache = normalized;
+            RaisePropertyChanged(nameof(Values));
         }
-        private int _endRow = -1;
 
-        public string StartCol
+        private int ParseExcelColumn(string input)
         {
-            get => _startCol;
-            set
+            if (string.IsNullOrWhiteSpace(input))
             {
-                if (_startCol == value)
-                {
-                    return;
-                }
-
-                _startCol = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(StartCol));
+                return -1;
             }
-        }
-        private string _startCol = "0";
 
-        public string EndCol
-        {
-            get => _endCol;
-            set
+            input = input.Trim();
+            if (int.TryParse(input, out int number))
             {
-                if (_endCol == value)
-                {
-                    return;
-                }
-
-                _endCol = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(EndCol));
+                return number;
             }
-        }
-        private string _endCol = "-1";
 
-        public string SheetIndex
-        {
-            get => _sheet;
-            set
+            input = input.ToUpperInvariant();
+            if (!ColumnRegex.IsMatch(input))
             {
-                if (_sheet == value)
-                {
-                    return;
-                }
-
-                _sheet = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(SheetIndex));
+                return -1;
             }
-        }
-        private string _sheet = "0";
 
-        public bool IsTable
-        {
-            get => _isTable;
-            set
+            int result = 0;
+            foreach (char c in input)
             {
-                if (_isTable == value)
-                {
-                    return;
-                }
-
-                _isTable = value;
-                _lastModified = DateTime.MinValue;
-                RaisePropertyChanged(nameof(IsTable));
+                result = result * 26 + (c - 'A' + 1);
             }
-        }
-        private bool _isTable = true;
 
-        public int RowsCount
-        {
-            get => _rowsCount;
-            set
-            {
-                if (_rowsCount == value)
-                {
-                    return;
-                }
-
-                _rowsCount = value;
-                RaisePropertyChanged(nameof(RowsCount));
-            }
-        }
-        private int _rowsCount = 0;
-
-        public string Error => null; // Not implemented, no general error for the entire object
-
-        private RelayCommand _showRowsCommand;
-        public RelayCommand ShowRowsCommand => _showRowsCommand ?? (_showRowsCommand = new RelayCommand(() => new RowsViewer().Bind(this, nameof(Cached))));
-
-        public string[] Cached
-        {
-            get => _cached;
-            set
-            {
-                _cached = value;
-                RaisePropertyChanged(nameof(Cached));
-            }
+            return result - 1;
         }
 
         public string this[string columnName]
@@ -380,17 +373,24 @@ namespace UTCGoogleSheetsDataProvider
                 {
                     case nameof(FilePath):
                         if (_hasError)
+                        {
                             error = "File not found or is not a valid excel file!";
+                        }
                         break;
                     case nameof(StartCol):
                         if (!int.TryParse(StartCol, out _) && !ColumnRegex.IsMatch(StartCol?.ToUpperInvariant() ?? string.Empty))
+                        {
                             error = "Start column is in wrong format!";
+                        }
                         break;
                     case nameof(EndCol):
                         if (!int.TryParse(EndCol, out _) && !ColumnRegex.IsMatch(EndCol?.ToUpperInvariant() ?? string.Empty))
+                        {
                             error = "End column is in wrong format!";
+                        }
                         break;
                 }
+
                 return error;
             }
         }
@@ -402,6 +402,19 @@ namespace UTCGoogleSheetsDataProvider
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            onChanged?.Invoke(value);
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
+
         public List<object> GetProperties()
         {
             return new List<object> { FilePath, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable };
@@ -409,38 +422,47 @@ namespace UTCGoogleSheetsDataProvider
 
         public void SetProperties(List<object> props)
         {
-            if (props == null) return;
+            if (props == null)
+            {
+                return;
+            }
 
-            FilePath = props.ElementAtOrDefault(0) as string ?? "";
+            FilePath = props.ElementAtOrDefault(0) as string ?? string.Empty;
             StartRow = (int?)props.ElementAtOrDefault(1) ?? 0;
             EndRow = (int?)props.ElementAtOrDefault(2) ?? -1;
 
-
             if (props.ElementAtOrDefault(3) is int)
+            {
                 StartCol = ((int?)props.ElementAtOrDefault(3) ?? 0).ToString();
+            }
             else
+            {
                 StartCol = (string)props.ElementAtOrDefault(3) ?? "0";
+            }
 
             if (props.ElementAtOrDefault(4) is int)
+            {
                 EndCol = ((int?)props.ElementAtOrDefault(4) ?? -1).ToString();
+            }
             else
+            {
                 EndCol = (string)props.ElementAtOrDefault(4) ?? "-1";
+            }
+
             if (props.ElementAtOrDefault(5) is int)
+            {
                 SheetIndex = ((int?)props.ElementAtOrDefault(5) ?? 0).ToString();
+            }
             else
+            {
                 SheetIndex = (string)props.ElementAtOrDefault(5) ?? "0";
+            }
 
-            IsTable = (bool?)props.ElementAtOrDefault(6) as bool? ?? true;
+            IsTable = (bool?)props.ElementAtOrDefault(6) ?? true;
         }
 
-        public void ShowProperties(System.Windows.Window owner)
+        public void ShowProperties(Window owner)
         {
-            // Consider implementing a custom properties window if needed.
-        }
-
-        private void RefreshTimer_Tick(object sender, EventArgs e)
-        {
-            _ = Values;
         }
     }
 }

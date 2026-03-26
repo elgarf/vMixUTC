@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="userControl" x:Class="UTCNDIMonitorDataProvider.OnWidgetUI"
+<UserControl x:Name="userControl" x:Class="UTCNDIMonitorDataProvider.OnWidgetUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -94,15 +94,15 @@
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
 
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="1">1</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="2" Grid.Column="1">2</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="3" Grid.Column="2">3</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="4" Grid.Column="3">4</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="1">1</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="2" Grid.Column="1">2</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="3" Grid.Column="2">3</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="4" Grid.Column="3">4</Button>
 
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="5" Grid.Row="1">5</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="6" Grid.Row="1" Grid.Column="1">6</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="7" Grid.Row="1" Grid.Column="2">7</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="8" Grid.Row="1" Grid.Column="3">8</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="5" Grid.Row="1">5</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="6" Grid.Row="1" Grid.Column="1">6</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="7" Grid.Row="1" Grid.Column="2">7</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="8" Grid.Row="1" Grid.Column="3">8</Button>
 
                             </Grid>
                         </Grid>
@@ -130,24 +130,24 @@
 
                                 <Button Opacity="0" IsHitTestVisible="True"></Button>
                                 <Button Opacity="0" IsHitTestVisible="True" Grid.Column="1"></Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="1" Grid.Column="2">1</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="2" Grid.Column="3">2</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="1" Grid.Column="2">1</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="2" Grid.Column="3">2</Button>
 
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="3" Grid.Row="1">3</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="4" Grid.Row="1" Grid.Column="1">4</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="5" Grid.Row="1" Grid.Column="2">5</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="6" Grid.Row="1" Grid.Column="3">6</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="3" Grid.Row="1">3</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="4" Grid.Row="1" Grid.Column="1">4</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="5" Grid.Row="1" Grid.Column="2">5</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="6" Grid.Row="1" Grid.Column="3">6</Button>
 
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="7" Grid.Row="2">7</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="8" Grid.Row="2" Grid.Column="1">8</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="9" Grid.Row="2" Grid.Column="2">9</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="10" Grid.Row="2" Grid.Column="3">10</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="7" Grid.Row="2">7</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="8" Grid.Row="2" Grid.Column="1">8</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="9" Grid.Row="2" Grid.Column="2">9</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="10" Grid.Row="2" Grid.Column="3">10</Button>
 
 
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="11" Grid.Row="3">11</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="12" Grid.Row="3" Grid.Column="1">12</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="13" Grid.Row="3" Grid.Column="2">13</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="14" Grid.Row="3" Grid.Column="3">14</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="11" Grid.Row="3">11</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="12" Grid.Row="3" Grid.Column="1">12</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="13" Grid.Row="3" Grid.Column="2">13</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="14" Grid.Row="3" Grid.Column="3">14</Button>
                             </Grid>
                         </Grid>
 
@@ -169,8 +169,8 @@
 
                                 <Button Opacity="0" IsHitTestVisible="True"></Button>
                                 <Button Opacity="0" IsHitTestVisible="True" Grid.Column="1"></Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="1" Grid.Column="0" Grid.Row="1">1</Button>
-                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInput}" CommandParameter="2" Grid.Column="1" Grid.Row="1">2</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="1" Grid.Column="0" Grid.Row="1">1</Button>
+                                <Button Opacity="0" IsHitTestVisible="True" Command="{Binding PlayInputCommand}" CommandParameter="2" Grid.Column="1" Grid.Row="1">2</Button>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -225,3 +225,4 @@
 
     </Grid>
 </UserControl>
+

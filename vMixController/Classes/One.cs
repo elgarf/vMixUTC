@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,14 +28,15 @@ namespace vMixController.Classes
                 a = value;
                 if (value is ObservableObject)
                     (value as ObservableObject).PropertyChanged += One_PropertyChanged;
-                RaisePropertyChanged("A");
+                OnPropertyChanged(nameof(A));
             }
         }
 
         private void One_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged("A");
+            OnPropertyChanged(nameof(A));
         }
     }
 
 }
+

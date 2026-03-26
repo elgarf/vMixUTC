@@ -39,7 +39,7 @@ namespace vMixController.Widgets
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<string>), typeof(vMixControlList), new PropertyMetadata(new ObservableCollection<string>()));
+            DependencyProperty.Register(nameof(Items), typeof(ObservableCollection<string>), typeof(vMixControlList), new PropertyMetadata(new ObservableCollection<string>()));
 
 
         public Triple<string, string, bool> DataSource { get; set; }

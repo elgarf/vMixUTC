@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using vMixController.Classes;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlPlaylist : vMixControl
+    public partial class vMixControlPlaylist : vMixControl
     {
         private DateTime _pause = DateTime.Now;
 
@@ -27,21 +27,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<string> Items
         {
-            get
-            {
-                return _items;
-            }
-
-            set
-            {
-                if (_items == value)
-                {
-                    return;
-                }
-
-                _items = value;
-                RaisePropertyChanged(nameof(Items));
-            }
+            get => _items;
+            set => SetPropertyValue(ref _items, value, nameof(Items));
         }
 
         private int _selectedIndex = 0;
@@ -52,29 +39,18 @@ namespace vMixController.Widgets
         /// </summary>
         public int SelectedIndex
         {
-            get
+            get => _selectedIndex;
+            set => SetPropertyValue(ref _selectedIndex, value, nameof(SelectedIndex), newValue =>
             {
-                return _selectedIndex;
-            }
-
-            set
-            {
-                if (_selectedIndex == value)
-                {
-                    return;
-                }
-
                 _pause = DateTime.Now;
 
-                if (value >= 0)
+                if (newValue >= 0)
                 {
                     State?.SendFunction("Function", "SelectIndex",
-                        "Value", (value + 1).ToString(),
+                        "Value", (newValue + 1).ToString(),
                         "Input", InputKey);
                 }
-                _selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
-            }
+            });
         }
 
         private string _inputKey = "";
@@ -85,21 +61,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string InputKey
         {
-            get
-            {
-                return _inputKey;
-            }
-
-            set
-            {
-                if (_inputKey == value)
-                {
-                    return;
-                }
-
-                _inputKey = value;
-                RaisePropertyChanged(nameof(InputKey));
-            }
+            get => _inputKey;
+            set => SetPropertyValue(ref _inputKey, value, nameof(InputKey));
         }
 
         private bool _shouldScrollIntoView = false;
@@ -111,21 +74,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool ShouldScrollIntoView
         {
-            get
-            {
-                return _shouldScrollIntoView;
-            }
-
-            set
-            {
-                if (_shouldScrollIntoView == value)
-                {
-                    return;
-                }
-
-                _shouldScrollIntoView = value;
-                RaisePropertyChanged(nameof(ShouldScrollIntoView));
-            }
+            get => _shouldScrollIntoView;
+            set => SetPropertyValue(ref _shouldScrollIntoView, value, nameof(ShouldScrollIntoView));
         }
 
         public List<Input> Inputs { get => _internalState?.Inputs; }
@@ -214,157 +164,66 @@ namespace vMixController.Widgets
             base.Dispose(managed);
         }
 
-        [XmlIgnore]
-        private RelayCommand<string> _removeItemCommand;
-
-        /// <summary>
-        /// Gets the RemoveItemCommand.
-        /// </summary>
-        public RelayCommand<string> RemoveItemCommand
+        [RelayCommand]
+        private void RemoveItem(string p)
         {
-            get
-            {
-                return _removeItemCommand
-                    ?? (_removeItemCommand = new RelayCommand<string>(
-                    p =>
-                    {
-                        State?.SendFunction("Function", "ListRemove",
-                    "Value", (Items.IndexOf(p) + 1).ToString(),
-                    "Input", InputKey);
-                    }));
-            }
+            State?.SendFunction("Function", "ListRemove",
+                "Value", (Items.IndexOf(p) + 1).ToString(),
+                "Input", InputKey);
         }
 
-        [XmlIgnore]
-        private RelayCommand _addItemCommand;
-
-        /// <summary>
-        /// Gets the AddItemCommand.
-        /// </summary>
-        public RelayCommand AddItemCommand
+        [RelayCommand]
+        private void AddItem()
         {
-            get
+            Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
             {
-                return _addItemCommand
-                    ?? (_addItemCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
-                        {
-                            Filter = "Any File|*.*"
-                        };
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
-                        if (result.HasValue && result.Value)
-                        {
-                            var fn = opendlg.FileName;
-                            State?.SendFunction("Function", "ListAdd",
+                Filter = "Any File|*.*"
+            };
+            var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
+            if (result.HasValue && result.Value)
+            {
+                var fn = opendlg.FileName;
+                State?.SendFunction("Function", "ListAdd",
                     "Value", fn,
                     "Input", InputKey);
-                        }
-
-                    }));
             }
         }
 
-        private RelayCommand _nextItemCommand;
-
-        /// <summary>
-        /// Gets the NextItemCommand.
-        /// </summary>
-        public RelayCommand NextItemCommand
+        [RelayCommand]
+        private void NextItem()
         {
-            get
-            {
-                return _nextItemCommand
-                    ?? (_nextItemCommand = new RelayCommand(
-                    () =>
-                    {
-                        /*State?.SendFunction("Function", "NextItem",
-                "Input", InputKey);*/
-                        ShouldScrollIntoView = true;
-                        if (SelectedIndex + 1 < Items.Count)
-                            SelectedIndex++;
-                    }));
-            }
+            ShouldScrollIntoView = true;
+            if (SelectedIndex + 1 < Items.Count)
+                SelectedIndex++;
         }
 
-        private RelayCommand _prevItemCommand;
-
-        /// <summary>
-        /// Gets the PrevItemCommand.
-        /// </summary>
-        public RelayCommand PrevItemCommand
+        [RelayCommand]
+        private void PrevItem()
         {
-            get
-            {
-                return _prevItemCommand
-                    ?? (_prevItemCommand = new RelayCommand(
-                    () =>
-                    {
-                        /*State?.SendFunction("Function", "PreviousItem",
-                    "Input", InputKey);*/
-                        ShouldScrollIntoView = true;
-                        if (SelectedIndex - 1 >= 0)
-                            SelectedIndex--;
-                    }));
-            }
+            ShouldScrollIntoView = true;
+            if (SelectedIndex - 1 >= 0)
+                SelectedIndex--;
         }
 
-        private RelayCommand _shuffleCommand;
-
-        /// <summary>
-        /// Gets the ShuffleCommand.
-        /// </summary>
-        public RelayCommand ShuffleCommand
+        [RelayCommand]
+        private void Shuffle()
         {
-            get
-            {
-                return _shuffleCommand
-                    ?? (_shuffleCommand = new RelayCommand(
-                    () =>
-                    {
-                        State?.SendFunction("Function", "ListShuffle",
-                    "Input", InputKey);
-                    }));
-            }
+            State?.SendFunction("Function", "ListShuffle",
+                "Input", InputKey);
         }
 
-        private RelayCommand _playOutCommand;
-
-        /// <summary>
-        /// Gets the PlayOutCommand.
-        /// </summary>
-        public RelayCommand PlayOutCommand
+        [RelayCommand]
+        private void PlayOut()
         {
-            get
-            {
-                return _playOutCommand
-                    ?? (_playOutCommand = new RelayCommand(
-                    () =>
-                    {
-                        State?.SendFunction("Function", "ListPlayOut",
-                    "Input", InputKey);
-                    }));
-            }
+            State?.SendFunction("Function", "ListPlayOut",
+                "Input", InputKey);
         }
 
-        private RelayCommand _playCommand;
-
-        /// <summary>
-        /// Gets the PlayOutCommand.
-        /// </summary>
-        public RelayCommand PlayCommand
+        [RelayCommand]
+        private void Play()
         {
-            get
-            {
-                return _playCommand
-                    ?? (_playCommand = new RelayCommand(
-                    () =>
-                    {
-                        State?.SendFunction("Function", "PlayPause",
-                    "Input", InputKey);
-                    }));
-            }
+            State?.SendFunction("Function", "PlayPause",
+                "Input", InputKey);
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="vMixController.PropertiesControls.TitleMappingControl"
+<UserControl x:Class="vMixController.PropertiesControls.TitleMappingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vMixController.PropertiesControls"
-             xmlns:ctrl="clr-namespace:vMixController.Controls"
              xmlns:e="clr-namespace:vMixController.Extensions"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
              xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -19,7 +19,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <i:Interaction.Behaviors>
-        <e:DeepCopyCancelBehavior TargetCollection="{Binding Titles, ElementName=Me}" IsCancelled="{Binding IsCancelled, ElementName=Me}"></e:DeepCopyCancelBehavior>
         <e:IgnoreMouseWheelBehavior/>
     </i:Interaction.Behaviors>
     <Border BorderBrush="#1A3CB1" BorderThickness="1" Background="#18488C" Margin="{StaticResource TopBottomStdMargin}">
@@ -48,7 +47,30 @@
                             <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="2,0,0,0" HorizontalAlignment="Right">
                                 <Button Style="{StaticResource TitleButton}" HorizontalAlignment="Left" Command="{Binding RemovePathCommand, ElementName=Me}" CommandParameter="{Binding}" Content="&#xF2ED;"/>
                             </StackPanel>
-                            <ctrl:vMixPathSelector x:Name="element" Tag="Key" Model="{Binding WidgetSettings.Model, Source={StaticResource Locator}}" InputKey="{Binding A, Mode=TwoWay}" TitleName="{Binding B, Mode=TwoWay}" Width="Auto" HorizontalAlignment="Stretch"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="4"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="InputSelector"
+                                          Grid.Column="0"
+                                          ItemTemplate="{StaticResource InputSelectorTemplate}"
+                                          SelectedValuePath="Key"
+                                          SelectedValue="{Binding A, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{Binding AvailableInputs, ElementName=Me}"/>
+                                <ComboBox Grid.Column="2"
+                                          IsEnabled="{Binding SelectedItem, ElementName=InputSelector, Converter={wpfc:ValueNullToInverseBoolConverter}}"
+                                          ItemsSource="{Binding SelectedItem.Elements, ElementName=InputSelector}"
+                                          SelectedValuePath="Name"
+                                          SelectedValue="{Binding B, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>[<Run Text="{Binding Type, Mode=OneWay}"/>] <Run Text="{Binding Name, Mode=OneWay}"/></TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -70,3 +92,4 @@
         </StackPanel>
     </Border>
 </UserControl>
+

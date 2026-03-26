@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.Windows.Controls.Primitives;
+using CommunityToolkit.Mvvm.Messaging;
+using vMixController.Classes;
 using vMixController.Messages;
 using vMixControllerSkin;
 
@@ -11,6 +9,10 @@ namespace vMixController.Controls
 {
     public class vMixControlResizeThumb : DraggableThumb
     {
+        private IMessenger Messenger => AppServices.IsRegistered<IMessenger>()
+            ? AppServices.GetRequiredService<IMessenger>()
+            : WeakReferenceMessenger.Default;
+
         public vMixControlResizeThumb()
         {
             DragDelta += new DragDeltaEventHandler(this.ResizeThumb_DragDelta);
@@ -21,13 +23,13 @@ namespace vMixController.Controls
         private void ResizeThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             if (DataContext is vMixController.Widgets.vMixControl item && !item.Locked)
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Resize, IsStarted = true });
+                Messenger.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Resize, IsStarted = true });
         }
 
         private void ResizeThumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             if (DataContext is vMixController.Widgets.vMixControl item && !item.Locked)
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Resize, IsStarted = false });
+                Messenger.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Resize, IsStarted = false });
         }
 
         private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -90,3 +92,5 @@ namespace vMixController.Controls
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,16 +15,16 @@ using vMixController.ViewModel;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlTextField : vMixControl
+    public partial class vMixControlTextField : vMixControl
     {
         protected string _defaultValue = null;
 
-        // Изменяем Queue на Dictionary для отслеживания последних обновлений
-        // Ключ: (DependencyObject, DependencyProperty), Значение: Время последнего обновления
+        // �������� Queue �� Dictionary ��� ������������ ��������� ����������
+        // ����: (DependencyObject, DependencyProperty), ��������: ����� ���������� ����������
         protected static Dictionary<Tuple<DependencyObject, DependencyProperty>, DateTime> _pendingUpdates =
             new Dictionary<Tuple<DependencyObject, DependencyProperty>, DateTime>();
 
-        // Очередь для фактической обработки, чтобы сохранить порядок, но она будет содержать только уникальные элементы
+        // ������� ��� ����������� ���������, ����� ��������� �������, �� ��� ����� ��������� ������ ���������� ��������
         protected static Queue<Tuple<DependencyObject, DependencyProperty>> _updateQueue =
             new Queue<Tuple<DependencyObject, DependencyProperty>>();
         protected static HashSet<Tuple<DependencyObject, DependencyProperty>> _queuedKeys =
@@ -58,33 +58,33 @@ namespace vMixController.Widgets
 
         private static void DelayedUpdateTimer_Tick(object sender, EventArgs e)
         {
-            // Создаем временный список для элементов, которые нужно обработать
+            // ������� ��������� ������ ��� ���������, ������� ����� ����������
             var itemsToProcess = new List<Tuple<DependencyObject, DependencyProperty>>();
 
-            lock (_pendingUpdates) // Защита от одновременного доступа к словарю и очереди
+            lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
             {
-                // Проходим по элементам в очереди для обработки
+                // �������� �� ��������� � ������� ��� ���������
                 while (_updateQueue.Count > 0)
                 {
-                    var key = _updateQueue.Peek(); // Смотрим на первый элемент, не удаляя его
+                    var key = _updateQueue.Peek(); // ������� �� ������ �������, �� ������ ���
 
-                    // Проверяем, прошло ли достаточно времени с момента последнего обновления
+                    // ���������, ������ �� ���������� ������� � ������� ���������� ����������
                     if (_pendingUpdates.TryGetValue(key, out DateTime lastUpdateTime) && lastUpdateTime.AddSeconds(0.1) < DateTime.Now)
                     {
-                        _updateQueue.Dequeue(); // Удаляем из очереди
+                        _updateQueue.Dequeue(); // ������� �� �������
                         _queuedKeys.Remove(key);
-                        _pendingUpdates.Remove(key); // Удаляем из словаря
-                        itemsToProcess.Add(key); // Добавляем в список для обработки
+                        _pendingUpdates.Remove(key); // ������� �� �������
+                        itemsToProcess.Add(key); // ��������� � ������ ��� ���������
                     }
                     else
                     {
-                        // Если еще не пришло время для первого элемента, то и для последующих тоже
+                        // ���� ��� �� ������ ����� ��� ������� ��������, �� � ��� ����������� ����
                         break;
                     }
                 }
             }
 
-            // Обрабатываем элементы вне lock, чтобы не блокировать UI-поток надолго
+            // ������������ �������� ��� lock, ����� �� ����������� UI-����� �������
             foreach (var item in itemsToProcess)
             {
                 try
@@ -95,7 +95,7 @@ namespace vMixController.Widgets
                 }
                 catch (Exception)
                 {
-                    // Логирование ошибки
+                    // ����������� ������
                     //Console.WriteLine($"Error updating source: {ex.Message}");
                 }
             }
@@ -140,31 +140,25 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_isLive == value)
+                SetPropertyValue(ref _isLive, value, nameof(IsLive), isLive =>
                 {
-                    return;
-                }
-
-                if (!value)
-                {
-                    lock (_pendingUpdates)
+                    if (!isLive)
                     {
-                        _pendingUpdates.Clear(); // Очищаем словарь
-                        _updateQueue.Clear(); // Очищаем очередь
-                        _queuedKeys.Clear();
+                        lock (_pendingUpdates)
+                        {
+                            _pendingUpdates.Clear(); // ������� �������
+                            _updateQueue.Clear(); // ������� �������
+                            _queuedKeys.Clear();
+                        }
                     }
-                }
 
-                _isLive = value;
+                    if (isLive)
+                        _text = Text;
 
-                if (value)
-                    _text = Text;
+                    UpdateText(_paths);
 
-                UpdateText(_paths);
-
-                Text = _text;
-
-                RaisePropertyChanged(nameof(IsLive));
+                    Text = _text;
+                });
             }
         }
 
@@ -183,14 +177,7 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_isTable == value)
-                {
-                    return;
-                }
-
-                _isTable = value;
-                UpdateText(_paths);
-                RaisePropertyChanged(nameof(IsTable));
+                SetPropertyValue(ref _isTable, value, nameof(IsTable), _ => UpdateText(_paths));
             }
         }
 
@@ -202,21 +189,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsEditable
         {
-            get
-            {
-                return _isEditable;
-            }
-
-            set
-            {
-                if (_isEditable == value)
-                {
-                    return;
-                }
-
-                _isEditable = value;
-                RaisePropertyChanged(nameof(IsEditable));
-            }
+            get => _isEditable;
+            set => SetPropertyValue(ref _isEditable, value, nameof(IsEditable));
         }
 
         private bool _isMappedToGUID = true;
@@ -227,21 +201,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsMappedToGUID
         {
-            get
-            {
-                return _isMappedToGUID;
-            }
-
-            set
-            {
-                if (_isMappedToGUID == value)
-                {
-                    return;
-                }
-
-                _isMappedToGUID = value;
-                RaisePropertyChanged(nameof(IsMappedToGUID));
-            }
+            get => _isMappedToGUID;
+            set => SetPropertyValue(ref _isMappedToGUID, value, nameof(IsMappedToGUID));
         }
 
         public string Text
@@ -261,15 +222,15 @@ namespace vMixController.Widgets
 
             if (e.Property.Name == nameof(Text))
             {
-                // Используем Tuple как ключ для словаря
+                // ���������� Tuple ��� ���� ��� �������
                 var key = Tuple.Create(d, e.Property);
 
-                lock (_pendingUpdates) // Защита от одновременного доступа к словарю и очереди
+                lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
                 {
-                    // Обновляем время последнего изменения для этой пары DO/DP
+                    // ��������� ����� ���������� ��������� ��� ���� ���� DO/DP
                     _pendingUpdates[key] = DateTime.Now;
 
-                    // Если этого элемента еще нет в очереди, добавляем его
+                    // ���� ����� �������� ��� ��� � �������, ��������� ���
                     if (_queuedKeys.Add(key))
                     {
                         _updateQueue.Enqueue(key);
@@ -310,7 +271,7 @@ namespace vMixController.Widgets
                     NotifyOnSourceUpdated = true,
                     NotifyOnTargetUpdated = true
                 };
-                //binding.Delay = 10; // Это свойство не существует в MultiBinding, только в Binding
+                //binding.Delay = 10; // ��� �������� �� ���������� � MultiBinding, ������ � Binding
 
                 InputBase text = null;
 
@@ -375,21 +336,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<Pair<string, string>> Paths
         {
-            get
-            {
-                return _paths;
-            }
-
-            set
-            {
-                if (_paths == value)
-                {
-                    return;
-                }
-
-                _paths = value;
-                RaisePropertyChanged(nameof(Paths));
-            }
+            get => _paths;
+            set => SetPropertyValue(ref _paths, value, nameof(Paths));
         }
 
         private bool _template = false;
@@ -400,21 +348,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Template
         {
-            get
-            {
-                return _template;
-            }
-
-            set
-            {
-                if (_template == value)
-                {
-                    return;
-                }
-
-                _template = value;
-                RaisePropertyChanged(nameof(Template));
-            }
+            get => _template;
+            set => SetPropertyValue(ref _template, value, nameof(Template));
         }
 
         public override void BeforePropertiesChanged()
@@ -422,20 +357,9 @@ namespace vMixController.Widgets
             base.BeforePropertiesChanged();
         }
 
-        [NonSerialized]
-        private RelayCommand _selectPathCommand;
-
-        /// <summary>
-        /// Gets the SelectPathCommand.
-        /// </summary>
-        public RelayCommand SelectPathCommand
+        [RelayCommand]
+        private void SelectPath()
         {
-            get
-            {
-                return _selectPathCommand
-                    ?? (_selectPathCommand = new RelayCommand(
-                    () =>
-                    {
                         var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
                         {
                             Filter = "All files (*.*)|*.*"
@@ -443,9 +367,7 @@ namespace vMixController.Widgets
                         var result = dialog.ShowDialog();
                         if (result.HasValue && result.Value)
                             Text = dialog.FileName;
-                    }));
-            }
-        }
+                            }
 
         public override void AfterPropertiesChanged()
         {
@@ -465,3 +387,4 @@ namespace vMixController.Widgets
         }
     }
 }
+

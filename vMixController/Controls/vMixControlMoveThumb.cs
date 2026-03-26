@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using CommunityToolkit.Mvvm.Messaging;
 using vMixController.Classes;
 using vMixController.Messages;
 using vMixController.Widgets;
@@ -13,21 +9,16 @@ using vMixControllerSkin;
 
 namespace vMixController.Controls
 {
-    public class vMixControlMoveThumb : DraggableThumb, INotifyPropertyChanged
+    public class vMixControlMoveThumb : DraggableThumb
     {
-        public bool Locked
-        {
-            get;
-            set;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private IMessenger Messenger => AppServices.IsRegistered<IMessenger>()
+            ? AppServices.GetRequiredService<IMessenger>()
+            : WeakReferenceMessenger.Default;
 
         public vMixControlMoveThumb()
         {
             DragDelta += new DragDeltaEventHandler(this.MoveThumb_DragDelta);
             this.DragStarted += PhotoMoveThumb_DragStarted;
-            this.DataContextChanged += VMixControlMoveThumb_DataContextChanged;
             this.DragCompleted += VMixControlMoveThumb_DragCompleted;
         }
 
@@ -35,35 +26,16 @@ namespace vMixController.Controls
         {
             if (this.DataContext is vMixControl item && !item.Locked)
             {
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetMoveStateMessage() { Widget = item, IsStarted = false });
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Move, IsStarted = false });
-            }
-        }
-
-        private void VMixControlMoveThumb_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue is vMixControl ctrl)
-            {
-                Locked = ctrl.Locked;
-                ctrl.PropertyChanged += Ctrl_PropertyChanged;
-            }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Locked"));
-        }
-
-        private void Ctrl_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (PropertyChanged != null)
-            {
-                Locked = (sender as Widgets.vMixControl).Locked;
-                PropertyChanged(this, e);
+                Messenger.Send(new WidgetMoveStateMessage() { Widget = item, IsStarted = false });
+                Messenger.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Move, IsStarted = false });
             }
         }
 
         void PhotoMoveThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             vMixController.Widgets.vMixControl item = this.DataContext as vMixController.Widgets.vMixControl;
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetMoveStateMessage() { Widget = item, IsStarted = true });
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Move, IsStarted = true });
+            Messenger.Send(new WidgetMoveStateMessage() { Widget = item, IsStarted = true });
+            Messenger.Send(new WidgetEditMessage { Widget = item, Action = WidgetEditAction.Move, IsStarted = true });
             //item.IsSelected = true;
         }
 
@@ -80,7 +52,7 @@ namespace vMixController.Controls
 
                 item.AlignPositionByGrid();
 
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new WidgetMoveDeltaMessage() { Widget = item, DeltaX = item.Left - px, DeltaY = item.Top - py });
+                Messenger.Send(new WidgetMoveDeltaMessage() { Widget = item, DeltaX = item.Left - px, DeltaY = item.Top - py });
             }
 
 
@@ -88,3 +60,5 @@ namespace vMixController.Controls
 
     }
 }
+
+

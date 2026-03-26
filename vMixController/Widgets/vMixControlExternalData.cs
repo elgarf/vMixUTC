@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +17,7 @@ using vMixControllerDataProvider;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlExternalData : vMixControlTextField, IvMixAutoUpdateWidget
+    public partial class vMixControlExternalData : vMixControlTextField, IvMixAutoUpdateWidget
     {
         [NonSerialized]
         DispatcherTimer _timer = new DispatcherTimer();
@@ -31,7 +31,7 @@ namespace vMixController.Widgets
 
         // Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(ObservableCollection<string>), typeof(vMixControlExternalData), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Data), typeof(ObservableCollection<string>), typeof(vMixControlExternalData), new PropertyMetadata(null));
 
         private bool _enabled = true;
 
@@ -41,21 +41,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Enabled
         {
-            get
-            {
-                return _enabled;
-            }
-
-            set
-            {
-                if (_enabled == value)
-                {
-                    return;
-                }
-
-                _enabled = value;
-                RaisePropertyChanged(nameof(Enabled));
-            }
+            get => _enabled;
+            set => SetPropertyValue(ref _enabled, value, nameof(Enabled));
         }
 
         private bool _restartData = true;
@@ -66,21 +53,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool RestartData
         {
-            get
-            {
-                return _restartData;
-            }
-
-            set
-            {
-                if (_restartData == value)
-                {
-                    return;
-                }
-
-                _restartData = value;
-                RaisePropertyChanged(nameof(RestartData));
-            }
+            get => _restartData;
+            set => SetPropertyValue(ref _restartData, value, nameof(RestartData));
         }
 
         public vMixControlExternalData()
@@ -106,23 +80,19 @@ namespace vMixController.Widgets
         /// </summary>
         public int Period
         {
-            get
-            {
-                return _period;
-            }
-
+            get => _period;
             set
             {
-                if (_period == value)
-                {
+                var normalized = value >= 100 ? value : 100;
+                if (_period == normalized)
                     return;
-                }
 
-                _period = value >= 100 ? value : 100;
-                _timer.Interval = TimeSpan.FromMilliseconds(_period);
-                if (_dataProvider != null)
-                    _dataProvider.Period = _period;
-                RaisePropertyChanged(nameof(Period));
+                SetPropertyValue(ref _period, normalized, nameof(Period), period =>
+                {
+                    _timer.Interval = TimeSpan.FromMilliseconds(period);
+                    if (_dataProvider != null)
+                        _dataProvider.Period = period;
+                });
             }
         }
 
@@ -144,21 +114,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public IvMixDataProvider DataProvider
         {
-            get
-            {
-                return _dataProvider;
-            }
-
-            set
-            {
-                if (_dataProvider == value)
-                {
-                    return;
-                }
-
-                _dataProvider = value;
-                RaisePropertyChanged(nameof(DataProvider));
-            }
+            get => _dataProvider;
+            set => SetPropertyValue(ref _dataProvider, value, nameof(DataProvider));
         }
 
         private List<object> _dataProviderProperties = null;
@@ -179,17 +136,11 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_dataProviderProperties == value)
+                SetPropertyValue(ref _dataProviderProperties, value, nameof(DataProviderProperties), _ =>
                 {
-                    return;
-                }
-
-                _dataProviderProperties = value;
-
-                if (_dataProvider != null)
-                    _dataProvider.SetProperties(value);
-
-                RaisePropertyChanged(nameof(DataProviderProperties));
+                    if (_dataProvider != null)
+                        _dataProvider.SetProperties(value);
+                });
             }
         }
 
@@ -220,8 +171,7 @@ namespace vMixController.Widgets
                 {
 
                 }
-                _dataProviderContent = value;
-                RaisePropertyChanged(nameof(DataProviderContent));
+                SetPropertyValue(ref _dataProviderContent, value, nameof(DataProviderContent));
             }
         }
 
@@ -240,31 +190,26 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_dataProviderPath == value)
+                SetPropertyValue(ref _dataProviderPath, value, nameof(DataProviderPath), _ =>
                 {
-                    return;
-                }
-
-                _dataProviderPath = value;
-
-                try
-                {
-                    if (File.Exists(value))
+                    try
                     {
-                        if (DataProvider != null && DataProvider is IDisposable)
-                            ((IDisposable)DataProvider).Dispose();
+                        if (File.Exists(value))
+                        {
+                            if (DataProvider != null && DataProvider is IDisposable)
+                                ((IDisposable)DataProvider).Dispose();
 
-                        DataProviderContent = Convert.ToBase64String(File.ReadAllBytes(value));
-                        InitializeDataProvider(File.ReadAllBytes(value));
+                            DataProviderContent = Convert.ToBase64String(File.ReadAllBytes(value));
+                            InitializeDataProvider(File.ReadAllBytes(value));
+                        }
+                        else
+                            InitializeDataProvider(Convert.FromBase64String(DataProviderContent));
                     }
-                    else
-                        InitializeDataProvider(Convert.FromBase64String(DataProviderContent));
-                }
-                catch (Exception)
-                {
+                    catch (Exception)
+                    {
 
-                }
-                RaisePropertyChanged(nameof(DataProviderPath));
+                    }
+                });
             }
         }
 
@@ -304,9 +249,9 @@ namespace vMixController.Widgets
                     DataProvider.SetProperties(_dataProviderProperties);
                     if (DataProvider is IvMixDataProviderTextInput)
                     {
-                        ((IvMixDataProviderTextInput)DataProvider).PreviewKeyUp = PreviewKeyUp;
-                        ((IvMixDataProviderTextInput)DataProvider).GotFocus = GotFocus;
-                        ((IvMixDataProviderTextInput)DataProvider).LostFocus = LostFocus;
+                        ((IvMixDataProviderTextInput)DataProvider).PreviewKeyUp = PreviewKeyUpCommand;
+                        ((IvMixDataProviderTextInput)DataProvider).GotFocus = GotFocusCommand;
+                        ((IvMixDataProviderTextInput)DataProvider).LostFocus = LostFocusCommand;
                     }
                 }
 
@@ -422,46 +367,20 @@ namespace vMixController.Widgets
             }
         }
 
-        [NonSerialized]
-        private RelayCommand _openPropertiesCommand;
-
-        /// <summary>
-        /// Gets the OpenPropertiesCommand.
-        /// </summary>
-        public RelayCommand OpenPropertiesCommand
+        [RelayCommand]
+        private void OpenProperties()
         {
-            get
+            if (DataProvider != null)
             {
-                return _openPropertiesCommand
-                    ?? (_openPropertiesCommand = new RelayCommand(
-                    () =>
-                    {
-                        if (DataProvider != null)
-                        {
-                            DataProvider.ShowProperties(App.Current.Windows.OfType<MainWindow>().FirstOrDefault());
-                            UpdateText(Paths);
-                        }
-                    }));
+                DataProvider.ShowProperties(App.Current.Windows.OfType<MainWindow>().FirstOrDefault());
+                UpdateText(Paths);
             }
         }
 
-        [NonSerialized]
-        private RelayCommand _toggleEnabledCommand;
-
-        /// <summary>
-        /// Gets the ToggleEnabled.
-        /// </summary>
-        public RelayCommand ToggleEnabledCommand
+        [RelayCommand]
+        private void ToggleEnabled()
         {
-            get
-            {
-                return _toggleEnabledCommand
-                    ?? (_toggleEnabledCommand = new RelayCommand(
-                    () =>
-                    {
-                        Enabled = !Enabled;
-                    }));
-            }
+            Enabled = !Enabled;
         }
     }
 }

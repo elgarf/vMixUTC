@@ -168,7 +168,7 @@
                                 <Setter Property="Header">
                                     <Setter.Value>
                                         <MultiBinding Converter="{conv:StringListToStringConverter}">
-                                            <Binding Source="{StaticResource Locator}" Path="Main.WindowSettings.Pages"/>
+                                            <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.WindowSettings.Pages"/>
                                             <Binding Converter="{conv:ObjectToIndexConverter}" ConverterParameter="{StaticResource Pages}"/>
                                         </MultiBinding>
                                     </Setter.Value>
@@ -206,10 +206,10 @@
                     </Grid.ColumnDefinitions>
                     <Grid VerticalAlignment="Center" Margin="2,0,2,0" HorizontalAlignment="Left">
                         <Grid.Visibility>
-                            <Binding Path="Main.WindowSettings.ShowIndividualLock" Source="{StaticResource Locator}" Converter="{wpfc:BoolToVisibilityConverter}"/>
+                            <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.WindowSettings.ShowIndividualLock" Converter="{wpfc:BoolToVisibilityConverter}"/>
                         </Grid.Visibility>
 
-                        <Button Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={wpfc:BoolToVisibilityConverter}, ElementName=CC}" Style="{StaticResource TitleButton}" x:Name="LockButton" ToolTip="{loc:Loc Key=WidgetContainer.ToolTip.LockWidget}" Command="{Binding Main.SwitchLockCommand, Source={StaticResource Locator}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}" IsEnabled="{Binding ParentContainer.Control.IsPasswordLocked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}"/>
+                        <Button Visibility="{Binding ParentContainer.Control.IsCaptionVisible, Converter={wpfc:BoolToVisibilityConverter}, ElementName=CC}" Style="{StaticResource TitleButton}" x:Name="LockButton" ToolTip="{loc:Loc Key=WidgetContainer.ToolTip.LockWidget}" Command="{Binding DataContext.SwitchLockCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding ParentContainer.Control, ElementName=CC}" Content="{Binding ParentContainer.Control.Locked, Converter={StaticResource LockButtonConverter}, ElementName=CC}" IsEnabled="{Binding ParentContainer.Control.IsPasswordLocked, ElementName=CC, Converter={wpfc:BoolToInverseBoolConverter}}"/>
                     </Grid>
 
                     <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionText}" Text="{Binding ParentContainer.Caption, ElementName=CC}" Foreground="{Binding ParentContainer.Control.Color, ElementName=CC, Converter={conv:ColorToBlackOrWhiteConverter}}"></TextBlock>

@@ -1,4 +1,3 @@
-﻿using CommonServiceLocator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,7 +29,7 @@ namespace vMixController.Converters
             if (value is string v)
             {
                 var relativePath = Classes.Utils.SearchFile(v, Directory.GetCurrentDirectory());
-                string foundPath = Classes.Utils.SearchFile(v, Path.GetDirectoryName(ServiceLocator.Current.GetInstance<MainViewModel>().ControllerPath));
+                string foundPath = Classes.Utils.SearchFile(v, Path.GetDirectoryName(vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().ControllerPath));
 
                 if (_extensions.Contains(Path.GetExtension(v)) && (File.Exists(v) || File.Exists(relativePath) || File.Exists(foundPath)))
                     return p ? Visibility.Visible : Visibility.Collapsed;
@@ -49,3 +48,5 @@ namespace vMixController.Converters
         }
     }
 }
+
+

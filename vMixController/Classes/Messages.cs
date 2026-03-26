@@ -7,7 +7,7 @@ using vMixController.Widgets;
 
 namespace vMixController.Messages
 {
-    public struct LoadingMessage
+    public class LoadingMessage
     {
         public bool Loading { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NewTek;
 using NewTek.NDI;
 using System;
@@ -22,7 +23,7 @@ using System.Windows.Threading;
 
 namespace UTCNDIMonitorDataProvider
 {
-    public class NDIMonitorDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProvider, IDisposable, INotifyPropertyChanged
+    public partial class NDIMonitorDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProvider, IDisposable, INotifyPropertyChanged
     {
         public object PreviewKeyUp { get; set; }
         public object GotFocus { get; set; }
@@ -52,22 +53,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _source;
-            }
-
-            set
-            {
-                if (_source == value)
-                {
-                    return;
-                }
-
-                _source = value;
-                NDISource = new NewTek.NDI.Source(value);
-                RaisePropertyChanged(SourcePropertyName);
-            }
+            get => _source;
+            set => SetPropertyValue(ref _source, value, SourcePropertyName, v => NDISource = new NewTek.NDI.Source(v));
         }
 
         /// <summary>
@@ -83,21 +70,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public NewTek.NDI.Source NDISource
         {
-            get
-            {
-                return _NDISource;
-            }
-
-            set
-            {
-                if (_NDISource == value)
-                {
-                    return;
-                }
-
-                _NDISource = value;
-                RaisePropertyChanged(NDISourcePropertyName);
-            }
+            get => _NDISource;
+            set => SetPropertyValue(ref _NDISource, value, NDISourcePropertyName);
         }
 
 
@@ -114,23 +88,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public bool IsAudioEnabled
         {
-            get
-            {
-                return _isAudioEnabled;
-            }
-
-            set
-            {
-                if (_isAudioEnabled == value)
-                {
-                    return;
-                }
-
-                //_ui.Preview.IsAudioEnabled = value;
-
-                _isAudioEnabled = value;
-                RaisePropertyChanged(IsAudioEnabledPropertyName);
-            }
+            get => _isAudioEnabled;
+            set => SetPropertyValue(ref _isAudioEnabled, value, IsAudioEnabledPropertyName);
         }
 
         /// <summary>
@@ -146,21 +105,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public bool IsLowBandwidth
         {
-            get
-            {
-                return _isLowBandwidth;
-            }
-
-            set
-            {
-                if (_isLowBandwidth == value)
-                {
-                    return;
-                }
-
-                _isLowBandwidth = value;
-                RaisePropertyChanged(IsLowBandwidthPropertyName);
-            }
+            get => _isLowBandwidth;
+            set => SetPropertyValue(ref _isLowBandwidth, value, IsLowBandwidthPropertyName);
         }
 
         /// <summary>
@@ -176,21 +122,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public byte MultiViewLayout
         {
-            get
-            {
-                return _multiViewLayout;
-            }
-
-            set
-            {
-                if (_multiViewLayout == value)
-                {
-                    return;
-                }
-
-                _multiViewLayout = value;
-                RaisePropertyChanged(MultiViewLayoutPropertyName);
-            }
+            get => _multiViewLayout;
+            set => SetPropertyValue(ref _multiViewLayout, value, MultiViewLayoutPropertyName);
         }
 
         /// <summary>
@@ -206,21 +139,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public byte AspectRatio
         {
-            get
-            {
-                return _aspectRatio;
-            }
-
-            set
-            {
-                if (_aspectRatio == value)
-                {
-                    return;
-                }
-
-                _aspectRatio = value;
-                RaisePropertyChanged(AspectRatioPropertyName);
-            }
+            get => _aspectRatio;
+            set => SetPropertyValue(ref _aspectRatio, value, AspectRatioPropertyName);
         }
 
 
@@ -237,21 +157,8 @@ namespace UTCNDIMonitorDataProvider
         /// </summary>
         public ObservableCollection<string> Sources
         {
-            get
-            {
-                return _sources;
-            }
-
-            set
-            {
-                if (_sources == value)
-                {
-                    return;
-                }
-
-                _sources = value;
-                RaisePropertyChanged(SourcesPropertyName);
-            }
+            get => _sources;
+            set => SetPropertyValue(ref _sources, value, SourcesPropertyName);
         }
 
         private void RaisePropertyChanged(string sourceNamePropertyName)
@@ -436,7 +343,7 @@ namespace UTCNDIMonitorDataProvider
             _ui.Preview.Disconnect();
             SubscribeFinderEvents();
 
-            RaisePropertyChanged("Source");
+            RaisePropertyChanged(nameof(Source));
         }
 
         private void Sources_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -447,73 +354,36 @@ namespace UTCNDIMonitorDataProvider
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private RelayCommand<string> _playInput;
-
-        /// <summary>
-        /// Gets the PlayInput.
-        /// </summary>
-        public RelayCommand<string> PlayInput
+        [RelayCommand]
+        private void PlayInput(string p)
         {
-            get
+            _values[Convert.ToInt32(p) - 1] = "@[cmd]Function=QuickPlay&Input={0}";
+        }
+        [RelayCommand]
+        private void MultiViewChange(string p)
+        {
+            MultiViewLayout = Convert.ToByte(p);
+        }
+        [RelayCommand]
+        private void Reset()
+        {
+            if (_finder != null)
             {
-                return _playInput
-                    ?? (_playInput = new RelayCommand<string>(
-                    p =>
-                    {
-                        _values[Convert.ToInt32(p) - 1] = "@[cmd]Function=QuickPlay&Input={0}";
-                    }));
+                UnsubscribeFinderEvents();
+                _finder.Dispose();
+                _finder = null;
+                _finderOMT.Dispose();
+                _finderOMT = null;
+                _finder = new Finder(true);
+                _finderOMT = new OMT.Finder();
+                SubscribeFinderEvents();
+                RefreshSources();
+                OnReset?.Invoke(this, new EventArgs());
             }
         }
 
-        private RelayCommand<string> _multiViewChange;
-
-        /// <summary>
-        /// Gets the MultiViewChange.
-        /// </summary>
-        public RelayCommand<string> MultiViewChange
-        {
-            get
-            {
-                return _multiViewChange
-                    ?? (_multiViewChange = new RelayCommand<string>(
-                    p =>
-                    {
-                        MultiViewLayout = Convert.ToByte(p);
-                    }));
-            }
-        }
-
-        private RelayCommand _resetCommand;
-
-        /// <summary>
-        /// Gets the Reset.
-        /// </summary>
-        public RelayCommand ResetCommand
-        {
-            get
-            {
-                return _resetCommand
-                    ?? (_resetCommand = new RelayCommand(
-                    () =>
-                    {
-                        if (_finder != null)
-                        {
-                            UnsubscribeFinderEvents();
-                            _finder.Dispose();
-                            _finder = null;
-                            _finderOMT.Dispose();
-                            _finderOMT = null;
-
-                            _finder = new Finder(true);
-                            _finderOMT = new OMT.Finder();
-                            SubscribeFinderEvents();
-                            RefreshSources();
-                            OnReset?.Invoke(this, new EventArgs());
-                        }
-                    }));
-            }
-        }
+        
+        
 
         private void SubscribeFinderEvents()
         {
@@ -558,5 +428,20 @@ namespace UTCNDIMonitorDataProvider
 
             Sources = new ObservableCollection<string>(updated);
         }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            onChanged?.Invoke(value);
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
     }
 }
+
+

@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +11,7 @@ using vMixController.PropertiesControls;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlScore : vMixControlTextField
+    public partial class vMixControlScore : vMixControlTextField
     {
         public override string Type
         {
@@ -29,21 +29,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Style
         {
-            get
-            {
-                return _style;
-            }
-
-            set
-            {
-                if (_style == value)
-                {
-                    return;
-                }
-
-                _style = value;
-                RaisePropertyChanged(nameof(Style));
-            }
+            get => _style;
+            set => SetPropertyValue(ref _style, value, nameof(Style));
         }
 
         private byte _enabledButtons = 1;
@@ -54,38 +41,25 @@ namespace vMixController.Widgets
         /// </summary>
         public byte EnabledButtons
         {
-            get
-            {
-                return _enabledButtons;
-            }
-
-            set
-            {
-                if (_enabledButtons == value)
-                {
-                    return;
-                }
-
-                _enabledButtons = value;
-                RaisePropertyChanged(nameof(EnabledButtons));
-            }
+            get => _enabledButtons;
+            set => SetPropertyValue(ref _enabledButtons, value, nameof(EnabledButtons));
         }
 
 
 
         /// <summary>
-        /// Регистрация DependencyProperty для FormatString.
+        /// ����������� DependencyProperty ��� FormatString.
         /// </summary>
         public static readonly DependencyProperty FormatStringProperty =
             DependencyProperty.Register(
                 nameof(FormatString),
                 typeof(string),
                 typeof(StringControl),
-                new PropertyMetadata("0")); // "0" - это значение по умолчанию
+                new PropertyMetadata("0")); // "0" - ��� �������� �� ���������
 
         /// <summary>
-        /// CLR-обертка для доступа к свойству из кода.
-        /// WPF использует GetValue/SetValue напрямую для производительности.
+        /// CLR-������� ��� ������� � �������� �� ����.
+        /// WPF ���������� GetValue/SetValue �������� ��� ������������������.
         /// </summary>
         public string FormatString
         {
@@ -188,57 +162,23 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_value == value)
+                SetPropertyValue(ref _value, value, nameof(Value), newValue =>
                 {
-                    return;
-                }
-                Text = value.ToString(FormatString);
-                _value = value;
-                RaisePropertyChanged(nameof(Value));
+                    Text = newValue.ToString(FormatString);
+                });
             }
         }
 
-        [NonSerialized]
-        private RelayCommand<ControlIntParameter> _addScoreCommand;
-
-        /// <summary>
-        /// Gets the AddScoreCommand.
-        /// </summary>
-        [XmlIgnore]
-        public RelayCommand<ControlIntParameter> AddScoreCommand
+        [RelayCommand]
+        private void AddScore(ControlIntParameter p)
         {
-            get
-            {
-                return _addScoreCommand
-                    ?? (_addScoreCommand = new RelayCommand<ControlIntParameter>(
-                    p =>
-                    {
-                        //int.TryParse(((vMixControlTextField)p.A).Text, out int _out);
-                        //_out += p.B;
-                        //((vMixControlTextField)p.A).Text = _out.ToString();
-                        Value += p.B;
-                    }));
-            }
+            Value += p.B;
         }
 
-        [NonSerialized]
-        private RelayCommand _resetScoreCommand;
-
-        /// <summary>
-        /// Gets the ResetScoreCommand.
-        /// </summary>
-        [XmlIgnore]
-        public RelayCommand ResetScoreCommand
+        [RelayCommand]
+        private void ResetScore()
         {
-            get
-            {
-                return _resetScoreCommand
-                    ?? (_resetScoreCommand = new RelayCommand(
-                    () =>
-                    {
-                        Value = 0;
-                    }));
-            }
+            Value = 0;
         }
 
         public override void BeforePropertiesChanged()
@@ -266,3 +206,4 @@ namespace vMixController.Widgets
         }
     }
 }
+

@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSheetsProvider", "UTC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Popcron.Sheets", "Popcron.Sheets\Popcron.Sheets.csproj", "{C16DECA7-0A86-4285-9B3A-99DFD499B4FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCalc", "..\ncalc\Evaluant.Calculator\NCalc.csproj", "{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCalc", "ncalc\Evaluant.Calculator\NCalc.csproj", "{252E5F34-FA82-488A-939D-EF8DDAAB7D2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vMixUTCStreamDeck", "vMixUTCStreamDeck\vMixUTCStreamDeck.csproj", "{5E45C05E-5E37-460D-A85F-EF9849E5091A}"
 EndProject

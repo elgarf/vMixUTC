@@ -51,21 +51,8 @@ namespace vMixController
         /// </summary>
         public string Text
         {
-            get
-            {
-                return _text;
-            }
-
-            set
-            {
-                if (_text == value)
-                {
-                    return;
-                }
-
-                _text = value;
-                OnPropertyChanged(nameof(Text)); // Используем вспомогательный метод
-            }
+            get => _text;
+            set => SetPropertyValue(ref _text, value, nameof(Text));
         }
 
         // Добавляем свойства Password, PasswordConfirmation, Title
@@ -83,21 +70,8 @@ namespace vMixController
         /// </summary>
         public string Password
         {
-            get
-            {
-                return _password;
-            }
-
-            set
-            {
-                if (_password == value)
-                {
-                    return;
-                }
-
-                _password = value;
-                OnPropertyChanged(nameof(Password));
-            }
+            get => _password;
+            set => SetPropertyValue(ref _password, value, nameof(Password));
         }
 
         /// <summary>
@@ -113,21 +87,8 @@ namespace vMixController
         /// </summary>
         public string PasswordConfirmation
         {
-            get
-            {
-                return _passwordConfirmation;
-            }
-
-            set
-            {
-                if (_passwordConfirmation == value)
-                {
-                    return;
-                }
-
-                _passwordConfirmation = value;
-                OnPropertyChanged(nameof(PasswordConfirmation));
-            }
+            get => _passwordConfirmation;
+            set => SetPropertyValue(ref _passwordConfirmation, value, nameof(PasswordConfirmation));
         }
 
         private string _title = "Input Page Name Text";
@@ -138,33 +99,15 @@ namespace vMixController
         /// </summary>
         public string InputTitle
         {
-            get
-            {
-                return _title;
-            }
-
-            set
-            {
-                if (_title == value)
-                {
-                    return;
-                }
-
-                _title = value;
-                OnPropertyChanged(nameof(InputTitle));
-            }
+            get => _title;
+            set => SetPropertyValue(ref _title, value, nameof(InputTitle));
         }
 
         InputTextWindowMode _mode = InputTextWindowMode.Default;
         public InputTextWindowMode Mode
         {
             get => _mode;
-            set
-            {
-                if (_mode == value) return;
-                _mode = value;
-                OnPropertyChanged(nameof(Mode));
-            }
+            set => SetPropertyValue(ref _mode, value, nameof(Mode));
         }
 
         /// <summary>
@@ -174,6 +117,18 @@ namespace vMixController
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
 
         private void Me_Activated(object sender, EventArgs e)

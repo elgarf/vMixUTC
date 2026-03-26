@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,21 +31,8 @@ namespace vMixController.Classes
         /// </summary>
         public WindowState State
         {
-            get
-            {
-                return _state;
-            }
-
-            set
-            {
-                if (_state == value)
-                {
-                    return;
-                }
-
-                _state = value;
-                RaisePropertyChanged(StatePropertyName);
-            }
+            get => _state;
+            set => SetProperty(ref _state, value, StatePropertyName);
         }
 
 
@@ -58,21 +45,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool UseInfiniteCanvas
         {
-            get
-            {
-                return _useInfiniteCanvas;
-            }
-
-            set
-            {
-                if (_useInfiniteCanvas == value)
-                {
-                    return;
-                }
-
-                _useInfiniteCanvas = value;
-                RaisePropertyChanged(nameof(UseInfiniteCanvas));
-            }
+            get => _useInfiniteCanvas;
+            set => SetProperty(ref _useInfiniteCanvas, value);
         }
 
 
@@ -84,21 +58,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool ShowLinks
         {
-            get
-            {
-                return _showLinks;
-            }
-
-            set
-            {
-                if (_showLinks == value)
-                {
-                    return;
-                }
-
-                _showLinks = value;
-                RaisePropertyChanged(nameof(ShowLinks));
-            }
+            get => _showLinks;
+            set => SetProperty(ref _showLinks, value);
         }
 
 
@@ -110,42 +71,16 @@ namespace vMixController.Classes
         /// </summary>
         public string LinksStyle
         {
-            get
-            {
-                return _linksStyle;
-            }
-
-            set
-            {
-                if (_linksStyle == value)
-                {
-                    return;
-                }
-
-                _linksStyle = value;
-                RaisePropertyChanged(nameof(LinksStyle));
-            }
+            get => _linksStyle;
+            set => SetProperty(ref _linksStyle, value);
         }
 
         private bool _enableLoopGuard = true;
 
         public bool EnableLoopGuard
         {
-            get
-            {
-                return _enableLoopGuard;
-            }
-
-            set
-            {
-                if (_enableLoopGuard == value)
-                {
-                    return;
-                }
-
-                _enableLoopGuard = value;
-                RaisePropertyChanged(nameof(EnableLoopGuard));
-            }
+            get => _enableLoopGuard;
+            set => SetProperty(ref _enableLoopGuard, value);
         }
 
         /// <summary>
@@ -161,21 +96,8 @@ namespace vMixController.Classes
         /// </summary>
         public double Left
         {
-            get
-            {
-                return _left;
-            }
-
-            set
-            {
-                if (_left == value)
-                {
-                    return;
-                }
-
-                _left = value;
-                RaisePropertyChanged(LeftPropertyName);
-            }
+            get => _left;
+            set => SetProperty(ref _left, value, LeftPropertyName);
         }
 
         /// <summary>
@@ -191,21 +113,8 @@ namespace vMixController.Classes
         /// </summary>
         public double Top
         {
-            get
-            {
-                return _top;
-            }
-
-            set
-            {
-                if (_top == value)
-                {
-                    return;
-                }
-
-                _top = value;
-                RaisePropertyChanged(TopPropertyName);
-            }
+            get => _top;
+            set => SetProperty(ref _top, value, TopPropertyName);
         }
 
         /// <summary>
@@ -221,21 +130,8 @@ namespace vMixController.Classes
         /// </summary>
         public double Width
         {
-            get
-            {
-                return _width;
-            }
-
-            set
-            {
-                if (_width == value)
-                {
-                    return;
-                }
-
-                _width = value;
-                RaisePropertyChanged(WidthPropertyName);
-            }
+            get => _width;
+            set => SetProperty(ref _width, value, WidthPropertyName);
         }
         /// <summary>
         /// The <see cref="Height" /> property's name.
@@ -250,21 +146,8 @@ namespace vMixController.Classes
         /// </summary>
         public double Height
         {
-            get
-            {
-                return _height;
-            }
-
-            set
-            {
-                if (_height == value)
-                {
-                    return;
-                }
-
-                _height = value;
-                RaisePropertyChanged(HeightPropertyName);
-            }
+            get => _height;
+            set => SetProperty(ref _height, value, HeightPropertyName);
         }
 
         /// <summary>
@@ -297,7 +180,7 @@ namespace vMixController.Classes
                 XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
                 XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
-                RaisePropertyChanged(IPPropertyName);
+                OnPropertyChanged(IPPropertyName);
             }
         }
 
@@ -331,7 +214,7 @@ namespace vMixController.Classes
                 XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
                 XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
-                RaisePropertyChanged(PortPropertyName);
+                OnPropertyChanged(PortPropertyName);
             }
         }
 
@@ -361,12 +244,12 @@ namespace vMixController.Classes
                 }
 
                 _httpLogin = value;
-                // Используем новые свойства HttpLogin и HttpPassword для конфигурации
+                // ���������� ����� �������� HttpLogin � HttpPassword ��� ������������
                 vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
                 XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
                 XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
-                RaisePropertyChanged(HttpLoginPropertyName);
+                OnPropertyChanged(HttpLoginPropertyName);
             }
         }
 
@@ -396,12 +279,12 @@ namespace vMixController.Classes
                 }
 
                 _httpPassword = value;
-                // Используем новые свойства HttpLogin и HttpPassword для конфигурации
+                // ���������� ����� �������� HttpLogin � HttpPassword ��� ������������
                 vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
                 XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
                 XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
-                RaisePropertyChanged(HttpPasswordPropertyName);
+                OnPropertyChanged(HttpPasswordPropertyName);
             }
         }
 
@@ -418,21 +301,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool Locked
         {
-            get
-            {
-                return _locked;
-            }
-
-            set
-            {
-                if (_locked == value)
-                {
-                    return;
-                }
-
-                _locked = value;
-                RaisePropertyChanged(LockedPropertyName);
-            }
+            get => _locked;
+            set => SetProperty(ref _locked, value, LockedPropertyName);
         }
 
         /// <summary>
@@ -448,21 +318,8 @@ namespace vMixController.Classes
         /// </summary>
         public double UIScale
         {
-            get
-            {
-                return _uiScale;
-            }
-
-            set
-            {
-                if (_uiScale == value)
-                {
-                    return;
-                }
-
-                _uiScale = value;
-                RaisePropertyChanged(UIScalePropertyName);
-            }
+            get => _uiScale;
+            set => SetProperty(ref _uiScale, value, UIScalePropertyName);
         }
 
         /// <summary>
@@ -501,7 +358,7 @@ namespace vMixController.Classes
                     if (NLog.LogManager.IsLoggingEnabled())
                         NLog.LogManager.SuspendLogging();
                 }
-                RaisePropertyChanged(EnableLogPropertyName);
+                OnPropertyChanged(EnableLogPropertyName);
             }
         }
 
@@ -519,21 +376,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool OpenLastAtStart
         {
-            get
-            {
-                return _openLastAtStart;
-            }
-
-            set
-            {
-                if (_openLastAtStart == value)
-                {
-                    return;
-                }
-
-                _openLastAtStart = value;
-                RaisePropertyChanged(OpenLastAtStartPropertyName);
-            }
+            get => _openLastAtStart;
+            set => SetProperty(ref _openLastAtStart, value, OpenLastAtStartPropertyName);
         }
 
         /// <summary>
@@ -563,7 +407,7 @@ namespace vMixController.Classes
 
                 _pollTime = value;
                 vMixControl.ShadowUpdatePollTime = TimeSpan.FromMilliseconds(value);
-                RaisePropertyChanged(PollTimePropertyName);
+                OnPropertyChanged(PollTimePropertyName);
             }
         }
 
@@ -582,7 +426,7 @@ namespace vMixController.Classes
 
                 App.Current.MainWindow.Topmost = value;
 
-                RaisePropertyChanged("IsTopmost");
+                OnPropertyChanged(nameof(IsTopmost));
             }
         }
 
@@ -599,21 +443,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool ShowIndividualLock
         {
-            get
-            {
-                return _showIndividualLock;
-            }
-
-            set
-            {
-                if (_showIndividualLock == value)
-                {
-                    return;
-                }
-
-                _showIndividualLock = value;
-                RaisePropertyChanged(ShowIndividualLockPropertyName);
-            }
+            get => _showIndividualLock;
+            set => SetProperty(ref _showIndividualLock, value, ShowIndividualLockPropertyName);
         }
 
         /// <summary>
@@ -629,21 +460,8 @@ namespace vMixController.Classes
         /// </summary>
         public bool BlinkLights
         {
-            get
-            {
-                return _blinkLights;
-            }
-
-            set
-            {
-                if (_blinkLights == value)
-                {
-                    return;
-                }
-
-                _blinkLights = value;
-                RaisePropertyChanged(BlinkLightsPropertyName);
-            }
+            get => _blinkLights;
+            set => SetProperty(ref _blinkLights, value, BlinkLightsPropertyName);
         }
 
         /// <summary>
@@ -659,21 +477,8 @@ namespace vMixController.Classes
         /// </summary>
         public string Password
         {
-            get
-            {
-                return _password;
-            }
-
-            set
-            {
-                if (_password == value)
-                {
-                    return;
-                }
-
-                _password = value;
-                RaisePropertyChanged(PasswordPropertyName);
-            }
+            get => _password;
+            set => SetProperty(ref _password, value, PasswordPropertyName);
         }
 
         /// <summary>
@@ -689,21 +494,8 @@ namespace vMixController.Classes
         /// </summary>
         public string UserName
         {
-            get
-            {
-                return _userName;
-            }
-
-            set
-            {
-                if (_userName == value)
-                {
-                    return;
-                }
-
-                _userName = value;
-                RaisePropertyChanged(UserNamePropertyName);
-            }
+            get => _userName;
+            set => SetProperty(ref _userName, value, UserNamePropertyName);
         }
 
 
@@ -720,21 +512,8 @@ namespace vMixController.Classes
         /// </summary>
         public ObservableCollection<string> Pages
         {
-            get
-            {
-                return _pages;
-            }
-
-            set
-            {
-                if (_pages == value)
-                {
-                    return;
-                }
-
-                _pages = value;
-                RaisePropertyChanged(PagesPropertyName);
-            }
+            get => _pages;
+            set => SetProperty(ref _pages, value, PagesPropertyName);
         }
 
         /// <summary>
@@ -750,26 +529,13 @@ namespace vMixController.Classes
         /// </summary>
         public ObservableCollection<string> RecentFiles
         {
-            get
-            {
-                return _recentFiles;
-            }
-
-            set
-            {
-                if (_recentFiles == value)
-                {
-                    return;
-                }
-
-                _recentFiles = value;
-                RaisePropertyChanged(RecentFilesPropertyName);
-            }
+            get => _recentFiles;
+            set => SetProperty(ref _recentFiles, value, RecentFilesPropertyName);
         }
 
         public void UpdatePages()
         {
-            RaisePropertyChanged(PagesPropertyName);
+            OnPropertyChanged(PagesPropertyName);
         }
 
         internal void AddRecentFile(string fileName)
@@ -784,3 +550,4 @@ namespace vMixController.Classes
         }
     }
 }
+

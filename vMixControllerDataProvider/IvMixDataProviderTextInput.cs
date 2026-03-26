@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace vMixControllerDataProvider
 {
     public interface IvMixDataProviderTextInput: IvMixDataProvider
     {
-        object PreviewKeyUp { get; set; }
-        object GotFocus { get; set; }
-        object LostFocus { get; set; }
+        ICommand PreviewKeyUp { get; set; }
+        ICommand GotFocus { get; set; }
+        ICommand LostFocus { get; set; }
     }
 }

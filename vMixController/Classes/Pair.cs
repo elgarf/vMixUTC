@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Melanchall.DryWetMidi.Core;
 using NLog.Filters;
 using System;
@@ -33,18 +33,18 @@ namespace vMixController.Classes
                 a = value;
                 if (value is ObservableObject)
                     (value as ObservableObject).PropertyChanged += AChanged;
-                RaisePropertyChanged("A");
+                OnPropertyChanged(nameof(A));
             }
         }
 
         private void AChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged("A");
+            OnPropertyChanged(nameof(A));
         }
 
         private void BChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged("B");
+            OnPropertyChanged(nameof(B));
         }
 
         public object Clone()
@@ -66,7 +66,7 @@ namespace vMixController.Classes
                 b = value;
                 if (value is ObservableObject)
                     (value as ObservableObject).PropertyChanged += BChanged;
-                RaisePropertyChanged("B");
+                OnPropertyChanged(nameof(B));
             }
         }
     }
@@ -138,3 +138,4 @@ namespace vMixController.Classes
     }
 
 }
+

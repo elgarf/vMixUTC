@@ -1,17 +1,18 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using GoogleSheetsDataProvider;
 using Popcron.Sheets;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using vMixControllerDataProvider;
 using vMixControllerSkin;
@@ -31,18 +32,18 @@ namespace UTCGoogleSheetsDataProvider
             return Newtonsoft.Json.JsonConvert.SerializeObject(data);
         }
     }
-    // Реализуем IDisposable для корректного освобождения ресурсов (таймера и токена отмены)
-    public class GoogleSheetsDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDisposable
+    // ��������� IDisposable ��� ����������� ������������ �������� (������� � ������ ������)
+    public partial class GoogleSheetsDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDisposable
     {
-        // Статические кэши для совместного использования между экземплярами провайдера.
-        // Это экономит запросы на авторизацию и дублирующую загрузку одних и тех же таблиц.
+        // ����������� ���� ��� ����������� ������������� ����� ������������ ����������.
+        // ��� �������� ������� �� ����������� � ����������� �������� ����� � ��� �� ������.
         private static readonly ConcurrentDictionary<string, Authorization> _authCache = new ConcurrentDictionary<string, Authorization>();
         private static readonly ConcurrentDictionary<string, Spreadsheet> _spreadsheetCache = new ConcurrentDictionary<string, Spreadsheet>();
         private static readonly ConcurrentDictionary<string, DateTime> _lastModifiedCache = new ConcurrentDictionary<string, DateTime>();
 
         private readonly DispatcherTimer _webTimer;
-        private string[] _cached = Array.Empty<string>();
-        private int _period = 5000; // Установлено значение по умолчанию
+        private string[] _valuesCache = Array.Empty<string>();
+        private int _period = 5000; // ����������� �������� �� ���������
         private string _apiKey = "";
         private string _sheetKey = "";
         private int _startRow = 0;
@@ -51,31 +52,23 @@ namespace UTCGoogleSheetsDataProvider
         private int _endCol = -1;
         private int _sheet = 0;
         private bool _isTable = true;
-        private int _rowsCount = 0;
         private UIElement _customUI;
-        private RelayCommand _showRowsCommand;
-        private RelayCommand _reloadCommand;
 
-        // Семафор для предотвращения одновременного выполнения нескольких запросов на обновление для одного экземпляра.
-        // Используем SemaphoreSlim(1, 1) как асинхронный аналог lock.
+        // ������� ��� �������������� �������������� ���������� ���������� �������� �� ���������� ��� ������ ����������.
+        // ���������� SemaphoreSlim(1, 1) ��� ����������� ������ lock.
         private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        public object PreviewKeyUp { get; set; }
-        public object GotFocus { get; set; }
-        public object LostFocus { get; set; }
+        public ICommand PreviewKeyUp { get; set; }
+        public ICommand GotFocus { get; set; }
+        public ICommand LostFocus { get; set; }
         public bool IsProvidingCustomProperties => false;
 
         string _error = string.Empty;
         public string Error
         {
             get => _error;
-            set
-            {
-                if (_error == value) return;
-                _error = value;
-                OnPropertyChanged(nameof(Error));
-            }
+            set => SetPropertyValue(ref _error, value, nameof(Error));
         }
 
         public int Period
@@ -83,20 +76,65 @@ namespace UTCGoogleSheetsDataProvider
             get => _period;
             set
             {
-                if (_period == value) return;
-                // Период не должен быть слишком маленьким, чтобы не превысить квоты Google API.
-                _period = Math.Max(1000, value);
-                if (_webTimer != null)
+                var normalized = Math.Max(1000, value);
+                SetPropertyValue(ref _period, normalized, nameof(Period), p =>
                 {
-                    _webTimer.Interval = TimeSpan.FromMilliseconds(_period);
-                }
-                OnPropertyChanged(nameof(Period));
+                    if (_webTimer != null)
+                    {
+                        _webTimer.Interval = TimeSpan.FromMilliseconds(p);
+                    }
+                });
             }
         }
 
-        // Свойство Values теперь просто возвращает закэшированное значение.
-        // Это предотвращает зависание UI, т.к. геттер выполняется мгновенно.
-        public string[] Values => _cached;
+        [RelayCommand]
+        private void HandlePreviewKeyUp(KeyEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
+            {
+                if (PreviewKeyUp != null && PreviewKeyUp.CanExecute(p))
+                {
+                    PreviewKeyUp.Execute(p);
+                }
+            }
+        }
+
+        [RelayCommand]
+        private void HandleGotFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (GotFocus != null && GotFocus.CanExecute(p))
+            {
+                GotFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void HandleLostFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (LostFocus != null && LostFocus.CanExecute(p))
+            {
+                LostFocus.Execute(p);
+            }
+        }
+
+        // �������� Values ������ ������ ���������� �������������� ��������.
+        // ��� ������������� ��������� UI, �.�. ������ ����������� ���������.
+        public string[] Values => _valuesCache;
 
         public UIElement CustomUI => _customUI;
 
@@ -119,11 +157,11 @@ namespace UTCGoogleSheetsDataProvider
             _webTimer.Tick += WebTimer_Tick;
             _webTimer.Start();
 
-            // Запускаем первоначальное обновление данных
+            // ��������� �������������� ���������� ������
             _ = UpdateData();
         }
 
-        // Запускает асинхронное обновление данных без блокировки вызывающего потока.
+        // ��������� ����������� ���������� ������ ��� ���������� ����������� ������.
         private async void WebTimer_Tick(object sender, EventArgs e)
         {
             await UpdateData();
@@ -133,13 +171,13 @@ namespace UTCGoogleSheetsDataProvider
         {
             if (string.IsNullOrWhiteSpace(APIKey) || string.IsNullOrWhiteSpace(SheetKey))
             {
-                // Сбрасываем данные, если ключи не установлены
-                UpdateCachedData(Array.Empty<string>());
+                // ���������� ������, ���� ����� �� �����������
+                UpdateValuesCache(Array.Empty<string>());
                 return;
             }
 
-            // Пытаемся захватить семафор без ожидания. Если он уже занят, значит,
-            // обновление уже идет, и мы просто выходим.
+            // �������� ��������� ������� ��� ��������. ���� �� ��� �����, ������,
+            // ���������� ��� ����, � �� ������ �������.
             if (!await _asyncLock.WaitAsync(0))
             {
                 return;
@@ -152,7 +190,7 @@ namespace UTCGoogleSheetsDataProvider
 
                 try
                 {
-                    // 1. Авторизация (используем кэш)
+                    // 1. ����������� (���������� ���)
                     if (!_authCache.TryGetValue(APIKey, out var auth))
                     {
                         auth = await Popcron.Sheets.Authorization.Authorize(APIKey);
@@ -161,7 +199,7 @@ namespace UTCGoogleSheetsDataProvider
 
                     token.ThrowIfCancellationRequested();
 
-                    // 2. Проверка необходимости обновления данных
+                    // 2. �������� ������������� ���������� ������
                     _lastModifiedCache.TryGetValue(SheetKey, out var lastModified);
                     if ((DateTime.Now - lastModified).TotalMilliseconds > Period)
                     {
@@ -173,24 +211,24 @@ namespace UTCGoogleSheetsDataProvider
 
                     token.ThrowIfCancellationRequested();
 
-                    // 3. Обработка данных и обновление UI
+                    // 3. ��������� ������ � ���������� UI
                     ProcessAndCacheData();
                 }
                 catch (OperationCanceledException)
                 {
-                    // Это ожидаемое исключение при закрытии, игнорируем его.
+                    // ��� ��������� ���������� ��� ��������, ���������� ���.
                     Error = ("Data update was canceled.");
                 }
                 catch (Exception ex)
                 {
                     Error = ($"Error loading or processing spreadsheet: {ex.Message}");
-                    // В случае ошибки сбрасываем кэш, чтобы показать пустое значение
-                    UpdateCachedData(Array.Empty<string>());
+                    // � ������ ������ ���������� ���, ����� �������� ������ ��������
+                    UpdateValuesCache(Array.Empty<string>());
                 }
             }
             finally
             {
-                // Освобождаем семафор в любом случае.
+                // ����������� ������� � ����� ������.
                 _asyncLock.Release();
             }
         }
@@ -199,18 +237,18 @@ namespace UTCGoogleSheetsDataProvider
         {
             if (!_spreadsheetCache.TryGetValue(SheetKey, out var sst))
             {
-                UpdateCachedData(Array.Empty<string>());
+                UpdateValuesCache(Array.Empty<string>());
                 return;
             }
 
             if (sst.Sheets.Count <= SheetIndex)
             {
-                UpdateCachedData(Array.Empty<string>());
+                UpdateValuesCache(Array.Empty<string>());
                 return;
             }
 
             var sheet = sst.Sheets[SheetIndex];
-            var results = new List<string>(); // Используем локальную переменную для потокобезопасности
+            var results = new List<string>(); // ���������� ��������� ���������� ��� ������������������
             int maxRows = sheet.Rows;
             int maxCols = sheet.Columns;
 
@@ -239,19 +277,17 @@ namespace UTCGoogleSheetsDataProvider
                 }
             }
 
-            UpdateCachedData(results.ToArray());
+            UpdateValuesCache(results.ToArray());
         }
 
-        // Метод для потокобезопасного обновления кэша и свойств, связанных с UI.
-        private void UpdateCachedData(string[] newCache)
+        // ����� ��� ����������������� ���������� ���� � �������, ��������� � UI.
+        private void UpdateValuesCache(string[] newValues)
         {
-            // Используем диспетчер для обновления свойств, привязанных к UI.
+            // ���������� ��������� ��� ���������� �������, ����������� � UI.
             RunOnUi(() =>
             {
-                _cached = newCache;
-                RowsCount = _cached.Length;
-                OnPropertyChanged(nameof(Values)); // Уведомляем UI, что массив Values изменился
-                OnPropertyChanged(nameof(Cached)); // Также уведомляем для RowsViewer
+                _valuesCache = newValues ?? Array.Empty<string>();
+                OnPropertyChanged(nameof(Values)); // ���������� UI, ��� ������ Values ���������
             });
         }
 
@@ -261,13 +297,7 @@ namespace UTCGoogleSheetsDataProvider
         public string APIKey
         {
             get => _apiKey;
-            set
-            {
-                if (_apiKey == value) return;
-                _apiKey = value.Trim();
-                OnPropertyChanged(nameof(APIKey));
-                _ = UpdateData(); // Запускаем обновление при смене ключа
-            }
+            set => SetPropertyValue(ref _apiKey, value?.Trim() ?? string.Empty, nameof(APIKey), __ => { _ = UpdateData(); });
         }
 
         public string SheetKey
@@ -275,104 +305,60 @@ namespace UTCGoogleSheetsDataProvider
             get => _sheetKey;
             set
             {
-                if (_sheetKey == value) return;
+                var normalized = value;
                 if (Uri.TryCreate(value, UriKind.Absolute, out var k))
                 {
-                    _sheetKey = ParseSheetKeyFromUri(k);
+                    normalized = ParseSheetKeyFromUri(k);
                 }
-                else
-                    _sheetKey = value;
-                OnPropertyChanged(nameof(SheetKey));
-                _ = UpdateData(); // Запускаем обновление при смене ключа
+
+                SetPropertyValue(ref _sheetKey, normalized, nameof(SheetKey), __ => { _ = UpdateData(); });
             }
         }
 
         public int StartRow
         {
             get => _startRow;
-            set
-            {
-                if (_startRow == value) return;
-                _startRow = value;
-                OnPropertyChanged(nameof(StartRow));
-                ProcessAndCacheData(); // Пересчитываем данные из кэша, не загружая заново
-            }
+            set => SetPropertyValue(ref _startRow, value, nameof(StartRow), _ => ProcessAndCacheData());
         }
 
         public int EndRow
         {
             get => _endRow;
-            set
-            {
-                if (_endRow == value) return;
-                _endRow = value;
-                OnPropertyChanged(nameof(EndRow));
-                ProcessAndCacheData();
-            }
+            set => SetPropertyValue(ref _endRow, value, nameof(EndRow), _ => ProcessAndCacheData());
         }
 
         public int StartCol
         {
             get => _startCol;
-            set
-            {
-                if (_startCol == value) return;
-                _startCol = value;
-                OnPropertyChanged(nameof(StartCol));
-                ProcessAndCacheData();
-            }
+            set => SetPropertyValue(ref _startCol, value, nameof(StartCol), _ => ProcessAndCacheData());
         }
 
         public int EndCol
         {
             get => _endCol;
-            set
-            {
-                if (_endCol == value) return;
-                _endCol = value;
-                OnPropertyChanged(nameof(EndCol));
-                ProcessAndCacheData();
-            }
+            set => SetPropertyValue(ref _endCol, value, nameof(EndCol), _ => ProcessAndCacheData());
         }
 
         public int SheetIndex
         {
             get => _sheet;
-            set
-            {
-                if (_sheet == value) return;
-                _sheet = value;
-                OnPropertyChanged(nameof(SheetIndex));
-                ProcessAndCacheData();
-            }
+            set => SetPropertyValue(ref _sheet, value, nameof(SheetIndex), _ => ProcessAndCacheData());
         }
 
         public bool IsTable
         {
             get => _isTable;
-            set
-            {
-                if (_isTable == value) return;
-                _isTable = value;
-                OnPropertyChanged(nameof(IsTable));
-                ProcessAndCacheData();
-            }
+            set => SetPropertyValue(ref _isTable, value, nameof(IsTable), _ => ProcessAndCacheData());
         }
 
-        public int RowsCount
+        [RelayCommand]
+        private void ShowRows()
         {
-            get => _rowsCount;
-            set
-            {
-                if (_rowsCount == value) return;
-                _rowsCount = value;
-                OnPropertyChanged(nameof(RowsCount));
-            }
+            new RowsViewer().Bind(this, nameof(Values));
         }
 
-        public RelayCommand ShowRowsCommand => _showRowsCommand ?? (_showRowsCommand = new RelayCommand(() => new RowsViewer().Bind(this, nameof(Cached))));
-
-        public RelayCommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(() =>
+        [RelayCommand]
+        private void Reload()
         {
             try
             {
@@ -387,17 +373,7 @@ namespace UTCGoogleSheetsDataProvider
                 _cancellationTokenSource = new CancellationTokenSource();
             }
             _ = UpdateData();
-        }));
-
-        public string[] Cached
-        {
-            get => _cached;
-            private set // Сеттер делаем приватным
-            {
-                _cached = value;
-                OnPropertyChanged(nameof(Cached));
-            }
-        }
+                }
 
         #endregion
 
@@ -444,7 +420,7 @@ namespace UTCGoogleSheetsDataProvider
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            // Убеждаемся, что событие вызывается в UI-потоке
+            // ����������, ��� ������� ���������� � UI-������
             if (Application.Current?.Dispatcher?.CheckAccess() ?? true)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -498,5 +474,19 @@ namespace UTCGoogleSheetsDataProvider
 
             return parts[parts.Length - 1];
         }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            onChanged?.Invoke(value);
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 }
+

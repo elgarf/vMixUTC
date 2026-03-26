@@ -1,5 +1,6 @@
-﻿// Требуется добавить ссылку на System.Net.Http
-using GalaSoft.MvvmLight.CommandWpf;
+// ��������� �������� ������ �� System.Net.Http
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ using vMixControllerSkin;
 
 namespace FileSystemDataProviderNs
 {
-    public class FileSystemDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
+    public partial class FileSystemDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
     {
         #region Properties & Commands
 
@@ -26,16 +27,13 @@ namespace FileSystemDataProviderNs
             set
             {
                 var normalized = Math.Max(100, value);
-                if (_period == normalized)
+                SetPropertyValue(ref _period, normalized, nameof(Period), p =>
                 {
-                    return;
-                }
-
-                _period = normalized;
-                if (_refreshTimer != null)
-                {
-                    _refreshTimer.Interval = TimeSpan.FromMilliseconds(_period);
-                }
+                    if (_refreshTimer != null)
+                    {
+                        _refreshTimer.Interval = TimeSpan.FromMilliseconds(p);
+                    }
+                });
             }
         }
 
@@ -62,23 +60,33 @@ namespace FileSystemDataProviderNs
         public static readonly DependencyProperty ErrorProperty =
             DependencyProperty.Register(nameof(Error), typeof(string), typeof(FileSystemDataProvider), new PropertyMetadata(""));
 
-        public object PreviewKeyUp { get; set; }
-        public object GotFocus { get; set; }
-        public object LostFocus { get; set; }
-
-        // 4. Используем expression-bodied members для лаконичности
-        private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyUpCommand => _previewKeyUpCommand ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(p =>
+        public ICommand PreviewKeyUp { get; set; }
+        public ICommand GotFocus { get; set; }
+        public ICommand LostFocus { get; set; }
+        [RelayCommand]
+        private void HandlePreviewKeyUp(KeyEventArgs p)
         {
+            if (p == null)
+            {
+                return;
+            }
+
             if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
             {
-                ((RelayCommand<KeyEventArgs>)PreviewKeyUp)?.Execute(p);
+                if (PreviewKeyUp is ICommand command && command.CanExecute(p))
+                {
+                    command.Execute(p);
+                }
             }
-        }));
-
-        private RelayCommand<KeyEventArgs> _previewKeyDownCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand => _previewKeyDownCommand ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(p =>
+        }
+        [RelayCommand]
+        private void HandlePreviewKeyDown(KeyEventArgs p)
         {
+            if (p == null)
+            {
+                return;
+            }
+
             if (p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return)
             {
                 p.Handled = true;
@@ -93,14 +101,45 @@ namespace FileSystemDataProviderNs
             {
                 p.Handled = true;
             }
-        }));
+        }
 
-        private RelayCommand _showRowsCommand;
+        [RelayCommand]
+        private void HandleGotFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (GotFocus != null && GotFocus.CanExecute(p))
+            {
+                GotFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void HandleLostFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (LostFocus != null && LostFocus.CanExecute(p))
+            {
+                LostFocus.Execute(p);
+            }
+        }
+
         private string _path;
         private string _filter = "*.*";
         private bool _includeSub;
 
-        public RelayCommand ShowRowsCommand => _showRowsCommand ?? (_showRowsCommand = new RelayCommand(() => new RowsViewer().Bind(this, nameof(Values))));
+        [RelayCommand]
+        private void ShowRows()
+        {
+            new RowsViewer().Bind(this, nameof(Values));
+        }
 
         #endregion
 
@@ -215,7 +254,7 @@ namespace FileSystemDataProviderNs
                     if (!newValues.SequenceEqual(_cachedValues))
                     {
                         _cachedValues = newValues;
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Values)));
+                        RaisePropertyChanged(nameof(Values));
                     }
                 }
                 catch (Exception ex)
@@ -238,7 +277,7 @@ namespace FileSystemDataProviderNs
             }
 
             RefreshValuesIfNeeded();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Values)));
+            RaisePropertyChanged(nameof(Values));
         }
 
         private void SetError(string error)
@@ -257,5 +296,25 @@ namespace FileSystemDataProviderNs
         {
             RefreshValuesIfNeeded();
         }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            onChanged?.Invoke(value);
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
     }
 }
+
+

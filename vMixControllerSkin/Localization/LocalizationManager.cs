@@ -6,10 +6,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Resources;
+using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Data;
 
 namespace vMixControllerSkin.Localization
 {
@@ -43,7 +44,7 @@ namespace vMixControllerSkin.Localization
             {
                 enLocale.Add((string)entry.Key, (string)entry.Value);
             }
-            File.WriteAllText(Path.Combine(userLocales, _defaultLocales[0] + ".json"), JsonSerializer.Serialize(enLocale, new JsonSerializerOptions() { WriteIndented = true }));
+            File.WriteAllText(Path.Combine(userLocales, _defaultLocales[0] + ".json"), SerializeDictionary(enLocale));
 
             Locales = GetAvailableCultures().ToArray();
         }
@@ -65,7 +66,7 @@ namespace vMixControllerSkin.Localization
                 ApplyCulture(_culture);
 
                 OnPropertyChanged(nameof(Culture));
-                OnPropertyChanged("Item[]");
+                OnPropertyChanged(Binding.IndexerName);
                 CultureChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -107,7 +108,7 @@ namespace vMixControllerSkin.Localization
             }
 
             ApplyCulture(CultureInfo.CurrentUICulture);
-            OnPropertyChanged("Item[]");
+            OnPropertyChanged(Binding.IndexerName);
         }
 
         public void SetCulture(string cultureName, bool persist = true)
@@ -154,7 +155,7 @@ namespace vMixControllerSkin.Localization
                     if (customLocale != _defaultLocales[0])
                     {
                         result.Add(CultureInfo.GetCultureInfo(customLocale));
-                        _userLocales.Add(customLocale, JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)));
+                        _userLocales.Add(customLocale, DeserializeDictionary(File.ReadAllText(file)));
                     }
                 }
 
@@ -164,6 +165,31 @@ namespace vMixControllerSkin.Localization
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private static string SerializeDictionary(Dictionary<string, string> source)
+        {
+            if (source == null)
+                source = new Dictionary<string, string>();
+
+            var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, source);
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
+        }
+
+        private static Dictionary<string, string> DeserializeDictionary(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                return new Dictionary<string, string>();
+
+            var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            {
+                return (Dictionary<string, string>)serializer.ReadObject(stream) ?? new Dictionary<string, string>();
+            }
         }
     }
 }

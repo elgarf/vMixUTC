@@ -244,7 +244,13 @@ namespace vMixController.Classes
                     //Add or update global variable, according to controller variables
                     foreach (var item in globals)
                     {
-                        var globalSettings = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings;
+                        var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                            ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                            : null;
+                        if (globalSettings == null)
+                        {
+                            continue;
+                        }
                         if (globalSettings.Variables.Count(x => x.A == item.A) == 0)
                             globalSettings.Variables.Add(item);
                         else
@@ -327,11 +333,13 @@ namespace vMixController.Classes
                     writer.WriteEndElement();
 
 
-                    var globalSettings = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings;
+                    var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                        ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                        : null;
                     writer.WriteStartElement("GlobalVariables");
                     s = GetXmlSerializer<ObservableCollection<Pair<string, string>>>();
                     _logger.Info("Writing global variables.");
-                    s.Serialize(writer, globalSettings.Variables);
+                    s.Serialize(writer, globalSettings?.Variables ?? new ObservableCollection<Pair<string, string>>());
                     writer.WriteEndElement();
 
                     writer.WriteEndElement();
@@ -360,8 +368,10 @@ namespace vMixController.Classes
                 {
                     // Virtual inputs (legacy): "-1" => [Active], "0" => [Preview]
                     // Resolve them to the currently active/preview input key.
-                    var locator = ((ViewModelLocator)App.Current.FindResource("Locator"));
-                    var model = locator?.WidgetSettings?.Model;
+                    var widgetSettings = AppServices.IsRegistered<vMixWidgetSettingsViewModel>()
+                        ? AppServices.GetRequiredService<vMixWidgetSettingsViewModel>()
+                        : null;
+                    var model = widgetSettings?.Model;
                     if (model != null)
                     {
                         if (varName == "-1")
@@ -381,7 +391,13 @@ namespace vMixController.Classes
                         }
                     }
 
-                    var globalSettings = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings;
+                    var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                        ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                        : null;
+                    if (globalSettings == null)
+                    {
+                        return varName;
+                    }
                     var variable = globalSettings.Variables.Where(x => x.A == varName).FirstOrDefault();
                     var inputKey = varName;
                     if (variable != null)

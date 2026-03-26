@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
@@ -21,21 +21,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Context
         {
-            get
-            {
-                return _context;
-            }
-
-            set
-            {
-                if (_context == value)
-                {
-                    return;
-                }
-
-                _context = value;
-                RaisePropertyChanged(nameof(Context));
-            }
+            get => _context;
+            set => SetPropertyValue(ref _context, value, nameof(Context));
         }
 
         private ObservableCollection<StreamDeckKey> _keys = new ObservableCollection<StreamDeckKey>();
@@ -46,21 +33,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<StreamDeckKey> Keys
         {
-            get
-            {
-                return _keys;
-            }
-
-            set
-            {
-                if (_keys == value)
-                {
-                    return;
-                }
-
-                _keys = value;
-                RaisePropertyChanged(nameof(Keys));
-            }
+            get => _keys;
+            set => SetPropertyValue(ref _keys, value, nameof(Keys));
         }
 
         //private static vMixStreamDeckLibrary.StreamDeckAPI device = null;
@@ -107,7 +81,7 @@ namespace vMixController.Widgets
                     foreach (var item in Keys)
                     {
                         if (item.A == e.Context && e.Type == vMixStreamDeckLibrary.StreamDeckEvent.KeyUp)
-                            Messenger.Default.Send(new HotkeyLinkMessage() { Link = item.B, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
+                            Messenger.Send(new HotkeyLinkMessage() { Link = item.B, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
                     }
                     Context = e.Context.ToUpper();
                 }
@@ -154,3 +128,5 @@ namespace vMixController.Widgets
 
     }
 }
+
+

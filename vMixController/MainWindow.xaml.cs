@@ -1,5 +1,5 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +24,10 @@ namespace vMixController
     /// </summary>
     public partial class MainWindow : Window
     {
+        private IMessenger Messenger => AppServices.IsRegistered<IMessenger>()
+            ? AppServices.GetRequiredService<IMessenger>()
+            : WeakReferenceMessenger.Default;
+
         bool _loading = false;
 
         private bool _isCanvasPanning;
@@ -37,6 +41,7 @@ namespace vMixController
         /// </summary>
         public MainWindow()
         {
+            DataContext = AppServices.GetRequiredService<MainViewModel>();
             InitializeComponent();
             Closing += (s, e) =>
             {
@@ -53,12 +58,15 @@ namespace vMixController
                 else
                 {
                     vMixController.Properties.Settings.Default.Save();
-                    ViewModelLocator.Cleanup();
+                    if (AppServices.IsRegistered<MainViewModel>())
+                    {
+                        AppServices.GetRequiredService<MainViewModel>().Cleanup();
+                    }
                     App.Current.Shutdown();
                 }
             };
 
-            Messenger.Default.Register<LoadingMessage>(this, (msg) =>
+            Messenger.Register<LoadingMessage>(this, (r, msg) =>
             {
                 var fadein = (Storyboard)FindResource("StoryboardFadeIn");
                 var fadeout = (Storyboard)FindResource("StoryboardFadeOut");
@@ -95,7 +103,7 @@ namespace vMixController
             if (e.ChangedButton == MouseButton.Middle ||
                 (e.ChangedButton == MouseButton.Left && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
             {
-                if (!SimpleIoc.Default.GetInstance<MainViewModel>().WindowSettings.UseInfiniteCanvas) return;
+                if (!vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().WindowSettings.UseInfiniteCanvas) return;
                 UpdateMatrix();
 
 
@@ -157,8 +165,8 @@ namespace vMixController
             if (_canvasTransform == null)
                 return;
 
-            if (!SimpleIoc.Default.GetInstance<MainViewModel>().WindowSettings.UseInfiniteCanvas ||
-                !SimpleIoc.Default.GetInstance<MainViewModel>().IsHotkeysEnabled ||
+            if (!vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().WindowSettings.UseInfiniteCanvas ||
+                !vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().IsHotkeysEnabled ||
                 ((DependencyObject)sender).FindChild<WheelControlledScrollViewer>().Where(x => x.IsMouseOver).Count() > 0) return;
 
             var container = ((DependencyObject)sender).FindChild<vMixControlContainerDummy>().Where(x => x.IsMouseOver).FirstOrDefault();
@@ -200,7 +208,7 @@ namespace vMixController
 
             // Let the Layout canvas handle wheel zoom/pan; don't hijack the wheel for horizontal scrolling here.
             if (LayoutGrid != null && LayoutGrid.IsMouseOver && (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift &&
-                (SimpleIoc.Default.GetInstance<MainViewModel>().WindowSettings.UseInfiniteCanvas && wheel.Count() == 0))
+                (vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().WindowSettings.UseInfiniteCanvas && wheel.Count() == 0))
                 return;
 
             foreach (var wheelControl in wheel)
@@ -249,7 +257,7 @@ namespace vMixController
 
         private void Layout_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            /*if (SimpleIoc.Default.GetInstance<MainViewModel>().WindowSettings.Locked)
+            /*if (vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().WindowSettings.Locked)
             {
                 (sender as ListView).ContextMenu.IsOpen = false;
                 e.Handled = true;
@@ -268,3 +276,5 @@ namespace vMixController
         }
     }
 }
+
+

@@ -1,4 +1,3 @@
-﻿using CommonServiceLocator;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
@@ -45,7 +44,7 @@ namespace vMixController.Converters
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
                     var relativePath = Classes.Utils.SearchFile(path, Directory.GetCurrentDirectory());
-                    string foundPath = Classes.Utils.SearchFile(path, Path.GetDirectoryName(ServiceLocator.Current.GetInstance<MainViewModel>().ControllerPath));
+                    string foundPath = Classes.Utils.SearchFile(path, Path.GetDirectoryName(vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().ControllerPath));
                     if (File.Exists(path))
                         bi.UriSource = new Uri(path);
                     else if (File.Exists(foundPath))
@@ -81,3 +80,5 @@ namespace vMixController.Converters
         }
     }
 }
+
+

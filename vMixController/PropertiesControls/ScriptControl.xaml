@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="vMixController.PropertiesControls.ScriptControl"
+<UserControl x:Class="vMixController.PropertiesControls.ScriptControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:this="clr-namespace:vMixController"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:conv="clr-namespace:vMixController.Converters"
              xmlns:cls="clr-namespace:vMixController.Classes"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:c="clr-namespace:System;assembly=mscorlib"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -71,7 +71,7 @@
                                                                 <ColumnDefinition Width="2*"/>
                                                             </Grid.ColumnDefinitions>
                                                             <Label Content="{loc:Loc Key=ScriptEditor.Field.Command}"/>
-                                                            <ComboBox x:Name="Func" Grid.Row="1" IsEditable="True" SelectedItem="{Binding Action, Mode=TwoWay}" DisplayMemberPath="Function" ItemsSource="{Binding Main.Functions, Source={StaticResource Locator}}" PreviewKeyDown="Func_PreviewKeyDown">
+                                                            <ComboBox x:Name="Func" Grid.Row="1" IsEditable="True" SelectedItem="{Binding Action, Mode=TwoWay}" DisplayMemberPath="Function" ItemsSource="{Binding DataContext.Functions, RelativeSource={RelativeSource AncestorType=Window}}" PreviewKeyDown="Func_PreviewKeyDown">
                                                                 <ComboBox.ItemsPanel>
                                                                     <ItemsPanelTemplate>
                                                                         <VirtualizingStackPanel/>
@@ -97,18 +97,7 @@
                                                                 </ComboBox.ItemContainerStyle>
                                                             </ComboBox>
                                                             <Label x:Name="InLabel" Content="{Binding SelectedValue.InputDescription, ElementName=Func, FallbackValue=N/A}"/>
-                                                            <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}"  ItemTemplate="{StaticResource InputSelectorTemplate}" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}">
-                                                                <ComboBox.ItemsSource>
-                                                                    <CompositeCollection>
-                                                                        <CollectionContainer Collection="{Binding Main.Model.Inputs, Source={StaticResource Locator}}"/>
-                                                                        <CollectionContainer>
-                                                                            <CollectionContainer.Collection>
-                                                                                <Binding Path="GlobalSettings.Variables" Source="{StaticResource Locator}" Converter="{conv:VariableListToInputListConverter}"/>
-                                                                            </CollectionContainer.Collection>
-                                                                        </CollectionContainer>
-                                                                    </CompositeCollection>
-                                                                </ComboBox.ItemsSource>
-                                                            </ComboBox>
+                                                            <ComboBox x:Name="In" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}"  ItemTemplate="{StaticResource InputSelectorTemplate}" SelectedValuePath="Key" SelectedValue="{Binding InputKey, Mode=TwoWay}" ItemsSource="{Binding AvailableInputs, ElementName=Me}"/>
                                                             <Label x:Name="IntValuesLabel" Content="{Binding SelectedValue.IntDescription, ElementName=Func, FallbackValue=N/A}"/>
                                                             <Grid x:Name="IntValuesGrid" IsEnabled="{Binding SelectedValue.HasIntProperty, ElementName=Func, FallbackValue=False}">
                                                                 <Grid.ColumnDefinitions>
@@ -153,18 +142,7 @@
 <Run> 2</Run>
                                                                 </TextBlock>
                                                             </Label>
-                                                            <ComboBox ItemTemplate="{StaticResource InputSelectorTemplate}" Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}">
-                                                                <ComboBox.ItemsSource>
-                                                                    <CompositeCollection>
-                                                                        <CollectionContainer Collection="{Binding Main.Model.Inputs, Source={StaticResource Locator}}"/>
-                                                                        <CollectionContainer>
-                                                                            <CollectionContainer.Collection>
-                                                                                <Binding Path="GlobalSettings.Variables" Source="{StaticResource Locator}" Converter="{conv:VariableListToInputListConverter}"/>
-                                                                            </CollectionContainer.Collection>
-                                                                        </CollectionContainer>
-                                                                    </CompositeCollection>
-                                                                </ComboBox.ItemsSource>
-                                                            </ComboBox>
+                                                            <ComboBox ItemTemplate="{StaticResource InputSelectorTemplate}" Visibility="Collapsed" x:Name="In2" IsEnabled="{Binding SelectedValue.HasInputProperty, ElementName=Func, FallbackValue=False}" DisplayMemberPath="Title" SelectedValuePath="Key" SelectedValue="{Binding AdditionalParameters[0].A, Mode=TwoWay}" ItemsSource="{Binding AvailableInputs, ElementName=Me}"/>
                                                             <Label Visibility="Collapsed" x:Name="CondLabel" Content="{loc:Loc Key=ScriptEditor.Field.Condition}"/>
                                                             <Grid Visibility="Collapsed" x:Name="Cond">
                                                                 <Grid.ColumnDefinitions>
@@ -481,3 +459,4 @@
         <Control x:Name="bottomMarker"/>
     </StackPanel>
 </UserControl>
+

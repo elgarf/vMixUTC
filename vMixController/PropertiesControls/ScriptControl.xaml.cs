@@ -1,9 +1,10 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,21 +12,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Xml.Serialization;
+using vMixAPI;
 using vMixController.Classes;
 using vMixController.Classes.Scripting;
+using vMixController.Converters;
 using vMixController.Interfaces;
+using vMixController.ViewModel;
 using vMixController.Widgets;
 
 namespace vMixController.PropertiesControls
 {
     /// <summary>
-    /// Логика взаимодействия для ScriptControl.xaml
+    /// ������ �������������� ��� ScriptControl.xaml
     /// </summary>
-    public partial class ScriptControl : UserControl, INotifyPropertyChanged, ICancellable
+    public partial class ScriptControl : UserControl, ICancellable
     {
+        private State _inputsState;
+
         public ScriptControl()
         {
             InitializeComponent();
+            Loaded += ScriptControl_Loaded;
+            Unloaded += ScriptControl_Unloaded;
 
             if (DesignerProperties.GetIsInDesignMode(this))
             {
@@ -35,6 +43,70 @@ namespace vMixController.PropertiesControls
             }
 
 
+        }
+
+        public static readonly DependencyProperty AvailableInputsProperty =
+            DependencyProperty.Register(nameof(AvailableInputs), typeof(ObservableCollection<Input>), typeof(ScriptControl), new PropertyMetadata(new ObservableCollection<Input>()));
+
+        public ObservableCollection<Input> AvailableInputs
+        {
+            get { return (ObservableCollection<Input>)GetValue(AvailableInputsProperty); }
+            set { SetValue(AvailableInputsProperty, value); }
+        }
+
+        private void ScriptControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            RefreshInputsSource();
+        }
+
+        private void ScriptControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_inputsState != null)
+                _inputsState.OnStateSynced -= InputsState_OnStateSynced;
+            _inputsState = null;
+        }
+
+        private void InputsState_OnStateSynced(object sender, StateSyncedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new Action(RefreshInputsSource));
+        }
+
+        private void RefreshInputsSource()
+        {
+            var widgetSettings = AppServices.IsRegistered<vMixWidgetSettingsViewModel>()
+                ? AppServices.GetRequiredService<vMixWidgetSettingsViewModel>()
+                : null;
+            var model = widgetSettings?.Widget?.State
+                ?? widgetSettings?.Model
+                ?? (AppServices.IsRegistered<MainViewModel>() ? AppServices.GetRequiredService<MainViewModel>().Model : null);
+
+            if (!ReferenceEquals(_inputsState, model))
+            {
+                if (_inputsState != null)
+                    _inputsState.OnStateSynced -= InputsState_OnStateSynced;
+                _inputsState = model;
+                if (_inputsState != null)
+                    _inputsState.OnStateSynced += InputsState_OnStateSynced;
+            }
+
+            var merged = new ObservableCollection<Input>(model?.Inputs ?? new List<Input>());
+            var vars = widgetSettings?.GlobalVariables;
+            if (vars != null)
+            {
+                var converted = VariableListToInputListConverter.Instance.Convert(vars, typeof(List<SampleInput>), null, System.Globalization.CultureInfo.InvariantCulture) as IEnumerable<SampleInput>;
+                if (converted != null)
+                {
+                    foreach (var item in converted)
+                        merged.Add(new Input
+                        {
+                            Key = item.Key,
+                            Title = item.Title,
+                            Number = item.Number,
+                            Elements = item.Elements
+                        });
+                }
+            }
+            AvailableInputs = merged;
         }
 
         private void OnCommandsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -104,7 +176,7 @@ namespace vMixController.PropertiesControls
 
         private void Icmd_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "InputKey")
+            if (e.PropertyName == nameof(vMixControlButtonCommand.InputKey))
             {
                 var s = (sender as vMixControlButtonCommand);
                 IsInputExist(s);
@@ -114,8 +186,8 @@ namespace vMixController.PropertiesControls
         private void IsInputExist(vMixControlButtonCommand s)
         {
             var key = Utils.FindInputKeyByVariable(s.InputKey, Dispatcher);
-            var l = (ViewModel.ViewModelLocator)TryFindResource("Locator");
-            var check = l.WidgetSettings.Model?.Inputs.Where(x =>
+            IEnumerable<vMixAPI.Input> inputs = AvailableInputs;
+            var check = inputs?.Where(x =>
             {
                 int number;
                 return x.Key == key || x.Title == key || (int.TryParse(key, out number) && x.Number == number);
@@ -194,195 +266,109 @@ namespace vMixController.PropertiesControls
             set { SetValue(CommandsProperty, value); }
         }
 
-        private RelayCommand<vMixControlButtonCommand> _removeCommandCommand;
-
-        public RelayCommand<vMixControlButtonCommand> RemoveCommandCommand
+        [RelayCommand]
+        private void RemoveCommand(vMixControlButtonCommand p)
         {
-            get
+            Commands.Remove(p);
+            RearrangeCommnads();
+        }
+
+        [RelayCommand]
+        private void DuplicateCommand(vMixControlButtonCommand p)
+        {
+            var idx = Commands.IndexOf(p);
+            var copy = (vMixControlButtonCommand)p.Clone();
+            Commands.Insert(idx, copy);
+            CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
+            RearrangeCommnads();
+            ShowMovedItem(idx + 1);
+        }
+
+        [RelayCommand]
+        private void AddCommand()
+        {
+            var cmd = new vMixControlButtonCommand() { Action = new vMixFunctionReference() };
+            for (int i = 0; i < 10; i++)
+                cmd.AdditionalParameters.Add(new One<string>() { A = "" });
+            Commands.Add(cmd);
+            var index = Math.Max(Commands.Count - 2, 0);
+            RearrangeCommnads();
+            bottomMarker.BringIntoView();
+        }
+
+        [RelayCommand]
+        private void ExportScript()
+        {
+            Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
             {
-                return _removeCommandCommand
-                    ?? (_removeCommandCommand = new RelayCommand<vMixControlButtonCommand>(
-                    p =>
-                    {
-                        Commands.Remove(p);
-                        RearrangeCommnads();
-                    }));
+                Filter = "UTC Script File|*.usf",
+                DefaultExt = "usf"
+            };
+            var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
+            if (result.HasValue && result.Value)
+            {
+                XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
+                using (var fs = new FileStream(opendlg.FileName, FileMode.Create))
+                    s.Serialize(fs, Commands);
             }
         }
 
-        private RelayCommand<vMixControlButtonCommand> _duplicateCommandCommand;
-
-        public RelayCommand<vMixControlButtonCommand> DuplicateCommandCommand
+        [RelayCommand]
+        private void ImportScript()
         {
-            get
+            Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
             {
-                return _duplicateCommandCommand
-                    ?? (_duplicateCommandCommand = new RelayCommand<vMixControlButtonCommand>(
-                    p =>
-                    {
-                        var idx = Commands.IndexOf(p);
-                        //var moveTo = idx - 1 >= 0 ? idx - 1 : idx;
-                        var copy = (vMixControlButtonCommand)p.Clone();
-                        Commands.Insert(idx, copy);
-                        CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
-                        RearrangeCommnads();
-                        ShowMovedItem(idx + 1);
-                    }));
-            }
-        }
-
-        private RelayCommand _addCommandCommand;
-
-        public RelayCommand AddCommandCommand
-        {
-            get
+                Filter = "UTC Script File|*.usf",
+                DefaultExt = "usf"
+            };
+            var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
+            if (result.HasValue && result.Value)
             {
-                return _addCommandCommand
-                    ?? (_addCommandCommand = new RelayCommand(
-                    () =>
+                try
+                {
+                    XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
+                    using (var fs = new FileStream(opendlg.FileName, FileMode.Open))
                     {
-                        var cmd = new vMixControlButtonCommand() { Action = new vMixFunctionReference() };
-                        for (int i = 0; i < 10; i++)
-                            cmd.AdditionalParameters.Add(new One<string>() { A = "" });
-                        Commands.Add(cmd);
-                        var index = Math.Max(Commands.Count - 2, 0);
-                        RearrangeCommnads();
-
-                        bottomMarker.BringIntoView();
-
-                    }));
-            }
-        }
-
-        private RelayCommand _exportScriptCommand;
-
-        public RelayCommand ExportScriptCommand
-        {
-            get
-            {
-                return _exportScriptCommand
-                    ?? (_exportScriptCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
-                        {
-                            Filter = "UTC Script File|*.usf",
-                            DefaultExt = "usf"
-                        };
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
-                        if (result.HasValue && result.Value)
-                        {
-                            XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
-                            using (var fs = new FileStream(opendlg.FileName, FileMode.Create))
-                                s.Serialize(fs, Commands);
-                        }
-
-                    }));
-            }
-        }
-
-        private RelayCommand _importScriptCommand;
-
-        public RelayCommand ImportScriptCommand
-        {
-            get
-            {
-                return _importScriptCommand
-                    ?? (_importScriptCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
-                        {
-                            Filter = "UTC Script File|*.usf",
-                            DefaultExt = "usf"
-                        };
-                        var result = opendlg.ShowDialog(App.Current.Windows.OfType<vMixWidgetSettingsView>().FirstOrDefault());
-                        if (result.HasValue && result.Value)
-                        {
-                            try
-                            {
-                                XmlSerializer s = new XmlSerializer(typeof(ObservableCollection<vMixControlButtonCommand>));
-                                using (var fs = new FileStream(opendlg.FileName, FileMode.Open))
-                                {
-                                    var temp = (ObservableCollection<vMixControlButtonCommand>)s.Deserialize(fs);
-                                    Commands.Clear();
-                                    foreach (var item in temp)
-                                    {
-                                        Commands.Add(item);
-                                    }
-                                }
-                                RearrangeCommnads();
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }));
-            }
-        }
-
-        private RelayCommand _clearScriptCommand;
-
-        public RelayCommand ClearScriptCommand
-        {
-            get
-            {
-                return _clearScriptCommand
-                    ?? (_clearScriptCommand = new RelayCommand(
-                    () =>
-                    {
+                        var temp = (ObservableCollection<vMixControlButtonCommand>)s.Deserialize(fs);
                         Commands.Clear();
-                    }));
+                        foreach (var item in temp)
+                        {
+                            Commands.Add(item);
+                        }
+                    }
+                    RearrangeCommnads();
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 
-        private RelayCommand<vMixControlButtonCommand> _moveCommandUpCommand;
-
-        public RelayCommand<vMixControlButtonCommand> MoveCommandUpCommand
+        [RelayCommand]
+        private void ClearScript()
         {
-            get
-            {
-                return _moveCommandUpCommand
-                    ?? (_moveCommandUpCommand = new RelayCommand<vMixControlButtonCommand>(
-                    p =>
-                    {
-                        var idx = Commands.IndexOf(p);
-                        var moveTo = idx - 1 >= 0 ? idx - 1 : idx;
-                        Commands.Move(idx, moveTo);
-                        CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
-                        RearrangeCommnads();
-
-                        ShowMovedItem(moveTo);
-
-                    }));
-            }
+            Commands.Clear();
         }
 
-        private RelayCommand<vMixControlButtonCommand> _moveCommandDownCommand;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        internal void RaisePropertyChanged(string property)
+        [RelayCommand]
+        private void MoveCommandUp(vMixControlButtonCommand p)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            var idx = Commands.IndexOf(p);
+            var moveTo = idx - 1 >= 0 ? idx - 1 : idx;
+            Commands.Move(idx, moveTo);
+            CollectionViewSource.GetDefaultView(script.ItemsSource)?.Refresh();
+            RearrangeCommnads();
+            ShowMovedItem(moveTo);
         }
 
-        public RelayCommand<vMixControlButtonCommand> MoveCommandDownCommand
+        [RelayCommand]
+        private void MoveCommandDown(vMixControlButtonCommand p)
         {
-            get
-            {
-                return _moveCommandDownCommand
-                    ?? (_moveCommandDownCommand = new RelayCommand<vMixControlButtonCommand>(
-                    p =>
-                    {
-                        var idx = Commands.IndexOf(p);
-                        var moveTo = idx + 1 < Commands.Count ? idx + 1 : idx;
-                        Commands.Move(idx, moveTo);
-                        RearrangeCommnads();
-
-                        ShowMovedItem(moveTo);
-                    }));
-            }
+            var idx = Commands.IndexOf(p);
+            var moveTo = idx + 1 < Commands.Count ? idx + 1 : idx;
+            Commands.Move(idx, moveTo);
+            RearrangeCommnads();
+            ShowMovedItem(moveTo);
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

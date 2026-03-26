@@ -1,38 +1,40 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Windows.Media.Animation;
-using System.Diagnostics;
-using vMixControllerSkin;
-using System.Threading;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using vMixController.Messages;
+using vMixController.Classes;
 
 namespace vMixController.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для vMixControlContainer.xaml
+    /// ������ �������������� ��� vMixControlContainer.xaml
     /// </summary>
     public partial class vMixControlContainer : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
         static Queue<vMixControlContainer> _initList = new Queue<vMixControlContainer>();
         static bool? _lastLoadingState = null;
+        static IMessenger _messenger;
+        static IMessenger Messenger
+        {
+            get
+            {
+                if (_messenger != null)
+                    return _messenger;
+
+                if (AppServices.IsRegistered<IMessenger>())
+                    _messenger = AppServices.GetRequiredService<IMessenger>();
+                else
+                    _messenger = WeakReferenceMessenger.Default;
+
+                return _messenger;
+            }
+        }
 
         static DispatcherTimer _timer = new DispatcherTimer() { };
 
@@ -60,7 +62,7 @@ namespace vMixController.Controls
             if (_lastLoadingState != isLoading)
             {
                 _lastLoadingState = isLoading;
-                Messenger.Default.Send(new LoadingMessage() { Loading = isLoading });
+                Messenger.Send(new LoadingMessage() { Loading = isLoading });
             }
         }
 
@@ -79,21 +81,8 @@ namespace vMixController.Controls
         /// </summary>
         public vMixControlContainerDummy ParentContainer
         {
-            get
-            {
-                return _parentContainer;
-            }
-
-            set
-            {
-                if (_parentContainer == value)
-                {
-                    return;
-                }
-
-                _parentContainer = value;
-                RaisePropertyChanged(ParentContainerPropertyName);
-            }
+            get => _parentContainer;
+            set => SetPropertyValue(ref _parentContainer, value, ParentContainerPropertyName);
         }
 
         private void RaisePropertyChanged(string parentContainerPropertyName)
@@ -137,7 +126,7 @@ namespace vMixController.Controls
             RightButtons.IsHitTestVisible = true;
             //LockButton.IsHitTestVisible = true;
             if (ParentContainer?.Control != null)
-                Messenger.Default.Send(new HoveredWidgetMessage { Widget = ParentContainer.Control });
+                Messenger.Send(new HoveredWidgetMessage { Widget = ParentContainer.Control });
         }
 
         private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -152,8 +141,21 @@ namespace vMixController.Controls
             RightButtons.IsHitTestVisible = false;
             //LockButton.IsHitTestVisible = false;
             if (ParentContainer?.Control != null)
-                Messenger.Default.Send(new HoveredWidgetMessage { Widget = null });
+                Messenger.Send(new HoveredWidgetMessage { Widget = null });
+        }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            RaisePropertyChanged(propertyName);
+            return true;
         }
     }
 
 }
+

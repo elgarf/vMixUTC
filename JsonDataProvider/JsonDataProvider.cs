@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading; // Для CancellationTokenSource
+using System.Threading; // ��� CancellationTokenSource
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,9 +22,9 @@ using System.IO;
 
 namespace JsonDataProviderNs
 {
-    public class JsonDataProvider : IvMixDataProviderTextInput, INotifyPropertyChanged, IDisposable
+    public partial class JsonDataProvider : IvMixDataProviderTextInput, INotifyPropertyChanged, IDisposable
     {
-        // Лучшая практика: один экземпляр HttpClient на всё приложение
+        // ������ ��������: ���� ��������� HttpClient �� �� ����������
         private static readonly HttpClient _httpClient = new HttpClient();
 
         private JsonDocument _document;
@@ -37,7 +38,7 @@ namespace JsonDataProviderNs
         private Json.Path.JsonPath _compiledPath;
         private string _compiledPathSource = string.Empty;
 
-        // Источник токенов для отмены предыдущего запроса
+        // �������� ������� ��� ������ ����������� �������
         private CancellationTokenSource _cancellationTokenSource;
 
         private string _url = "";
@@ -51,9 +52,9 @@ namespace JsonDataProviderNs
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public object PreviewKeyUp { get; set; }
-        public object GotFocus { get; set; }
-        public object LostFocus { get; set; }
+        public ICommand PreviewKeyUp { get; set; }
+        public ICommand GotFocus { get; set; }
+        public ICommand LostFocus { get; set; }
         public int Period
         {
             get => _period;
@@ -75,33 +76,74 @@ namespace JsonDataProviderNs
             }
         }
 
-        private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyUpCommand => _previewKeyUpCommand ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
-            p =>
+        [RelayCommand]
+        private void HandlePreviewKeyUp(KeyEventArgs p)
+        {
+            if (p == null)
             {
-                if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
-                    ((RelayCommand<KeyEventArgs>)PreviewKeyUp)?.Execute(p);
-            }));
+                return;
+            }
 
-        private RelayCommand<KeyEventArgs> _previewKeyDownCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand => _previewKeyDownCommand ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
-            p =>
+            if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
             {
-                if (p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return)
+                if (PreviewKeyUp is ICommand command && command.CanExecute(p))
                 {
-                    p.Handled = true;
-                    if (p.Source is TextBox sender)
-                    {
-                        int lastLocation = sender.SelectionStart;
-                        sender.Text = sender.Text.Insert(lastLocation, Environment.NewLine);
-                        sender.SelectionStart = lastLocation + Environment.NewLine.Length;
-                    }
+                    command.Execute(p);
                 }
-                else if (p.Key == Key.Return)
+            }
+        }
+
+        [RelayCommand]
+        private void HandlePreviewKeyDown(KeyEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return)
+            {
+                p.Handled = true;
+                if (p.Source is TextBox sender)
                 {
-                    p.Handled = true;
+                    int lastLocation = sender.SelectionStart;
+                    sender.Text = sender.Text.Insert(lastLocation, Environment.NewLine);
+                    sender.SelectionStart = lastLocation + Environment.NewLine.Length;
                 }
-            }));
+            }
+            else if (p.Key == Key.Return)
+            {
+                p.Handled = true;
+            }
+        }
+
+        [RelayCommand]
+        private void HandleGotFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (GotFocus != null && GotFocus.CanExecute(p))
+            {
+                GotFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void HandleLostFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (LostFocus != null && LostFocus.CanExecute(p))
+            {
+                LostFocus.Execute(p);
+            }
+        }
 
         public bool IsProvidingCustomProperties => false;
 
@@ -137,8 +179,8 @@ namespace JsonDataProviderNs
         }
 
         /// <summary>
-        /// Асинхронно получает и обрабатывает JSON данные.
-        /// Отменяет предыдущий выполняющийся запрос.
+        /// ���������� �������� � ������������ JSON ������.
+        /// �������� ���������� ������������� ������.
         /// </summary>
         private async Task RetrieveDataAsync()
         {
@@ -150,14 +192,14 @@ namespace JsonDataProviderNs
 
             _previousQuery = DateTime.Now;
 
-            // Если URL невалидный, просто выходим
+            // ���� URL ����������, ������ �������
             if (!Uri.TryCreate(Url, UriKind.Absolute, out var uri))
             {
                 Interlocked.Exchange(ref _retrievingData, 0);
                 return;
             }
 
-            // Отменяем предыдущую операцию, если она была, и создаем новый CancellationTokenSource
+            // �������� ���������� ��������, ���� ��� ����, � ������� ����� CancellationTokenSource
             CancellationTokenSource cts;
             lock (_ctsLock)
             {
@@ -173,11 +215,11 @@ namespace JsonDataProviderNs
             {
                 JsonDocument newDocument;
 
-                // БЫЛО (несовместимо со старыми .NET):
+                // ���� (������������ �� ������� .NET):
                 // using (var stream = await _httpClient.GetStreamAsync(uri, token))
 
-                // СТАЛО (совместимо и правильно):
-                // 1. Выполняем GET запрос с токеном отмены
+                // ����� (���������� � ���������):
+                // 1. ��������� GET ������ � ������� ������
                 if (uri.Scheme == Uri.UriSchemeFile)
                 {
                     using (var stream = File.Open(uri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -198,13 +240,13 @@ namespace JsonDataProviderNs
                         }
                     }
                 }
-                // После успешного получения и парсинга, обновляем данные в потоке UI
+                // ����� ��������� ��������� � ��������, ��������� ������ � ������ UI
                 RunOnUi(() =>
                 {
-                    // Проверяем, не была ли операция отменена, пока мы ждали диспетчер
+                    // ���������, �� ���� �� �������� ��������, ���� �� ����� ���������
                     if (token.IsCancellationRequested) return;
 
-                    _document?.Dispose(); // Освобождаем память от старого документа
+                    _document?.Dispose(); // ����������� ������ �� ������� ���������
                     _document = newDocument;
                     UpdateData();
                 });
@@ -212,22 +254,22 @@ namespace JsonDataProviderNs
             }
             catch (OperationCanceledException)
             {
-                // Это ожидаемое исключение при отмене запроса. Логируем для отладки.
+                // ��� ��������� ���������� ��� ������ �������. �������� ��� �������.
                 Error = ("JSON data request was cancelled.");
             }
             catch (HttpRequestException ex)
             {
-                // Это исключение будет вызвано EnsureSuccessStatusCode при ошибке (напр. 404, 500)
+                // ��� ���������� ����� ������� EnsureSuccessStatusCode ��� ������ (����. 404, 500)
                 Error = ($"HTTP request error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // Логируем другие ошибки (сетевые, парсинга и т.д.)
+                // �������� ������ ������ (�������, �������� � �.�.)
                 Error = ($"Error retrieving or parsing JSON data: {ex.Message}");
             }
             finally
             {
-                // Вне зависимости от результата, сбрасываем флаг
+                // ��� ����������� �� ����������, ���������� ����
                 Interlocked.Exchange(ref _retrievingData, 0);
             }
         }
@@ -283,14 +325,7 @@ namespace JsonDataProviderNs
         public string Url
         {
             get => _url;
-            set
-            {
-                if (_url == value) return; // Не делаем ничего, если URL не изменился
-                _url = value;
-                OnPropertyChanged(nameof(Url));
-                // Немедленно запускаем обновление данных с новым URL
-                _ = RetrieveDataAsync();
-            }
+            set => SetPropertyValue(ref _url, value, nameof(Url), __ => { _ = RetrieveDataAsync(); });
         }
 
         public string JsonPath
@@ -298,41 +333,29 @@ namespace JsonDataProviderNs
             get => _jsonPath;
             set
             {
-                if (_jsonPath == value) return;
-                _jsonPath = value;
-                lock (_pathLock)
+                SetPropertyValue(ref _jsonPath, value, nameof(JsonPath), _ =>
                 {
-                    _compiledPath = null;
-                    _compiledPathSource = string.Empty;
-                }
-                OnPropertyChanged(nameof(JsonPath));
-                // Если документ уже загружен, просто перепарсим его с новым путем
-                UpdateData();
+                    lock (_pathLock)
+                    {
+                        _compiledPath = null;
+                        _compiledPathSource = string.Empty;
+                    }
+
+                    UpdateData();
+                });
             }
         }
 
         public string Headers
         {
             get => _headers;
-            set
-            {
-                if (_headers == value) return;
-                _headers = value;
-                OnPropertyChanged(nameof(Headers));
-                // Если документ уже загружен, просто перепарсим его с новым путем
-                UpdateData();
-            }
+            set => SetPropertyValue(ref _headers, value, nameof(Headers), _ => UpdateData());
         }
 
         public string Error
         {
             get => _error;
-            set
-            {
-                if (_error == value) return;
-                _error = value;
-                OnPropertyChanged(nameof(Error));
-            }
+            set => SetPropertyValue(ref _error, value, nameof(Error));
         }
 
         public List<string> Data
@@ -350,14 +373,7 @@ namespace JsonDataProviderNs
         public int GroupBy
         {
             get => _groupBy;
-            set
-            {
-                if (_groupBy == value) return;
-                _groupBy = value;
-                OnPropertyChanged(nameof(GroupBy));
-                // Если документ уже загружен, перегруппируем данные
-                UpdateData();
-            }
+            set => SetPropertyValue(ref _groupBy, value, nameof(GroupBy), _ => UpdateData());
         }
 
         public List<object> GetProperties()
@@ -373,24 +389,21 @@ namespace JsonDataProviderNs
             Headers = (string)(props?.ElementAtOrDefault(3) ?? "");
         }
 
-        private RelayCommand _showRowsCommand;
-        public RelayCommand ShowRowsCommand => _showRowsCommand ?? (_showRowsCommand = new RelayCommand(
-            () =>
-            {
-                new RowsViewer().Bind(this, "Data");
-            }));
+        [RelayCommand]
+        private void ShowRows()
+        {
+            new RowsViewer().Bind(this, nameof(Data));
+        }
 
-
-        private RelayCommand _reloadCommand;
-        public RelayCommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(
-            () =>
+        [RelayCommand]
+        private void Reload()
+        {
+            lock (_ctsLock)
             {
-                lock (_ctsLock)
-                {
-                    _cancellationTokenSource?.Cancel();
-                }
-                _ = RetrieveDataAsync();
-            }));
+                _cancellationTokenSource?.Cancel();
+            }
+            _ = RetrieveDataAsync();
+        }
 
         public JsonDataProvider()
         {
@@ -425,7 +438,7 @@ namespace JsonDataProviderNs
 
         public void Dispose()
         {
-            // Реализуем IDisposable для корректной очистки ресурсов
+            // ��������� IDisposable ��� ���������� ������� ��������
             _refreshTimer.Stop();
             _refreshTimer.Tick -= RefreshTimer_Tick;
             lock (_ctsLock)
@@ -476,5 +489,19 @@ namespace JsonDataProviderNs
         {
             _ = RetrieveDataAsync();
         }
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            onChanged?.Invoke(value);
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 }
+

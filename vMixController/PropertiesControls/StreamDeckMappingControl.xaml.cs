@@ -1,24 +1,22 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace vMixController.PropertiesControls
 {
     /// <summary>
-    /// Логика взаимодействия для PathsControl.xaml
+    /// Код взаимодействия для PathsControl.xaml
     /// </summary>
-    public partial class StreamDeckMappingControl : UserControl, INotifyPropertyChanged
+    public partial class StreamDeckMappingControl : UserControl
     {
-
         public static readonly DependencyProperty LearnFunctionProperty =
-    DependencyProperty.Register(
-        nameof(LearnFunction),
-        typeof(Func<Widgets.StreamDeckKey>),
-        typeof(StreamDeckMappingControl),
-        new PropertyMetadata(null));
+            DependencyProperty.Register(
+                nameof(LearnFunction),
+                typeof(Func<Widgets.StreamDeckKey>),
+                typeof(StreamDeckMappingControl),
+                new PropertyMetadata(null));
 
         public Func<Widgets.StreamDeckKey> LearnFunction
         {
@@ -27,11 +25,11 @@ namespace vMixController.PropertiesControls
         }
 
         public static readonly DependencyProperty KeysProperty =
-    DependencyProperty.Register(
-        nameof(Keys),
-        typeof(ObservableCollection<Widgets.StreamDeckKey>),
-        typeof(StreamDeckMappingControl),
-        new PropertyMetadata(new ObservableCollection<Widgets.StreamDeckKey>()));
+            DependencyProperty.Register(
+                nameof(Keys),
+                typeof(ObservableCollection<Widgets.StreamDeckKey>),
+                typeof(StreamDeckMappingControl),
+                new PropertyMetadata(new ObservableCollection<Widgets.StreamDeckKey>()));
 
         public ObservableCollection<Widgets.StreamDeckKey> Keys
         {
@@ -39,59 +37,25 @@ namespace vMixController.PropertiesControls
             set => SetValue(KeysProperty, value);
         }
 
-        private RelayCommand<Widgets.StreamDeckKey> _removePathCommand;
-
-        public RelayCommand<Widgets.StreamDeckKey> RemovePathCommand
+        [RelayCommand]
+        private void RemovePath(Widgets.StreamDeckKey p)
         {
-            get
-            {
-                return _removePathCommand
-                    ?? (_removePathCommand = new RelayCommand<Widgets.StreamDeckKey>(
-                    p =>
-                    {
-                        Keys.Remove(p);
-                    }));
-            }
+            Keys.Remove(p);
         }
 
-        private RelayCommand _addPathCommand;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        internal void RaisePropertyChanged(string property)
+        [RelayCommand]
+        private void AddPath()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            Keys.Add(new Widgets.StreamDeckKey() { A = "" });
         }
 
-        public RelayCommand AddPathCommand
+        [RelayCommand]
+        private void LearnStreamDeckKey(Widgets.StreamDeckKey p)
         {
-            get
+            var result = LearnFunction?.Invoke();
+            if (result != null)
             {
-                return _addPathCommand
-                    ?? (_addPathCommand = new RelayCommand(
-                    () =>
-                    {
-                        Keys.Add(new Widgets.StreamDeckKey() { A = "" });
-                    }));
-            }
-        }
-
-
-        private RelayCommand<Widgets.StreamDeckKey> _learnStreamDeckKey;
-
-        public RelayCommand<Widgets.StreamDeckKey> LearnStreamDeckKey
-        {
-            get
-            {
-                return _learnStreamDeckKey
-                    ?? (_learnStreamDeckKey = new RelayCommand<Widgets.StreamDeckKey>(
-                    p =>
-                    {
-                        var result = LearnFunction?.Invoke();
-                        if (result != null)
-                        {
-                            p.A = result.A;
-                        }
-                    }));
+                p.A = result.A;
             }
         }
 

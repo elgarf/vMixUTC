@@ -1,17 +1,16 @@
-﻿<Window
+<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:cls="clr-namespace:vMixController.Classes"
         xmlns:c="clr-namespace:vMixController.Converters"
         xmlns:ctrls="clr-namespace:vMixController.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:props="clr-namespace:vMixController.Properties"
         xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
         xmlns:e="clr-namespace:vMixController.Extensions"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:this="clr-namespace:vMixController"
@@ -19,7 +18,7 @@
         xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
         x:Class="vMixController.MainWindow"
         xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
-        mc:Ignorable="d ignore"
+        mc:Ignorable="d"
         x:Name="Window"
         
         Left="{Binding WindowSettings.Left, Mode=TwoWay}"
@@ -62,10 +61,10 @@
             </Storyboard>
 
             <CompositeCollection x:Key="SubMenu" x:Shared="False">
-                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.AddWidget}" Command="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.AddWidget}" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.CreateWidgetFromTemplateCommand}" CommandParameter="{Binding}"/>
                 <Separator/>
-                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.EditTemplate}" Command="{Binding Main.EditWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
-                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.RemoveTemplate}" Command="{Binding Main.RemoveWidgetTemplateCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.EditTemplate}" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.EditWidgetTemplateCommand}" CommandParameter="{Binding}"/>
+                <MenuItem Icon="{x:Null}" ItemsSource="{x:Null}" Header="{loc:Loc Key=MainWindow.SubMenu.RemoveTemplate}" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.RemoveWidgetTemplateCommand}" CommandParameter="{Binding}"/>
             </CompositeCollection>
             <Rectangle x:Key="DynamicIcon" x:Shared="False" Width="16" Height="16" StrokeThickness="1"
 					   Fill="{Binding B.Color, FallbackValue=Black, Converter={c:ColorToSolidBrushConverter}}"
@@ -197,7 +196,7 @@
                     </MenuItem.ItemTemplate>
                     <MenuItem.Resources>
                         <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
-                            <Setter Property="Command" Value="{Binding Main.CreateWidgetFromTemplateCommand, Source={StaticResource Locator}}"/>
+                            <Setter Property="Command" Value="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.CreateWidgetFromTemplateCommand}"/>
                             <Setter Property="CommandParameter" Value="{Binding}"/>
                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -232,7 +231,7 @@
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
                             <TextBlock><Run Text="["/><InlineUIContainer>
-									<TextBlock FontStyle="Italic" Text="{Binding B.Type}"/>
+									<TextBlock FontStyle="Italic" Text="{Binding B.Type, Mode=OneWay}"/>
 								</InlineUIContainer><Run Text="] "/><InlineUIContainer>
 									<TextBlock Text="{Binding A}"/>
 								</InlineUIContainer></TextBlock>
@@ -251,24 +250,21 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Window.DataContext>
-        <Binding Path="Main" Source="{StaticResource Locator}"/>
-    </Window.DataContext>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="PreviewKeyUp">
-            <cmd:EventToCommand Command="{Binding PreviewKeyUpCommand}" PassEventArgsToCommand="True"/>
+            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding PreviewKeyUpCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="PreviewKeyDown">
-            <cmd:EventToCommand Command="{Binding PreviewKeyDownCommand}" PassEventArgsToCommand="True"/>
+            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding PreviewKeyDownCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="PreviewMouseDown">
-            <cmd:EventToCommand Command="{Binding PreviewMouseDown}" PassEventArgsToCommand="True"/>
+                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding PreviewMouseDownCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="PreviewMouseUp">
-            <cmd:EventToCommand Command="{Binding PreviewMouseUp}" PassEventArgsToCommand="True"/>
+                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding PreviewMouseUpCommand}"/>
         </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
-            <cmd:EventToCommand Command="{Binding ClosingCommand}"/>
+            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding ClosingCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <i:Interaction.Behaviors>
@@ -313,7 +309,7 @@
                     </MenuItem.Icon>
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="Command" Value="{Binding Main.LoadRecentControllerCommand, Source={StaticResource Locator}}"/>
+                            <Setter Property="Command" Value="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.LoadRecentControllerCommand}"/>
                             <Setter Property="CommandParameter" Value="{Binding}"/>
                             <Setter Property="Icon" Value="{StaticResource Icon}">
                             </Setter>
@@ -548,26 +544,26 @@
                                 <TextBox TabIndex="1" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.IP}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="GotFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="LostFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
                                 <TextBox TabIndex="2" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.Port}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="GotFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="LostFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
@@ -575,26 +571,26 @@
                                 <TextBox TabIndex="3" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiLogin}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="GotFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="LostFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
                                 <TextBox TabIndex="4" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiPassword}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="GotFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="LostFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
@@ -603,13 +599,13 @@
                                 <TextBox TabIndex="5" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.PollTime}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewKeyUp">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="GotFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="LostFocus">
-                                            <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
@@ -629,7 +625,7 @@
                                 <Border Tag="{loc:Loc Key=MainWindow.Settings.Field.EnableLog}">
                                     <StackPanel Orientation="Horizontal">
                                         <CheckBox TabIndex="10" IsChecked="{Binding WindowSettings.EnableLog, Mode=TwoWay}"/>
-                                        <Button TabIndex="11" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="10" Height="16" Command="{Binding OpenLogFolder}" Content="{loc:Loc Key=MainWindow.Settings.Button.OpenLogFolder}" />
+                <Button TabIndex="11" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="10" Height="16" Command="{Binding OpenLogFolderCommand}" Content="{loc:Loc Key=MainWindow.Settings.Button.OpenLogFolder}" />
                                     </StackPanel>
                                 </Border>
 
@@ -639,7 +635,7 @@
                                 <CheckBox TabIndex="15" Tag="{loc:Loc Key=MainWindow.Settings.Field.EnableLoopGuard}" IsChecked="{Binding WindowSettings.EnableLoopGuard, Mode=TwoWay}" Cursor=""/>
                             </CompositeCollection>
                         </skin:PropertiesListView>
-                        <Grid Background="Transparent" DataContext="{Binding GlobalSettings, Source={StaticResource Locator}}">
+                        <Grid Background="Transparent" DataContext="{Binding GlobalSettings}">
                             <Grid.Resources>
                                 <Style TargetType="{x:Type ListView}">
                                     <Setter Property="Background" Value="Transparent"/>
@@ -648,7 +644,7 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                <Border Background="#1E2328" BorderBrush="#18488C" x:Name="Border" Margin="0,0,0,4" Padding="1" BorderThickness="1" DataContext="{Binding Source={StaticResource Locator}}">
+                                                <Border Background="#1E2328" BorderBrush="#18488C" x:Name="Border" Margin="0,0,0,4" Padding="1" BorderThickness="1">
                                                     <ContentPresenter />
                                                 </Border>
                                             </ControlTemplate>
@@ -708,13 +704,13 @@
                                                         <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1">
                                                             <i:Interaction.Triggers>
                                                                 <i:EventTrigger EventName="PreviewKeyUp">
-                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                                                 </i:EventTrigger>
                                                                 <i:EventTrigger EventName="GotFocus">
-                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                                                 </i:EventTrigger>
                                                                 <i:EventTrigger EventName="LostFocus">
-                                                                    <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                                                 </i:EventTrigger>
                                                             </i:Interaction.Triggers>
                                                             <TextBox.Style>
@@ -729,17 +725,17 @@
                                                     <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="2" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" FontWeight="Regular">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="PreviewKeyUp">
-                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxPreviewKeyUp, Source={StaticResource Locator}}"/>
+                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxPreviewKeyUpCommand}"/>
                                                             </i:EventTrigger>
                                                             <i:EventTrigger EventName="GotFocus">
-                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxGotFocus, Source={StaticResource Locator}}"/>
+                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxGotFocusCommand}"/>
                                                             </i:EventTrigger>
                                                             <i:EventTrigger EventName="LostFocus">
-                                                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding Main.TextBoxLostFocus, Source={StaticResource Locator}}"/>
+                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.TextBoxLostFocusCommand}"/>
                                                             </i:EventTrigger>
                                                         </i:Interaction.Triggers>
                                                     </TextBox>
-                                                    <Button ToolTip="{loc:Loc Key=MainWindow.Settings.GlobalVariables.Tooltip.Remove}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding GlobalSettings.RemoveItemCommand, Source={StaticResource Locator}}" Content="&#xF2ED;" Grid.Column="3"/>
+                                                    <Button ToolTip="{loc:Loc Key=MainWindow.Settings.GlobalVariables.Tooltip.Remove}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Content="&#xF2ED;" Grid.Column="3"/>
                                                 </Grid>
 
                                             </DataTemplate>
@@ -813,7 +809,7 @@
                                             <TextBlock Grid.Column="12">
                                                 <TextBlock.Text>
                                                     <MultiBinding Converter="{c:StringListToStringConverter}">
-                                                        <Binding Source="{StaticResource Locator}" Path="Main.WindowSettings.Pages"/>
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.WindowSettings.Pages"/>
                                                         <Binding Converter="{c:ObjectToIndexConverter}" ConverterParameter="{StaticResource Pages}"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
@@ -901,19 +897,19 @@
                                 </Grid.ContextMenu>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseLeftButtonDown">
-                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonDown}"/>
+                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding MouseButtonDownCommand}"/>
                                     </i:EventTrigger>
                                     <i:EventTrigger EventName="MouseMove">
-                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseMove}"/>
+                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding MouseMoveCommand}"/>
                                     </i:EventTrigger>
                                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding MouseButtonUp}"/>
+                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding MouseButtonUpCommand}"/>
                                     </i:EventTrigger>
                                     <i:EventTrigger EventName="ContextMenuOpening">
-                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuOpening}"/>
+                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding ContextMenuOpeningCommand}"/>
                                     </i:EventTrigger>
                                     <i:EventTrigger EventName="ContextMenuClosing">
-                                        <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding ContextMenuClosing}"/>
+                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding ContextMenuClosingCommand}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
 
@@ -924,8 +920,8 @@
                                         <TextBlock Margin="0,0,16,2" FontFamily="Segoe UI" FontWeight="Bold" Opacity="0.25" FontSize="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" IsHitTestVisible="False">
                                             <TextBlock.Text>
                                                 <MultiBinding Converter="{c:StringListToStringConverter}">
-                                                    <Binding Source="{StaticResource Locator}" Path="Main.WindowSettings.Pages"/>
-                                                    <Binding Source="{StaticResource Locator}" Path="Main.PageIndex"/>
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.WindowSettings.Pages"/>
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.PageIndex"/>
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                             <TextBlock.Foreground>
@@ -933,7 +929,7 @@
                                                     <SolidColorBrush.Color>
                                                         <MultiBinding Converter="{c:ColorsListToColorConverter}">
                                                             <Binding Source="{x:Static vm:vMixWidgetSettingsViewModel.Colors}"/>
-                                                            <Binding Source="{StaticResource Locator}" Path="Main.PageIndex"/>
+                                                            <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext.PageIndex"/>
                                                         </MultiBinding>
                                                     </SolidColorBrush.Color>
                                                 </SolidColorBrush>
@@ -1052,7 +1048,7 @@
                                                 <ItemsPanelTemplate>
                                                     <Grid VirtualizingPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" IsItemsHost="True" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                         <Grid.LayoutTransform>
-                                                            <ScaleTransform ScaleX="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}" ScaleY="{Binding Main.WindowSettings.UIScale, Source={StaticResource Locator}}"/>
+                                                            <ScaleTransform ScaleX="{Binding DataContext.WindowSettings.UIScale, ElementName=Window}" ScaleY="{Binding DataContext.WindowSettings.UIScale, ElementName=Window}"/>
                                                         </Grid.LayoutTransform>
                                                     </Grid>
                                                 </ItemsPanelTemplate>
@@ -1162,7 +1158,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="4" Height="16" Margin="{StaticResource RightStdMargin}" Stroke="Transparent">
                         <Rectangle.Fill>
-                            <SolidColorBrush Color="{Binding PollingStatus, Converter={c:StatusToColorConverter}}"/>
+                            <SolidColorBrush Color="{Binding Pollingstatus, Converter={c:StatusToColorConverter}}"/>
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Margin="0,0,8,0">
@@ -1328,3 +1324,9 @@
         </Border>
     </Grid>
 </Window>
+
+
+
+
+
+

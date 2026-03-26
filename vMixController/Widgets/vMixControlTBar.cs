@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualBasic;
 using System;
 using System.Windows;
@@ -8,7 +8,7 @@ using vMixController.Controls;
 
 namespace vMixController.Widgets
 {
-    public class vMixControlTBar : vMixControl
+    public partial class vMixControlTBar : vMixControl
     {
         public override string Type => "TBar";
         public override bool IsResizeableVertical => true;
@@ -29,21 +29,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Style
         {
-            get
-            {
-                return _style;
-            }
-
-            set
-            {
-                if (_style == value)
-                {
-                    return;
-                }
-
-                _style = value;
-                RaisePropertyChanged(nameof(Style));
-            }
+            get => _style;
+            set => SetPropertyValue(ref _style, value, nameof(Style));
         }
 
         private string _mode = Classes.Constants.TBAR_MODE_AB;
@@ -54,21 +41,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Mode
         {
-            get
-            {
-                return _mode;
-            }
-
-            set
-            {
-                if (_mode == value)
-                {
-                    return;
-                }
-
-                _mode = value;
-                RaisePropertyChanged(nameof(Mode));
-            }
+            get => _mode;
+            set => SetPropertyValue(ref _mode, value, nameof(Mode));
         }
 
         public int Value
@@ -140,28 +114,17 @@ namespace vMixController.Widgets
             base.OnStateSynced();
         }
 
-        private RelayCommand<RoutedEventArgs> _valueChangedCommand;
         private bool _sending;
 
-        /// <summary>
-        /// Gets the ValueChangedCommand.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> ValueChangedCommand
+        [RelayCommand]
+        private void ValueChanged(RoutedEventArgs p)
         {
-            get
+            if (Value >= 255 && Mode == Classes.Constants.TBAR_MODE_SNAPBACK)
             {
-                return _valueChangedCommand
-                    ?? (_valueChangedCommand = new RelayCommand<RoutedEventArgs>(
-                    (p) =>
-                    {
-                        if (Value >= 255 && Mode == Classes.Constants.TBAR_MODE_SNAPBACK)
-                        {
-                            ((TBarSlider)p.Source).CancelDrag();                            
-                            _reset = true;
-                            Value = 0;
-                            ((TBarSlider)p.Source).GetBindingExpression(TBarSlider.ValueProperty).UpdateTarget();
-                        }
-                    }));
+                ((TBarSlider)p.Source).CancelDrag();
+                _reset = true;
+                Value = 0;
+                ((TBarSlider)p.Source).GetBindingExpression(TBarSlider.ValueProperty).UpdateTarget();
             }
         }
     }

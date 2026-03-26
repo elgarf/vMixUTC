@@ -1,30 +1,29 @@
-﻿<Window
+<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ctrl="clr-namespace:vMixController.Controls"
-        xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:mdl="clr-namespace:vMixController.Widgets"
         xmlns:views="clr-namespace:vMixController.ViewModel"
         xmlns:input="clr-namespace:System.Windows.Input;assembly=WindowsBase"
         xmlns:Converters="clr-namespace:vMixController.Converters" x:Class="vMixController.vMixWidgetSettingsView"
         xmlns:e="clr-namespace:vMixController.Extensions"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
         xmlns:this="clr-namespace:vMixController"
         xmlns:pctrl="clr-namespace:vMixController.PropertiesControls"
         xmlns:wpfc="clr-namespace:NKristek.Wpf.Converters;assembly=NKristek.Wpf.Converters"
         xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
         xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
-        mc:Ignorable="d ignore"
+        mc:Ignorable="d"
         Title="{loc:Loc Key=WidgetSettings.Window.Title}"
         Closing="Window_Closing" d:DesignWidth="382.485" d:DesignHeight="364.71"
-        Width="{Binding Path=WidgetSettings.WindowProperties.A, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=382}"
-        Height="{Binding Path=WidgetSettings.WindowProperties.B, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=364}"
-        Top="{Binding Path=WidgetSettings.WindowProperties.C, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
-        Left="{Binding Path=WidgetSettings.WindowProperties.D, Source={StaticResource Locator}, Mode=TwoWay, FallbackValue=256}"
+        Width="{Binding WindowProperties.A, Mode=TwoWay, FallbackValue=382}"
+        Height="{Binding WindowProperties.B, Mode=TwoWay, FallbackValue=364}"
+        Top="{Binding WindowProperties.C, Mode=TwoWay, FallbackValue=256}"
+        Left="{Binding WindowProperties.D, Mode=TwoWay, FallbackValue=256}"
         WindowStartupLocation="CenterScreen" Background="Black" ResizeMode="CanResize"
         e:ControlBox.HasMaximizeButton="False" Loaded="Window_Loaded">
     <Window.Resources>
@@ -48,7 +47,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ListViewItem}">
-                            <Border Background="#1E2328" BorderBrush="#18488C" x:Name="Border" Margin="0,0,0,4" Padding="1" BorderThickness="1" DataContext="{Binding Source={StaticResource Locator}}">
+                            <Border Background="#1E2328" BorderBrush="#18488C" x:Name="Border" Margin="0,0,0,4" Padding="1" BorderThickness="1">
                                 <ContentPresenter />
                             </Border>
                         </ControlTemplate>
@@ -68,8 +67,6 @@
 
                         <GeometryDrawing.Brush>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <!-- Резкие переходы создаются путем указания двух 
-                                     GradientStop в одной и той же точке (Offset) -->
                                 <GradientStop Color="Gray" Offset="0.0" />
                                 <GradientStop Color="Gray" Offset="0.25" />
                                 <GradientStop Color="Black"  Offset="0.25" />
@@ -85,12 +82,9 @@
             </DrawingBrush>
         </ResourceDictionary>
     </Window.Resources>
-    <Window.DataContext>
-        <Binding Path="WidgetSettings" Source="{StaticResource Locator}"/>
-    </Window.DataContext>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
-            <cmd:EventToCommand Command="{Binding ClosingCommand}"/>
+            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding ClosingCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid Background="Black">
@@ -107,7 +101,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 					<TextBlock Style="{StaticResource PropertyName}" Margin="{StaticResource RightStdMargin}" FontSize="16"><InlineUIContainer>
-							<TextBlock Text="{Binding Widget.Type}"/>
+							<TextBlock Text="{Binding Widget.Type, Mode=OneWay}"/>
 						</InlineUIContainer><Run Text=" " /><Run Text="{loc:Loc Key=WidgetSettings.WidgetSuffix}"/></TextBlock>
                     <Border VerticalAlignment="Center" Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="White"/>
                 </Grid>
@@ -316,7 +310,7 @@
                                             <GridViewColumn Width="50">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <Button IsEnabled="{Binding Active}" Content="{loc:Loc Key=WidgetSettings.Hotkeys.Button.Learn}" Command="{Binding WidgetSettings.LearnKeyCommand, Source={StaticResource Locator}}" CommandParameter="{Binding}" Margin="-5,0,-6,0"/>
+                                                        <Button IsEnabled="{Binding Active}" Content="{loc:Loc Key=WidgetSettings.Hotkeys.Button.Learn}" Command="{Binding DataContext.LearnKeyCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="-5,0,-6,0"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
@@ -384,3 +378,4 @@
         </StackPanel>
     </Grid>
 </Window>
+

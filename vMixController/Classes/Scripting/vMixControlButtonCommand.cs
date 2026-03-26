@@ -1,5 +1,5 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Ioc;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,21 +23,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public vMixFunctionReference Action
         {
-            get
-            {
-                return _action;
-            }
-
-            set
-            {
-                if (_action == value)
-                {
-                    return;
-                }
-
-                _action = value;
-                RaisePropertyChanged(nameof(Action));
-            }
+            get => _action;
+            set => SetProperty(ref _action, value);
         }
 
         private string _parameter = "-1";
@@ -48,21 +35,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public string Parameter
         {
-            get
-            {
-                return _parameter;
-            }
-
-            set
-            {
-                if (_parameter == value)
-                {
-                    return;
-                }
-
-                _parameter = value;
-                RaisePropertyChanged(nameof(Parameter));
-            }
+            get => _parameter;
+            set => SetProperty(ref _parameter, value);
         }
 
 
@@ -74,21 +48,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public string FloatParameter
         {
-            get
-            {
-                return _floatParameter;
-            }
-
-            set
-            {
-                if (_floatParameter == value)
-                {
-                    return;
-                }
-
-                _floatParameter = value;
-                RaisePropertyChanged(nameof(FloatParameter));
-            }
+            get => _floatParameter;
+            set => SetProperty(ref _floatParameter, value);
         }
 
         private int _input = -1;
@@ -99,21 +60,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public int Input
         {
-            get
-            {
-                return _input;
-            }
-
-            set
-            {
-                if (_input == value)
-                {
-                    return;
-                }
-
-                _input = value;
-                RaisePropertyChanged(nameof(Input));
-            }
+            get => _input;
+            set => SetProperty(ref _input, value);
         }
 
         private string _inputKey = null;
@@ -124,21 +72,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public string InputKey
         {
-            get
-            {
-                return _inputKey;
-            }
-
-            set
-            {
-                if (_inputKey == value)
-                {
-                    return;
-                }
-
-                _inputKey = value;
-                RaisePropertyChanged(nameof(InputKey));
-            }
+            get => _inputKey;
+            set => SetProperty(ref _inputKey, value);
         }
 
         private string _stringParameter = "";
@@ -149,21 +84,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public string StringParameter
         {
-            get
-            {
-                return _stringParameter;
-            }
-
-            set
-            {
-                if (_stringParameter == value)
-                {
-                    return;
-                }
-
-                _stringParameter = value;
-                RaisePropertyChanged(nameof(StringParameter));
-            }
+            get => _stringParameter;
+            set => SetProperty(ref _stringParameter, value);
         }
 
         private List<One<string>> _additionalParameters = new List<One<string>>();
@@ -174,21 +96,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public List<One<string>> AdditionalParameters
         {
-            get
-            {
-                return _additionalParameters;
-            }
-
-            set
-            {
-                if (_additionalParameters == value)
-                {
-                    return;
-                }
-
-                _additionalParameters = value;
-                RaisePropertyChanged(nameof(AdditionalParameters));
-            }
+            get => _additionalParameters;
+            set => SetProperty(ref _additionalParameters, value);
         }
 
         private bool _collapsed = false;
@@ -212,8 +121,8 @@ namespace vMixController.Classes.Scripting
                 }
 
                 _collapsed = value;
-                RaisePropertyChanged(nameof(Collapsed));
-                RaisePropertyChanged(nameof(AdditionalParameters));
+                OnPropertyChanged(nameof(Collapsed));
+                OnPropertyChanged(nameof(AdditionalParameters));
             }
         }
 
@@ -225,21 +134,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public bool NoInputAssigned
         {
-            get
-            {
-                return _noInputAssigned;
-            }
-
-            set
-            {
-                if (_noInputAssigned == value)
-                {
-                    return;
-                }
-
-                _noInputAssigned = value;
-                RaisePropertyChanged(nameof(NoInputAssigned));
-            }
+            get => _noInputAssigned;
+            set => SetProperty(ref _noInputAssigned, value);
         }
 
         [NonSerialized]
@@ -251,21 +147,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public Thickness Ident
         {
-            get
-            {
-                return _ident;
-            }
-
-            set
-            {
-                if (_ident == value)
-                {
-                    return;
-                }
-
-                _ident = value;
-                RaisePropertyChanged(nameof(Ident));
-            }
+            get => _ident;
+            set => SetProperty(ref _ident, value);
         }
 
         private bool _useInActiveState = true;
@@ -276,21 +159,8 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public bool UseInActiveState
         {
-            get
-            {
-                return _useInActiveState;
-            }
-
-            set
-            {
-                if (_useInActiveState == value)
-                {
-                    return;
-                }
-
-                _useInActiveState = value;
-                RaisePropertyChanged(nameof(UseInActiveState));
-            }
+            get => _useInActiveState;
+            set => SetProperty(ref _useInActiveState, value);
         }
 
         private bool _isExecutable = true;
@@ -301,26 +171,13 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         public bool IsExecutable
         {
-            get
-            {
-                return _isExecutable;
-            }
-
-            set
-            {
-                if (_isExecutable == value)
-                {
-                    return;
-                }
-
-                _isExecutable = value;
-                RaisePropertyChanged(nameof(IsExecutable));
-            }
+            get => _isExecutable;
+            set => SetProperty(ref _isExecutable, value);
         }
 
         /// <summary>
-        /// Сериализует команду в строку, учитывая сигнатуру функции для включения только необходимых параметров.
-        /// Формат: [атрибуты] Функция(параметры)
+        /// ����������� ������� � ������, �������� ��������� ������� ��� ��������� ������ ����������� ����������.
+        /// ������: [��������] �������(���������)
         /// </summary>
         public override string ToString()
         {
@@ -329,21 +186,21 @@ namespace vMixController.Classes.Scripting
 
             var sb = new StringBuilder();
 
-            // 1. Атрибуты (добавляем только отличающиеся от дефолтных)
+            // 1. �������� (��������� ������ ������������ �� ���������)
             if (Collapsed) sb.Append("[C] ");
             if (!IsExecutable) sb.Append("[!E] ");
             if (!UseInActiveState) sb.Append("[!S] ");
 
-            // 2. Имя функции
+            // 2. ��� �������
             sb.Append(Action.Function);
             sb.Append("(");
 
-            // 3. Параметры (добавляем только те, что определены в сигнатуре Action)
+            // 3. ��������� (��������� ������ ��, ��� ���������� � ��������� Action)
             var parameters = new List<string>();
 
             if (Action.HasInputProperty && !NoInputAssigned)
             {
-                // Предпочитаем InputKey, если он задан, иначе используем Input
+                // ������������ InputKey, ���� �� �����, ����� ���������� Input
                 parameters.Add(!string.IsNullOrEmpty(InputKey) ? Escape(InputKey) : Input.ToString());
             }
             if (Action.HasIntProperty)
@@ -370,18 +227,18 @@ namespace vMixController.Classes.Scripting
         }
 
         /// <summary>
-        /// Создает объект vMixControlButtonCommand из строки, используя сигнатуру функции для корректного парсинга параметров.
+        /// ������� ������ vMixControlButtonCommand �� ������, ��������� ��������� ������� ��� ����������� �������� ����������.
         /// </summary>
         public static vMixControlButtonCommand FromString(string commandString)
         {
-            var allFunctions = SimpleIoc.Default.GetInstance<MainViewModel>().Functions;
+            var allFunctions = vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().Functions;
             if (string.IsNullOrWhiteSpace(commandString))
                 return new vMixControlButtonCommand();
 
             var cmd = new vMixControlButtonCommand();
             var remainingString = commandString.Trim();
 
-            // 1. Парсинг атрибутов
+            // 1. ������� ���������
             bool attributesParsed = true;
             while (attributesParsed)
             {
@@ -391,18 +248,18 @@ namespace vMixController.Classes.Scripting
                 if (remainingString.StartsWith("[!S] ")) { cmd.UseInActiveState = false; remainingString = remainingString.Substring(5); attributesParsed = true; }
             }
 
-            // 2. Парсинг имени функции и поиск Action
+            // 2. ������� ����� ������� � ����� Action
             var openParenIndex = remainingString.IndexOf('(');
             var closeParenIndex = remainingString.LastIndexOf(')');
             if (openParenIndex == -1 || closeParenIndex == -1 || closeParenIndex < openParenIndex)
-                return new vMixControlButtonCommand(); // Некорректный формат
+                return new vMixControlButtonCommand(); // ������������ ������
 
             var functionName = remainingString.Substring(0, openParenIndex);
             cmd.Action = allFunctions.FirstOrDefault(f => f.Function.Equals(functionName, StringComparison.OrdinalIgnoreCase));
             if (cmd.Action == null)
-                return new vMixControlButtonCommand(); // Функция не найдена
+                return new vMixControlButtonCommand(); // ������� �� �������
 
-            // 3. Парсинг параметров
+            // 3. ������� ����������
             var paramsString = remainingString.Substring(openParenIndex + 1, closeParenIndex - openParenIndex - 1);
             List<string> parameters = new List<string>();
             if (!string.IsNullOrEmpty(paramsString))
@@ -415,13 +272,13 @@ namespace vMixController.Classes.Scripting
 
             int currentParamIndex = 0;
 
-            // 4. Распределение параметров по свойствам согласно сигнатуре Action
+            // 4. ������������� ���������� �� ��������� �������� ��������� Action
             if (cmd.Action.HasInputProperty && !cmd.NoInputAssigned)
             {
                 if (currentParamIndex < parameters.Count)
                 {
                     var inputParam = Unescape(parameters[currentParamIndex]);
-                    // Если параметр - число без кавычек, считаем его Input, иначе - InputKey
+                    // ���� �������� - ����� ��� �������, ������� ��� Input, ����� - InputKey
                     if (int.TryParse(inputParam, out int inputNum) && parameters[currentParamIndex].Trim() == inputParam)
                     {
                         cmd.Input = inputNum;
@@ -430,7 +287,7 @@ namespace vMixController.Classes.Scripting
                     else
                     {
                         cmd.InputKey = inputParam;
-                        // Можно установить Input в 0 или -1 как индикатор, что используется ключ
+                        // ����� ���������� Input � 0 ��� -1 ��� ���������, ��� ������������ ����
                         cmd.Input = 0;
                     }
                     currentParamIndex++;
@@ -463,7 +320,7 @@ namespace vMixController.Classes.Scripting
                     if (currentParamIndex < parameters.Count)
                         cmd.AdditionalParameters.Add(new One<string>() { A = Unescape(parameters[currentParamIndex++]) });
                     else
-                        break; // Параметров в строке меньше, чем ожидает функция
+                        break; // ���������� � ������ ������, ��� ������� �������
                 }
             }
 
@@ -476,10 +333,10 @@ namespace vMixController.Classes.Scripting
         private static string Escape(string s)
         {
             if (s == null) return "\"\"";
-            // Оборачиваем в кавычки, если содержит запятую, пробел или уже является строкой в кавычках
+            // ����������� � �������, ���� �������� �������, ������ ��� ��� �������� ������� � ��������
             if (s.Contains(",") || s.Contains(" ") || s.StartsWith("\"") || s.Length == 0)
                 return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
-            return s; // Числа и простые строки можно не оборачивать
+            return s; // ����� � ������� ������ ����� �� �����������
         }
 
         private static string Unescape(string s)
@@ -490,7 +347,7 @@ namespace vMixController.Classes.Scripting
                 string inner = s.Substring(1, s.Length - 2);
                 return inner.Replace("\\\"", "\"").Replace("\\\\", "\\");
             }
-            return s; // Возвращаем как есть, если это неэкранированная строка (например, число)
+            return s; // ���������� ��� ����, ���� ��� ���������������� ������ (��������, �����)
         }
 
         public object Clone()
@@ -509,3 +366,6 @@ namespace vMixController.Classes.Scripting
 
     }
 }
+
+
+

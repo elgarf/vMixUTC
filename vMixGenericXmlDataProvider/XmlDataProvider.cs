@@ -1,5 +1,6 @@
-﻿// Требуется добавить ссылку на System.Net.Http
-using GalaSoft.MvvmLight.CommandWpf;
+// ��������� �������� ������ �� System.Net.Http
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -22,16 +23,16 @@ using vMixControllerSkin;
 
 namespace XmlDataProviderNs
 {
-    public class XmlDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
+    public partial class XmlDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
     {
         #region Private Fields
 
-        // 1. Используем HttpClient. Один статический экземпляр рекомендуется для переиспользования.
+        // 1. ���������� HttpClient. ���� ����������� ��������� ������������� ��� �����������������.
         private static readonly HttpClient _httpClient = new HttpClient();
-        // 2. ConcurrentDictionary для потокобезопасного кэша без ручных блокировок.
+        // 2. ConcurrentDictionary ��� ����������������� ���� ��� ������ ����������.
         private static readonly ConcurrentDictionary<string, CacheEntry> _cache = new ConcurrentDictionary<string, CacheEntry>();
 
-        // 3. SemaphoreSlim для предотвращения одновременной загрузки одного и того же ресурса.
+        // 3. SemaphoreSlim ��� �������������� ������������� �������� ������ � ���� �� �������.
         private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
 
         private List<string> _data = new List<string>();
@@ -46,7 +47,7 @@ namespace XmlDataProviderNs
 
         public System.Windows.UIElement CustomUI { get; }
         public bool IsProvidingCustomProperties => true;
-        public int Period { get; set; } = 1000; // По умолчанию 1 секунда
+        public int Period { get; set; } = 1000; // �� ��������� 1 �������
 
 
 
@@ -62,7 +63,7 @@ namespace XmlDataProviderNs
         public List<string> Data
         {
             get => _data;
-            private set // Сеттер сделан приватным, чтобы данные менялись только внутри класса
+            private set // ������ ������ ���������, ����� ������ �������� ������ ������ ������
             {
                 var newData = value ?? new List<string>();
                 if (!_data.SequenceEqual(newData))
@@ -75,23 +76,35 @@ namespace XmlDataProviderNs
             }
         }
 
-        public object PreviewKeyUp { get; set; }
-        public object GotFocus { get; set; }
-        public object LostFocus { get; set; }
+        public ICommand PreviewKeyUp { get; set; }
+        public ICommand GotFocus { get; set; }
+        public ICommand LostFocus { get; set; }
 
-        // 4. Используем expression-bodied members для лаконичности
-        private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyUpCommand => _previewKeyUpCommand ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(p =>
+        [RelayCommand]
+        private void HandlePreviewKeyUp(KeyEventArgs p)
         {
+            if (p == null)
+            {
+                return;
+            }
+
             if (!(p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return))
             {
-                ((RelayCommand<KeyEventArgs>)PreviewKeyUp)?.Execute(p);
+                if (PreviewKeyUp is ICommand command && command.CanExecute(p))
+                {
+                    command.Execute(p);
+                }
             }
-        }));
+        }
 
-        private RelayCommand<KeyEventArgs> _previewKeyDownCommand;
-        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand => _previewKeyDownCommand ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(p =>
+        [RelayCommand]
+        private void HandlePreviewKeyDown(KeyEventArgs p)
         {
+            if (p == null)
+            {
+                return;
+            }
+
             if (p.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control) && p.Key == Key.Return)
             {
                 p.Handled = true;
@@ -106,17 +119,47 @@ namespace XmlDataProviderNs
             {
                 p.Handled = true;
             }
-        }));
+        }
 
-        private RelayCommand _showRowsCommand;
-        public RelayCommand ShowRowsCommand => _showRowsCommand ?? (_showRowsCommand = new RelayCommand(() => new RowsViewer().Bind(this, nameof(Data))));
+        [RelayCommand]
+        private void HandleGotFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
 
+            if (GotFocus != null && GotFocus.CanExecute(p))
+            {
+                GotFocus.Execute(p);
+            }
+        }
 
-        private RelayCommand _reloadCommand;
-        public RelayCommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(() =>
+        [RelayCommand]
+        private void HandleLostFocus(RoutedEventArgs p)
+        {
+            if (p == null)
+            {
+                return;
+            }
+
+            if (LostFocus != null && LostFocus.CanExecute(p))
+            {
+                LostFocus.Execute(p);
+            }
+        }
+
+        [RelayCommand]
+        private void ShowRows()
+        {
+            new RowsViewer().Bind(this, nameof(Data));
+        }
+
+        [RelayCommand]
+        private void Reload()
         {
             _ = ForceReloadAsync();
-        }));
+        }
         #endregion
 
         #region Async Data Loading
@@ -125,7 +168,7 @@ namespace XmlDataProviderNs
         {
             try
             {
-                var url = Url; // Получаем значение из DependencyProperty
+                var url = Url; // �������� �������� �� DependencyProperty
                 if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(XPath))
                 {
                     Data = new List<string>();
@@ -133,27 +176,27 @@ namespace XmlDataProviderNs
                     return;
                 }
 
-                // Проверка кэша
+                // �������� ����
                 if (_cache.TryGetValue(url, out var cacheEntry) && (DateTime.UtcNow - cacheEntry.LastUpdated).TotalMilliseconds < Period)
                 {
-                    // Если данные в кэше актуальны, просто обновим текущий экземпляр из них
+                    // ���� ������ � ���� ���������, ������ ������� ������� ��������� �� ���
                     UpdateDataFromCache(cacheEntry.Document);
                     return;
                 }
 
-                // Входим в семафор, чтобы только один поток мог загружать данные
+                // ������ � �������, ����� ������ ���� ����� ��� ��������� ������
                 await _asyncLock.WaitAsync();
                 try
                 {
-                    // Повторная проверка кэша после входа в семафор.
-                    // Возможно, другой поток уже обновил данные, пока мы ждали.
+                    // ��������� �������� ���� ����� ����� � �������.
+                    // ��������, ������ ����� ��� ������� ������, ���� �� �����.
                     if (_cache.TryGetValue(url, out cacheEntry) && (DateTime.UtcNow - cacheEntry.LastUpdated).TotalMilliseconds < Period)
                     {
                         UpdateDataFromCache(cacheEntry.Document);
                         return;
                     }
 
-                    // Загрузка и обработка данных
+                    // �������� � ��������� ������
                     var doc = await FetchXmlAsync(url);
                     if (doc != null)
                     {
@@ -191,7 +234,7 @@ namespace XmlDataProviderNs
                         response.EnsureSuccessStatusCode();
                         using (var stream = await response.Content.ReadAsStreamAsync())
                         {
-                            // 5. Асинхронная загрузка в XDocument
+                            // 5. ����������� �������� � XDocument
                             return XDocument.Load(stream, LoadOptions.None);
                         }
                     }
@@ -209,7 +252,7 @@ namespace XmlDataProviderNs
             try
             {
                 var nsManager = new XmlNamespaceManager(new NameTable());
-                var namespaces = NameSpaces; // Получаем значение из DependencyProperty
+                var namespaces = NameSpaces; // �������� �������� �� DependencyProperty
                 if (!string.IsNullOrEmpty(namespaces))
                 {
                     foreach (var item in namespaces.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
@@ -222,7 +265,7 @@ namespace XmlDataProviderNs
                     }
                 }
 
-                // 6. Используем XPathSelectElements из LINQ to XML
+                // 6. ���������� XPathSelectElements �� LINQ to XML
                 var nodes = (IEnumerable<object>)doc.XPathEvaluate(XPath, nsManager);
                 var groupBy = GroupBy;
                 var maxItems = 100 * (groupBy <= 0 ? 1 : groupBy);
@@ -391,7 +434,7 @@ namespace XmlDataProviderNs
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Вспомогательный класс для кэша
+        // ��������������� ����� ��� ����
         private class CacheEntry
         {
             public XDocument Document { get; set; }
@@ -400,13 +443,13 @@ namespace XmlDataProviderNs
 
         #endregion
 
-        // Устаревшие поля и методы, которые больше не нужны
+        // ���������� ���� � ������, ������� ������ �� �����
         // private static int _maxid = 0;
         // private readonly int _id = _maxid++;
         // private bool _retrievingData = false;
         // private string _url, _xpath, _namespaces;
         // private int _groupBy;
-        // PropertyChangedCallback больше не нужен, т.к. мы читаем значения напрямую из DP.
+        // PropertyChangedCallback ������ �� �����, �.�. �� ������ �������� �������� �� DP.
 
         private void ScheduleLoadIfNeeded()
         {
@@ -472,3 +515,4 @@ namespace XmlDataProviderNs
         }
     }
 }
+

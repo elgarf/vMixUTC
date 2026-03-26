@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="vMixController.PropertiesControls.StreamDeckMappingControl"
+<UserControl x:Class="vMixController.PropertiesControls.StreamDeckMappingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:e="clr-namespace:vMixController.Extensions"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="496"
@@ -65,7 +65,7 @@
                             <GridViewColumn Header="">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Command="{Binding LearnStreamDeckKey, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0,-6,0" Content="{loc:Loc Key=StreamDeckMapping.Button.Learn}"/>
+                        <Button Command="{Binding LearnStreamDeckKeyCommand, ElementName=Me}" CommandParameter="{Binding}" Margin="-5,0,-6,0" Content="{loc:Loc Key=StreamDeckMapping.Button.Learn}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -84,3 +84,4 @@
         </StackPanel>
     </Border>
 </UserControl>
+

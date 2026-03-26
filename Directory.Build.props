@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <NuGetPackageRoot>$(MSBuildThisFileDirectory).nuget\packages\</NuGetPackageRoot>
+    <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget\packages</RestorePackagesPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3247;MSB3276</MSBuildWarningsAsMessages>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>

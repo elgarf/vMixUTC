@@ -1,6 +1,6 @@
-﻿//#define OBJECTDEPENDENCY
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
+//#define OBJECTDEPENDENCY
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using NCalc;
 using System;
 using System.Collections.Concurrent;
@@ -30,7 +30,7 @@ namespace vMixController.Widgets
 {
 
     [Serializable]
-    public class vMixControlNewButton : vMixControl
+    public partial class vMixControlNewButton : vMixControl
     {
         public override bool IsResizeableVertical => true;
 
@@ -72,21 +72,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool HasScriptErrors
         {
-            get
-            {
-                return _hasScriptErrors;
-            }
-
-            set
-            {
-                if (_hasScriptErrors == value)
-                {
-                    return;
-                }
-
-                _hasScriptErrors = value;
-                RaisePropertyChanged(nameof(HasScriptErrors));
-            }
+            get => _hasScriptErrors;
+            set => SetPropertyValue(ref _hasScriptErrors, value, nameof(HasScriptErrors));
         }
 
         private bool _potentialLoopWarning = false;
@@ -97,21 +84,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool PotentialLoopWarning
         {
-            get
-            {
-                return _potentialLoopWarning;
-            }
-
-            set
-            {
-                if (_potentialLoopWarning == value)
-                {
-                    return;
-                }
-
-                _potentialLoopWarning = value;
-                RaisePropertyChanged(nameof(PotentialLoopWarning));
-            }
+            get => _potentialLoopWarning;
+            set => SetPropertyValue(ref _potentialLoopWarning, value, nameof(PotentialLoopWarning));
         }
 
         private string _potentialLoopParticipants = string.Empty;
@@ -119,14 +93,7 @@ namespace vMixController.Widgets
         public string PotentialLoopParticipants
         {
             get => _potentialLoopParticipants;
-            set
-            {
-                if (_potentialLoopParticipants == value)
-                    return;
-
-                _potentialLoopParticipants = value;
-                RaisePropertyChanged(nameof(PotentialLoopParticipants));
-            }
+            set => SetPropertyValue(ref _potentialLoopParticipants, value, nameof(PotentialLoopParticipants));
         }
 
         private bool _isPropertiesEditing;
@@ -153,21 +120,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public string Log
         {
-            get
-            {
-                return _log.TrimStart();
-            }
-
-            set
-            {
-                if (_log == value)
-                {
-                    return;
-                }
-
-                _log = value;
-                RaisePropertyChanged(nameof(Log));
-            }
+            get => _log.TrimStart();
+            set => SetPropertyValue(ref _log, value, nameof(Log));
         }
 
         private void AddLog(string s, params object[] p)
@@ -191,21 +145,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public Color BlinkBorderColor
         {
-            get
-            {
-                return _blinkBorderColor;
-            }
-
-            set
-            {
-                if (_blinkBorderColor == value)
-                {
-                    return;
-                }
-
-                _blinkBorderColor = value;
-                RaisePropertyChanged(nameof(BlinkBorderColor));
-            }
+            get => _blinkBorderColor;
+            set => SetPropertyValue(ref _blinkBorderColor, value, nameof(BlinkBorderColor));
         }
 
         public override string Type
@@ -224,21 +165,8 @@ namespace vMixController.Widgets
         /// </summary>
         public ObservableCollection<vMixControlNewButtonCommand> Commands
         {
-            get
-            {
-                return _commands;
-            }
-
-            set
-            {
-                if (_commands == value)
-                {
-                    return;
-                }
-
-                _commands = value;
-                RaisePropertyChanged(nameof(Commands));
-            }
+            get => _commands;
+            set => SetPropertyValue(ref _commands, value, nameof(Commands));
         }
 
         private bool _autoStart = false;
@@ -249,21 +177,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool AutoStart
         {
-            get
-            {
-                return _autoStart;
-            }
-
-            set
-            {
-                if (_autoStart == value)
-                {
-                    return;
-                }
-
-                _autoStart = value;
-                RaisePropertyChanged(nameof(AutoStart));
-            }
+            get => _autoStart;
+            set => SetPropertyValue(ref _autoStart, value, nameof(AutoStart));
         }
 
         private bool _enabled = true;
@@ -275,21 +190,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool Enabled
         {
-            get
-            {
-                return _enabled;
-            }
-
-            set
-            {
-                if (_enabled == value)
-                {
-                    return;
-                }
-
-                _enabled = value;
-                RaisePropertyChanged(nameof(Enabled));
-            }
+            get => _enabled;
+            set => SetPropertyValue(ref _enabled, value, nameof(Enabled));
         }
 
         private bool _active = false;
@@ -329,21 +231,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsStateDependent
         {
-            get
-            {
-                return _isStateDependent;
-            }
-
-            set
-            {
-                if (_isStateDependent == value)
-                {
-                    return;
-                }
-
-                _isStateDependent = value;
-                RaisePropertyChanged(nameof(IsStateDependent));
-            }
+            get => _isStateDependent;
+            set => SetPropertyValue(ref _isStateDependent, value, nameof(IsStateDependent));
         }
 
         private bool _isColorized = false;
@@ -354,21 +243,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsColorized
         {
-            get
-            {
-                return _isColorized;
-            }
-
-            set
-            {
-                if (_isColorized == value)
-                {
-                    return;
-                }
-
-                _isColorized = value;
-                RaisePropertyChanged(nameof(IsColorized));
-            }
+            get => _isColorized;
+            set => SetPropertyValue(ref _isColorized, value, nameof(IsColorized));
         }
 
         private string _image = "";
@@ -379,21 +255,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Image
         {
-            get
-            {
-                return _image;
-            }
-
-            set
-            {
-                if (_image == value)
-                {
-                    return;
-                }
-
-                _image = value;
-                RaisePropertyChanged(nameof(Image));
-            }
+            get => _image;
+            set => SetPropertyValue(ref _image, value, nameof(Image));
         }
 
         private int _imageMax = 1;
@@ -405,21 +268,8 @@ namespace vMixController.Widgets
         [XmlElement(ElementName = "ImageMax")]
         public int ImageType
         {
-            get
-            {
-                return _imageMax;
-            }
-
-            set
-            {
-                if (_imageMax == value)
-                {
-                    return;
-                }
-
-                _imageMax = value;
-                RaisePropertyChanged(nameof(ImageType));
-            }
+            get => _imageMax;
+            set => SetPropertyValue(ref _imageMax, value, nameof(ImageType));
         }
 
         private int _imageNumber = 0;
@@ -430,21 +280,8 @@ namespace vMixController.Widgets
         /// </summary>
         public int ImageNumber
         {
-            get
-            {
-                return _imageNumber;
-            }
-
-            set
-            {
-                if (_imageNumber == value)
-                {
-                    return;
-                }
-
-                _imageNumber = value;
-                RaisePropertyChanged(nameof(ImageNumber));
-            }
+            get => _imageNumber;
+            set => SetPropertyValue(ref _imageNumber, value, nameof(ImageNumber));
         }
 
 
@@ -460,21 +297,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public ConcurrentDictionary<int, object> Variables
         {
-            get
-            {
-                return _variables;
-            }
-
-            set
-            {
-                if (_variables == value)
-                {
-                    return;
-                }
-
-                _variables = value;
-                RaisePropertyChanged(nameof(Variables));
-            }
+            get => _variables;
+            set => SetPropertyValue(ref _variables, value, nameof(Variables));
         }
 
         private bool _isPushed = false;
@@ -492,18 +316,13 @@ namespace vMixController.Widgets
 
             set
             {
-                if (_isPushed == value)
+                SetPropertyValue(ref _isPushed, value, nameof(IsPushed), isPushed =>
                 {
-                    return;
-                }
-
-                if (_imageMax == 2 && value)
-                    ImageNumber = 1;
-                if (!value)
-                    ImageNumber = 0;
-
-                _isPushed = value;
-                RaisePropertyChanged(nameof(IsPushed));
+                    if (_imageMax == 2 && isPushed)
+                        ImageNumber = 1;
+                    if (!isPushed)
+                        ImageNumber = 0;
+                });
             }
         }
 
@@ -515,63 +334,33 @@ namespace vMixController.Widgets
         /// </summary>
         public string Style
         {
-            get
-            {
-                return _style;
-            }
-
-            set
-            {
-                if (_style == value)
-                {
-                    return;
-                }
-
-                _style = value;
-                RaisePropertyChanged(nameof(Style));
-            }
+            get => _style;
+            set => SetPropertyValue(ref _style, value, nameof(Style));
         }
 
-        [NonSerialized]
-        private RelayCommand _executeScriptCommand;
-
-        /// <summary>
-        /// Gets the ExecuteScriptCommand.
-        /// </summary>
-        [XmlIgnore]
-        public RelayCommand ExecuteScriptCommand
+        [RelayCommand]
+        private async Task ExecuteScript()
         {
-            get
+            if (Style == Constants.BUTTON_STYLE_MOMENTARY)
+                Enabled = false;
+
+            if (_currentExecutionTask != null && !_currentExecutionTask.IsCompleted)
             {
-                return _executeScriptCommand
-                    ?? (_executeScriptCommand = new RelayCommand(async () => // Make it async
-                    {
-                        if (Style == Constants.BUTTON_STYLE_MOMENTARY)
-                            Enabled = false; // Enabled handles Dispatcher.Invoke
-
-                        // Cancel any existing execution
-                        if (_currentExecutionTask != null && !_currentExecutionTask.IsCompleted)
-                        {
-                            _executionCts?.Cancel();
-                            try
-                            {
-                                await _currentExecutionTask; // Wait for it to finish cancelling
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                // Expected exception
-                            }
-                            catch (Exception)
-                            {
-                                // Assuming _logger is available. If not, replace with Console.WriteLine or similar.
-                                //_logger.Error(ex, "Error while waiting for previous script to cancel.");
-                            }
-                        }
-
-                        _executionCts = new CancellationTokenSource(); // Create a new CTS for the new execution
-                        _currentExecutionTask = ExecuteScriptAsync(State, _executionCts.Token); // Start the new task
-                    }));
+                _executionCts?.Cancel();
+                try
+                {
+                    await _currentExecutionTask;
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch (Exception)
+                {
+                }
             }
+
+            _executionCts = new CancellationTokenSource();
+            _currentExecutionTask = ExecuteScriptAsync(State, _executionCts.Token);
         }
 
         private async Task ExecuteScriptAsync(State state, CancellationToken cancellationToken)
@@ -609,97 +398,57 @@ namespace vMixController.Widgets
             }
         }
 
-        [NonSerialized]
-        private RelayCommand<object> _executePushOn;
-
-        /// <summary>
-        /// Gets the ExecutePushOn.
-        /// </summary>
-        public RelayCommand<object> ExecutePushOn
+        [RelayCommand]
+        private void ExecutePushOn(object p)
         {
-            get
+            switch (Style)
             {
-                return _executePushOn
-                    ?? (_executePushOn = new RelayCommand<object>(
-                    (p) =>
-                    {
-                        //MouseEventArgs
-
-                        switch (Style)
-                        {
-                            case Constants.BUTTON_STYLE_PRESS:
-                                IsPushed = true;
-                                ExecuteScriptCommand.Execute(null);
-                                break;
-                            case Constants.BUTTON_STYLE_MOMENTARY: if (!IsStateDependent) IsPushed = true; break;
-                            case Constants.BUTTON_STYLE_TOGGLE:
-                                IsPushed = !IsPushed;
-                                ExecuteScriptCommand.Execute(null);
-                                break;
-                        }
-                        //p.Handled = true;
-
-                    }));
+                case Constants.BUTTON_STYLE_PRESS:
+                    IsPushed = true;
+                    ExecuteScriptCommand.Execute(null);
+                    break;
+                case Constants.BUTTON_STYLE_MOMENTARY:
+                    if (!IsStateDependent) IsPushed = true;
+                    break;
+                case Constants.BUTTON_STYLE_TOGGLE:
+                    IsPushed = !IsPushed;
+                    ExecuteScriptCommand.Execute(null);
+                    break;
             }
         }
 
-        [NonSerialized]
-        private RelayCommand<object> _executePushOff;
-
-        /// <summary>
-        /// Gets the ExecutePushOff.
-        /// </summary>
-        public RelayCommand<object> ExecutePushOff
+        [RelayCommand]
+        private void ExecutePushOff(object p)
         {
-            get
+            Mouse.Capture(null);
+            switch (Style)
             {
-                return _executePushOff
-                    ?? (_executePushOff = new RelayCommand<object>(
-                    (p) =>
-                    {
-                        Mouse.Capture(null);
-                        switch (Style)
-                        {
-                            case Constants.BUTTON_STYLE_PRESS:
-                                IsPushed = false;
-                                ExecuteScriptCommand.Execute(null);
-                                break;
-                            case Constants.BUTTON_STYLE_MOMENTARY:
-                                if (!IsStateDependent) IsPushed = false;
-                                ExecuteScriptCommand.Execute(null);
-                                break;
-                            case Constants.BUTTON_STYLE_TOGGLE: break;
-                        }
-                        //p.Handled = true;
-
-                    }));
+                case Constants.BUTTON_STYLE_PRESS:
+                    IsPushed = false;
+                    ExecuteScriptCommand.Execute(null);
+                    break;
+                case Constants.BUTTON_STYLE_MOMENTARY:
+                    if (!IsStateDependent) IsPushed = false;
+                    ExecuteScriptCommand.Execute(null);
+                    break;
+                case Constants.BUTTON_STYLE_TOGGLE:
+                    break;
             }
         }
 
-        [NonSerialized]
-        private RelayCommand _stopScriptCommand;
+        
+        
 
-        /// <summary>
-        /// Gets the StopScriptCommand.
-        /// </summary>
-        [XmlIgnore]
-        public RelayCommand StopScriptCommand
+        [RelayCommand]
+        private void StopScript()
         {
-            get
-            {
-                return _stopScriptCommand
-                    ?? (_stopScriptCommand = new RelayCommand(
-                    () =>
-                    {
-                        _executionCts?.Cancel();
+            _executionCts?.Cancel();
 
-                        BlinkBorderColor = BorderColor;
+            BlinkBorderColor = BorderColor;
 
-                        _trackedValues.Clear();
-                        _conditions.Clear();
-                        Enabled = true;
-                    }));
-            }
+            _trackedValues.Clear();
+            _conditions.Clear();
+            Enabled = true;
         }
 
         public vMixControlNewButton()
@@ -733,16 +482,6 @@ namespace vMixController.Widgets
 
         private Dictionary<string, object> CaptureGlobalVariablesSnapshot()
         {
-            /*var snapshot = new Dictionary<string, object>(StringComparer.Ordinal);
-
-            var cachedVariables = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings?.Variables;
-            if (cachedVariables == null)
-                return snapshot;
-
-            foreach (var item in cachedVariables)
-                snapshot[item.A] = item.B;
-
-            return snapshot;*/
             return GlobalVariablesViewModel.GetVariablesSnapshot();
         }
 
@@ -934,14 +673,14 @@ namespace vMixController.Widgets
                         switch (cmd.Action.Function)
                         {
                             case NewNativeFunctions.NEXTPAGE:
-                                Messenger.Default.Send(new PageNavigationMessage() { Mode = PageNavigationMode.Next });
+                                Messenger.Send(new PageNavigationMessage() { Mode = PageNavigationMode.Next });
                                 break;
                             case NewNativeFunctions.PREVPAGE:
-                                Messenger.Default.Send(new PageNavigationMessage() { Mode = PageNavigationMode.Previous });
+                                Messenger.Send(new PageNavigationMessage() { Mode = PageNavigationMode.Previous });
                                 break;
                             case NewNativeFunctions.SETPAGE:
                                 vMixControlButtonHelper.CalculateExpression<int>(cmd.Value, PopulateVariables, ExpressionEvaluateFunction, out parameter);
-                                Messenger.Default.Send(new PageNavigationMessage() { Mode = PageNavigationMode.SetIndex, PageIndex = parameter });
+                                Messenger.Send(new PageNavigationMessage() { Mode = PageNavigationMode.SetIndex, PageIndex = parameter });
                                 break;
                             case NewNativeFunctions.WIN:
                                 Process.Start(GetObjectParameter().ToString());
@@ -974,12 +713,12 @@ namespace vMixController.Widgets
                                 AddLog("{2}) DELAY {0} [{1}]", cmd.Value, parameter, _pointer + 1);
                                 var bs = DateTime.Now;
                                 await Task.Delay(parameter, cancellationToken);
-                                AddLog("{1}) DELAY СOMPLETED IN {0}ms", (DateTime.Now - bs).TotalMilliseconds, _pointer + 1);
+                                AddLog("{1}) DELAY �OMPLETED IN {0}ms", (DateTime.Now - bs).TotalMilliseconds, _pointer + 1);
                                 break;
                             case NewNativeFunctions.UPDATESTATE:
                             case NewNativeFunctions.SYNC:
                                 AddLog("{0}) STATE UPDATING", _pointer + 1);
-                                RunOnUiThread(() => Messenger.Default.Send(new SyncStateRequestMessage() { Force = true }));
+                                RunOnUiThread(() => Messenger.Send(new SyncStateRequestMessage() { Force = true }), DispatcherPriority.Send);
                                 break;
                             case NewNativeFunctions.UPDATEINTERNALBUTTONSTATE:
                             case NewNativeFunctions.SYNCINTERNALBUTTONSTATE:
@@ -1000,19 +739,19 @@ namespace vMixController.Widgets
                             case NewNativeFunctions.EXECLINK:
                                 strparameter = GetObjectParameter()?.ToString() ?? string.Empty;
                                 AddLog("{2}) EXECLINK {0} [{1}]", cmd.Value, strparameter, _pointer + 1);
-                                RunOnUiThread(() => Messenger.Default.Send(new HotkeyLinkMessage() { Link = strparameter, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) }));
+                                RunOnUiThread(() => Messenger.Send(new HotkeyLinkMessage() { Link = strparameter, Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) }), DispatcherPriority.Send);
                                 break;
                             case NewNativeFunctions.LIVETOGGLE:
                                 AddLog("{0}) LIVETOGGLE", _pointer + 1);
-                                RunOnUiThread(() => Messenger.Default.Send(new LIVEToggleMessage() { State = 2 }));
+                                RunOnUiThread(() => Messenger.Send(new LIVEToggleMessage() { State = 2 }), DispatcherPriority.Send);
                                 break;
                             case NewNativeFunctions.LIVEOFF:
                                 AddLog("{0}) LIVEOFF", _pointer + 1);
-                                RunOnUiThread(() => Messenger.Default.Send(new LIVEToggleMessage() { State = 0 }));
+                                RunOnUiThread(() => Messenger.Send(new LIVEToggleMessage() { State = 0 }), DispatcherPriority.Send);
                                 break;
                             case NewNativeFunctions.LIVEON:
                                 AddLog("{0}) LIVEON", _pointer + 1);
-                                RunOnUiThread(() => Messenger.Default.Send(new LIVEToggleMessage() { State = 1 }));
+                                RunOnUiThread(() => Messenger.Send(new LIVEToggleMessage() { State = 1 }), DispatcherPriority.Send);
                                 break;
                             case NewNativeFunctions.IF:
                                 conditionResult = cond.HasValue && cond.Value ? new bool?(TestCondition(cmd)) : null;
@@ -1057,9 +796,9 @@ namespace vMixController.Widgets
                                 var gtobj = GetObjectParameter();
                                 AddLog("{2}) SETGLOBALVARIABLE {0} TO {1}", isgidx ? gidx.ToString() : gname, gtobj, _pointer + 1);
                                 if (!isgidx)
-                                    Messenger.Default.Send(new SetGlobalVariable() { Index = gidx, Value = gtobj.ToString() });
+                                    Messenger.Send(new SetGlobalVariable() { Index = gidx, Value = gtobj.ToString() });
                                 else
-                                    Messenger.Default.Send(new SetGlobalVariable() { Name = gname, Value = gtobj.ToString() });
+                                    Messenger.Send(new SetGlobalVariable() { Name = gname, Value = gtobj.ToString() });
                                 break;
                             case NewNativeFunctions.VALUECHANGED:
 
@@ -1250,7 +989,7 @@ namespace vMixController.Widgets
         protected override void Dispose(bool managed)
         {
             if (_disposed) return;
-            Messenger.Default.Unregister(this);
+            Messenger.UnregisterAll(this);
             XmlDocumentMessenger.OnDocumentDownloaded -= OnXmlDocumentDownloaded;
             if (managed)
             {
@@ -1275,3 +1014,7 @@ namespace vMixController.Widgets
         }
     }
 }
+
+
+
+

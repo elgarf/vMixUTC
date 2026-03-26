@@ -1,5 +1,3 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Ioc;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
@@ -9,17 +7,10 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using vMixController.ViewModel;
@@ -93,14 +84,14 @@ namespace vMixController.Classes
         }
     }
 
-    public class BindableAvalonEditor : ICSharpCode.AvalonEdit.TextEditor, INotifyPropertyChanged
+    public class BindableAvalonEditor : ICSharpCode.AvalonEdit.TextEditor
     {
         CompletionWindow completionWindow;
 
         public BindableAvalonEditor() : base()
         {
 
-            if (ViewModelBase.IsInDesignModeStatic) return;
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 
             this.TextArea.KeyDown += TextArea_KeyDown;
             this.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
@@ -110,7 +101,7 @@ namespace vMixController.Classes
             {
                 xshd = HighlightingLoader.LoadXshd(reader);
             }
-            var functions = SimpleIoc.Default.GetInstance<MainViewModel>().Functions;
+            var functions = vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().Functions;
             var regex = @"\b(";
             foreach (var item in functions)
             {
@@ -140,7 +131,7 @@ namespace vMixController.Classes
 
                 //completionWindow.CompletionList.IsFiltering = false;
                 IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-                var Main = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var Main = vMixController.Classes.AppServices.GetRequiredService<MainViewModel>();
                 foreach (var item in Main.Functions.Where(x => !x.IsGroup))
                 {
                     var sig = item.GetSignature();
@@ -217,18 +208,7 @@ namespace vMixController.Classes
 
         }
 
-        /// <summary>
-        /// Raises a property changed event
-        /// </summary>
-        /// <param name="property">The name of the property that updates</param>
-        public void RaisePropertyChanged(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
+
+

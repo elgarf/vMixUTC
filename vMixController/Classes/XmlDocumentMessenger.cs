@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 using vMixAPI;
-using vMixController.Classes.vMixController.Classes;
+using vMixController.Classes;
 using vMixController.Widgets;
 
 namespace vMixController.Classes
@@ -57,7 +57,7 @@ namespace vMixController.Classes
         }
 
         /// <summary>
-        /// Формат: "user:password"
+        /// ������: "user:password"
         /// </summary>
         public static string Credentials
         {
@@ -194,7 +194,7 @@ namespace vMixController.Classes
 
                     if (stopwatch.Elapsed >= nextPollAt)
                     {
-                        // fire-and-forget, ограничено MaxConcurrentRequests
+                        // fire-and-forget, ���������� MaxConcurrentRequests
                         _ = PollOnceAsync(token);
                         nextPollAt = stopwatch.Elapsed + pollInterval;
                     }
@@ -316,3 +316,4 @@ namespace vMixController.Classes
         }
     }
 }
+

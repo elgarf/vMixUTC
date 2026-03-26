@@ -1,4 +1,3 @@
-﻿using GalaSoft.MvvmLight.Threading;
 using System;
 using System.Buffers.Text;
 using System.IO;
@@ -11,6 +10,10 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
+using vMixController.Classes;
+using vMixController.ViewModel;
 using vMixControllerSkin.Localization;
 
 namespace vMixController
@@ -21,6 +24,7 @@ namespace vMixController
     public partial class App : Application
     {
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        public IServiceProvider Services { get; private set; }
 
         static DateTime _compile = new DateTime(2016, 6, 30);
 
@@ -64,7 +68,6 @@ namespace vMixController
         static MemoryStream _splashImage = new MemoryStream();
         static App()
         {
-            DispatcherHelper.Initialize();
             _splashImage = new MemoryStream();
             var buffer = RenderToByteArray(new UTCSplashScreen());
             _splashImage.Write(buffer, 0, buffer.Length);
@@ -92,6 +95,8 @@ namespace vMixController
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ConfigureServices();
+
             LocalizationManager.Instance.InitializeFromSettings();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
@@ -99,6 +104,22 @@ namespace vMixController
             this.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
             base.OnStartup(e);
+
+            var mainWindow = new MainWindow();
+            MainWindow = mainWindow;
+            mainWindow.Show();
+        }
+
+        private void ConfigureServices()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton<MainViewModel>();
+            services.AddSingleton<vMixWidgetSettingsViewModel>();
+            services.AddSingleton<GlobalVariablesViewModel>();
+            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
+
+            Services = services.BuildServiceProvider();
+            AppServices.Configure(Services);
         }
 
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)

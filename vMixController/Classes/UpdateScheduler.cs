@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using vMixController.Classes.vMixController.Classes;
+using vMixController.Classes;
 
 namespace vMixController.Classes
 {
@@ -71,3 +71,4 @@ namespace vMixController.Classes
         }
     }
 }
+

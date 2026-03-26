@@ -1,6 +1,7 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Specialized;
@@ -16,42 +17,29 @@ using vMixController.Messages;
 
 namespace vMixController.ViewModel
 {
-    public class GlobalVariablesViewModel : ViewModelBase
+    public partial class GlobalVariablesViewModel : ViewModelBase
     {
 
-        public static ObservableCollection<Pair<string, string>> _variables = new ObservableCollection<Pair<string, string>>();
+        [ObservableProperty]
+        private ObservableCollection<Pair<string, string>> _variables = new ObservableCollection<Pair<string, string>>();
         private static readonly ConcurrentDictionary<string, string> _variablesStore = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
         private static volatile string[] _indexToName = Array.Empty<string>();
 
-        /// <summary>
-        /// Sets and gets the Variables property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<Pair<string, string>> Variables
+        partial void OnVariablesChanging(ObservableCollection<Pair<string, string>> oldValue, ObservableCollection<Pair<string, string>> newValue)
         {
-            get
-            {
-                return _variables;
-            }
+            DetachCollection(oldValue);
+        }
 
-            set
-            {
-                if (_variables == value)
-                {
-                    return;
-                }
-
-                DetachCollection(_variables);
-                _variables = value;
-                AttachCollection(_variables);
-            }
+        partial void OnVariablesChanged(ObservableCollection<Pair<string, string>> value)
+        {
+            AttachCollection(value);
         }
 
         public GlobalVariablesViewModel()
         {
             AttachCollection(_variables);
 
-            Messenger.Default.Register<SetGlobalVariable>(this, (t) =>
+            Messenger.Register<SetGlobalVariable>(this, (r, t) =>
             {
                 if (t.Index == -1)
                     TrySetStoreValueByName(t.Name, t.Value);
@@ -189,59 +177,24 @@ namespace vMixController.ViewModel
             _indexToName = indexMap.ToArray();
         }
 
-        private RelayCommand<Pair<string, string>> _removeItemCommand;
-
-        /// <summary>
-        /// Gets the RemoveItemCommand.
-        /// </summary>
-        public RelayCommand<Pair<string, string>> RemoveItemCommand
+        [RelayCommand]
+        private void RemoveItem(Pair<string, string> item)
         {
-            get
-            {
-                return _removeItemCommand
-                    ?? (_removeItemCommand = new RelayCommand<Pair<string, string>>(
-                    p =>
-                    {
-                        Variables.Remove(p);
-                    }));
-            }
+            Variables.Remove(item);
         }
 
-        private RelayCommand _addItemCommand;
-
-        /// <summary>
-        /// Gets the AddItemCommand.
-        /// </summary>
-        public RelayCommand AddItemCommand
+        [RelayCommand]
+        private void AddItem()
         {
-            get
-            {
-                return _addItemCommand
-                    ?? (_addItemCommand = new RelayCommand(
-                    () =>
-                    {
-                        Variables.Add(new Pair<string, string>("", ""));
-                    }));
-            }
+            Variables.Add(new Pair<string, string>("", ""));
         }
 
-
-        private RelayCommand _okCommand;
-
-        /// <summary>
-        /// Gets the OkCommand.
-        /// </summary>
-        public RelayCommand OkCommand
+        [RelayCommand]
+        private void Ok()
         {
-            get
-            {
-                return _okCommand
-                    ?? (_okCommand = new RelayCommand(
-                    () =>
-                    {
-                        MessengerInstance.Send(true);
-                    }));
-            }
+            Messenger.Send(new ValueChangedMessage<bool>(true));
         }
     }
 }
+
+

@@ -1,10 +1,11 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Windows.Controls;
 
 namespace vMixController.Widgets
 {
-    public class vMixControlRegion: vMixControl
+    public partial class vMixControlRegion: vMixControl
     {
         public vMixControlRegion()
         {
@@ -29,21 +30,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Text
         {
-            get
-            {
-                return _Text;
-            }
-
-            set
-            {
-                if (_Text == value)
-                {
-                    return;
-                }
-
-                _Text = value;
-                RaisePropertyChanged(nameof(Text));
-            }
+            get => _Text;
+            set => SetPropertyValue(ref _Text, value, nameof(Text));
         }
 
         private bool _sticky = false;
@@ -54,21 +42,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Sticky
         {
-            get
-            {
-                return _sticky;
-            }
-
-            set
-            {
-                if (_sticky == value)
-                {
-                    return;
-                }
-
-                _sticky = value;
-                RaisePropertyChanged(nameof(Sticky));
-            }
+            get => _sticky;
+            set => SetPropertyValue(ref _sticky, value, nameof(Sticky));
         }
 
         private bool _isEditable = false;
@@ -79,45 +54,17 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsEditable
         {
-            get
-            {
-                return _isEditable;
-            }
-
-            set
-            {
-                if (_isEditable == value)
-                {
-                    return;
-                }
-
-                _isEditable = value;
-                RaisePropertyChanged(nameof(IsEditable));
-            }
+            get => _isEditable;
+            set => SetPropertyValue(ref _isEditable, value, nameof(IsEditable));
         }
 
-        [NonSerialized]
-        private RelayCommand<object> _mouseDoubleClick;
-
-        /// <summary>
-        /// Gets the ExecutePushOn.
-        /// </summary>
-        public RelayCommand<object> MouseDoubleClick
+        [RelayCommand]
+        private void MouseDoubleClick(object p)
         {
-            get
-            {
-                return _mouseDoubleClick
-                    ?? (_mouseDoubleClick = new RelayCommand<object>(
-                    (p) =>
-                    {
-                        //MouseEventArgs
-
-                        IsEditable = true;
-                        //p.Handled = true;
-
-                    }));
-            }
+            IsEditable = true;
         }
+
+        
 
         public override void BeforePropertiesChanged()
         {
@@ -137,3 +84,4 @@ namespace vMixController.Widgets
         }
     }
 }
+

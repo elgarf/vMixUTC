@@ -1,7 +1,6 @@
-using CommonServiceLocator;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Melanchall.DryWetMidi.Tools;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,6 @@ using System.Xml.Serialization;
 using vMixAPI;
 using vMixController.Classes;
 using vMixController.Classes.Scripting;
-using vMixController.Classes.vMixController.Classes;
 using vMixController.Extensions;
 using vMixControllerSkin.Localization;
 using vMixController.Messages;
@@ -39,11 +37,8 @@ namespace vMixController.ViewModel
 {
     /// <summary>
     /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// See http://www.mvvmlight.net
-    /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase, IDisposable
+    public partial class MainViewModel : ViewModelBase, IDisposable
     {
         private const int MaxUndoSteps = 10;
 
@@ -73,6 +68,7 @@ namespace vMixController.ViewModel
         //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
         vMixWidgetSettingsView _settings = new vMixWidgetSettingsView();
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        public GlobalVariablesViewModel GlobalSettings => AppServices.GetRequiredService<GlobalVariablesViewModel>();
 
         private readonly ScriptExecutionLoopGuard _scriptExecutionLoopGuard = new ScriptExecutionLoopGuard(100, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
         private DateTime _lastScriptLoopGuardWarningUtc = DateTime.MinValue;
@@ -84,312 +80,79 @@ namespace vMixController.ViewModel
         bool _skipClick = false;
 
 
+        [ObservableProperty]
         private bool _isHotkeysEnabled = true;
 
-        /// <summary>
-        /// Sets and gets the IsHotkeysEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsHotkeysEnabled
-        {
-            get
-            {
-                return _isHotkeysEnabled;
-            }
-            set
-            {
-                if (_isHotkeysEnabled == value)
-                {
-                    return;
-                }
 
-                _isHotkeysEnabled = value;
-                RaisePropertyChanged(nameof(IsHotkeysEnabled));
-            }
-        }
-
-
+        [ObservableProperty]
         private bool _isLoading = false;
 
-        /// <summary>
-        /// Sets and gets the IsLoading property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsLoading
-        {
-            get
-            {
-                return _isLoading;
-            }
-
-            set
-            {
-                if (_isLoading == value)
-                {
-                    return;
-                }
-
-
-                _isLoading = value;
-
-                if (!_isLoading)
-                    foreach (var item in Widgets)
-                        item.IsVisualReady = true;
-
-                RaisePropertyChanged(nameof(IsLoading));
-            }
-        }
-
+        [ObservableProperty]
         private string _controllerPath = Directory.GetCurrentDirectory();
 
-        /// <summary>
-        /// Sets and gets the ControllerPath property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string ControllerPath
-        {
-            get
-            {
-                return _controllerPath;
-            }
-
-            set
-            {
-                if (_controllerPath == value)
-                {
-                    return;
-                }
-
-                _controllerPath = value;
-                RaisePropertyChanged(nameof(ControllerPath));
-            }
-        }
-
+        [ObservableProperty]
         private bool _isFiltersRegistered = false;
 
-        /// <summary>
-        /// Sets and gets the IsFiltersRegistered property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsFiltersRegistered
-        {
-            get
-            {
-                return _isFiltersRegistered;
-            }
-
-            set
-            {
-                if (_isFiltersRegistered == value)
-                {
-                    return;
-                }
-
-                _isFiltersRegistered = value;
-                RaisePropertyChanged(nameof(IsFiltersRegistered));
-            }
-        }
-
         /*Selector*/
+        [ObservableProperty]
         private Thickness _selectorPosition = new Thickness(0);
 
-        /// <summary>
-        /// Sets and gets the SelectorPosition property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Thickness SelectorPosition
-        {
-            get
-            {
-                return _selectorPosition;
-            }
 
-            set
-            {
-                if (_selectorPosition == value)
-                {
-                    return;
-                }
-
-                _selectorPosition = value;
-                RaisePropertyChanged(nameof(SelectorPosition));
-            }
-        }
-
-
+        [ObservableProperty]
         private double _selectorWidth = 0;
 
-        /// <summary>
-        /// Sets and gets the SelectorWidth property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public double SelectorWidth
-        {
-            get
-            {
-                return _selectorWidth;
-            }
-
-            set
-            {
-                if (_selectorWidth == value)
-                {
-                    return;
-                }
-
-                _selectorWidth = value;
-                RaisePropertyChanged(nameof(SelectorWidth));
-            }
-        }
-
+        [ObservableProperty]
         private double _selectorHeight = 0;
 
-        /// <summary>
-        /// Sets and gets the SelectorHeight property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public double SelectorHeight
-        {
-            get
-            {
-                return _selectorHeight;
-            }
 
-            set
-            {
-                if (_selectorHeight == value)
-                {
-                    return;
-                }
-
-                _selectorHeight = value;
-                RaisePropertyChanged(nameof(SelectorHeight));
-            }
-        }
-
-
+        [ObservableProperty]
         private bool _selectorEnabled = false;
 
-        /// <summary>
-        /// Sets and gets the SelectorEnabled property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool SelectorEnabled
-        {
-            get
-            {
-                return _selectorEnabled;
-            }
 
-            set
-            {
-                if (_selectorEnabled == value)
-                {
-                    return;
-                }
-
-                _selectorEnabled = value;
-                RaisePropertyChanged(nameof(SelectorEnabled));
-            }
-        }
-
-
+        [ObservableProperty]
         private bool _isUrlValid = true;
 
-        /// <summary>
-        /// Sets and gets the IsUrlValid property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsUrlValid
-        {
-            get
-            {
-                return _isUrlValid;
-            }
-
-            set
-            {
-                if (_isUrlValid == value)
-                {
-                    return;
-                }
-
-                _isUrlValid = value;
-                RaisePropertyChanged(nameof(IsUrlValid));
-            }
-        }
-
+        [ObservableProperty]
         private vMixAPI.State _model = null;
 
-        /// <summary>
-        /// Sets and gets the Model property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public vMixAPI.State Model
-        {
-            get
-            {
-                return _model;
-            }
-
-            set
-            {
-                if (_model == value)
-                {
-                    return;
-                }
-
-                _model = value;
-
-
-                _logger.Debug("New model setted.");
-                /*if (_model != null)
-                    Status = "Online";
-                else
-                    Status = "Offline";*/
-
-                RaisePropertyChanged(nameof(Model));
-            }
-        }
-
+        [ObservableProperty]
         private MainWindowSettings _windowSettings = null;
 
-        /// <summary>
-        /// Sets and gets the WindowSettings property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public MainWindowSettings WindowSettings
+        partial void OnIsLoadingChanged(bool value)
         {
-            get
+            if (!value)
+                foreach (var item in Widgets)
+                    item.IsVisualReady = true;
+        }
+
+        partial void OnModelChanged(vMixAPI.State value)
+        {
+            _logger.Debug("New model setted.");
+        }
+
+        partial void OnWindowSettingsChanging(MainWindowSettings oldValue, MainWindowSettings newValue)
+        {
+            if (oldValue != null)
+                oldValue.PropertyChanged -= WindowSettings_PropertyChanged;
+        }
+
+        partial void OnWindowSettingsChanged(MainWindowSettings value)
+        {
+            if (value == null)
+                return;
+
+            if (value.EnableLog)
             {
-                return _windowSettings;
+                if (!NLog.LogManager.IsLoggingEnabled())
+                    NLog.LogManager.ResumeLogging();
+            }
+            else
+            {
+                if (NLog.LogManager.IsLoggingEnabled())
+                    NLog.LogManager.SuspendLogging();
             }
 
-            set
-            {
-                if (_windowSettings == value)
-                {
-                    return;
-                }
-                if (_windowSettings != null)
-                    _windowSettings.PropertyChanged -= WindowSettings_PropertyChanged;
-                _windowSettings = value;
-
-
-                if (_windowSettings.EnableLog)
-                {
-                    if (!NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.ResumeLogging();
-                }
-                else
-                {
-                    if (NLog.LogManager.IsLoggingEnabled())
-                        NLog.LogManager.SuspendLogging();
-                }
-
-                _windowSettings.PropertyChanged += WindowSettings_PropertyChanged;
-                RaisePropertyChanged(nameof(WindowSettings));
-            }
+            value.PropertyChanged += WindowSettings_PropertyChanged;
         }
 
         private void WindowSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -407,290 +170,54 @@ namespace vMixController.ViewModel
             LocalizeVirtualInputs(Model);
         }
 
+        [ObservableProperty]
         private Status _status = Classes.Status.Offline;
 
-        /// <summary>
-        /// Sets and gets the Status property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Status Status
+        partial void OnStatusChanged(Status value)
         {
-            get
-            {
-                return _status;
-            }
-
-            set
-            {
-                XmlDocumentMessenger.Sync = value == Status.Online || value == Status.InputsChanged;
-
-                if (_status == value)
-                {
-                    return;
-                }
-
-                _status = value;
-
-                _logger.Debug("Status changed to {0}.", value);
-
-                RaisePropertyChanged(nameof(Status));
-            }
+            XmlDocumentMessenger.Sync = value == Status.Online || value == Status.InputsChanged;
+            _logger.Debug("Status changed to {0}.", value);
         }
 
 
+        [ObservableProperty]
         private Status _pollingstatus = Classes.Status.Offline;
 
-        /// <summary>
-        /// Sets and gets the Status property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public Status PollingStatus
-        {
-            get
-            {
-                return _pollingstatus;
-            }
-
-            set
-            {
-                if (_pollingstatus == value)
-                {
-                    return;
-                }
-
-                _pollingstatus = value;
-
-                RaisePropertyChanged(nameof(PollingStatus));
-            }
-        }
-
+        [ObservableProperty]
         private ObservableCollection<Pair<string, vMixControl>> _widgetTemplates = new ObservableCollection<Pair<string, vMixControl>>();
 
-        /// <summary>
-        /// Sets and gets the WidgetTemplates property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<Pair<string, vMixControl>> WidgetTemplates
-        {
-            get
-            {
-                return _widgetTemplates;
-            }
-
-            set
-            {
-                if (_widgetTemplates == value)
-                {
-                    return;
-                }
-
-                _widgetTemplates = value;
-                RaisePropertyChanged(nameof(WidgetTemplates));
-            }
-        }
-
+        [ObservableProperty]
         private ObservableCollection<Pair<string, vMixControl>> _externalDataProviders = new ObservableCollection<Pair<string, vMixControl>>();
 
-        /// <summary>
-        /// Sets and gets the ExternalDataProviders property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<Pair<string, vMixControl>> ExternalDataProviders
-        {
-            get
-            {
-                return _externalDataProviders;
-            }
-
-            set
-            {
-                if (_externalDataProviders == value)
-                {
-                    return;
-                }
-
-                _externalDataProviders = value;
-                RaisePropertyChanged(nameof(ExternalDataProviders));
-            }
-        }
-
+        [ObservableProperty]
         private ObservableCollection<vMixNewFunctionReference> _newFunctions = null;
 
-        public ObservableCollection<vMixNewFunctionReference> NewFunctions
-        {
-            get
-            {
-                return _newFunctions;
-            }
-
-            set
-            {
-                if (_newFunctions == value)
-                {
-                    return;
-                }
-
-                _newFunctions = value;
-                RaisePropertyChanged(nameof(NewFunctions));
-            }
-        }
-
+        [ObservableProperty]
         private ObservableCollection<vMixFunctionReference> _functions = null;
 
-        /// <summary>
-        /// Sets and gets the Functions property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<vMixFunctionReference> Functions
-        {
-            get
-            {
-                return _functions;
-            }
-
-            set
-            {
-                if (_functions == value)
-                {
-                    return;
-                }
-
-                _functions = value;
-                RaisePropertyChanged(nameof(Functions));
-            }
-        }
-
+        [ObservableProperty]
         private ObservableCollection<vMixController.Widgets.vMixControl> _widgets = new ObservableCollection<vMixController.Widgets.vMixControl>();
 
-        /// <summary>
-        /// Sets and gets the Widgetss property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public ObservableCollection<vMixController.Widgets.vMixControl> Widgets
-        {
-            get
-            {
-                return _widgets;
-            }
-
-            set
-            {
-                if (_widgets == value)
-                {
-                    return;
-                }
-
-                _widgets = value;
-                RaisePropertyChanged(nameof(Widgets));
-            }
-        }
-
         private readonly List<UndoEntry> _undoStack = new List<UndoEntry>();
+        [ObservableProperty]
         private UndoSnapshot _undoState = null;
 
-        /// <summary>
-        /// Sets and gets the UndoState property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public UndoSnapshot UndoState
-        {
-            get
-            {
-                return _undoState;
-            }
-
-            set
-            {
-                if (_undoState == value)
-                {
-                    return;
-                }
-
-                _undoState = value;
-                RaisePropertyChanged(nameof(UndoState));
-            }
-        }
-
+        [ObservableProperty]
         private string _undoReason = "";
 
-        /// <summary>
-        /// Sets and gets the UndoReason property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string UndoReason
-        {
-            get
-            {
-                return _undoReason;
-            }
-
-            set
-            {
-                if (_undoReason == value)
-                {
-                    return;
-                }
-
-                _undoReason = value;
-                RaisePropertyChanged(nameof(UndoReason));
-            }
-        }
-
+        [ObservableProperty]
         private string _editorCursor = "Arrow";
 
-        /// <summary>
-        /// Sets and gets the Cursor property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string EditorCursor
-        {
-            get
-            {
-                return _editorCursor;
-            }
-
-            set
-            {
-                if (_editorCursor == value)
-                {
-                    return;
-                }
-
-                _editorCursor = value;
-                RaisePropertyChanged(nameof(EditorCursor));
-            }
-        }
-
+        [ObservableProperty]
         private bool _LIVE = true;
 
-        /// <summary>
-        /// Sets and gets the LIVE property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool LIVE
+        partial void OnLIVEChanged(bool value)
         {
-            get
-            {
-                return _LIVE;
-            }
-
-            set
-            {
-                if (_LIVE == value)
+            foreach (var item in Widgets)
+                if (item is vMixControlTextField)
                 {
-                    return;
+                    ((vMixControlTextField)item).IsLive = value;
                 }
-
-                foreach (var item in _widgets)
-                    if (item is vMixControlTextField)
-                    {
-                        ((vMixControlTextField)item).IsLive = value;
-                        //item.Update();
-                    }
-
-                _LIVE = value;
-                RaisePropertyChanged(nameof(LIVE));
-            }
         }
 
 
@@ -759,158 +286,53 @@ namespace vMixController.ViewModel
             private set
             {
                 _title = value;
-                RaisePropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(Title));
             }
         }
 
+        [ObservableProperty]
         private bool _isGhosted = false;
 
-        /// <summary>
-        /// Sets and gets the IsGhosted property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public bool IsGhosted
+        partial void OnIsGhostedChanged(bool value)
         {
-            get
+            foreach (var item in Widgets)
             {
-                return _isGhosted;
-            }
-
-            set
-            {
-                if (_isGhosted == value)
-                {
-                    return;
-                }
-
-                _isGhosted = value;
-
-                foreach (var item in _widgets)
-                {
-                    if (item.ZIndex >= 0)
-                        item.IsGhosted = _isGhosted;
-                }
-
-                RaisePropertyChanged(nameof(IsGhosted));
+                if (item.ZIndex >= 0)
+                    item.IsGhosted = value;
             }
         }
 
+        [ObservableProperty]
         private string _updateLink = null;
 
-        /// <summary>
-        /// Sets and gets the UpdateLink property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string UpdateLink
-        {
-            get
-            {
-                return _updateLink;
-            }
-
-            set
-            {
-                if (_updateLink == value)
-                {
-                    return;
-                }
-
-                _updateLink = value;
-                RaisePropertyChanged(nameof(UpdateLink));
-            }
-        }
-
+        [ObservableProperty]
         private DateTime _availableVersion = GetBuildDateTime(Assembly.GetExecutingAssembly());
 
-        /// <summary>
-        /// Sets and gets the AvailableVersion property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public DateTime AvailableVersion
-        {
-            get
-            {
-                return _availableVersion;
-            }
-
-            set
-            {
-                if (_availableVersion == value)
-                {
-                    return;
-                }
-
-                _availableVersion = value;
-                RaisePropertyChanged(nameof(AvailableVersion));
-            }
-        }
-
+        [ObservableProperty]
         private int _selectedTab = 1;
 
-        /// <summary>
-        /// Sets and gets the SelectedTab property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int SelectedTab
+        partial void OnSelectedTabChanged(int value)
         {
-            get
+            if (value == 1)
             {
-                return _selectedTab;
-            }
-
-            set
-            {
-                if (_selectedTab == value)
+                foreach (var w in Widgets.OfType<vMixControlTextField>())
                 {
-                    return;
+                    w.Update();
                 }
-
-                if (value == 1)
-                {
-                    foreach (var w in _widgets.OfType<vMixControlTextField>())
-                    {
-                        w.Update();
-                    }
-                }
-
-                _selectedTab = value;
-                RaisePropertyChanged(nameof(SelectedTab));
             }
         }
 
+        [ObservableProperty]
         private int _pageIndex = 0;
-
-        /// <summary>
-        /// Sets and gets the PageIndex property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public int PageIndex
-        {
-            get
-            {
-                return _pageIndex;
-            }
-
-            set
-            {
-                if (_pageIndex == value)
-                {
-                    return;
-                }
-
-                _pageIndex = value;
-                RaisePropertyChanged(nameof(PageIndex));
-            }
-        }
 
         private void InsertWidgetByZIndex(vMixControl widget)
         {
             widget.IsGhosted = widget.ZIndex >= 0 && IsGhosted;
             if (widget.ZIndex < 0)
-                _widgets.Insert(0, widget);
+                Widgets.Insert(0, widget);
             else
-                _widgets.Add(widget);
-            RaisePropertyChanged(nameof(Widgets));
+                Widgets.Add(widget);
+            OnPropertyChanged(nameof(Widgets));
         }
 
         private static void EnsureWidgetIdentity(IEnumerable<vMixControl> widgets)
@@ -1176,18 +598,18 @@ namespace vMixController.ViewModel
                 ?? new ObservableCollection<vMixControl>();
 
             EnsureWidgetIdentity(restoredWidgets);
-            EnsureWidgetIdentity(_widgets);
+            EnsureWidgetIdentity(Widgets);
 
-            var currentById = _widgets.ToDictionary(x => x.WidgetId);
+            var currentById = Widgets.ToDictionary(x => x.WidgetId);
             var targetById = restoredWidgets.ToDictionary(x => x.WidgetId);
 
-            var currentSerialized = _widgets.ToDictionary(x => x.WidgetId, SerializeToBytes);
+            var currentSerialized = Widgets.ToDictionary(x => x.WidgetId, SerializeToBytes);
             var targetSerialized = restoredWidgets.ToDictionary(x => x.WidgetId, SerializeToBytes);
 
             foreach (var id in currentById.Keys.Except(targetById.Keys).ToArray())
             {
                 var removed = currentById[id];
-                _widgets.Remove(removed);
+                Widgets.Remove(removed);
                 removed.Dispose();
                 currentById.Remove(id);
             }
@@ -1203,22 +625,22 @@ namespace vMixController.ViewModel
 
                     if (!isSame)
                     {
-                        var existingIndex = _widgets.IndexOf(existing);
+                        var existingIndex = Widgets.IndexOf(existing);
                         existing.Dispose();
                         target.State = Model;
                         if (target is vMixControlTextField textField)
                             textField.IsLive = LIVE;
                         target.Update();
                         if (existingIndex >= 0)
-                            _widgets[existingIndex] = target;
+                            Widgets[existingIndex] = target;
                         else
-                            _widgets.Insert(Math.Min(targetIndex, _widgets.Count), target);
+                            Widgets.Insert(Math.Min(targetIndex, Widgets.Count), target);
                         currentById[target.WidgetId] = target;
                     }
 
-                    var actualIndex = _widgets.IndexOf(currentById[target.WidgetId]);
+                    var actualIndex = Widgets.IndexOf(currentById[target.WidgetId]);
                     if (actualIndex >= 0 && actualIndex != targetIndex)
-                        _widgets.Move(actualIndex, targetIndex);
+                        Widgets.Move(actualIndex, targetIndex);
                 }
                 else
                 {
@@ -1226,12 +648,12 @@ namespace vMixController.ViewModel
                     if (target is vMixControlTextField textField)
                         textField.IsLive = LIVE;
                     target.Update();
-                    _widgets.Insert(Math.Min(targetIndex, _widgets.Count), target);
+                    Widgets.Insert(Math.Min(targetIndex, Widgets.Count), target);
                     currentById[target.WidgetId] = target;
                 }
             }
 
-            RaisePropertyChanged(nameof(Widgets));
+            OnPropertyChanged(nameof(Widgets));
         }
 
         private void UpdateUndoPreview()
@@ -1248,766 +670,496 @@ namespace vMixController.ViewModel
             UndoReason = top.Reason;
         }
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _switchLockCommand;
-
-        /// <summary>
-        /// Gets the SwitchLockCommand.
-        /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> SwitchLockCommand
+        [RelayCommand]
+        private void SwitchLock(vMixController.Widgets.vMixControl p)
         {
-            get
+            SaveUndo(string.Format(LocalizationManager.Instance["Undo.LockChanged"], p.Type, p.Name));
+            p.Locked = !p.Locked;
+            p.IsPasswordLocked = p.IsPasswordLockable && p.Locked && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
+        }
+
+        [RelayCommand]
+        private void RemoveWidget(vMixControl p)
+        {
+            SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetRemoved"], p.Type, p.Name));
+
+            int processed = 0;
+            foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
             {
-                return _switchLockCommand
-                    ?? (_switchLockCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
-                    p =>
-                    {
-                        SaveUndo(string.Format(LocalizationManager.Instance["Undo.LockChanged"], p.Type, p.Name));
-                        p.Locked = !p.Locked;
-                        p.IsPasswordLocked = p.IsPasswordLockable && p.Locked && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
-                    }));
+                Widgets.Remove(widget);
+                widget.Dispose();
+                processed++;
+            }
+            if (processed == 0)
+            {
+                p.Dispose();
+                Widgets.Remove(p);
             }
         }
 
-        private RelayCommand<vMixControl> _removeWidgetCommand;
-
-        /// <summary>
-        /// Gets the RemoveWidgetCommand.
-        /// </summary>
-        public RelayCommand<vMixControl> RemoveWidgetCommand
+        [RelayCommand]
+        private void CopyWidget(vMixControl p)
         {
-            get
+            try
             {
-                return _removeWidgetCommand
-                    ?? (_removeWidgetCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
-                    p =>
+                vMixControl copy = null;
+                int processed = 0;
+                bool undoSaved = false;
+                foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
+                {
+                    copy = widget.Copy();
+                    if (copy == null) continue;
+                    if (!undoSaved)
                     {
-                        SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetRemoved"], p.Type, p.Name));
-
-                        int processed = 0;
-                        foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
-                        {
-                            Widgets.Remove(widget);
-                            widget.Dispose();
-                            processed++;
-                        }
-                        if (processed == 0)
-                        {
-                            p.Dispose();
-                            Widgets.Remove(p);
-                        }
-                    }));
+                        SaveUndo(LocalizationManager.Instance["Undo.WidgetCopied"]);
+                        undoSaved = true;
+                    }
+                    copy.Name = Utils.GetNextCopyName(copy.Name);
+                    copy.State = Model;
+                    copy.Left += 16;
+                    copy.Top += 16;
+                    copy.Update();
+                    if (copy.ZIndex < 0)
+                        InsertWidgetByZIndex(copy);
+                    else
+                    {
+                        copy.ZIndex++;
+                        Widgets.Add(copy);
+                    }
+                    widget.Selected = false;
+                    processed++;
+                }
+                if (processed == 0)
+                {
+                    copy = p.Copy();
+                    if (copy == null) return;
+                    if (!undoSaved)
+                        SaveUndo(LocalizationManager.Instance["Undo.WidgetCopied"]);
+                    copy.Name = Utils.GetNextCopyName(copy.Name);
+                    copy.State = Model;
+                    copy.Left += 16;
+                    copy.Top += 16;
+                    copy.Update();
+                    if (copy.ZIndex < 0)
+                        InsertWidgetByZIndex(copy);
+                    else
+                    {
+                        copy.ZIndex++;
+                        Widgets.Add(copy);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Error while copying widget.");
             }
         }
 
-        private RelayCommand<vMixControl> _copyWidgetCommand;
-
-        /// <summary>
-        /// Gets the CopyWidgetCommand.
-        /// </summary>
-        public RelayCommand<vMixControl> CopyWidgetCommand
+        [RelayCommand]
+        private void MoveWidget(ControlIntParameter p)
         {
-            get
+            SaveUndo(LocalizationManager.Instance["Undo.WidgetPageChanged"]);
+            foreach (var widget in Widgets.Where(x => x.Selected))
             {
-                return _copyWidgetCommand
-                    ?? (_copyWidgetCommand = new RelayCommand<vMixControl>(
-                    p =>
-                    {
-                        try
-                        {
-                            vMixControl copy = null;
-                            int processed = 0;
-                            bool undoSaved = false;
-                            //Process selection
-                            foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
-                            {
-                                copy = widget.Copy();
-                                if (copy == null) continue;
-                                if (!undoSaved)
-                                {
-                                    SaveUndo(LocalizationManager.Instance["Undo.WidgetCopied"]);
-                                    undoSaved = true;
-                                }
-                                copy.Name = Utils.GetNextCopyName(copy.Name);
-                                copy.State = Model;
-                                copy.Left += 16;
-                                copy.Top += 16;
-                                copy.Update();
-                                if (copy.ZIndex < 0)
-                                    InsertWidgetByZIndex(copy);
-                                else
-                                {
-                                    copy.ZIndex++;
-                                    _widgets.Add(copy);
-                                }
-                                widget.Selected = false;
-                                processed++;
-                            }
-                            if (processed == 0)
-                            {
-                                copy = p.Copy();
-                                if (copy == null) return;
-                                if (!undoSaved)
-                                    SaveUndo(LocalizationManager.Instance["Undo.WidgetCopied"]);
-                                copy.Name = Utils.GetNextCopyName(copy.Name);
-                                copy.State = Model;
-                                copy.Left += 16;
-                                copy.Top += 16;
-                                copy.Update();
-                                if (copy.ZIndex < 0)
-                                    InsertWidgetByZIndex(copy);
-                                else
-                                {
-                                    copy.ZIndex++;
-                                    _widgets.Add(copy);
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.Error(e, "Error while copying widget.");
-                        }
-                    }));
+                widget.Page = p.B;
+                widget.Selected = false;
             }
+            p.A.Page = p.B;
         }
 
-
-        private RelayCommand<ControlIntParameter> _moveWidgetCommand;
-
-        /// <summary>
-        /// Gets the MoveWidgetCommand.
-        /// </summary>
-        public RelayCommand<ControlIntParameter> MoveWidgetCommand
+        [RelayCommand]
+        private void ToggleCaption(vMixControl p)
         {
-            get
+            SaveUndo(LocalizationManager.Instance["Undo.WidgetCaptionShowHidden"]);
+            foreach (var widget in Widgets.Where(x => x.Selected))
             {
-                return _moveWidgetCommand
-                    ?? (_moveWidgetCommand = new RelayCommand<ControlIntParameter>(
-                    p =>
-                    {
-                        SaveUndo(LocalizationManager.Instance["Undo.WidgetPageChanged"]);
-                        //Process selection
-                        foreach (var widget in Widgets.Where(x => x.Selected))
-                        {
-                            widget.Page = p.B;
-                            widget.Selected = false;
-                        }
-                        p.A.Page = p.B;
-                    }));
+                widget.IsCaptionOn = !p.IsCaptionOn;
             }
+            p.IsCaptionOn = !p.IsCaptionOn;
         }
 
-        private RelayCommand<vMixControl> _toggleCaptionCommand;
-
-        /// <summary>
-        /// Gets the ToggleCaptionCommand.
-        /// </summary>
-        public RelayCommand<vMixControl> ToggleCaptionCommand
+        [RelayCommand]
+        private void ScaleUp(vMixControl p)
         {
-            get
+            foreach (var widget in Widgets.Where(x => x.Selected))
             {
-                return _toggleCaptionCommand
-                    ?? (_toggleCaptionCommand = new RelayCommand<vMixControl>(
-                    p =>
-                    {
-                        SaveUndo(LocalizationManager.Instance["Undo.WidgetCaptionShowHidden"]);
-                        //Process selection
-                        foreach (var widget in Widgets.Where(x => x.Selected))
-                        {
-                            widget.IsCaptionOn = !p.IsCaptionOn;
-                        }
-                        p.IsCaptionOn = !p.IsCaptionOn;
-                    }));
+                widget.Scale += 0.25f;
             }
+            p.Scale += 0.25f;
         }
 
-        private RelayCommand<vMixControl> _scaleUpCommand;
-
-        /// <summary>
-        /// Gets the ScaleUpCommand.
-        /// </summary>
-        public RelayCommand<vMixControl> ScaleUpCommand
+        [RelayCommand]
+        private void ScaleDown(vMixControl p)
         {
-            get
+            foreach (var widget in Widgets.Where(x => x.Selected))
             {
-                return _scaleUpCommand
-                    ?? (_scaleUpCommand = new RelayCommand<vMixControl>(
-                    p =>
-                    {
-                        //SaveUndo("Widget scale increased");
-                        //Process selection
-                        foreach (var widget in Widgets.Where(x => x.Selected))
-                        {
-                            widget.Scale += 0.25f;
-                        }
-                        p.Scale += 0.25f;
-                    }));
+                if (widget.Scale - 0.25f >= 1.0f)
+                    widget.Scale -= 0.25f;
             }
+            if (p.Scale - 0.25f >= 1.0f)
+                p.Scale -= 0.25f;
         }
 
-
-        private RelayCommand<vMixControl> _scaleDownCommand;
-
-        /// <summary>
-        /// Gets the ScaleDownCommand.
-        /// </summary>
-        public RelayCommand<vMixControl> ScaleDownCommand
+        [RelayCommand]
+        private void OpenProperties(vMixController.Widgets.vMixControl p)
         {
-            get
+            IsHotkeysEnabled = false;
+
+            _logger.Debug("Opening properties for widget {0}.", p.Name);
+            var viewModel = vMixController.Classes.AppServices.GetRequiredService<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
+            viewModel.Widget = p;
+            viewModel.SetProperties(p);
+
+            if (_settings == null)
+                _settings = new vMixWidgetSettingsView
+                {
+                    Owner = App.Current.MainWindow
+                };
+            p.BeforePropertiesChanged();
+            var result = _settings.ShowDialog();
+            if (result.HasValue && result.Value)
             {
-                return _scaleDownCommand
-                    ?? (_scaleDownCommand = new RelayCommand<vMixControl>(
-                    p =>
-                    {
-                        //SaveUndo("Widget scale decreased");
-                        //Process selection
-                        foreach (var widget in Widgets.Where(x => x.Selected))
-                        {
-                            if (widget.Scale - 0.25f >= 1.0f)
-                                widget.Scale -= 0.25f;
-                        }
-                        if (p.Scale - 0.25f >= 1.0f)
-                            p.Scale -= 0.25f;
-
-                    }));
+                SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetPropertiesChanged"], p.Type, p.Name));
+                _settings.SaveConnectedWidgetProperties();
             }
-        }
+            p.AfterPropertiesChanged();
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _openPropertiesCommand;
+            ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
 
-        /// <summary>
-        /// Gets the OpenPropertiesCommand.
-        /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> OpenPropertiesCommand
-        {
-            get
-            {
-                return _openPropertiesCommand
-                    ?? (_openPropertiesCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
-                    p =>
-                    {
-                        IsHotkeysEnabled = false;
-
-                        _logger.Debug("Opening properties for widget {0}.", p.Name);
-                        var viewModel = ServiceLocator.Current.GetInstance<vMixController.ViewModel.vMixWidgetSettingsViewModel>();
-                        viewModel.Widget = p;
-                        viewModel.SetProperties(p);
-
-
-                        if (_settings == null)
-                            _settings = new vMixWidgetSettingsView
-                            {
-                                Owner = App.Current.MainWindow
-                            };
-                        p.BeforePropertiesChanged();
-                        var result = _settings.ShowDialog();
-                        if (result.HasValue && result.Value)
-                        {
-                            SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetPropertiesChanged"], p.Type, p.Name));
-                            _settings.SaveConnectedWidgetProperties();
-                        }
-                        p.AfterPropertiesChanged();
-
-                        //Analyze script loops
-                        ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
-
-                        _logger.Debug("Properties updated.");
-                        _settings = null;
-
-                        IsHotkeysEnabled = true;
-
-                        /*App.Current.MainWindow.Focus();
-                        FocusManager.SetFocusedElement(null, null);*/
-                    }));
-            }
+            _logger.Debug("Properties updated.");
+            _settings = null;
+            IsHotkeysEnabled = true;
         }
 
         Action<Point> _createWidget;
 
-        private RelayCommand<string> _createWidgetCommand;
-
-        /// <summary>
-        /// Gets the CreateWidgetCommand.
-        /// </summary>
-        public RelayCommand<string> CreateWidgetCommand
+        [RelayCommand]
+        private void CreateWidget(string p)
         {
-            get
+            EditorCursor = CursorType.Cross.ToString();
+            _createWidget = new Action<Point>(x =>
             {
-                return _createWidgetCommand
-                    ?? (_createWidgetCommand = new RelayCommand<string>(
-                    p =>
-                    {
-                        EditorCursor = CursorType.Cross.ToString();
-                        _createWidget = new Action<Point>(x =>
-                        {
+                var widget = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
 
-                            var widget = (vMixControl)Assembly.GetAssembly(this.GetType()).CreateInstance("vMixController.Widgets.vMixControl" + p);
+                var count = Widgets.Where(y => y.GetType() == widget.GetType()).Count();
 
-                            var count = _widgets.Where(y => y.GetType() == widget.GetType()).Count();
+                if (widget.MaxCount == -1 || widget.MaxCount > count)
+                {
+                    widget.State = Model;
+                    widget.Top = x.Y;
+                    widget.Left = x.X;
+                    widget.Page = PageIndex;
+                    widget.AlignByGrid();
+                    if (widget is vMixControlTextField)
+                        ((vMixControlTextField)widget).IsLive = LIVE;
+                    widget.Update();
 
-                            if (widget.MaxCount == -1 || widget.MaxCount > count)
-                            {
-                                widget.State = Model;
-                                widget.Top = x.Y;
-                                widget.Left = x.X;
-                                widget.Page = PageIndex;
-                                widget.AlignByGrid();
-                                if (widget is vMixControlTextField)
-                                    ((vMixControlTextField)widget).IsLive = LIVE;
-                                widget.Update();
+                    SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetCreated"], widget.Type));
+                    var undoStackDepthBeforeProperties = _undoStack.Count;
 
+                    InsertWidgetByZIndex(widget);
+                    if (widget.ZIndex >= 0)
+                        widget.ZIndex = Widgets.Count;
 
-                                SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetCreated"], widget.Type));
-                                var undoStackDepthBeforeProperties = _undoStack.Count;
+                    _logger.Debug("New {0} widget added.", widget.Type.ToLower());
 
-                                InsertWidgetByZIndex(widget);
-                                if (widget.ZIndex >= 0)
-                                    widget.ZIndex = Widgets.Count;
+                    OpenPropertiesCommand.Execute(widget);
 
-                                _logger.Debug("New {0} widget added.", widget.Type.ToLower());
-
-                                OpenPropertiesCommand.Execute(widget);
-
-                                while (_undoStack.Count > undoStackDepthBeforeProperties)
-                                    _undoStack.RemoveAt(_undoStack.Count - 1);
-                                UpdateUndoPreview();
-
-
-
-                            }
-                            else
-                                widget.Dispose();
-                        });
-
-                    }));
-            }
+                    while (_undoStack.Count > undoStackDepthBeforeProperties)
+                        _undoStack.RemoveAt(_undoStack.Count - 1);
+                    UpdateUndoPreview();
+                }
+                else
+                {
+                    widget.Dispose();
+                }
+            });
         }
 
 
-        private RelayCommand<MouseButtonEventArgs> _mouseButtonUp;
-
-        /// <summary>
-        /// Gets the MouseButtonUp.
-        /// </summary>
-        public RelayCommand<MouseButtonEventArgs> MouseButtonUp
+        [RelayCommand]
+        private void MouseButtonUp(MouseButtonEventArgs p)
         {
-            get
+            if (p == null)
+                return;
+
+            var mw = App.Current?.MainWindow as vMixController.MainWindow;
+            if (mw?.LayoutGrid?.IsMouseCaptured == true)
+                mw.LayoutGrid.ReleaseMouseCapture();
+
+            if (SelectorWidth != 0 && SelectorHeight != 0)
             {
-                return _mouseButtonUp
-                    ?? (_mouseButtonUp = new RelayCommand<MouseButtonEventArgs>(
-                    p =>
-                    {
-                        var mw = App.Current?.MainWindow as vMixController.MainWindow;
-                        if (mw?.LayoutGrid?.IsMouseCaptured == true)
-                            mw.LayoutGrid.ReleaseMouseCapture();
+                if (!(mw?.CanvasContent?.RenderTransform is MatrixTransform transform))
+                    return;
 
-                        if (SelectorWidth != 0 && SelectorHeight != 0)
-                        {
+                var m = transform.Matrix;
+                m.Invert();
 
+                var tl = m.Transform(new Point(SelectorPosition.Left, SelectorPosition.Top));
+                var br = m.Transform(new Point(SelectorPosition.Left + SelectorWidth, SelectorPosition.Top + SelectorHeight));
+                var sr = new Rect(tl.X, tl.Y, br.X - tl.X, br.Y - tl.Y);
 
-                            var m = ((MatrixTransform)mw.CanvasContent.RenderTransform).Matrix;
-                            m.Invert();
-
-                            var tl = m.Transform(new Point(SelectorPosition.Left, SelectorPosition.Top));
-                            var br = m.Transform(new Point(SelectorPosition.Left + SelectorWidth, SelectorPosition.Top + SelectorHeight));
-                            var sr = new Rect(tl.X, tl.Y, br.X - tl.X, br.Y - tl.Y);
-
-                            foreach (var item in _widgets)
-                            {
-                                var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
-                                item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked && item.Page == PageIndex;
-                            }
-                            SelectorWidth = 0;
-                            SelectorHeight = 0;
-                            SelectorEnabled = false;
-                            return;
-                        }
-                        SelectorEnabled = false;
-                        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                            foreach (var item in _widgets)
-                            {
-                                item.Selected = false;
-                            }
-
-
-                        if (_skipClick)
-                        {
-                            _skipClick = !_skipClick;
-                            return;
-                        }
-
-                        if (_createWidget != null)
-                        {
-                            EditorCursor = "Arrow";
-                            var pos = mw?.LayoutGrid != null
-                            ? mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas)
-                            : p.MouseDevice.GetPosition((IInputElement)p.Source);
-                            _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
-                            _createWidget = null;
-                        }
-
-                        if (p.OriginalSource is ListView || p.OriginalSource is Grid)
-                            IsHotkeysEnabled = true;
-
-                    }));
+                foreach (var item in Widgets)
+                {
+                    var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
+                    item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked && item.Page == PageIndex;
+                }
+                SelectorWidth = 0;
+                SelectorHeight = 0;
+                SelectorEnabled = false;
+                return;
             }
+            SelectorEnabled = false;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                foreach (var item in Widgets)
+                    item.Selected = false;
+            }
+
+            if (_skipClick)
+            {
+                _skipClick = !_skipClick;
+                return;
+            }
+
+            if (_createWidget != null)
+            {
+                EditorCursor = "Arrow";
+                var pos = mw?.LayoutGrid != null
+                    ? mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas)
+                    : (p.Source is IInputElement src ? p.MouseDevice.GetPosition(src) : new Point(0, 0));
+                _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
+                _createWidget = null;
+            }
+
+            if (p.OriginalSource is ListView || p.OriginalSource is Grid)
+                IsHotkeysEnabled = true;
         }
 
-        private RelayCommand<MouseButtonEventArgs> _mouseButtonDown;
-
-        /// <summary>
-        /// Gets the MouseButtonDown.
-        /// </summary>
-        public RelayCommand<MouseButtonEventArgs> MouseButtonDown
+        [RelayCommand]
+        private void MouseButtonDown(MouseButtonEventArgs p)
         {
-            get
-            {
-                return _mouseButtonDown
-                    ?? (_mouseButtonDown = new RelayCommand<MouseButtonEventArgs>(
-                    p =>
-                    {
-                        if (WindowSettings.Locked)
-                            return;
+            if (p == null)
+                return;
 
-                        var mw = App.Current?.MainWindow as vMixController.MainWindow;
-                        var pos = mw?.LayoutGrid != null
-                            ? (mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas))
-                            : Mouse.GetPosition((IInputElement)p.Source);
-                        if (mw?.LayoutGrid != null && !mw.LayoutGrid.IsMouseCaptured)
-                            mw.LayoutGrid.CaptureMouse();
+            if (WindowSettings.Locked)
+                return;
 
-                        if (WindowSettings.UseInfiniteCanvas)
-                            pos = ((MatrixTransform)mw.CanvasContent.RenderTransform).Matrix.Transform(pos);
+            var mw = App.Current?.MainWindow as vMixController.MainWindow;
+            var pos = mw?.LayoutGrid != null
+                ? mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas)
+                : (p.Source is IInputElement src ? Mouse.GetPosition(src) : new Point(0, 0));
+            if (mw?.LayoutGrid != null && !mw.LayoutGrid.IsMouseCaptured)
+                mw.LayoutGrid.CaptureMouse();
 
-                        _clickPoint = pos;
-                        _relativeClickPoint = pos;
-                        SelectorEnabled = true;
+            if (WindowSettings.UseInfiniteCanvas && mw?.CanvasContent?.RenderTransform is MatrixTransform transform)
+                pos = transform.Matrix.Transform(pos);
+            else if (WindowSettings.UseInfiniteCanvas && mw?.CanvasContent?.RenderTransform == null)
+                return;
 
+            _clickPoint = pos;
+            _relativeClickPoint = pos;
+            SelectorEnabled = true;
 
-                        _rawSelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
-                        SelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
-                        SelectorWidth = 0;
-                        SelectorHeight = 0;
-
-                        /*Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove += MainViewModel_MouseMove;
-                        Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp += MainViewModel_MouseUp;*/
-
-                    }));
-            }
+            _rawSelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
+            SelectorPosition = new Thickness(pos.X, pos.Y, 0, 0);
+            SelectorWidth = 0;
+            SelectorHeight = 0;
         }
 
 
-        private RelayCommand<MouseEventArgs> _mouseMove;
-
-        /// <summary>
-        /// Gets the MouseButtonDown.
-        /// </summary>
-        public RelayCommand<MouseEventArgs> MouseMove
+        [RelayCommand]
+        private void MouseMove(MouseEventArgs p)
         {
-            get
+            if (p == null)
+                return;
+
+            var mw = App.Current?.MainWindow as vMixController.MainWindow;
+            var ipos = mw?.LayoutGrid != null
+                ? mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas)
+                : (App.Current?.MainWindow != null ? new Point(p.GetPosition(App.Current.MainWindow).X, p.GetPosition(App.Current.MainWindow).Y) : new Point(0, 0));
+
+            if (WindowSettings.UseInfiniteCanvas && mw?.CanvasContent?.RenderTransform is MatrixTransform transform)
+                ipos = transform.Matrix.Transform(ipos);
+
+            if (!SelectorEnabled)
             {
-                return _mouseMove
-                    ?? (_mouseMove = new RelayCommand<MouseEventArgs>(
-                    p =>
-                    {
-                        //MouseEventArgs
-                        //_moveSource = p.Source;
-                        var mw = App.Current?.MainWindow as vMixController.MainWindow;
-                        var ipos = mw?.LayoutGrid != null
-                            ? mw.ToCanvasContentPoint(Mouse.GetPosition(mw.LayoutGrid), WindowSettings.UseInfiniteCanvas)
-                            : new Point(p.GetPosition(App.Current.MainWindow).X, p.GetPosition(App.Current.MainWindow).Y);
-
-                        if (WindowSettings.UseInfiniteCanvas)
-                            ipos = ((MatrixTransform)mw.CanvasContent.RenderTransform).Matrix.Transform(ipos);
-
-                        if (!SelectorEnabled)
-                        {
-
-                            _clickPoint = new Point(ipos.X, ipos.Y);
-                            return;
-                        }
-
-
-                        var pos = new Point(ipos.X, ipos.Y) - _clickPoint + _relativeClickPoint;//Mouse.PrimaryDevice.GetPosition((IInputElement)_moveSource);
-                        var w = -(_rawSelectorPosition.Left - pos.X);
-                        var h = -(_rawSelectorPosition.Top - pos.Y);
-
-                        SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
-                        SelectorWidth = Math.Abs(w);
-                        SelectorHeight = Math.Abs(h);
-                    }));
+                _clickPoint = new Point(ipos.X, ipos.Y);
+                return;
             }
+
+            var pos = new Point(ipos.X, ipos.Y) - _clickPoint + _relativeClickPoint;
+            var w = -(_rawSelectorPosition.Left - pos.X);
+            var h = -(_rawSelectorPosition.Top - pos.Y);
+
+            SelectorPosition = new Thickness(w < 0 ? pos.X : _rawSelectorPosition.Left, h < 0 ? pos.Y : _rawSelectorPosition.Top, 0, 0);
+            SelectorWidth = Math.Abs(w);
+            SelectorHeight = Math.Abs(h);
         }
 
         bool _fromContextMenu = false;
         Point _contextMenuPosition;
-        private RelayCommand<ContextMenuEventArgs> _contextMenuOpening;
-
-        /// <summary>
-        /// Gets the ContextMenuOpened.
-        /// </summary>
-        public RelayCommand<ContextMenuEventArgs> ContextMenuOpening
+        [RelayCommand]
+        private void ContextMenuOpening(ContextMenuEventArgs p)
         {
-            get
-            {
-                return _contextMenuOpening
-                    ?? (_contextMenuOpening = new RelayCommand<ContextMenuEventArgs>(
-                    p =>
-                    {
-                        _fromContextMenu = true;
+            _fromContextMenu = true;
 
-                        var mw = App.Current?.MainWindow as MainWindow;
-                        if (mw?.LayoutGrid != null)
-                        {
-                            var pos = Mouse.GetPosition(mw.LayoutGrid);
-                            _contextMenuPosition = mw.ToCanvasContentPoint(pos, WindowSettings.UseInfiniteCanvas);
-                        }
-                        else
-                        {
-                            _contextMenuPosition = Mouse.GetPosition((IInputElement)p.Source);
-                        }
-                    }));
+            var mw = App.Current?.MainWindow as MainWindow;
+            if (mw?.LayoutGrid != null)
+            {
+                var pos = Mouse.GetPosition(mw.LayoutGrid);
+                _contextMenuPosition = mw.ToCanvasContentPoint(pos, WindowSettings.UseInfiniteCanvas);
+            }
+            else
+            {
+                _contextMenuPosition = Mouse.GetPosition((IInputElement)p.Source);
             }
         }
 
-        private RelayCommand<ContextMenuEventArgs> _contextMenuClosing;
-
-        /// <summary>
-        /// Gets the ContextMenuClosing.
-        /// </summary>
-        public RelayCommand<ContextMenuEventArgs> ContextMenuClosing
+        [RelayCommand]
+        private void ContextMenuClosing(ContextMenuEventArgs p)
         {
-            get
+            if (_createWidget != null && _fromContextMenu)
             {
-                return _contextMenuClosing
-                    ?? (_contextMenuClosing = new RelayCommand<ContextMenuEventArgs>(
-                    p =>
-                    {
-                        if (_createWidget != null && _fromContextMenu)
-                        {
-                            EditorCursor = "Arrow";
-                            var pos = _contextMenuPosition;
-                            _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
-                            _createWidget = null;
-                            _fromContextMenu = false;
-                        }
-                    }));
+                EditorCursor = "Arrow";
+                var pos = _contextMenuPosition;
+                _createWidget(new Point(pos.X / WindowSettings.UIScale, pos.Y / WindowSettings.UIScale));
+                _createWidget = null;
+                _fromContextMenu = false;
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _createWidgetFromTemplateCommand;
-
-        /// <summary>
-        /// Gets the CreateWidgetFromTemplateCommand.
-        /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> CreateWidgetFromTemplateCommand
+        [RelayCommand]
+        private void CreateWidgetFromTemplate(Pair<string, vMixControl> p)
         {
-            get
+            EditorCursor = "Hand";
+            _createWidget = x =>
             {
-                return _createWidgetFromTemplateCommand
-                    ?? (_createWidgetFromTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
-                    p =>
-                    {
-                        EditorCursor = "Hand";
-                        _createWidget = x =>
-                        {
-                            SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetCreatedFromTemplate"], p.A));
-                            var count = _widgets.Where(y => y.GetType() == p.B.GetType()).Count();
-                            if (p.B.MaxCount == -1 || count < p.B.MaxCount)
-                            {
-                                var ctrl = p.B.Copy();
-                                ctrl.Left = x.X;
-                                ctrl.Top = x.Y;
-                                ctrl.IsTemplate = false;
-                                ctrl.State = Model;
-                                ctrl.Page = PageIndex;
-                                ctrl.AlignByGrid();
-                                ctrl.Update();
-                                _logger.Debug("Widget \"{0}\" was copied.", p.B.Name);
-                                InsertWidgetByZIndex(ctrl);
-                                ctrl.ZIndex = Widgets.Count;
-                            }
-                            //_widgets.Add(ctrl);
-                        };
+                SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetCreatedFromTemplate"], p.A));
+                var count = Widgets.Where(y => y.GetType() == p.B.GetType()).Count();
+                if (p.B.MaxCount == -1 || count < p.B.MaxCount)
+                {
+                    var ctrl = p.B.Copy();
+                    ctrl.Left = x.X;
+                    ctrl.Top = x.Y;
+                    ctrl.IsTemplate = false;
+                    ctrl.State = Model;
+                    ctrl.Page = PageIndex;
+                    ctrl.AlignByGrid();
+                    ctrl.Update();
+                    _logger.Debug("Widget \"{0}\" was copied.", p.B.Name);
+                    InsertWidgetByZIndex(ctrl);
+                    ctrl.ZIndex = Widgets.Count;
+                }
+            };
+        }
 
-                    }));
+        [RelayCommand]
+        private void RemoveWidgetTemplate(Pair<string, vMixControl> p)
+        {
+            WidgetTemplates.Remove(p);
+        }
+
+        [RelayCommand]
+        private void EditWidgetTemplate(Pair<string, vMixControl> p)
+        {
+            OpenPropertiesCommand.Execute(p.B);
+        }
+
+        [RelayCommand]
+        private void NewController()
+        {
+            SaveUndo(LocalizationManager.Instance["Undo.ControllerCreated"]);
+
+            foreach (var item in Widgets)
+                item.Dispose();
+
+            WindowSettings.Password = null;
+            WindowSettings.UserName = null;
+            WindowSettings.Locked = false;
+
+            if (AppServices.IsRegistered<GlobalVariablesViewModel>())
+            {
+                AppServices.GetRequiredService<GlobalVariablesViewModel>().Variables.Clear();
+            }
+
+            Widgets.Clear();
+        }
+
+        [RelayCommand]
+        private void LoadController()
+        {
+            Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+            {
+                Filter = LocalizationManager.Instance["Dialog.FileFilter.VmixController"]
+            };
+            var result = opendlg.ShowDialog(App.Current.MainWindow);
+            if (result.HasValue && result.Value)
+            {
+                SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
+                LoadControllerFromFile(opendlg.FileName);
+
+                //Analyze script loops
+                ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
+
+                WindowSettings.AddRecentFile(opendlg.FileName);
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _removeWidgetTemplateCommand;
-
-        /// <summary>
-        /// Gets the RemoveWidgetTemplateCommand.
-        /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> RemoveWidgetTemplateCommand
+        [RelayCommand]
+        private void LoadRecentController(string path)
         {
-            get
+            if (File.Exists(path))
             {
-                return _removeWidgetTemplateCommand
-                    ?? (_removeWidgetTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
-                    p =>
-                    {
-                        _widgetTemplates.Remove(p);
-                    }));
+                SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
+                LoadControllerFromFile(path);
+
+                //Analyze script loops
+                ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
+
+                WindowSettings.AddRecentFile(path);
             }
         }
 
-        private RelayCommand<Pair<string, vMixControl>> _editWidgetTemplateCommand;
-
-        /// <summary>
-        /// Gets the EditWidgetTemplateCommand.
-        /// </summary>
-        public RelayCommand<Pair<string, vMixControl>> EditWidgetTemplateCommand
+        [RelayCommand]
+        private void AppendController()
         {
-            get
+            Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
             {
-                return _editWidgetTemplateCommand
-                    ?? (_editWidgetTemplateCommand = new RelayCommand<Pair<string, vMixControl>>(
-                    p =>
-                    {
-                        OpenPropertiesCommand.Execute(p.B);
-                    }));
-            }
-        }
-
-        private RelayCommand _newControllerCommand;
-
-        /// <summary>
-        /// Gets the NewControllerCommand.
-        /// </summary>
-        public RelayCommand NewControllerCommand
-        {
-            get
+                Filter = "vMix Controller|*.vmc"
+            };
+            var result = opendlg.ShowDialog(App.Current.MainWindow);
+            if (result.HasValue && result.Value)
             {
-                return _newControllerCommand
-                    ?? (_newControllerCommand = new RelayCommand(
-                    () =>
+                SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
+
+                MainWindowSettings ws;
+                var w = Utils.LoadController(opendlg.FileName, Functions, out ws);
+                EditorCursor = "Hand";
+                _createWidget = x =>
+                {
+                    var mintop = double.MaxValue;
+                    var minleft = double.MaxValue;
+                    foreach (var wgt in w)
                     {
-                        SaveUndo(LocalizationManager.Instance["Undo.ControllerCreated"]);
-
-                        foreach (var item in _widgets)
-                            item.Dispose();
-
-                        WindowSettings.Password = null;
-                        WindowSettings.UserName = null;
-                        WindowSettings.Locked = false;
-
-                        ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings?.Variables.Clear();
-
-                        _widgets.Clear();
-                    }));
-            }
-        }
-
-        private RelayCommand _loadControllerCommand;
-
-        /// <summary>
-        /// Gets the LoadControllerCommand.
-        /// </summary>
-        public RelayCommand LoadControllerCommand
-        {
-            get
-            {
-                return _loadControllerCommand
-                    ?? (_loadControllerCommand = new RelayCommand(
-                    () =>
+                        if (wgt.Top < mintop) mintop = wgt.Top;
+                        if (wgt.Left < minleft) minleft = wgt.Left;
+                    }
+                    foreach (var wgt in w)
                     {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
-                        {
-                            Filter = LocalizationManager.Instance["Dialog.FileFilter.VmixController"]
-                        };
-                        var result = opendlg.ShowDialog(App.Current.MainWindow);
-                        if (result.HasValue && result.Value)
-                        {
-                            SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
-                            LoadControllerFromFile(opendlg.FileName);
+                        wgt.Left += x.X - minleft;
+                        wgt.Top += x.Y - mintop;
+                        wgt.Selected = true;
+                        wgt.Page = PageIndex;
+                        wgt.AlignByGrid();
+                        Widgets.Add(wgt);
+                    }
 
-                            //Analyze script loops
-                            ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
+                    //Analyze script loops
+                    ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
 
-                            WindowSettings.AddRecentFile(opendlg.FileName);
-                        }
-                    }));
-            }
-        }
-
-        private RelayCommand<string> _loadRecentControllerCommand;
-
-        /// <summary>
-        /// Gets the LoadControllerCommand.
-        /// </summary>
-        public RelayCommand<string> LoadRecentControllerCommand
-        {
-            get
-            {
-                return _loadRecentControllerCommand
-                    ?? (_loadRecentControllerCommand = new RelayCommand<string>(
-                    (path) =>
-                    {
-                        if (File.Exists(path))
-                        {
-                            SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
-                            LoadControllerFromFile(path);
-
-                            //Analyze script loops
-                            ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
-
-                            WindowSettings.AddRecentFile(path);
-                        }
-                    }));
-            }
-        }
-
-        private RelayCommand _appendControllerCommand;
-
-        /// <summary>
-        /// Gets the AppendControllerCommand.
-        /// </summary>
-        public RelayCommand AppendControllerCommand
-        {
-            get
-            {
-                return _appendControllerCommand
-                    ?? (_appendControllerCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
-                        {
-                            Filter = "vMix Controller|*.vmc"
-                        };
-                        var result = opendlg.ShowDialog(App.Current.MainWindow);
-                        if (result.HasValue && result.Value)
-                        {
-                            SaveUndo(LocalizationManager.Instance["Undo.ControllerLoaded"]);
-
-                            MainWindowSettings ws;
-                            var w = Utils.LoadController(opendlg.FileName, Functions, out ws);
-                            EditorCursor = "Hand";
-                            _createWidget = x =>
-                            {
-                                var mintop = double.MaxValue;
-                                var minleft = double.MaxValue;
-                                foreach (var wgt in w)
-                                {
-                                    if (wgt.Top < mintop) mintop = wgt.Top;
-                                    if (wgt.Left < minleft) minleft = wgt.Left;
-                                }
-                                foreach (var wgt in w)
-                                {
-                                    wgt.Left += x.X - minleft;
-                                    wgt.Top += x.Y - mintop;
-                                    wgt.Selected = true;
-                                    wgt.Page = PageIndex;
-                                    wgt.AlignByGrid();
-                                    _widgets.Add(wgt);
-                                }
-
-                                //Analyze script loops
-                                ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
-
-                            };
-                            _skipClick = true;
-                        }
-                    }));
+                };
+                _skipClick = true;
             }
         }
 
@@ -2019,31 +1171,33 @@ namespace vMixController.ViewModel
 
                 //IsWidgetsVisualLoading = true;
 
-                foreach (var item in _widgets)
+                foreach (var item in Widgets)
                     item.Dispose();
-                _widgets.Clear();
+                Widgets.Clear();
 
                 LIVE = true;
 
-                var ol = _windowSettings.OpenLastAtStart;
-                var recent = (ObservableCollection<string>)_windowSettings.RecentFiles.Copy();
+                var ol = WindowSettings.OpenLastAtStart;
+                var recent = (ObservableCollection<string>)WindowSettings.RecentFiles.Copy();
 
-                foreach (var item in Utils.LoadController(opendlg, Functions, out _windowSettings))
-                    _widgets.Add(item);
+                MainWindowSettings loadedWindowSettings;
+                foreach (var item in Utils.LoadController(opendlg, Functions, out loadedWindowSettings))
+                    Widgets.Add(item);
+                WindowSettings = loadedWindowSettings;
 
 
-                _windowSettings.OpenLastAtStart = ol;
-                _windowSettings.RecentFiles = recent;
+                WindowSettings.OpenLastAtStart = ol;
+                WindowSettings.RecentFiles = recent;
 
                 NormalizeMainWindowPlacement(WindowSettings);
 
-                foreach (var item in _widgets)
+                foreach (var item in Widgets)
                 {
                     item.IsVisualReady = false;
                     item.Update();
                 }
 
-                RaisePropertyChanged(nameof(WindowSettings));
+                OnPropertyChanged(nameof(WindowSettings));
                 _logger.Debug("Configuring API.");
 
                 CheckvMixConnection(null, new EventArgs());
@@ -2065,32 +1219,19 @@ namespace vMixController.ViewModel
             }
         }
 
-        private RelayCommand _saveControllerCommand;
-
-        /// <summary>
-        /// Gets the SaveControllerCommand.
-        /// </summary>
-        public RelayCommand SaveControllerCommand
+        [RelayCommand]
+        private void SaveController()
         {
-            get
+            Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
             {
-                return _saveControllerCommand
-                    ?? (_saveControllerCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaSaveFileDialog opendlg = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
-                        {
-                            Filter = "vMix Controller|*.vmc",
-                            DefaultExt = "vmc"
-                        };
-                        var result = opendlg.ShowDialog(App.Current.MainWindow);
-                        if (result.HasValue && result.Value)
-                        {
-                            Utils.SaveController(opendlg.FileName, _widgets, _windowSettings);
-                            WindowSettings.AddRecentFile(opendlg.FileName);
-                        }
-
-                    }));
+                Filter = "vMix Controller|*.vmc",
+                DefaultExt = "vmc"
+            };
+            var result = opendlg.ShowDialog(App.Current.MainWindow);
+            if (result.HasValue && result.Value)
+            {
+                Utils.SaveController(opendlg.FileName, Widgets, WindowSettings);
+                WindowSettings.AddRecentFile(opendlg.FileName);
             }
         }
 
@@ -2100,183 +1241,109 @@ namespace vMixController.ViewModel
                 return Convert.ToBase64String(md5.ComputeHash(Encoding.ASCII.GetBytes(str)));
         }
 
-        private RelayCommand _toggleLockCommand;
-
-        /// <summary>
-        /// Gets the ToggleLockCommand.
-        /// </summary>
-        public RelayCommand ToggleLockCommand
+        [RelayCommand]
+        private void ToggleLock()
         {
-            get
+            if (!WindowSettings.Locked)
             {
-                return _toggleLockCommand
-                    ?? (_toggleLockCommand = new RelayCommand(
-                    () =>
+                WindowSettings.Password = null;
+                WindowSettings.UserName = null;
+                if (Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    TextInputWindow twi = new TextInputWindow()
                     {
-                        if (!WindowSettings.Locked)
+                        Mode = InputTextWindowMode.NewPassword,
+                        Title = LocalizationManager.Instance["Dialog.PasswordLock.Title"],
+                        InputTitle = LocalizationManager.Instance["Dialog.PasswordLock.InputTitle"],
+                    };
+
+                    if (twi.ShowDialog() ?? false)
+                    {
+                        if (twi.Password == twi.PasswordConfirmation)
                         {
-                            WindowSettings.Password = null;
-                            WindowSettings.UserName = null;
-                            if (Keyboard.IsKeyDown(Key.LeftShift))
-                            {
-
-
-                                TextInputWindow twi = new TextInputWindow()
-                                {
-                                    Mode = InputTextWindowMode.NewPassword,
-                                    Title = LocalizationManager.Instance["Dialog.PasswordLock.Title"],
-                                    InputTitle = LocalizationManager.Instance["Dialog.PasswordLock.InputTitle"],
-                                };
-
-                                /*Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog
-                                {
-                                    ShowSaveCheckBox = false,
-                                    ShowUIForSavedCredentials = false,
-                                    Target = "vMixUTC",
-                                    MainInstruction = "Enter password to lock controller"
-                                };*/
-                                if (twi.ShowDialog() ?? false)
-                                {
-                                    if (twi.Password == twi.PasswordConfirmation)
-                                    {
-                                        WindowSettings.Password = ToMD5Hash(twi.Password);
-                                        WindowSettings.UserName = ToMD5Hash(twi.Text);
-                                    }
-                                    else
-                                    {
-                                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
-                                        td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
-                                        td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
-                                        td.MainInstruction = LocalizationManager.Instance["Dialog.Error.PasswordMismatch"];
-                                        td.ShowDialog();
-                                    }
-                                }
-                            }
-                            SelectedTab = 1;
-                            PageIndex = 0;
+                            WindowSettings.Password = ToMD5Hash(twi.Password);
+                            WindowSettings.UserName = ToMD5Hash(twi.Text);
                         }
                         else
-                        if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
                         {
-                            TextInputWindow twi = new TextInputWindow()
-                            {
-                                Mode = InputTextWindowMode.Password,
-                                Title = LocalizationManager.Instance["Dialog.PasswordUnlock.Title"],
-                                InputTitle = LocalizationManager.Instance["Dialog.PasswordUnlock.InputTitle"]
-                            };
-                            /*Ookii.Dialogs.Wpf.CredentialDialog cred = new Ookii.Dialogs.Wpf.CredentialDialog
-                            {
-                                ShowSaveCheckBox = false,
-                                ShowUIForSavedCredentials = false,
-                                MainInstruction = "Enter password to unlock controller",
-                                Target = "UTC",
-                                WindowTitle = "Universal Title Controller"
-                            };*/
-                            if (twi.ShowDialog() ?? false)
-                            {
-
-                                if (ToMD5Hash(twi.Password) == WindowSettings.Password && ToMD5Hash(twi.Text) == WindowSettings.UserName)
-                                {
-                                    WindowSettings.Password = null;
-                                    WindowSettings.UserName = null;
-                                }
-                                else
-                                {
-                                    Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
-                                    td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
-                                    td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
-                                    td.MainInstruction = LocalizationManager.Instance["Dialog.Error.IncorrectPassword"];
-                                    td.ShowDialog();
-                                    return;
-                                }
-                            }
-                            else return;
+                            Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
+                            td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
+                            td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
+                            td.MainInstruction = LocalizationManager.Instance["Dialog.Error.PasswordMismatch"];
+                            td.ShowDialog();
                         }
-                        //SaveUndo(!WindowSettings.Locked ? "Controller widgets locked" : "Controller widgets unlocked");
-                        WindowSettings.Locked = !WindowSettings.Locked;
-                        foreach (var item in _widgets)
-                        {
-                            item.Locked = WindowSettings.Locked;
-                            item.IsPasswordLocked = item.IsPasswordLockable && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
-                        }
-                    }));
+                    }
+                }
+                SelectedTab = 1;
+                PageIndex = 0;
+            }
+            else if (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password))
+            {
+                TextInputWindow twi = new TextInputWindow()
+                {
+                    Mode = InputTextWindowMode.Password,
+                    Title = LocalizationManager.Instance["Dialog.PasswordUnlock.Title"],
+                    InputTitle = LocalizationManager.Instance["Dialog.PasswordUnlock.InputTitle"]
+                };
+
+                if (twi.ShowDialog() ?? false)
+                {
+                    if (ToMD5Hash(twi.Password) == WindowSettings.Password && ToMD5Hash(twi.Text) == WindowSettings.UserName)
+                    {
+                        WindowSettings.Password = null;
+                        WindowSettings.UserName = null;
+                    }
+                    else
+                    {
+                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog();
+                        td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Ok));
+                        td.MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Error;
+                        td.MainInstruction = LocalizationManager.Instance["Dialog.Error.IncorrectPassword"];
+                        td.ShowDialog();
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            WindowSettings.Locked = !WindowSettings.Locked;
+            foreach (var item in Widgets)
+            {
+                item.Locked = WindowSettings.Locked;
+                item.IsPasswordLocked = item.IsPasswordLockable && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password));
             }
         }
 
-        private RelayCommand<vMixController.Widgets.vMixControl> _switchPasswordLockableCommand;
-
-        /// <summary>
-        /// Gets the SwitchPasswordLockableCommand.
-        /// </summary>
-        public RelayCommand<vMixController.Widgets.vMixControl> SwitchPasswordLockableCommand
+        [RelayCommand]
+        private void SwitchPasswordLockable(vMixController.Widgets.vMixControl p)
         {
-            get
-            {
-                return _switchPasswordLockableCommand
-                    ?? (_switchPasswordLockableCommand = new RelayCommand<vMixController.Widgets.vMixControl>(
-                    (p) =>
-                    {
-                        //SaveUndo(string.Format("Widget {1}[{0}] password lockability changed", p.Type, p.Name));
-                        p.IsPasswordLockable = !p.IsPasswordLockable;
-                        //p.IsPasswordLocked = (p.Locked && p.IsPasswordLockable && (!string.IsNullOrWhiteSpace(WindowSettings.UserName) || !string.IsNullOrWhiteSpace(WindowSettings.Password)));
-                    }));
-            }
+            p.IsPasswordLockable = !p.IsPasswordLockable;
         }
 
-        private RelayCommand _syncStateCommand;
-
-        /// <summary>
-        /// Gets the UpdateStateCommand.
-        /// </summary>
-        public RelayCommand SyncStateCommand
+        [RelayCommand]
+        private void SyncState()
         {
-            get
-            {
-                return _syncStateCommand
-                    ?? (_syncStateCommand = new RelayCommand(
-                    () =>
-                    {
-                        SyncTovMixState();
-                    }));
-            }
+            SyncTovMixState();
         }
 
-        private RelayCommand _exitCommand;
-
-        /// <summary>
-        /// Gets the ExitCommand.
-        /// </summary>
-        public RelayCommand ExitCommand
+        [RelayCommand]
+        private void Exit()
         {
-            get
-            {
-                return _exitCommand
-                    ?? (_exitCommand = new RelayCommand(
-                    () =>
-                    {
-                        App.Current.MainWindow.Close();
-                    }));
-            }
+            App.Current.MainWindow.Close();
         }
 
-        private RelayCommand _stopAllScriptsCommand;
-
-        public RelayCommand StopAllScriptsCommand
+        [RelayCommand]
+        private void StopAllScripts()
         {
-            get
+            foreach (var widget in Widgets)
             {
-                return _stopAllScriptsCommand
-                    ?? (_stopAllScriptsCommand = new RelayCommand(
-                    () =>
-                    {
-                        foreach (var widget in Widgets)
-                        {
-                            if (widget is vMixControlButton btn)
-                                btn.ExecuteHotkey(btn.GetHotkeyNumber("Reset"));
-                            if (widget is vMixControlNewButton nbtn)
-                                nbtn.ExecuteHotkey(nbtn.GetHotkeyNumber("Reset"));
-                        }
-                    }));
+                if (widget is vMixControlButton btn)
+                    btn.ExecuteHotkey(btn.GetHotkeyNumber("Reset"));
+                if (widget is vMixControlNewButton nbtn)
+                    nbtn.ExecuteHotkey(nbtn.GetHotkeyNumber("Reset"));
             }
         }
 
@@ -2303,9 +1370,11 @@ namespace vMixController.ViewModel
 
         private void LinkGlobalVariables(vMixAPI.State state)
         {
-            var globalSettings = ((ViewModelLocator)App.Current.FindResource("Locator"))?.GlobalSettings;
+            var globalSettings = AppServices.IsRegistered<GlobalVariablesViewModel>()
+                ? AppServices.GetRequiredService<GlobalVariablesViewModel>()
+                : null;
 
-            if (state == null || state.Inputs.Where(x => x.Key == "vmix-utc-internal-gv").FirstOrDefault() != null) return;
+            if (state == null || globalSettings == null || state.Inputs.Where(x => x.Key == "vmix-utc-internal-gv").FirstOrDefault() != null) return;
             var input = new vMixAPI.Input() { Number = -99, Title = LocalizationManager.Instance["MainViewModel.GlobalVariables.InputTitle"], Key = "vmix-utc-internal-gv" };
             int index = 0;
             foreach (var v in globalSettings.Variables)
@@ -2342,7 +1411,7 @@ namespace vMixController.ViewModel
             Model = (vMixAPI.State)sender;
             LinkGlobalVariables(Model);
             LocalizeVirtualInputs(Model);
-            foreach (var item in _widgets)
+            foreach (var item in Widgets)
                 item.State = Model;
             if (Model != null)
                 Model.OnStateSynced += Model_OnStateUpdated;
@@ -2365,7 +1434,7 @@ namespace vMixController.ViewModel
                 LinkGlobalVariables(instate);
                 LocalizeVirtualInputs(instate);
 
-                foreach (var item in _widgets)
+                foreach (var item in Widgets)
                     item.State = (vMixAPI.State)sender;
             }
             CheckvMixConnection(null, new EventArgs());
@@ -2377,7 +1446,7 @@ namespace vMixController.ViewModel
             FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
 
             var result = false;
-            foreach (var ctrl in _widgets)
+            foreach (var ctrl in Widgets)
             {
                 foreach (var item in ctrl.Hotkey.Select((x, i) => new { obj = x, idx = i }))
                 {
@@ -2420,7 +1489,7 @@ namespace vMixController.ViewModel
             {
                 if (WindowSettings != null && !WindowSettings.EnableLoopGuard)
                 {
-                    foreach (var ctrl in _widgets)
+                    foreach (var ctrl in Widgets)
                         for (int i = 0; i < ctrl.Hotkey.Length; i++)
                         {
                             if (ctrl.Hotkey[i].Link == link && ctrl.Hotkey[i].Active)
@@ -2451,7 +1520,7 @@ namespace vMixController.ViewModel
                     return;
                 }
 
-                foreach (var ctrl in _widgets)
+                foreach (var ctrl in Widgets)
                     for (int i = 0; i < ctrl.Hotkey.Length; i++)
                     {
                         if (ctrl.Hotkey[i].Link == link && ctrl.Hotkey[i].Active)
@@ -2521,141 +1590,79 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand<KeyEventArgs> _previewKeyUpCommand;
-
-        /// <summary>
-        /// Gets the PreviewKeyUpCommand.
-        /// </summary>
-        public RelayCommand<KeyEventArgs> PreviewKeyUpCommand
+        [RelayCommand]
+        private void PreviewKeyUp(KeyEventArgs p)
         {
-            get
-            {
-                return _previewKeyUpCommand
-                    ?? (_previewKeyUpCommand = new RelayCommand<KeyEventArgs>(
-                    p =>
-                    {
-                        //Debug.Print("Key Up");
-                        _isPressed = false;
-                        if (!IsHotkeysEnabled)
-                            return;
-                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
-                        //p.Handled = true;
-
-                    }));
-            }
+            _isPressed = false;
+            if (p == null)
+                return;
+            if (!IsHotkeysEnabled)
+                return;
+            p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, false);
         }
 
-        private RelayCommand<KeyEventArgs> _previewKeyDownCommand;
-
-        /// <summary>
-        /// Gets the PreviewKeyDownCommand.
-        /// </summary>
-        public RelayCommand<KeyEventArgs> PreviewKeyDownCommand
+        [RelayCommand]
+        private void PreviewKeyDown(KeyEventArgs p)
         {
-            get
+            if (p == null)
+                return;
+
+            if (_createWidget != null && p.Key == Key.Escape)
             {
-                return _previewKeyDownCommand
-                    ?? (_previewKeyDownCommand = new RelayCommand<KeyEventArgs>(
-                    p =>
-                    {
-                        //Debug.Print("Key Down");
-                        if (_createWidget != null && p.Key == Key.Escape)
-                        {
-                            _createWidget = null;
-                            EditorCursor = Cursors.Arrow.ToString();
-                        }
-
-
-                        if (!IsHotkeysEnabled || _isPressed)
-                            return;
-                        _isPressed = true;
-                        p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, true);
-                        //p.Handled = true;
-                    }));
+                _createWidget = null;
+                EditorCursor = Cursors.Arrow.ToString();
             }
+
+            if (!IsHotkeysEnabled || _isPressed)
+                return;
+            _isPressed = true;
+            p.Handled = ProcessHotkey(p.Key, p.SystemKey, p.KeyboardDevice.Modifiers, true);
         }
 
-        private RelayCommand _closingCommand;
-
-        /// <summary>
-        /// Gets the ClosingCommand.
-        /// </summary>
-        public RelayCommand ClosingCommand
+        [RelayCommand]
+        private void Closing()
         {
-            get
+            _logger.Info("Saving templates.");
+            XmlSerializer s = Utils.GetXmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
+            using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Create))
+                s.Serialize(fs, WidgetTemplates);
+
+            _logger.Info("Saving window settings.");
+            s = Utils.GetXmlSerializer(typeof(MainWindowSettings));
+            using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Create))
+                s.Serialize(fs, WindowSettings);
+
+            _logger.Info("Saving last controller");
+            using (var fs = new FileStream(Path.Combine(_documentsPath, "Last.vmc"), FileMode.Create))
+                Utils.SaveController(fs, Widgets, WindowSettings);
+
+            //Dispose external data providers
+            foreach (var item in ExternalDataProviders)
             {
-                return _closingCommand
-                    ?? (_closingCommand = new RelayCommand(
-                    () =>
-                    {
-                        _logger.Info("Saving templates.");
-                        XmlSerializer s = Utils.GetXmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
-                        using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Create))
-                            s.Serialize(fs, _widgetTemplates);
-
-                        _logger.Info("Saving window settings.");
-                        s = Utils.GetXmlSerializer(typeof(MainWindowSettings));
-                        using (var fs = new FileStream(Path.Combine(_documentsPath, "WindowSettings.xml"), FileMode.Create))
-                            s.Serialize(fs, _windowSettings);
-
-
-                        _logger.Info("Saving last controller");
-                        using (var fs = new FileStream(Path.Combine(_documentsPath, "Last.vmc"), FileMode.Create))
-                            Utils.SaveController(fs, Widgets, WindowSettings);
-
-                        //Dispose external data providers
-                        foreach (var item in ExternalDataProviders)
-                        {
-                            item.B.Dispose();
-                        }
-                        foreach (var item in _widgetTemplates)
-                        {
-                            item.B.Dispose();
-                        }
-                    }));
+                item.B.Dispose();
+            }
+            foreach (var item in WidgetTemplates)
+            {
+                item.B.Dispose();
             }
         }
 
 
-        private RelayCommand _openLogFolder;
-
-        /// <summary>
-        /// Gets the MyCommand.
-        /// </summary>
-        public RelayCommand OpenLogFolder
+        [RelayCommand]
+        private void OpenLogFolder()
         {
-            get
+            try
             {
-                return _openLogFolder
-                    ?? (_openLogFolder = new RelayCommand(
-                    () =>
-                    {
-                        try
-                        {
-                            Process.Start(Path.Combine(_documentsPath, "logs"));
-                        }
-                        catch (Exception) { }
-                    }));
+                Process.Start(Path.Combine(_documentsPath, "logs"));
             }
+            catch (Exception) { }
         }
 
-        private RelayCommand _resetScalingCommand;
-
-        /// <summary>
-        /// Gets the ResetScalingCommand.
-        /// </summary>
-        public RelayCommand ResetScalingCommand
+        [RelayCommand]
+        private void ResetScaling()
         {
-            get
-            {
-                return _resetScalingCommand
-                    ?? (_resetScalingCommand = new RelayCommand(
-                    () =>
-                    {
-                        if (WindowSettings != null)
-                            WindowSettings.UIScale = 1;
-                    }));
-            }
+            if (WindowSettings != null)
+                WindowSettings.UIScale = 1;
         }
 
         DispatcherTimer _connectTimer = new DispatcherTimer();
@@ -2793,7 +1800,7 @@ namespace vMixController.ViewModel
                 s = Utils.GetXmlSerializer(typeof(ObservableCollection<Pair<string, vMixControl>>));
                 if (File.Exists(Path.Combine(_documentsPath, "Templates.xml")))
                     using (var fs = new FileStream(Path.Combine(_documentsPath, "Templates.xml"), FileMode.Open))
-                        _widgetTemplates = (ObservableCollection<Pair<string, vMixControl>>)s.Deserialize(fs);
+                        WidgetTemplates = (ObservableCollection<Pair<string, vMixControl>>)s.Deserialize(fs);
             }
             catch (Exception)
             {
@@ -2850,38 +1857,38 @@ namespace vMixController.ViewModel
                     WindowSettings = new MainWindowSettings();
 
                 NormalizeMainWindowPlacement(WindowSettings);
-                RaisePropertyChanged(nameof(WindowSettings));
+                OnPropertyChanged(nameof(WindowSettings));
 
             }
             catch (Exception)
             {
-                _windowSettings = new MainWindowSettings();
+                WindowSettings = new MainWindowSettings();
             }
 
-            if (_windowSettings.Pages.Count != 7)
+            if (WindowSettings.Pages.Count != 7)
             {
-                _windowSettings.Pages.Clear();
-                _windowSettings.Pages.Add(Utils.MAINPAGENAME);
-                _windowSettings.Pages.Add(Utils.DATAPAGENAME);
-                _windowSettings.Pages.Add(Utils.PAGE1PAGENAME);
-                _windowSettings.Pages.Add(Utils.PAGE2PAGENAME);
-                _windowSettings.Pages.Add(Utils.PAGE3PAGENAME);
-                _windowSettings.Pages.Add(Utils.PAGE4PAGENAME);
-                _windowSettings.Pages.Add(Utils.PAGE5PAGENAME);
+                WindowSettings.Pages.Clear();
+                WindowSettings.Pages.Add(Utils.MAINPAGENAME);
+                WindowSettings.Pages.Add(Utils.DATAPAGENAME);
+                WindowSettings.Pages.Add(Utils.PAGE1PAGENAME);
+                WindowSettings.Pages.Add(Utils.PAGE2PAGENAME);
+                WindowSettings.Pages.Add(Utils.PAGE3PAGENAME);
+                WindowSettings.Pages.Add(Utils.PAGE4PAGENAME);
+                WindowSettings.Pages.Add(Utils.PAGE5PAGENAME);
             }
 
             if (Model == null)
             {
-                vMixAPI.StateFabrique.Configure(_windowSettings.IP, _windowSettings.Port, _windowSettings.HttpLogin, _windowSettings.HttpPassword);
+                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port, WindowSettings.HttpLogin, WindowSettings.HttpPassword);
                 vMixAPI.StateFabrique.CreateAsync();
             }
 
-            MessengerInstance.Register<HotkeyLinkMessage>(this, (hk) =>
+            Messenger.Register<HotkeyLinkMessage>(this, (r, hk) =>
             {
                 ProcessHotkey(hk.Link, hk.Parameter);
             });
 
-            MessengerInstance.Register<string>(this, (hk) =>
+            Messenger.Register<string>(this, (r, hk) =>
             {
                 ProcessHotkey(hk, null);
             });
@@ -2923,7 +1930,7 @@ namespace vMixController.ViewModel
             };
 
 
-            Messenger.Default.Register<LIVEToggleMessage>(this, (msg) =>
+            Messenger.Register<LIVEToggleMessage>(this, (r, msg) =>
             {
                 switch (msg.State)
                 {
@@ -2933,16 +1940,16 @@ namespace vMixController.ViewModel
                 }
             });
 
-            Messenger.Default.Register<LoadingMessage>(this, (msg) =>
+            Messenger.Register<LoadingMessage>(this, (r, msg) =>
             {
                 IsLoading = msg.Loading;
             });
 
 
-            Messenger.Default.Register<WidgetMoveDeltaMessage>(this, (t) =>
+            Messenger.Register<WidgetMoveDeltaMessage>(this, (r, t) =>
             {
                 _movedWidgetsBuffer.Clear();
-                foreach (var widget in _widgets)
+                foreach (var widget in Widgets)
                     if (widget.Selected && widget != t.Widget)
                         _movedWidgetsBuffer.Add(widget);
                 foreach (var widget in _intersections)
@@ -2958,10 +1965,10 @@ namespace vMixController.ViewModel
                 }
             });
 
-            Messenger.Default.Register<WidgetMoveStateMessage>(this, (t) =>
+            Messenger.Register<WidgetMoveStateMessage>(this, (r, t) =>
             {
                 _selectedStickyRegionsBuffer.Clear();
-                foreach (var widget in _widgets)
+                foreach (var widget in Widgets)
                     if (widget.Selected && widget is vMixControlRegion selectedRegion && selectedRegion.Sticky)
                         _selectedStickyRegionsBuffer.Add(selectedRegion);
 
@@ -2981,7 +1988,7 @@ namespace vMixController.ViewModel
                     var intersectionsSet = new HashSet<vMixControl>();
                     foreach (var rgn in _selectedStickyRegionsBuffer)
                     {
-                        foreach (var item in _widgets)
+                        foreach (var item in Widgets)
                             if (rgn.Intersect(item) && item.Page == rgn.Page && !selectedSet.Contains(item) && intersectionsSet.Add(item))
                                 _intersections.Add(item);
                     }
@@ -2989,18 +1996,18 @@ namespace vMixController.ViewModel
 
             });
 
-            Messenger.Default.Register<HotkeysEnabledMessage>(this, (t) =>
+            Messenger.Register<HotkeysEnabledMessage>(this, (r, t) =>
             {
                 IsHotkeysEnabled = t.IsEnabled;
             });
 
-            Messenger.Default.Register<SyncStateRequestMessage>(this, (t) =>
+            Messenger.Register<SyncStateRequestMessage>(this, (r, t) =>
             {
                 if (t.Force)
                     SyncTovMixState();
             });
 
-            Messenger.Default.Register<PageNavigationMessage>(this, (t) =>
+            Messenger.Register<PageNavigationMessage>(this, (r, t) =>
             {
                 switch (t.Mode)
                 {
@@ -3016,7 +2023,7 @@ namespace vMixController.ViewModel
                 }
             });
 
-            Messenger.Default.Register<WidgetEditMessage>(this, (msg) =>
+            Messenger.Register<WidgetEditMessage>(this, (r, msg) =>
             {
                 if (msg?.Widget == null || msg.Widget.Locked || !msg.IsStarted)
                     return;
@@ -3114,7 +2121,7 @@ namespace vMixController.ViewModel
             {
 
                 var sr = new Rect(SelectorPosition.Left, SelectorPosition.Top, SelectorWidth, SelectorHeight);
-                foreach (var item in _widgets)
+                foreach (var item in Widgets)
                 {
                     var ir = new Rect(item.Left, item.Top, item.Width, double.IsNaN(item.Height) || double.IsInfinity(item.Height) ? 0 : item.Height + item.CaptionHeight);
                     item.Selected = (item.Selected || sr.Contains(ir)) && !item.Locked && item.Page == PageIndex;
@@ -3126,7 +2133,7 @@ namespace vMixController.ViewModel
             }
             SelectorEnabled = false;
             if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                foreach (var item in _widgets)
+                foreach (var item in Widgets)
                 {
                     item.Selected = false;
                 }
@@ -3232,293 +2239,165 @@ namespace vMixController.ViewModel
         }
 
 
-        private RelayCommand _downloadUpdateCommand;
-
-        /// <summary>
-        /// Gets the DownloadUpdateCommand.
-        /// </summary>
-        public RelayCommand DownloadUpdateCommand
+        [RelayCommand]
+        private void DownloadUpdate()
         {
-            get
+            Process.Start(new ProcessStartInfo(UpdateLink));
+        }
+
+        [RelayCommand]
+        private void ViewChangelog()
+        {
+            Process.Start(Path.Combine(_documentsPath, "Changelog.html"));
+        }
+
+        [RelayCommand]
+        private void PreviewMouseUp(object p)
+        {
+            //mouseHook.UninstallHook();
+            //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
+            //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
+        }
+
+        [RelayCommand]
+        private void PreviewMouseDown(object p)
+        {
+            //mouseHook.InstallHook();
+        }
+
+        [RelayCommand]
+        private void TextBoxPreviewKeyUp(System.Windows.Input.KeyEventArgs p)
+        {
+            if (p == null)
+                return;
+
+            if (p.Key == System.Windows.Input.Key.Return || p.Key == Key.Escape)
             {
-                return _downloadUpdateCommand
-                    ?? (_downloadUpdateCommand = new RelayCommand(
-                    () =>
-                    {
-                        Process.Start(new ProcessStartInfo(UpdateLink));
-                    }));
+                var sourceElement = p.Source as FrameworkElement;
+                if (sourceElement == null)
+                    return;
+
+                DependencyObject parent = sourceElement.Parent;
+                while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                    parent = ((FrameworkElement)parent).Parent;
+                while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                    parent = VisualTreeHelper.GetParent(parent);
+                Keyboard.ClearFocus();
+
+                if (parent == null)
+                    FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
+                else
+                {
+                    FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                    //MoveFocus
+                    ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                }
+
+                IsHotkeysEnabled = true;
             }
         }
 
-        private RelayCommand _viewChangelogCommand;
-
-        /// <summary>
-        /// Gets the MyCommand.
-        /// </summary>
-        public RelayCommand ViewChangelogCommand
+        [RelayCommand]
+        private void TextBoxGotFocus(RoutedEventArgs p)
         {
-            get
-            {
-                return _viewChangelogCommand
-                    ?? (_viewChangelogCommand = new RelayCommand(
-                    () =>
-                    {
-                        Process.Start(Path.Combine(_documentsPath, "Changelog.html"));
-                    }));
-            }
+            IsHotkeysEnabled = false;
+            // WeakReferenceMessenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
         }
 
-        private RelayCommand<object> _previewMouseUp;
-
-        /// <summary>
-        /// Gets the PreviewMouseUp.
-        /// </summary>
-        public RelayCommand<object> PreviewMouseUp
+        [RelayCommand]
+        private void TextBoxLostFocus(RoutedEventArgs p)
         {
-            get
-            {
-                return _previewMouseUp
-                    ?? (_previewMouseUp = new RelayCommand<object>(
-                    p =>
-                    {
-                        //mouseHook.UninstallHook();
-                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseMove -= MainViewModel_MouseMove;
-                        //Gma.System.MouseKeyHook.Hook.GlobalEvents().MouseUp -= MainViewModel_MouseUp;
-                    }));
-            }
+            IsHotkeysEnabled = true;
+            //WeakReferenceMessenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
         }
 
-        private RelayCommand<object> _previewMouseDown;
-
-        /// <summary>
-        /// Gets the PreviewMouseDown.
-        /// </summary>
-        public RelayCommand<object> PreviewMouseDown
+        [RelayCommand]
+        private void About()
         {
-            get
+            Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog
             {
-                return _previewMouseDown
-                    ?? (_previewMouseDown = new RelayCommand<object>(
-                    p =>
-                    {
-                        //mouseHook.InstallHook();
-                    }));
-            }
+                WindowTitle = LocalizationManager.Instance["Dialog.About.Title"],
+                MainInstruction = LocalizationManager.Instance["Dialog.About.MainInstruction"],
+                MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information,
+                ExpandedInformation = LocalizationManager.Instance["Dialog.About.ExpandedInformation"],
+                ExpandFooterArea = true,
+                Footer = Title,
+                ButtonStyle = Ookii.Dialogs.Wpf.TaskDialogButtonStyle.CommandLinks
+            };
+
+            var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Forum"] };
+            var githubbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.GitHub"] };
+            var redditbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Reddit"] };
+            var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Donate"] };
+            td.Buttons.Add(forumbtn);
+            td.Buttons.Add(githubbtn);
+            td.Buttons.Add(redditbtn);
+            td.Buttons.Add(donatebtn);
+            td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true, Text = LocalizationManager.Instance["Dialog.About.Button.Close"] });
+
+            var btn = td.ShowDialog();
+            if (btn == forumbtn)
+                Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
+            else if (btn == donatebtn)
+                Process.Start(new ProcessStartInfo("https://coindrop.to/elgarf"));
+            else if (btn == githubbtn)
+                Process.Start(new ProcessStartInfo("https://github.com/elgarf/vMixUTC"));
+            else if (btn == redditbtn)
+                Process.Start(new ProcessStartInfo("https://www.reddit.com/r/vMixUTC/"));
         }
 
-
-        private RelayCommand<System.Windows.Input.KeyEventArgs> _textBoxPreviewKeyUp;
-
-        /// <summary>
-        /// Gets the MyCommand.
-        /// </summary>
-        public RelayCommand<System.Windows.Input.KeyEventArgs> TextBoxPreviewKeyUp
+        [RelayCommand]
+        private void Undo()
         {
-            get
-            {
-                return _textBoxPreviewKeyUp
-                    ?? (_textBoxPreviewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
-                    p =>
-                    {
-                        if (p.Key == System.Windows.Input.Key.Return || p.Key == Key.Escape)
-                        {
-
-                            DependencyObject parent = ((FrameworkElement)p.Source).Parent;
-                            while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
-                                parent = ((FrameworkElement)parent).Parent;
-                            while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
-                                parent = VisualTreeHelper.GetParent(parent);
-                            Keyboard.ClearFocus();
-
-                            if (parent == null)
-                                FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
-                            else
-                            {
-                                FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                                //MoveFocus
-                                ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
-                            }
-
-
-
-                            IsHotkeysEnabled = true;
-                        }
-                    }));
-            }
+            LoadUndo();
         }
 
-        private RelayCommand<RoutedEventArgs> _textBoxGotFocus;
-
-        /// <summary>
-        /// Gets the GotFocus.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> TextBoxGotFocus
+        [RelayCommand]
+        private void EditPageName(int p)
         {
-            get
+            TextInputWindow ti = new TextInputWindow() { Title = LocalizationManager.Instance["Dialog.PageName.Title"], InputTitle = LocalizationManager.Instance["Dialog.PageName.InputTitle"], Text = WindowSettings.Pages[p], Mode = InputTextWindowMode.Default };
+            IsHotkeysEnabled = false;
+            if (ti.ShowDialog() ?? false)
             {
-                return _textBoxGotFocus
-                    ?? (_textBoxGotFocus = new RelayCommand<RoutedEventArgs>(
-                    p =>
-                    {
-                        IsHotkeysEnabled = false;
-                        // GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = false });
-                    }));
+                WindowSettings.Pages[p] = ti.Text;
+                WindowSettings.UpdatePages();
             }
+            IsHotkeysEnabled = true;
         }
 
-        private RelayCommand<RoutedEventArgs> _textBoxLostFocus;
-
-        /// <summary>
-        /// Gets the LostFocus.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> TextBoxLostFocus
+        [RelayCommand]
+        private void DuplicateSelected()
         {
-            get
+            List<vMixControl> dups = new List<vMixControl>();
+            foreach (var item in Widgets.Where(x => x.Selected))
             {
-                return _textBoxLostFocus
-                    ?? (_textBoxLostFocus = new RelayCommand<RoutedEventArgs>(
-                    p =>
-                    {
-                        IsHotkeysEnabled = true;
-                        //GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Pair<string, bool>() { A = "Hotkeys", B = true });
-                    }));
+                var copy = item.Copy();
+                if (copy != null)
+                {
+                    dups.Add(copy);
+                    copy.Left += 16;
+                    copy.Top += 16;
+                    if (copy.ZIndex > 0)
+                        copy.ZIndex++;
+                    copy.State = Model;
+                    item.Selected = false;
+                    copy.Name = Utils.GetNextCopyName(copy.Name);
+                }
             }
-        }
-
-        private RelayCommand _aboutCommand;
-
-        /// <summary>
-        /// Gets the AboutCommand.
-        /// </summary>
-        public RelayCommand AboutCommand
-        {
-            get
+            if (dups.Count > 0)
             {
-                return _aboutCommand
-                    ?? (_aboutCommand = new RelayCommand(
-                    () =>
-                    {
-                        Ookii.Dialogs.Wpf.TaskDialog td = new Ookii.Dialogs.Wpf.TaskDialog
-                        {
-                            WindowTitle = LocalizationManager.Instance["Dialog.About.Title"],
-
-                            MainInstruction = LocalizationManager.Instance["Dialog.About.MainInstruction"],
-                            MainIcon = Ookii.Dialogs.Wpf.TaskDialogIcon.Information,
-                            ExpandedInformation = LocalizationManager.Instance["Dialog.About.ExpandedInformation"],
-                            ExpandFooterArea = true,
-                            Footer = Title,
-                            ButtonStyle = Ookii.Dialogs.Wpf.TaskDialogButtonStyle.CommandLinks
-                        };
-
-                        var forumbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Forum"] };
-                        var githubbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.GitHub"] };
-                        var redditbtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Reddit"] };
-                        var donatebtn = new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Custom) { Text = LocalizationManager.Instance["Dialog.About.Button.Donate"] };
-                        td.Buttons.Add(forumbtn);
-                        td.Buttons.Add(githubbtn);
-                        td.Buttons.Add(redditbtn);
-                        td.Buttons.Add(donatebtn);
-                        td.Buttons.Add(new Ookii.Dialogs.Wpf.TaskDialogButton(Ookii.Dialogs.Wpf.ButtonType.Close) { Default = true, Text = LocalizationManager.Instance["Dialog.About.Button.Close"] });
-
-                        var btn = td.ShowDialog();
-                        if (btn == forumbtn)
-                            Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
-                        else if (btn == donatebtn)
-                            Process.Start(new ProcessStartInfo("https://coindrop.to/elgarf"));
-                        else if (btn == githubbtn)
-                            Process.Start(new ProcessStartInfo("https://github.com/elgarf/vMixUTC"));
-                        else if (btn == redditbtn)
-                            Process.Start(new ProcessStartInfo("https://www.reddit.com/r/vMixUTC/"));
-
-                    }));
-            }
-
-        }
-
-        private RelayCommand _undoCommand;
-
-        /// <summary>
-        /// Gets the UndoCommand.
-        /// </summary>
-        public RelayCommand UndoCommand
-        {
-            get
-            {
-                return _undoCommand
-                    ?? (_undoCommand = new RelayCommand(
-                    () =>
-                    {
-                        LoadUndo();
-                    }));
-            }
-        }
-
-
-        private RelayCommand<int> _editPageNameCommand;
-
-        /// <summary>
-        /// Gets the EditPagenameCommand.
-        /// </summary>
-        public RelayCommand<int> EditPageNameCommand
-        {
-            get
-            {
-                return _editPageNameCommand
-                    ?? (_editPageNameCommand = new RelayCommand<int>(
-                    p =>
-                    {
-                        //WindowSettings.Pages[p] = "PAGE 2";
-                        TextInputWindow ti = new TextInputWindow() { Title = LocalizationManager.Instance["Dialog.PageName.Title"], InputTitle = LocalizationManager.Instance["Dialog.PageName.InputTitle"], Text = WindowSettings.Pages[p], Mode = InputTextWindowMode.Default };
-                        IsHotkeysEnabled = false;
-                        if (ti.ShowDialog() ?? false)
-                        {
-                            WindowSettings.Pages[p] = ti.Text;
-                            WindowSettings.UpdatePages();
-                        }
-                        IsHotkeysEnabled = true;
-                    }));
-            }
-        }
-
-        private RelayCommand _duplicateSelectedCommand;
-
-        /// <summary>
-        /// Gets the DublicateSelectedCommand.
-        /// </summary>
-        public RelayCommand DuplicateSelectedCommand
-        {
-            get
-            {
-                return _duplicateSelectedCommand
-                    ?? (_duplicateSelectedCommand = new RelayCommand(
-                    () =>
-                    {
-
-                        List<vMixControl> dups = new List<vMixControl>();
-                        foreach (var item in _widgets.Where(x => x.Selected))
-                        {
-
-                            var copy = item.Copy();
-                            if (copy != null)
-                            {
-                                dups.Add(copy);
-                                copy.Left += 16;
-                                copy.Top += 16;
-                                if (copy.ZIndex > 0)
-                                    copy.ZIndex++;
-                                copy.State = Model;
-                                item.Selected = false;
-                                copy.Name = Utils.GetNextCopyName(copy.Name);
-                            }
-                        }
-                        if (dups.Count > 0)
-                        {
-                            SaveUndo(LocalizationManager.Instance["Undo.WidgetsDuplicated"]);
-                            foreach (var item in dups)
-                                _widgets.Add(item);
-                        }
-                    }));
+                SaveUndo(LocalizationManager.Instance["Undo.WidgetsDuplicated"]);
+                foreach (var item in dups)
+                    Widgets.Add(item);
             }
         }
     }
 }
+
+
+
+
+
+
+
+

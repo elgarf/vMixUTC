@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Linq;
 using System.Windows.Controls;
@@ -9,7 +9,7 @@ using vMixController.Classes;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlMultiState : vMixControl
+    public partial class vMixControlMultiState : vMixControl
     {
 
         private string _ip;
@@ -18,27 +18,13 @@ namespace vMixController.Widgets
         public string IP
         {
             get => _ip;
-            set
-            {
-                if (_ip != value)
-                {
-                    _ip = value;
-                    RaisePropertyChanged(nameof(IP));
-                }
-            }
+            set => SetPropertyValue(ref _ip, value, nameof(IP));
         }
 
         public string Port
         {
             get => _port;
-            set
-            {
-                if (_port != value)
-                {
-                    _port = value;
-                    RaisePropertyChanged(nameof(Port));
-                }
-            }
+            set => SetPropertyValue(ref _port, value, nameof(Port));
         }
         public string Login { get; set; }
         public string Password { get; set; }
@@ -54,21 +40,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Enabled
         {
-            get
-            {
-                return _enabled;
-            }
-
-            set
-            {
-                if (_enabled == value)
-                {
-                    return;
-                }
-
-                _enabled = value;
-                RaisePropertyChanged(nameof(Enabled));
-            }
+            get => _enabled;
+            set => SetPropertyValue(ref _enabled, value, nameof(Enabled));
         }
 
         public override string Type
@@ -136,23 +109,10 @@ namespace vMixController.Widgets
             Password = "";
         }
 
-        [NonSerialized]
-        private RelayCommand _toggleEnabledCommand;
-
-        /// <summary>
-        /// Gets the ToggleEnabled.
-        /// </summary>
-        public RelayCommand ToggleEnabledCommand
+        [RelayCommand]
+        private void ToggleEnabled()
         {
-            get
-            {
-                return _toggleEnabledCommand
-                    ?? (_toggleEnabledCommand = new RelayCommand(
-                    () =>
-                    {
-                        Enabled = !Enabled;
-                    }));
-            }
+            Enabled = !Enabled;
         }
     }
 }

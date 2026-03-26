@@ -45,7 +45,7 @@ namespace vMixController.Classes
                             {
                                 var dispatcher = Application.Current?.Dispatcher;
                                 if (dispatcher != null && !dispatcher.CheckAccess())
-                                    dispatcher.BeginInvoke(new Action(() => OnStreamDeckEvent?.Invoke(this, msg)));
+                                    _ = dispatcher.BeginInvoke(new Action(() => OnStreamDeckEvent?.Invoke(this, msg)));
                                 else
                                     OnStreamDeckEvent?.Invoke(this, msg);
                             }

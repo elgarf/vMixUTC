@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="XmlDataProviderNs.OnWidgetUI"
+<UserControl x:Class="XmlDataProviderNs.OnWidgetUI"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-             xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             
              xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
              xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
              mc:Ignorable="d" 
@@ -27,13 +27,13 @@
                         </TextBox.Tag>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </TextBox>
@@ -46,16 +46,16 @@
                         </TextBox.Tag>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUpCommand}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="PreviewKeyDown">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyDownCommand}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyDownCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </TextBox>
@@ -72,13 +72,13 @@
                         </TextBox.Text>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyUp">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding PreviewKeyUp}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="GotFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding GotFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="LostFocus">
-                                <cmd:EventToCommand PassEventArgsToCommand="True" Command="{Binding LostFocus}"/>
+                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </TextBox>
@@ -93,9 +93,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Margin="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{loc:Loc Key=DataProvider.Shared.Loaded}"/> <Run Text="{Binding Data.Count, Mode=OneWay}"></Run> <Run Text="{loc:Loc Key=DataProvider.Shared.Rows}"/></TextBlock>
+            <TextBlock Margin="{StaticResource StdMargin}" Style="{StaticResource PropertyName}"><Run Text="{loc:Loc Key=DataProvider.Shared.Loaded}"/> <Run Text="{Binding Values.Length, Mode=OneWay}"></Run> <Run Text="{loc:Loc Key=DataProvider.Shared.Rows}"/></TextBlock>
             <Button Grid.Column="1" Command="{Binding ShowRowsCommand}" Content="{loc:Loc Key=DataProvider.Shared.ShowRows}"/>
             <Button Grid.Column="2" Command="{Binding ReloadCommand}" Content="{loc:Loc Key=DataProvider.Shared.Reload}"/>
         </Grid>
     </StackPanel>
 </UserControl>
+
+
+
+

@@ -1,4 +1,4 @@
-﻿using System.Windows.Interactivity;
+using Microsoft.Xaml.Behaviors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -162,3 +162,4 @@ namespace vMixController.Extensions
         }
     }
 }
+

@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -48,7 +49,7 @@ namespace vMixController.Widgets
         XmlInclude(typeof(vMixControlTBar)),
         XmlInclude(typeof(vMixControlPlaylist)),
         XmlInclude(typeof(vMixControlNewButton))]
-    public class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
+    public partial class vMixControl : DependencyObject, INotifyPropertyChanged, IDisposable
     {
 
         protected NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -57,6 +58,24 @@ namespace vMixController.Widgets
         internal static Regex _regexInt = new Regex(@"^\d+$");
         private static readonly ConcurrentDictionary<Tuple<Type, string>, PropertyInfo> _propertyCache =
             new ConcurrentDictionary<Tuple<Type, string>, PropertyInfo>();
+        [NonSerialized]
+        private IMessenger _messenger;
+
+        protected IMessenger Messenger
+        {
+            get
+            {
+                if (_messenger != null)
+                    return _messenger;
+
+                if (AppServices.IsRegistered<IMessenger>())
+                    _messenger = AppServices.GetRequiredService<IMessenger>();
+                else
+                    _messenger = WeakReferenceMessenger.Default;
+
+                return _messenger;
+            }
+        }
 
         protected static DispatcherTimer _shadowUpdate;
 
@@ -82,8 +101,10 @@ namespace vMixController.Widgets
 
         public vMixControl()
         {
-
-            WindowProperties = ((ViewModelLocator)Application.Current.FindResource("Locator")).WidgetSettings.WindowProperties;
+            if (AppServices.IsRegistered<vMixWidgetSettingsViewModel>())
+            {
+                WindowProperties = AppServices.GetRequiredService<vMixWidgetSettingsViewModel>().WindowProperties;
+            }
         }
 
         private Guid _widgetId = Guid.NewGuid();
@@ -93,21 +114,8 @@ namespace vMixController.Widgets
         /// </summary>
         public Guid WidgetId
         {
-            get
-            {
-                return _widgetId;
-            }
-
-            set
-            {
-                if (_widgetId == value)
-                {
-                    return;
-                }
-
-                _widgetId = value;
-                RaisePropertyChanged(nameof(WidgetId));
-            }
+            get => _widgetId;
+            set => SetPropertyValue(ref _widgetId, value, nameof(WidgetId));
         }
 
         public virtual string Type { get; }
@@ -123,21 +131,8 @@ namespace vMixController.Widgets
         /// </summary>
         public Quadriple<double?, double?, double?, double?> WindowProperties
         {
-            get
-            {
-                return _windowProperties;
-            }
-
-            set
-            {
-                if (_windowProperties == value)
-                {
-                    return;
-                }
-
-                _windowProperties = value;
-                RaisePropertyChanged(nameof(WindowProperties));
-            }
+            get => _windowProperties;
+            set => SetPropertyValue(ref _windowProperties, value, nameof(WindowProperties));
         }
 
         private bool _isPasswordLockable = true;
@@ -148,21 +143,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsPasswordLockable
         {
-            get
-            {
-                return _isPasswordLockable;
-            }
-
-            set
-            {
-                if (_isPasswordLockable == value)
-                {
-                    return;
-                }
-
-                _isPasswordLockable = value;
-                RaisePropertyChanged(nameof(IsPasswordLockable));
-            }
+            get => _isPasswordLockable;
+            set => SetPropertyValue(ref _isPasswordLockable, value, nameof(IsPasswordLockable));
         }
 
         private bool _isPasswordLocked = false;
@@ -173,21 +155,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsPasswordLocked
         {
-            get
-            {
-                return _isPasswordLocked;
-            }
-
-            set
-            {
-                if (_isPasswordLocked == value)
-                {
-                    return;
-                }
-
-                _isPasswordLocked = value;
-                RaisePropertyChanged(nameof(IsPasswordLocked));
-            }
+            get => _isPasswordLocked;
+            set => SetPropertyValue(ref _isPasswordLocked, value, nameof(IsPasswordLocked));
         }
 
         private bool _locked = false;
@@ -198,21 +167,8 @@ namespace vMixController.Widgets
         /// </summary>
         public virtual bool Locked
         {
-            get
-            {
-                return _locked;
-            }
-
-            set
-            {
-                if (_locked == value)
-                {
-                    return;
-                }
-
-                _locked = value;
-                RaisePropertyChanged(nameof(Locked));
-            }
+            get => _locked;
+            set => SetPropertyValue(ref _locked, value, nameof(Locked));
         }
 
         private bool _isCaptionVisible = true;
@@ -223,21 +179,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsCaptionVisible
         {
-            get
-            {
-                return _isCaptionVisible;
-            }
-
-            set
-            {
-                if (_isCaptionVisible == value)
-                {
-                    return;
-                }
-
-                _isCaptionVisible = value;
-                RaisePropertyChanged(nameof(IsCaptionVisible));
-            }
+            get => _isCaptionVisible;
+            set => SetPropertyValue(ref _isCaptionVisible, value, nameof(IsCaptionVisible));
         }
 
         private bool _isCaptionOn = true;
@@ -248,21 +191,8 @@ namespace vMixController.Widgets
         /// </summary>
         public virtual bool IsCaptionOn
         {
-            get
-            {
-                return _isCaptionOn;
-            }
-
-            set
-            {
-                if (_isCaptionOn == value)
-                {
-                    return;
-                }
-
-                _isCaptionOn = value;
-                RaisePropertyChanged(nameof(IsCaptionOn));
-            }
+            get => _isCaptionOn;
+            set => SetPropertyValue(ref _isCaptionOn, value, nameof(IsCaptionOn));
         }
 
         [NonSerialized]
@@ -275,26 +205,47 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool IsFocused
         {
-            get
-            {
-                return _isFocused;
-            }
-
-            set
-            {
-                if (_isFocused == value)
-                {
-                    return;
-                }
-
-                _isFocused = value;
-                RaisePropertyChanged(nameof(IsFocused));
-            }
+            get => _isFocused;
+            set => SetPropertyValue(ref _isFocused, value, nameof(IsFocused));
         }
 
         internal void RaisePropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
+        protected bool SetPropertyValue<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+
+            field = value;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
+
+        protected bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+
+            field = value;
+            onChanged?.Invoke(value);
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
+
+        protected bool SetDoublePropertyValue(ref double field, double value, string propertyName)
+        {
+            var isSame =
+                (double.IsNaN(field) && double.IsNaN(value)) ||
+                field.Equals(value);
+            if (isSame)
+                return false;
+
+            field = value;
+            RaisePropertyChanged(propertyName);
+            return true;
         }
 
         private string _name = "";
@@ -305,21 +256,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-
-            set
-            {
-                if (_name == value)
-                {
-                    return;
-                }
-
-                _name = value;
-                RaisePropertyChanged(nameof(Name));
-            }
+            get => _name;
+            set => SetPropertyValue(ref _name, value, nameof(Name));
         }
 
 
@@ -332,21 +270,8 @@ namespace vMixController.Widgets
         /// </summary>
         public Color Color
         {
-            get
-            {
-                return _color;
-            }
-
-            set
-            {
-                if (_color == value)
-                {
-                    return;
-                }
-
-                _color = value;
-                RaisePropertyChanged(nameof(Color));
-            }
+            get => _color;
+            set => SetPropertyValue(ref _color, value, nameof(Color));
         }
 
         [NonSerialized]
@@ -358,21 +283,8 @@ namespace vMixController.Widgets
         /// </summary>
         public Color BorderColor
         {
-            get
-            {
-                return _borderColor;
-            }
-
-            set
-            {
-                if (_borderColor == value)
-                {
-                    return;
-                }
-
-                _borderColor = value;
-                RaisePropertyChanged(nameof(BorderColor));
-            }
+            get => _borderColor;
+            set => SetPropertyValue(ref _borderColor, value, nameof(BorderColor));
         }
 
         private double _top = 0;
@@ -383,21 +295,8 @@ namespace vMixController.Widgets
         /// </summary>
         public double Top
         {
-            get
-            {
-                return _top;
-            }
-
-            set
-            {
-                if (_top == value)
-                {
-                    return;
-                }
-
-                _top = value;
-                RaisePropertyChanged(nameof(Top));
-            }
+            get => _top;
+            set => SetDoublePropertyValue(ref _top, value, nameof(Top));
         }
 
         private double _left = 0;
@@ -408,21 +307,8 @@ namespace vMixController.Widgets
         /// </summary>
         public double Left
         {
-            get
-            {
-                return _left;
-            }
-
-            set
-            {
-                if (_left == value)
-                {
-                    return;
-                }
-
-                _left = value;
-                RaisePropertyChanged(nameof(Left));
-            }
+            get => _left;
+            set => SetDoublePropertyValue(ref _left, value, nameof(Left));
         }
 
         protected double _width = 128;
@@ -433,21 +319,8 @@ namespace vMixController.Widgets
         /// </summary>
         public virtual double Width
         {
-            get
-            {
-                return _width;
-            }
-
-            set
-            {
-                if (_width == value)
-                {
-                    return;
-                }
-
-                _width = value;
-                RaisePropertyChanged(nameof(Width));
-            }
+            get => _width;
+            set => SetDoublePropertyValue(ref _width, value, nameof(Width));
         }
 
         private double _height = double.NaN;
@@ -459,21 +332,8 @@ namespace vMixController.Widgets
         //[XmlIgnore]
         public double Height
         {
-            get
-            {
-                return _height;
-            }
-
-            set
-            {
-                if (_height == value)
-                {
-                    return;
-                }
-
-                _height = value;
-                RaisePropertyChanged(nameof(Height));
-            }
+            get => _height;
+            set => SetDoublePropertyValue(ref _height, value, nameof(Height));
         }
 
         private int _ZIndex = 0;
@@ -484,21 +344,8 @@ namespace vMixController.Widgets
         /// </summary>
         public int ZIndex
         {
-            get
-            {
-                return _ZIndex;
-            }
-
-            set
-            {
-                if (_ZIndex == value)
-                {
-                    return;
-                }
-
-                _ZIndex = value;
-                RaisePropertyChanged(nameof(ZIndex));
-            }
+            get => _ZIndex;
+            set => SetPropertyValue(ref _ZIndex, value, nameof(ZIndex));
         }
 
         private bool _selected = false;
@@ -509,21 +356,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool Selected
         {
-            get
-            {
-                return _selected;
-            }
-
-            set
-            {
-                if (_selected == value)
-                {
-                    return;
-                }
-
-                _selected = value;
-                RaisePropertyChanged(nameof(Selected));
-            }
+            get => _selected;
+            set => SetPropertyValue(ref _selected, value, nameof(Selected));
         }
 
         [NonSerialized]
@@ -536,21 +370,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public bool IsGhosted
         {
-            get
-            {
-                return _isGhosted;
-            }
-
-            set
-            {
-                if (_isGhosted == value)
-                {
-                    return;
-                }
-
-                _isGhosted = value;
-                RaisePropertyChanged(nameof(IsGhosted));
-            }
+            get => _isGhosted;
+            set => SetPropertyValue(ref _isGhosted, value, nameof(IsGhosted));
         }
 
         private double _captionHeight = 0;
@@ -562,21 +383,8 @@ namespace vMixController.Widgets
         //[XmlIgnore]
         public double CaptionHeight
         {
-            get
-            {
-                return _captionHeight;
-            }
-
-            set
-            {
-                if (_captionHeight == value)
-                {
-                    return;
-                }
-
-                _captionHeight = value;
-                RaisePropertyChanged(nameof(CaptionHeight));
-            }
+            get => _captionHeight;
+            set => SetDoublePropertyValue(ref _captionHeight, value, nameof(CaptionHeight));
         }
 
         private Hotkey[] _hotkey = null;
@@ -587,22 +395,8 @@ namespace vMixController.Widgets
         /// </summary>
         public Hotkey[] Hotkey
         {
-            get
-            {
-                //if (_hotkey == null) return new ObservableCollection<Classes.Hotkey>(GetHotkeys());                
-                return _hotkey;
-            }
-
-            set
-            {
-                if (_hotkey == value)
-                {
-                    return;
-                }
-
-                _hotkey = value;
-                RaisePropertyChanged(nameof(Hotkey));
-            }
+            get => _hotkey;
+            set => SetPropertyValue(ref _hotkey, value, nameof(Hotkey));
         }
 
         private bool _isTemplate = false;
@@ -613,21 +407,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool IsTemplate
         {
-            get
-            {
-                return _isTemplate;
-            }
-
-            set
-            {
-                if (_isTemplate == value)
-                {
-                    return;
-                }
-
-                _isTemplate = value;
-                RaisePropertyChanged(nameof(IsTemplate));
-            }
+            get => _isTemplate;
+            set => SetPropertyValue(ref _isTemplate, value, nameof(IsTemplate));
         }
 
         private float _scale = 1.0f;
@@ -638,21 +419,8 @@ namespace vMixController.Widgets
         /// </summary>
         public float Scale
         {
-            get
-            {
-                return _scale;
-            }
-
-            set
-            {
-                if (_scale == value)
-                {
-                    return;
-                }
-
-                _scale = value;
-                RaisePropertyChanged(nameof(Scale));
-            }
+            get => _scale;
+            set => SetPropertyValue(ref _scale, value, nameof(Scale));
         }
 
         [XmlIgnore]
@@ -683,15 +451,8 @@ namespace vMixController.Widgets
         [XmlIgnore]
         public ObservableCollection<Triple<string, string, string>> Info
         {
-            get
-            {
-                return _info;
-            }
-            set
-            {
-                _info = value;
-                RaisePropertyChanged(nameof(Info));
-            }
+            get => _info;
+            set => SetPropertyValue(ref _info, value, nameof(Info));
         }
 
         private int _page = 0;
@@ -702,47 +463,25 @@ namespace vMixController.Widgets
         /// </summary>
         public int Page
         {
-            get
-            {
-                return _page;
-            }
-
-            set
-            {
-                if (_page == value)
-                {
-                    return;
-                }
-
-                _page = value;
-                RaisePropertyChanged(nameof(Page));
-            }
+            get => _page;
+            set => SetPropertyValue(ref _page, value, nameof(Page));
         }
 
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateProperty =
-            DependencyProperty.Register("State", typeof(vMixAPI.State), typeof(vMixControl), new PropertyMetadata(null, InternalPropertyChanged));
+            DependencyProperty.Register(nameof(State), typeof(vMixAPI.State), typeof(vMixControl), new PropertyMetadata(null, InternalPropertyChanged));
 
         [XmlIgnore]
         public bool IsVisualReady
         {
-            get
-            {
-                return _isVisualReady;
-            }
-            set
-            {
-                if (_isVisualReady == value)
-                    return;
-                _isVisualReady = value;
-                RaisePropertyChanged(nameof(IsVisualReady));
-            }
+            get => _isVisualReady;
+            set => SetPropertyValue(ref _isVisualReady, value, nameof(IsVisualReady));
         }
         private bool _isVisualReady = true;
 
         private static void InternalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.Property.Name == "State")
+            if (e.Property.Name == nameof(State))
             {
                 if (e.OldValue != null)
                     ((vMixAPI.State)e.OldValue).OnStateSynced -= (d as vMixControl).VMixControl_Updated;
@@ -1087,83 +826,52 @@ namespace vMixController.Widgets
             UpdateHotkeys();
         }
 
-        [NonSerialized]
-        private RelayCommand<System.Windows.Input.KeyEventArgs> _previewKeyUp;
-
-        /// <summary>
-        /// Gets the MyCommand.
-        /// </summary>
-        public RelayCommand<System.Windows.Input.KeyEventArgs> PreviewKeyUp
+        [RelayCommand]
+        private void PreviewKeyUp(System.Windows.Input.KeyEventArgs p)
         {
-            get
+            if (p == null)
+                return;
+
+            if (p.Key == System.Windows.Input.Key.Return)
             {
-                return _previewKeyUp
-                    ?? (_previewKeyUp = new RelayCommand<System.Windows.Input.KeyEventArgs>(
-                    p =>
-                    {
-                        if (p.Key == System.Windows.Input.Key.Return)
-                        {
+                var sourceElement = p.Source as FrameworkElement;
+                if (sourceElement == null)
+                    return;
 
-                            DependencyObject parent = ((FrameworkElement)p.Source).Parent;
-                            while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
-                                parent = ((FrameworkElement)parent).Parent;
-                            while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
-                                parent = VisualTreeHelper.GetParent(parent);
-                            Keyboard.ClearFocus();
-                            if (parent != null)
-                            {
-                                FocusManager.SetFocusedElement(parent, (IInputElement)parent);
-                                //MoveFocus
-                                ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
-                            }
-                            else
-                            {
-                                FocusManager.SetFocusedElement(Application.Current.MainWindow, Application.Current.MainWindow);
-                                //MoveFocus
-                                Application.Current.MainWindow.MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
-                            }
+                DependencyObject parent = sourceElement.Parent;
+                while (parent is FrameworkElement && ((FrameworkElement)parent).Parent != null)
+                    parent = ((FrameworkElement)parent).Parent;
+                while (parent is FrameworkElement && VisualTreeHelper.GetParent(parent) != null)
+                    parent = VisualTreeHelper.GetParent(parent);
+                Keyboard.ClearFocus();
+                if (parent != null)
+                {
+                    FocusManager.SetFocusedElement(parent, (IInputElement)parent);
+                    //MoveFocus
+                    ((FrameworkElement)parent).MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                }
+                else
+                {
+                    FocusManager.SetFocusedElement(Application.Current.MainWindow, Application.Current.MainWindow);
+                    //MoveFocus
+                    Application.Current.MainWindow.MoveFocus(new TraversalRequest(FocusNavigationDirection.Last) { });
+                }
 
-                            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new HotkeysEnabledMessage() { IsEnabled = true });
-                            p.Handled = true;
-                        }
-                    }));
+                Messenger.Send(new HotkeysEnabledMessage() { IsEnabled = true });
+                p.Handled = true;
             }
         }
-        [NonSerialized]
-        private RelayCommand<RoutedEventArgs> _gotFocus;
 
-        /// <summary>
-        /// Gets the GotFocus.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> GotFocus
+        [RelayCommand]
+        private void GotFocus(RoutedEventArgs p)
         {
-            get
-            {
-                return _gotFocus
-                    ?? (_gotFocus = new RelayCommand<RoutedEventArgs>(
-                    p =>
-                    {
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new HotkeysEnabledMessage() { IsEnabled = false });
-                    }));
-            }
+            Messenger.Send(new HotkeysEnabledMessage() { IsEnabled = false });
         }
-        [NonSerialized]
-        private RelayCommand<RoutedEventArgs> _lostFocus;
 
-        /// <summary>
-        /// Gets the LostFocus.
-        /// </summary>
-        public RelayCommand<RoutedEventArgs> LostFocus
+        [RelayCommand]
+        private void LostFocus(RoutedEventArgs p)
         {
-            get
-            {
-                return _lostFocus
-                    ?? (_lostFocus = new RelayCommand<RoutedEventArgs>(
-                    p =>
-                    {
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new HotkeysEnabledMessage() { IsEnabled = true });
-                    }));
-            }
+            Messenger.Send(new HotkeysEnabledMessage() { IsEnabled = true });
         }
 
         protected bool _disposed = false;
@@ -1188,3 +896,5 @@ namespace vMixController.Widgets
         }
     }
 }
+
+

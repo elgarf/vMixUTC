@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace vMixController.Classes
@@ -26,21 +23,8 @@ namespace vMixController.Classes
         /// </summary>
         public Key Key
         {
-            get
-            {
-                return _key;
-            }
-
-            set
-            {
-                if (_key == value)
-                {
-                    return;
-                }
-
-                _key = value;
-                RaisePropertyChanged(KeyPropertyName);
-            }
+            get => _key;
+            set => SetPropertyValue(ref _key, value, KeyPropertyName);
         }
 
         private void RaisePropertyChanged(string keyPropertyName)
@@ -71,23 +55,22 @@ namespace vMixController.Classes
         /// </summary>
         public bool Active
         {
-            get
-            {
-                return _active;
-            }
-
-            set
-            {
-                if (_active == value)
-                {
-                    return;
-                }
-
-                _active = value;
-                RaisePropertyChanged(ActivePropertyName);
-            }
+            get => _active;
+            set => SetPropertyValue(ref _active, value, ActivePropertyName);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool SetPropertyValue<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
     }
 }

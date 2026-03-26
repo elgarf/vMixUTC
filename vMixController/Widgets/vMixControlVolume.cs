@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Globalization;
 namespace vMixController.Widgets
 {
     [Serializable]
-    public class vMixControlVolume : vMixControlTextField
+    public partial class vMixControlVolume : vMixControlTextField
     {
         private static DateTime _previousQuery;
         private static uint _instances = 0;
@@ -132,65 +132,29 @@ namespace vMixController.Widgets
             return bool.TryParse(value, out var parsed) ? parsed : fallback;
         }
 
-        [NonSerialized]
-        private RelayCommand<object> _updateBusses;
-
-        /// <summary>
-        /// Gets the UpdateBusses.
-        /// </summary>
-        public RelayCommand<object> UpdateBusses
+        [RelayCommand]
+        private void UpdateBusses(object p)
         {
-            get
-            {
-                return _updateBusses
-                    ?? (_updateBusses = new RelayCommand<object>(
-                    p =>
-                    {
-                        var args = (RoutedEventArgs)p;
-                        var cb = ((CheckBox)args.Source);
-                        UpdateBus(cb.IsChecked.Value, (string)cb.Tag);
-                        return;
-                    }));
-            }
+            var args = (RoutedEventArgs)p;
+            var cb = (CheckBox)args.Source;
+            UpdateBus(cb.IsChecked.Value, (string)cb.Tag);
         }
 
-        [NonSerialized]
-        private RelayCommand _dragStarted;
-
-        /// <summary>
-        /// Gets the MyCommand.
-        /// </summary>
-        public RelayCommand DragStarted
+        [RelayCommand]
+        private void DragStarted()
         {
-            get
-            {
-                return _dragStarted
-                    ?? (_dragStarted = new RelayCommand(
-                    () =>
-                    {
-                        _dragging = true;
-                    }));
-            }
+            _dragging = true;
         }
 
-        [NonSerialized]
-        private RelayCommand _dragCompleted;
-
-        /// <summary>
-        /// Gets the DragCompleted.
-        /// </summary>
-        public RelayCommand DragCompleted
+        [RelayCommand]
+        private void DragCompleted()
         {
-            get
-            {
-                return _dragCompleted
-                    ?? (_dragCompleted = new RelayCommand(
-                    () =>
-                    {
-                        _dragging = false;
-                    }));
-            }
+            _dragging = false;
         }
+
+        
+        
+        
 
         protected override void Dispose(bool managed)
         {
@@ -225,21 +189,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Style
         {
-            get
-            {
-                return _style;
-            }
-
-            set
-            {
-                if (_style == value)
-                {
-                    return;
-                }
-
-                _style = value;
-                RaisePropertyChanged(nameof(Style));
-            }
+            get => _style;
+            set => SetPropertyValue(ref _style, value, nameof(Style));
         }
 
         private bool _showMeters = false;
@@ -250,26 +201,15 @@ namespace vMixController.Widgets
         /// </summary>
         public bool ShowMeters
         {
-            get
+            get => _showMeters;
+            set => SetPropertyValue(ref _showMeters, value, nameof(ShowMeters), isShown =>
             {
-                return _showMeters;
-            }
-
-            set
-            {
-                if (_showMeters == value)
-                {
-                    return;
-                }
-
-                _showMeters = value;
-                if (!_showMeters)
+                if (!isShown)
                 {
                     F1 = 0;
                     F2 = 0;
                 }
-                RaisePropertyChanged(nameof(ShowMeters));
-            }
+            });
         }
 
         private bool _showSlider = true;
@@ -280,21 +220,8 @@ namespace vMixController.Widgets
         /// </summary>
         public bool ShowSlider
         {
-            get
-            {
-                return _showSlider;
-            }
-
-            set
-            {
-                if (_showSlider == value)
-                {
-                    return;
-                }
-
-                _showSlider = value;
-                RaisePropertyChanged(nameof(ShowSlider));
-            }
+            get => _showSlider;
+            set => SetPropertyValue(ref _showSlider, value, nameof(ShowSlider));
         }
 
         private string _target = "Master";
@@ -305,21 +232,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string Target
         {
-            get
-            {
-                return _target;
-            }
-
-            set
-            {
-                if (_target == value)
-                {
-                    return;
-                }
-
-                _target = value;
-                RaisePropertyChanged(nameof(Target));
-            }
+            get => _target;
+            set => SetPropertyValue(ref _target, value, nameof(Target));
         }
 
         private string _inputKey = "";
@@ -330,21 +244,8 @@ namespace vMixController.Widgets
         /// </summary>
         public string InputKey
         {
-            get
-            {
-                return _inputKey;
-            }
-
-            set
-            {
-                if (_inputKey == value)
-                {
-                    return;
-                }
-
-                _inputKey = value;
-                RaisePropertyChanged(nameof(InputKey));
-            }
+            get => _inputKey;
+            set => SetPropertyValue(ref _inputKey, value, nameof(InputKey));
         }
 
         protected static void InternalSliderPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -356,14 +257,14 @@ namespace vMixController.Widgets
             {
 
                 ((vMixControlVolume)d).UpdateVolume();
-                // Используем Tuple как ключ для словаря
+                // ���������� Tuple ��� ���� ��� �������
                 var key = Tuple.Create(d, e.Property);
 
-                lock (_pendingUpdates) // Защита от одновременного доступа к словарю и очереди
+                lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
                 {
-                    // Обновляем время последнего изменения для этой пары DO/DP
+                    // ��������� ����� ���������� ��������� ��� ���� ���� DO/DP
                     _pendingUpdates[key] = DateTime.Now;
-                    // Если этого элемента еще нет в очереди, добавляем его
+                    // ���� ����� �������� ��� ��� � �������, ��������� ���
                     if (_queuedKeys.Add(key))
                     {
                         _updateQueue.Enqueue(key);
@@ -549,3 +450,5 @@ namespace vMixController.Widgets
 
     }
 }
+
+
