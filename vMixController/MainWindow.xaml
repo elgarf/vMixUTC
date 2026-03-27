@@ -1,4 +1,4 @@
-<Window
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -32,10 +32,7 @@
         >
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <cls:BindingProxy x:Key="VmProxy" Data="{Binding DataContext, Source={x:Reference Window}}"/>
+<cls:BindingProxy x:Key="VmProxy" Data="{Binding DataContext, Source={x:Reference Window}}"/>
             <Rect x:Key="IconViewbox">0.18,0.18,0.64,0.64</Rect>
             <c:Int32ToVisibilityConverter x:Key="Int32ToVisibilityConverter"/>
             <Storyboard x:Key="StoryboardFadeIn">
@@ -1324,6 +1321,7 @@
         </Border>
     </Grid>
 </Window>
+
 
 
 
