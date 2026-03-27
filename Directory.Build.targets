@@ -1,0 +1,22 @@
+<Project>
+  <Target Name="DedupeProviderOutputAgainstHost"
+          AfterTargets="Build"
+          Condition="'$(TargetDir)' != '' and $([System.String]::Copy('$(TargetDir)').Contains('DataProviders'))">
+    <PropertyGroup>
+      <_HostOutputDir>$([System.IO.Path]::GetFullPath('$(TargetDir)..\'))</_HostOutputDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_ProviderMainDlls Include="$(TargetDir)*DataProvider.dll" />
+      <_ProviderDependencyDlls Include="$(TargetDir)*.dll"
+                               Exclude="@(_ProviderMainDlls);$(TargetDir)vMixControllerDataProvider.dll" />
+      <_ProviderDuplicateDlls Include="@(_ProviderDependencyDlls)"
+                              Condition="Exists('$(_HostOutputDir)%(Filename)%(Extension)')" />
+      <_ProviderLegacyFiles Include="$(TargetDir)vMixControllerDataProvider.dll;
+                                     $(TargetDir)vMixControllerDataProvider.pdb;
+                                     $(TargetDir)vMixControllerDataProvider.deps.json;
+                                     $(TargetDir)vMixControllerDataProvider.dll.config" />
+    </ItemGroup>
+    <Delete Files="@(_ProviderDuplicateDlls)" TreatErrorsAsWarnings="true" />
+    <Delete Files="@(_ProviderLegacyFiles)" TreatErrorsAsWarnings="true" />
+  </Target>
+</Project>

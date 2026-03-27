@@ -1,24 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>vMixController</RootNamespace>
     <AssemblyName>vMixController</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <ApplicationIcon>settings-gears (1).ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <Deterministic>false</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\net472\</OutputPath>
+    <OutputPath>bin\\Debug\\$(TargetFramework)\\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -26,16 +27,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\net472\</OutputPath>
+    <OutputPath>bin\\Release\\$(TargetFramework)\\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System.Design" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ncalc\Evaluant.Calculator\NCalc.csproj" />
     <ProjectReference Include="..\HighPrecisionTimer\HighPrecisionTimer.csproj" />
@@ -79,6 +74,8 @@
     <PackageReference Include="Microsoft.Extensions.Primitives" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="MouseKeyHook" />
+    <PackageReference Include="NAudio" />
+    <PackageReference Include="NAudio.Wasapi" />
     <PackageReference Include="NKristek.Wpf.Converters" />
     <PackageReference Include="NLog" />
     <PackageReference Include="NLog.Schema" />
@@ -87,17 +84,8 @@
     <PackageReference Include="Parlot" />
     <PackageReference Include="Sanford.Multimedia.Midi" />
     <PackageReference Include="SplashScreenGdip" />
-    <PackageReference Include="System.Buffers" />
-    <PackageReference Include="System.Collections.Immutable" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <PackageReference Include="System.IO.Pipelines" />
-    <PackageReference Include="System.Memory" />
-    <PackageReference Include="System.Numerics.Vectors" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-    <PackageReference Include="System.Text.Json" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" />
-    <PackageReference Include="System.ValueTuple" />
     <PackageReference Include="VirtualizingWrapPanel" />
     <PackageReference Include="WatsonWebsocket" />
     <PackageReference Include="WpfScreenHelper" />
@@ -170,19 +158,41 @@
   </ItemGroup>
   <Target Name="CleanupDataProvidersFolder" AfterTargets="Build" Condition="Exists('$(TargetDir)DataProviders')">
     <ItemGroup>
-      <_ProviderFiles Include="$(TargetDir)DataProviders\*DataProvider.dll" Exclude="$(TargetDir)DataProviders\vMixControllerDataProvider.dll" />
-      <_AllProviderFiles Include="$(TargetDir)DataProviders\**\*.*" />
-      <_DeleteProviderFiles Include="@(_AllProviderFiles)" Exclude="@(_ProviderFiles)" />
-      <_ProviderSubdirs Include="$(TargetDir)DataProviders\**\" Exclude="$(TargetDir)DataProviders\" />
+      <_DeleteProviderFiles Include="$(TargetDir)DataProviders\vMixControllerDataProvider.dll" />
     </ItemGroup>
     <Delete Files="@(_DeleteProviderFiles)" TreatErrorsAsWarnings="true" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Get-ChildItem -LiteralPath '$(TargetDir)DataProviders' -Directory -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | ForEach-Object { if (-not (Get-ChildItem -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue } }&quot;" />
   </Target>
-  <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
-    <Delete Files="@(ReferenceCopyLocalPaths-&gt;'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
+  <Target Name="DedupeDataProvidersAgainstRoot" AfterTargets="CleanupDataProvidersFolder" Condition="Exists('$(TargetDir)DataProviders')">
+    <ItemGroup>
+      <_ProviderMainDlls Include="$(TargetDir)DataProviders\*DataProvider.dll" />
+      <_ProviderDependencyDlls Include="$(TargetDir)DataProviders\*.dll" Exclude="@(_ProviderMainDlls)" />
+      <_ProviderDuplicateDlls Include="@(_ProviderDependencyDlls)" Condition="Exists('$(TargetDir)%(Filename)%(Extension)')" />
+    </ItemGroup>
+    <Delete Files="@(_ProviderDuplicateDlls)" TreatErrorsAsWarnings="true" />
+  </Target>
+  <Target Name="CleanupProviderArtifactsFromRoot" AfterTargets="Build">
+    <ItemGroup>
+      <_ProviderRootArtifacts Include="$(TargetDir)*DataProvider.dll;$(TargetDir)*DataProvider.pdb;$(TargetDir)*DataProvider.deps.json;$(TargetDir)*DataProvider.dll.config" />
+      <_ProviderRootArtifacts Include="$(TargetDir)vMixControllerDataProvider.dll;$(TargetDir)vMixControllerDataProvider.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_ProviderRootArtifacts)" TreatErrorsAsWarnings="true" />
   </Target>
   <Target Name="CleanupLegacyMelanchallFiles" AfterTargets="Build">
     <Delete Files="$(TargetDir)Melanchall*.dll;$(TargetDir)Melanchall*.dylib" TreatErrorsAsWarnings="true" />
     <RemoveDir Directories="$(TargetDir)net472" Condition="Exists('$(TargetDir)net472')" />
+  </Target>
+  <Target Name="CleanupPluginDependenciesFromRoot" AfterTargets="Build">
+    <Delete Files="$(TargetDir)Json.More.dll;$(TargetDir)JsonPath.Net.dll;$(TargetDir)ExcelDataReader.dll" TreatErrorsAsWarnings="true" />
+  </Target>
+  <Target Name="CopySkinSatelliteResourcesToHost" AfterTargets="Build">
+    <ItemGroup>
+      <_SkinSatelliteResources Include="$(MSBuildThisFileDirectory)..\vMixControllerSkin\bin\$(Configuration)\$(TargetFramework)\**\vMixControllerSkin.resources.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_SkinSatelliteResources)"
+          DestinationFiles="@(_SkinSatelliteResources->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          Condition="'@(_SkinSatelliteResources)' != ''" />
+    <Delete Files="$(TargetDir)vMixControllerSkin.resources.dll" TreatErrorsAsWarnings="true" />
   </Target>
 </Project>

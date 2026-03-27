@@ -90,7 +90,7 @@ namespace vMixController.Extensions
 
             // 6. Глубокое копирование через бинарную сериализацию
             // Требует, чтобы класс и все его вложенные ссылочные типы были помечены атрибутом [Serializable]
-            if (type.IsSerializable)
+            if (type.IsDefined(typeof(SerializableAttribute), inherit: false))
             {
                 // BinaryFormatter устарел и небезопасен. Используйте с осторожностью.
                 // Директива ниже подавляет предупреждение компилятора SYSLIB0011.

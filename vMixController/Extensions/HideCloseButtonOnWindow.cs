@@ -62,7 +62,7 @@ namespace vMixController.Extensions
         IntPtr menuHandle;
         protected void DisableCloseButton(IntPtr _windowHandle)
         {
-            if (_windowHandle == null)
+            if (_windowHandle == IntPtr.Zero)
                 throw new InvalidOperationException("The window has not yet been completely initialized");
 
             menuHandle = NativeMethods.GetSystemMenu(_windowHandle, false);
@@ -77,7 +77,7 @@ namespace vMixController.Extensions
 
         protected void EnableCloseButton(IntPtr _windowHandle)
         {
-            if (_windowHandle == null)
+            if (_windowHandle == IntPtr.Zero)
                 throw new InvalidOperationException("The window has not yet been completely initialized");
 
             if (menuHandle != IntPtr.Zero)

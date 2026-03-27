@@ -131,6 +131,9 @@ namespace vMixController.Classes
         }
 
         static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public static string PortableControllerPath { get; set; }
+
         public static ObservableCollection<vMixControl> LoadController(string fileName, IList<vMixFunctionReference> functions, out MainWindowSettings windowSettings)
         {
             windowSettings = null;
@@ -410,24 +413,96 @@ namespace vMixController.Classes
 
         public static string SearchFile(string path, string cpath)
         {
+            return ResolvePortablePath(path, cpath);
+        }
+
+        private static IEnumerable<string> EnumerateTrailingFolders(string originalPath, int maxDepth)
+        {
+            var directory = Path.GetDirectoryName(originalPath);
+            if (string.IsNullOrWhiteSpace(directory))
+                yield break;
+
+            var parts = directory
+                .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(x => !string.IsNullOrWhiteSpace(x) && !x.EndsWith(":", StringComparison.Ordinal))
+                .ToArray();
+
+            var depthLimit = Math.Min(maxDepth, parts.Length);
+            for (var depth = 1; depth <= depthLimit; depth++)
+            {
+                var tail = parts.Skip(parts.Length - depth).ToArray();
+                yield return Path.Combine(tail);
+            }
+        }
+
+        private static string ResolveInBaseDirectory(string originalPath, string baseDirectory, int maxDepth)
+        {
+            if (string.IsNullOrWhiteSpace(baseDirectory))
+                return null;
+
+            if (!Directory.Exists(baseDirectory))
+                return null;
+
+            var fileName = Path.GetFileName(originalPath);
+            if (string.IsNullOrWhiteSpace(fileName))
+                return null;
+
+            var inBase = Path.Combine(baseDirectory, fileName);
+            if (File.Exists(inBase))
+                return Path.GetFullPath(inBase);
+
+            if (!Path.IsPathRooted(originalPath))
+            {
+                var directRelative = Path.Combine(baseDirectory, originalPath);
+                if (File.Exists(directRelative))
+                    return Path.GetFullPath(directRelative);
+            }
+
+            foreach (var tailDirectory in EnumerateTrailingFolders(originalPath, maxDepth))
+            {
+                var candidate = Path.Combine(baseDirectory, tailDirectory, fileName);
+                if (File.Exists(candidate))
+                    return Path.GetFullPath(candidate);
+            }
+
+            return null;
+        }
+
+        public static string ResolvePortablePath(string originalPath, string controllerPath = null, int maxDepth = 3)
+        {
             try
             {
-                if (string.IsNullOrWhiteSpace(path)) return "";
+                if (string.IsNullOrWhiteSpace(originalPath))
+                    return string.Empty;
 
-                var directories = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).Reverse().ToArray();
-                var filename = Path.GetFileName(path);
-                string dir = cpath;
-                int i = 0;
-                while (!File.Exists(Path.Combine(dir, filename)) && i < directories.Length)
+                var normalized = originalPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                if (File.Exists(normalized))
+                    return Path.GetFullPath(normalized);
+
+                var executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                var resolvedFromExe = ResolveInBaseDirectory(normalized, executableDirectory, maxDepth);
+                if (!string.IsNullOrWhiteSpace(resolvedFromExe))
+                    return resolvedFromExe;
+
+                var controllerFilePath = Utils.PortableControllerPath;
+
+                string controllerDirectory = null;
+                if (!string.IsNullOrWhiteSpace(controllerFilePath))
                 {
-                    dir = Path.Combine(dir, directories[i]);
-                    i++;
+                    if (Directory.Exists(controllerFilePath))
+                        controllerDirectory = controllerFilePath;
+                    else
+                        controllerDirectory = Path.GetDirectoryName(controllerFilePath);
                 }
-                return Path.Combine(dir, filename);
+                var resolvedFromController = ResolveInBaseDirectory(normalized, controllerDirectory, maxDepth);
+                if (!string.IsNullOrWhiteSpace(resolvedFromController))
+                    return resolvedFromController;
+
+                return normalized;
             }
-            catch (ArgumentException)
+            catch (Exception)
             {
-                return "";
+                return originalPath ?? string.Empty;
             }
         }
 

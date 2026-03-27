@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <BuildInParallel>false</BuildInParallel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>ExcelDataProvider</RootNamespace>
     <AssemblyName>ExcelDataProvider</AssemblyName>
   </PropertyGroup>
@@ -11,7 +13,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\vMixController\bin\Debug\net472\DataProviders\</OutputPath>
+    <OutputPath>..\vMixController\bin\Debug\\$(TargetFramework)\\DataProviders\\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -20,16 +22,18 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\vMixController\bin\Release\net472\DataProviders\</OutputPath>
+    <OutputPath>..\vMixController\bin\Release\\$(TargetFramework)\\DataProviders\\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\vMixControllerDataProvider\vMixControllerDataProvider.csproj">
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\vMixControllerSkin\vMixControllerSkin.csproj">
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
@@ -38,14 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="Costura.Fody">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="ExcelDataReader" />
     <PackageReference Include="Extended.Wpf.Toolkit" />
-    <PackageReference Include="Fody">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="System.Buffers" />

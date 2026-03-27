@@ -517,7 +517,7 @@ namespace NewTek.NDI.WPF
                 if (sendInstanceLock.TryEnterReadLock(0))
                 {
                     // if this is not here, then we must be being reconfigured
-                    if (sendInstancePtr == null)
+                    if (sendInstancePtr == IntPtr.Zero)
                     {
                         // unlock
                         sendInstanceLock.ExitReadLock();

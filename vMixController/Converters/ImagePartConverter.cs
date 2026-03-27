@@ -10,7 +10,6 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using vMixController.ViewModel;
 
 namespace vMixController.Converters
 {
@@ -40,21 +39,14 @@ namespace vMixController.Converters
             {
                 if (!string.IsNullOrWhiteSpace(path))
                 {
+                    var resolvedPath = Classes.Utils.ResolvePortablePath(path);
+                    if (!File.Exists(resolvedPath))
+                        return null;
+
                     var bi = new BitmapImage();
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
-                    var relativePath = Classes.Utils.SearchFile(path, Directory.GetCurrentDirectory());
-                    string foundPath = Classes.Utils.SearchFile(path, Path.GetDirectoryName(vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().ControllerPath));
-                    if (File.Exists(path))
-                        bi.UriSource = new Uri(path);
-                    else if (File.Exists(foundPath))
-                    {
-                        bi.UriSource = new Uri(foundPath);
-                    }
-                    else if (File.Exists(relativePath))
-                        bi.UriSource = new Uri(relativePath);
-                    else
-                        return null;//throw new FileNotFoundException();
+                    bi.UriSource = new Uri(resolvedPath);
 
                     bi.EndInit();
                     var img = new FormatConvertedBitmap(new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight)), PixelFormats.Bgra32, null, 0);

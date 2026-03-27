@@ -66,7 +66,7 @@ namespace vMixController.ViewModel
 
         bool _isPressed = false;
         //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
-        vMixWidgetSettingsView _settings = new vMixWidgetSettingsView();
+        vMixWidgetSettingsView _settings;
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public GlobalVariablesViewModel GlobalSettings => AppServices.GetRequiredService<GlobalVariablesViewModel>();
 
@@ -89,6 +89,11 @@ namespace vMixController.ViewModel
 
         [ObservableProperty]
         private string _controllerPath = Directory.GetCurrentDirectory();
+
+        partial void OnControllerPathChanged(string value)
+        {
+            Utils.PortableControllerPath = value;
+        }
 
         [ObservableProperty]
         private bool _isFiltersRegistered = false;
@@ -256,7 +261,7 @@ namespace vMixController.ViewModel
                 {
                     var coffHeader = (IMAGE_FILE_HEADER)Marshal.PtrToStructure(pinnedBuffer.AddrOfPinnedObject(), typeof(IMAGE_FILE_HEADER));
 
-                    return TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1) + new TimeSpan(coffHeader.TimeDateStamp * TimeSpan.TicksPerSecond)).ToUniversalTime();
+                    return DateTimeOffset.FromUnixTimeSeconds(coffHeader.TimeDateStamp).UtcDateTime;
                 }
                 finally
                 {
@@ -1670,6 +1675,33 @@ namespace vMixController.ViewModel
 
         string _documentsPath;
 
+        private static string ResolveWritableDataDirectory()
+        {
+            var candidates = new[]
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "vMix UTC"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vMix UTC"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data")
+            };
+
+            foreach (var candidate in candidates)
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(candidate))
+                        continue;
+                    Directory.CreateDirectory(candidate);
+                    return candidate;
+                }
+                catch
+                {
+                    // try next candidate
+                }
+            }
+
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
+
         List<vMixControl> _intersections = new List<vMixControl>();
         private readonly HashSet<vMixControl> _movedWidgetsBuffer = new HashSet<vMixControl>();
         private readonly List<vMixControlRegion> _selectedStickyRegionsBuffer = new List<vMixControlRegion>();
@@ -1742,6 +1774,7 @@ namespace vMixController.ViewModel
             _logger.Info("Worker Threads:Completion Pool Threads - {0}:{1}", t1, t2);
             //Fix changing current directory on opening .vmc from external folder
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            Utils.PortableControllerPath = ControllerPath;
 
             XmlDocumentMessenger.Start();
 
@@ -1789,10 +1822,7 @@ namespace vMixController.ViewModel
                 _logger.Error(ex, "Error while loading new mapped functions.");
             }
 
-            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            _documentsPath = Path.Combine(documents, "vMix UTC");
-            if (!Directory.Exists(_documentsPath))
-                Directory.CreateDirectory(_documentsPath);
+            _documentsPath = ResolveWritableDataDirectory();
 
             try
             {
@@ -1808,8 +1838,17 @@ namespace vMixController.ViewModel
             }
 
             _logger.Info("Searching for data providers.");
-            var files = Directory.EnumerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "DataProviders"), "*DataProvider.dll");
-            if (files.Count() > 0)
+            var providersDirectory = Path.Combine(Directory.GetCurrentDirectory(), "DataProviders");
+            var files = Directory.Exists(providersDirectory)
+                ? Directory.EnumerateFiles(providersDirectory, "*DataProvider.dll").ToArray()
+                : Array.Empty<string>();
+
+            if (!Directory.Exists(providersDirectory))
+            {
+                _logger.Warn("Data providers directory not found: {0}", providersDirectory);
+            }
+
+            if (files.Length > 0)
                 ExternalDataProviders.Add(new Pair<string, vMixControl>()
                 {
                     A = "Default",

@@ -852,7 +852,8 @@ namespace vMixController.Widgets
                             p1fs = p1fs.Replace('.', ',');
 
                         var objectParameter = GetObjectParameter();
-                        var command = string.Format(cmd.Action.FormatString, key, p1, System.Web.HttpUtility.UrlEncode(Convert.ToString(objectParameter, CultureInfo.InvariantCulture)), p1 - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=", p1fs);
+                        var encodedObjectParameter = Uri.EscapeDataString(Convert.ToString(objectParameter, CultureInfo.InvariantCulture) ?? string.Empty);
+                        var command = string.Format(cmd.Action.FormatString, key, p1, encodedObjectParameter, p1 - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=", p1fs);
 
                         if (!cmd.Action.StateDirect)
                             AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false, timeout: cmd.Action.Timeout), _pointer + 1);

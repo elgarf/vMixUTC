@@ -22,6 +22,7 @@
 
 
     <c:AudiobusToBoolConverter x:Key="AudioBussesConverter"/>
+    <cls:BindingProxy x:Key="VmProxy" Data="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
 
     <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type ctrls:vMixControlMoveThumb}">
         <Rectangle Fill="Transparent"/>
@@ -263,14 +264,14 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding Active}" Value="True"/>
-                            <Condition Binding="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.WindowSettings.BlinkLights}" Value="False"/>
+                            <Condition Binding="{Binding Source={StaticResource VmProxy}, Path=Data.WindowSettings.BlinkLights}" Value="False"/>
                         </MultiDataTrigger.Conditions>
                         <Setter TargetName="stateDep" Property="Fill" Value="Red"/>
                     </MultiDataTrigger>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding Active}" Value="False"/>
-                            <Condition Binding="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.WindowSettings.BlinkLights}" Value="False"/>
+                            <Condition Binding="{Binding Source={StaticResource VmProxy}, Path=Data.WindowSettings.BlinkLights}" Value="False"/>
                         </MultiDataTrigger.Conditions>
                         <Setter TargetName="stateDep" Property="Fill" Value="SlateGray"/>
                     </MultiDataTrigger>
@@ -278,7 +279,7 @@
                         <DataTrigger.Binding>
                             <MultiBinding Mode="OneWay" Converter="{wpfc:AllBoolToBoolConverter}">
                                 <Binding Path="Active"/>
-                                <Binding Source="{x:Static Application.Current}" Path="MainWindow.DataContext.WindowSettings.BlinkLights"/>
+                                <Binding Source="{StaticResource VmProxy}" Path="Data.WindowSettings.BlinkLights"/>
                             </MultiBinding>
                         </DataTrigger.Binding>
                         <DataTrigger.EnterActions>
@@ -420,14 +421,14 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding Active}" Value="True"/>
-                            <Condition Binding="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.WindowSettings.BlinkLights}" Value="False"/>
+                            <Condition Binding="{Binding Source={StaticResource VmProxy}, Path=Data.WindowSettings.BlinkLights}" Value="False"/>
                         </MultiDataTrigger.Conditions>
                         <Setter TargetName="stateDep" Property="Fill" Value="Red"/>
                     </MultiDataTrigger>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding Active}" Value="False"/>
-                            <Condition Binding="{Binding Source={x:Static Application.Current}, Path=MainWindow.DataContext.WindowSettings.BlinkLights}" Value="False"/>
+                            <Condition Binding="{Binding Source={StaticResource VmProxy}, Path=Data.WindowSettings.BlinkLights}" Value="False"/>
                         </MultiDataTrigger.Conditions>
                         <Setter TargetName="stateDep" Property="Fill" Value="SlateGray"/>
                     </MultiDataTrigger>
@@ -435,7 +436,7 @@
                         <DataTrigger.Binding>
                             <MultiBinding Mode="OneWay" Converter="{wpfc:AllBoolToBoolConverter}">
                                 <Binding Path="Active"/>
-                                <Binding Source="{x:Static Application.Current}" Path="MainWindow.DataContext.WindowSettings.BlinkLights"/>
+                                <Binding Source="{StaticResource VmProxy}" Path="Data.WindowSettings.BlinkLights"/>
                             </MultiBinding>
                         </DataTrigger.Binding>
                         <DataTrigger.EnterActions>
@@ -914,10 +915,46 @@
         </ContentPresenter>
     </Grid>
 
-    <StackPanel x:Shared="false" x:Key="ExternalDataWidgetControl" d:DataContext="{d:DesignInstance widget:vMixControlExternalData}">
-        <ContentControl Content="{Binding DataProvider.CustomUI}"/>
-        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Visibility="{Binding DataProvider.IsProvidingCustomProperties, Converter={wpfc:BoolToVisibilityConverter}}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{loc:Loc Key=Widget.ExternalData.Properties}"></Button>
-    </StackPanel>
+    <Grid x:Shared="false" x:Key="ExternalDataWidgetControl" d:DataContext="{d:DesignInstance widget:vMixControlExternalData}">
+        <StackPanel>
+            <ContentControl IsEnabled="{Binding ProviderWarningActive, Converter={wpfc:BoolToInverseBoolConverter}}" Content="{Binding DataProvider.CustomUI}"/>
+            <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Visibility="{Binding DataProvider.IsProvidingCustomProperties, Converter={wpfc:BoolToVisibilityConverter}}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{loc:Loc Key=Widget.ExternalData.Properties}"></Button>
+        </StackPanel>
+
+        <Border Visibility="{Binding ProviderWarningActive, Converter={wpfc:BoolToVisibilityConverter}}">
+            <Border.Background>
+                <DrawingBrush TileMode="Tile" 
+              Viewport="0,0,64,64" ViewportUnits="Absolute">
+                    <DrawingBrush.Drawing>
+
+                        <GeometryDrawing>
+
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,8,8" />
+                            </GeometryDrawing.Geometry>
+
+                            <GeometryDrawing.Brush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="Yellow" Offset="0.0" />
+                                    <GradientStop Color="Yellow" Offset="0.25" />
+                                    <GradientStop Color="Black"  Offset="0.25" />
+                                    <GradientStop Color="Black"  Offset="0.5" />
+                                    <GradientStop Color="Yellow" Offset="0.5" />
+                                    <GradientStop Color="Yellow" Offset="0.75" />
+                                    <GradientStop Color="Black"  Offset="0.75" />
+                                    <GradientStop Color="Black"  Offset="1.0" />
+                                </LinearGradientBrush>
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Border.Background>
+
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8" Padding="10,6" Background="#EE000000" CornerRadius="3">
+                <TextBlock Text="{Binding ProviderWarningText}" Foreground="#FFFFD400" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+            </Border>
+        </Border>
+    </Grid>
 
     <Grid x:Shared="false"  x:Key="TimerWidgetControl" Margin="{StaticResource StdMargin}" d:DataContext="{d:DesignInstance widget:vMixControlTimer}">
         <Grid.RowDefinitions>
@@ -1363,6 +1400,8 @@
         </ctrls:vMixControlContainerDummy>
     </DataTemplate>
 </ResourceDictionary>
+
+
 
 
 

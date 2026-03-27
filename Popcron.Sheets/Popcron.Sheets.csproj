@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Popcron.Sheets</RootNamespace>
     <AssemblyName>Popcron.Sheets</AssemblyName>
@@ -28,3 +28,4 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
 </Project>
+

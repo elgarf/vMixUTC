@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using vMixController.ViewModel;
 
 namespace vMixController.Converters
 {
@@ -28,10 +27,8 @@ namespace vMixController.Converters
             var p = string.IsNullOrEmpty((string)parameter);
             if (value is string v)
             {
-                var relativePath = Classes.Utils.SearchFile(v, Directory.GetCurrentDirectory());
-                string foundPath = Classes.Utils.SearchFile(v, Path.GetDirectoryName(vMixController.Classes.AppServices.GetRequiredService<MainViewModel>().ControllerPath));
-
-                if (_extensions.Contains(Path.GetExtension(v)) && (File.Exists(v) || File.Exists(relativePath) || File.Exists(foundPath)))
+                var resolvedPath = Classes.Utils.ResolvePortablePath(v);
+                if (_extensions.Contains(Path.GetExtension(v)) && File.Exists(resolvedPath))
                     return p ? Visibility.Visible : Visibility.Collapsed;
             }
             return p ? Visibility.Collapsed : Visibility.Visible;

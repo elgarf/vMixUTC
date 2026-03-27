@@ -119,6 +119,22 @@ namespace vMixController.Widgets
         }
 
         private List<object> _dataProviderProperties = null;
+        private bool _providerWarningActive;
+        private string _providerWarningText = string.Empty;
+
+        [XmlIgnore]
+        public bool ProviderWarningActive
+        {
+            get => _providerWarningActive;
+            set => SetPropertyValue(ref _providerWarningActive, value, nameof(ProviderWarningActive));
+        }
+
+        [XmlIgnore]
+        public string ProviderWarningText
+        {
+            get => _providerWarningText;
+            set => SetPropertyValue(ref _providerWarningText, value, nameof(ProviderWarningText));
+        }
 
         /// <summary>
         /// Sets and gets the DataProviderProperties property.
@@ -144,35 +160,15 @@ namespace vMixController.Widgets
             }
         }
 
-        private string _dataProviderContent = "";
-
         /// <summary>
-        /// Sets and gets the DataProviderContent property.
-        /// Changes to that property's value raise the PropertyChanged event. 
+        /// Legacy property kept for backwards compatibility with old saved files.
+        /// Binary provider payload is no longer stored.
         /// </summary>
+        [XmlIgnore]
         public string DataProviderContent
         {
-            get
-            {
-                return _dataProviderContent;
-            }
-
-            set
-            {
-                if (_dataProviderContent == value)
-                {
-                    return;
-                }
-                try
-                {
-                    InitializeDataProvider(Convert.FromBase64String(value));
-                }
-                catch (Exception)
-                {
-
-                }
-                SetPropertyValue(ref _dataProviderContent, value, nameof(DataProviderContent));
-            }
+            get => string.Empty;
+            set { }
         }
 
         private string _dataProviderPath = "";
@@ -194,16 +190,11 @@ namespace vMixController.Widgets
                 {
                     try
                     {
-                        if (File.Exists(value))
-                        {
-                            if (DataProvider != null && DataProvider is IDisposable)
-                                ((IDisposable)DataProvider).Dispose();
+                        if (DataProvider is IDisposable disposableProvider)
+                            disposableProvider.Dispose();
+                        DataProvider = null;
 
-                            DataProviderContent = Convert.ToBase64String(File.ReadAllBytes(value));
-                            InitializeDataProvider(File.ReadAllBytes(value));
-                        }
-                        else
-                            InitializeDataProvider(Convert.FromBase64String(DataProviderContent));
+                        InitializeDataProvider();
                     }
                     catch (Exception)
                     {
@@ -213,35 +204,74 @@ namespace vMixController.Widgets
             }
         }
 
-        private void InitializeDataProvider(byte[] value)
+        private string BuildProviderCaption()
+        {
+            if (string.IsNullOrWhiteSpace(_dataProviderPath))
+                return "(path is empty)";
+
+            var fileName = Path.GetFileName(_dataProviderPath);
+            return string.IsNullOrWhiteSpace(fileName) ? _dataProviderPath : fileName;
+        }
+
+        private void SetProviderWarning(string message)
+        {
+            ProviderWarningActive = true;
+            ProviderWarningText = message;
+            Text = message;
+            Data = new ObservableCollection<string> { message };
+        }
+
+        private void ClearProviderWarning()
+        {
+            if (!ProviderWarningActive)
+                return;
+
+            ProviderWarningActive = false;
+            ProviderWarningText = string.Empty;
+            if (!string.IsNullOrWhiteSpace(Text))
+                Text = string.Empty;
+        }
+
+        private void InitializeDataProvider()
         {
             try
             {
-                AssemblyName name;
-                Assembly assembly;
-                if (!string.IsNullOrWhiteSpace(_dataProviderPath))
+                if (string.IsNullOrWhiteSpace(_dataProviderPath))
                 {
-
-                    if (!File.Exists(_dataProviderPath))
-                    {
-                        string fn = Path.GetTempFileName();
-                        using (var fs = new FileStream(fn, FileMode.Create))
-                        using (var sw = new BinaryWriter(fs))
-                            sw.Write(value);
-                        name = AssemblyName.GetAssemblyName(fn);
-                    }
-                    else
-                        name = AssemblyName.GetAssemblyName(_dataProviderPath);
-                    assembly = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == name.FullName).FirstOrDefault() ?? Assembly.Load(value);
-                }
-                else
+                    SetProviderWarning("Provider is not set");
                     return;
-                var aa = Assembly.GetAssembly(assembly.GetTypes().FirstOrDefault());
+                }
+
+                var resolvedProviderPath = Classes.Utils.ResolvePortablePath(_dataProviderPath);
+                if (!File.Exists(resolvedProviderPath))
+                {
+                    SetProviderWarning($"Provider not found: {BuildProviderCaption()} ({_dataProviderPath})");
+                    return;
+                }
+
+                var assemblyPath = Path.GetFullPath(resolvedProviderPath);
+
+                var name = AssemblyName.GetAssemblyName(assemblyPath);
+                var assembly = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .FirstOrDefault(x => x.FullName == name.FullName)
+                    ?? Assembly.LoadFrom(assemblyPath);
+
                 var type = assembly.GetExportedTypes().Where(x => x.GetInterfaces().Contains(typeof(IvMixDataProvider))).FirstOrDefault();
+                if (type == null)
+                {
+                    SetProviderWarning($"Provider type is invalid: {BuildProviderCaption()}");
+                    return;
+                }
 
                 if (DataProvider?.GetType() != type && type != null)
                 {
                     DataProvider = (IvMixDataProvider)assembly.CreateInstance(type.FullName);
+                }
+                if (DataProvider == null)
+                {
+                    SetProviderWarning($"Provider failed to create: {BuildProviderCaption()}");
+                    return;
                 }
 
                 if (_dataProviderProperties != null)
@@ -255,11 +285,13 @@ namespace vMixController.Widgets
                     }
                 }
 
+                ClearProviderWarning();
                 UpdateText(Paths);
             }
             catch (Exception e)
             {
                 _logger.Error(e, "Error loading Data Provider!");
+                SetProviderWarning($"Provider load error: {BuildProviderCaption()}");
             }
         }
 

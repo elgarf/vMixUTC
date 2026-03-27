@@ -10,7 +10,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
@@ -638,7 +637,7 @@ namespace vMixAPI
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
             string textParameters = "";
             if (parameters != null)
-                textParameters = parameters.Select(x => x.Key + "=" + System.Web.HttpUtility.UrlEncode(x.Value)).Aggregate((x, y) => x + "&" + y);
+                textParameters = parameters.Select(x => x.Key + "=" + Uri.EscapeDataString(x.Value ?? string.Empty)).Aggregate((x, y) => x + "&" + y);
             return SendFunction(textParameters);
         }
 

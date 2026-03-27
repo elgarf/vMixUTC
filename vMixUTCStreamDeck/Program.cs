@@ -96,7 +96,7 @@ namespace vMixUTCStreamDeck
                 s.SendMessage(stream =>
                 {
                     var buffer = Encoding.UTF8.GetBytes(e.Button.Context);
-                    stream.Write(BitConverter.GetBytes((byte)e.Type), 0, 1);
+                    stream.WriteByte((byte)e.Type);
 
                     stream.Write(buffer, 0, buffer.Length);
                 });

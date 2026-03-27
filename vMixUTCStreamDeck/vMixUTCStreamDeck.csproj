@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>vMixUTCStreamDeck</RootNamespace>
     <AssemblyName>vMixUTCStreamDeck</AssemblyName>

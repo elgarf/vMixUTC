@@ -40,9 +40,6 @@ namespace vMixStreamDeckLibrary
 					this.m_Delegate();
 				}
 			}
-			catch (ThreadAbortException ex)
-			{
-			}
 			catch (Exception t)
 			{
 				//ThreadTask.ThreadErrorEventHandler threadErrorEvent = this.ThreadErrorEvent;
@@ -59,10 +56,7 @@ namespace vMixStreamDeckLibrary
 			if (!this.disposedValue && disposing && this.m_Thread != null)
 			{
 				this.m_ThreadExit = true;
-				if (!this.m_Thread.Join(5000))
-				{
-					this.m_Thread.Abort();
-				}
+				this.m_Thread.Join(5000);
 				this.m_Thread = null;
 			}
 			this.disposedValue = true;
@@ -79,7 +73,7 @@ namespace vMixStreamDeckLibrary
 		private Thread m_Thread;
 
 		// Token: 0x0400002C RID: 44
-		private bool m_ThreadExit;
+		private volatile bool m_ThreadExit;
 
 		// Token: 0x0400002D RID: 45
 		private ThreadStart m_Delegate;

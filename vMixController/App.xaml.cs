@@ -2,9 +2,9 @@ using System;
 using System.Buffers.Text;
 using System.IO;
 using System.Resources;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using vMixController.Classes;
 using vMixController.ViewModel;
 using vMixControllerSkin.Localization;
+using System.Linq;
 
 namespace vMixController
 {
@@ -23,6 +24,22 @@ namespace vMixController
     /// </summary>
     public partial class App : Application
     {
+        private static readonly string FatalLogPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fatal.log");
+        private static void EmergencyLog(string title, Exception exception = null)
+        {
+            try
+            {
+                var text = $"{DateTime.Now:O} {title}{Environment.NewLine}";
+                if (exception != null)
+                    text += exception + Environment.NewLine;
+                File.AppendAllText(FatalLogPath, text);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public IServiceProvider Services { get; private set; }
 
@@ -65,49 +82,194 @@ namespace vMixController
         }
 
         public static SplashScreenGdip.SplashScreen SplashScreen;
+        private static Window _wpfSplashWindow;
         static MemoryStream _splashImage = new MemoryStream();
         static App()
         {
-            _splashImage = new MemoryStream();
-            var buffer = RenderToByteArray(new UTCSplashScreen());
-            _splashImage.Write(buffer, 0, buffer.Length);
-            var ss = new SplashScreenGdip.SplashScreen(400, _splashImage);
-            SplashScreen = ss;
-            ss.Closed += Ss_Closed;
-            Task.Run(() => ss.Run());
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            EnsureDataProvidersNativePath();
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                EmergencyLog("Static UnhandledException", e.ExceptionObject as Exception);
+            TaskScheduler.UnobservedTaskException += (s, e) =>
+                EmergencyLog("Static UnobservedTaskException", e.Exception);
+        }
 
-            //var e = (UIElement)Activator.CreateInstance(typeof(UTCSplashScreen));
+        private static void EnsureDataProvidersNativePath()
+        {
+            try
+            {
+                var providersDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataProviders");
+                if (!Directory.Exists(providersDir))
+                    return;
+
+                var currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+                var parts = currentPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Any(p => string.Equals(p.Trim(), providersDir, StringComparison.OrdinalIgnoreCase)))
+                    return;
+
+                Environment.SetEnvironmentVariable("PATH", providersDir + ";" + currentPath);
+            }
+            catch (Exception ex)
+            {
+                EmergencyLog("EnsureDataProvidersNativePath failed", ex);
+            }
         }
 
         private static void Ss_Closed(object sender, EventArgs e)
         {
             Task.Run(() =>
             {
-                bool activated = false;
-                while (!activated)
+                for (var attempt = 0; attempt < 100; attempt++)
                 {
                     Thread.Sleep(50);
-                    
-                    activated = Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+
+                    try
+                    {
+                        if (Application.Current == null)
+                            return;
+
+                        var mainWindow = Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow);
+                        if (mainWindow == null)
+                            continue;
+
+                        var activated = Application.Current.Dispatcher.Invoke(() => mainWindow.Activate());
+                        if (activated)
+                            return;
+                    }
+                    catch
+                    {
+                        // ignore activation race during startup
+                    }
                 }
             });
         }
 
+        private static void TryShowSplashScreen()
+        {
+            try
+            {
+                if (_wpfSplashWindow != null)
+                    return;
+
+                var splashControl = new UTCSplashScreen();
+                _wpfSplashWindow = new Window
+                {
+                    Content = splashControl,
+                    Width = 400,
+                    Height = 400,
+                    WindowStyle = WindowStyle.None,
+                    ResizeMode = ResizeMode.NoResize,
+                    ShowInTaskbar = false,
+                    Topmost = true,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    AllowsTransparency = false,
+                    Background = Brushes.Transparent
+                };
+                _wpfSplashWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                EmergencyLog("TryShowSplashScreen failed", ex);
+            }
+        }
+
+        public static void CloseSplash()
+        {
+            try
+            {
+                SplashScreen?.Close();
+            }
+            catch (Exception ex)
+            {
+                EmergencyLog("CloseSplash (gdip) failed", ex);
+            }
+
+            try
+            {
+                if (_wpfSplashWindow != null)
+                {
+                    _wpfSplashWindow.Close();
+                    _wpfSplashWindow = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                EmergencyLog("CloseSplash (wpf) failed", ex);
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            ConfigureLogging();
             ConfigureServices();
 
             LocalizationManager.Instance.InitializeFromSettings();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             this.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            TryShowSplashScreen();
 
             base.OnStartup(e);
 
             var mainWindow = new MainWindow();
             MainWindow = mainWindow;
             mainWindow.Show();
+        }
+
+        private static void ConfigureLogging()
+        {
+            var config = new NLog.Config.LoggingConfiguration();
+            var logsDirectory = ResolveWritableLogsDirectory();
+            if (logsDirectory == null)
+            {
+                NLog.LogManager.Configuration = config;
+                return;
+            }
+
+            var fileTarget = new NLog.Targets.FileTarget("f")
+            {
+                FileName = Path.Combine(logsDirectory, "${shortdate}.log"),
+                Layout = "${longdate} ${uppercase:${level}} ${message} ${exception:format=ToString}"
+            };
+
+            var errorTarget = new NLog.Targets.FileTarget("ferr")
+            {
+                FileName = Path.Combine(logsDirectory, "${shortdate}.log"),
+                Layout = "${longdate} STATE: ${event-properties:item=APIReturn}${newline}${longdate} ${uppercase:${level}} ${message} ${exception:format=ToString}"
+            };
+
+            config.AddTarget(fileTarget);
+            config.AddTarget(errorTarget);
+            config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, fileTarget);
+            config.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Error, errorTarget);
+            NLog.LogManager.Configuration = config;
+        }
+
+        private static string ResolveWritableLogsDirectory()
+        {
+            var candidates = new[]
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "vMix UTC", "logs"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vMix UTC", "logs"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs")
+            };
+
+            foreach (var candidate in candidates)
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(candidate))
+                        continue;
+                    Directory.CreateDirectory(candidate);
+                    return candidate;
+                }
+                catch (Exception ex)
+                {
+                    EmergencyLog($"ConfigureLogging candidate failed: {candidate}", ex);
+                }
+            }
+
+            return null;
         }
 
         private void ConfigureServices()
@@ -131,11 +293,13 @@ namespace vMixController
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             _logger.Error(e.Exception, "Dispatcher unhandled exception.");
+            EmergencyLog("DispatcherUnhandledException", e.Exception);
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             _logger.Error(e.Exception, "Unobserved task exception.");
+            EmergencyLog("UnobservedTaskException", e.Exception);
 
         }
 
@@ -143,6 +307,7 @@ namespace vMixController
         {
 
             _logger.Error((Exception)e.ExceptionObject, "Current domain unhandled exception.");
+            EmergencyLog("CurrentDomain_UnhandledException", e.ExceptionObject as Exception);
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

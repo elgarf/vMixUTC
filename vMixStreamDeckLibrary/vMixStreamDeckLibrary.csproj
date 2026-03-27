@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>vMixStreamDeckLibrary</RootNamespace>
     <AssemblyName>vMixStreamDeckLibrary</AssemblyName>
@@ -27,23 +27,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel.Web" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources.resources" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="My\MySettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>MySettings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Update="My\MySettings.Designer.cs">
-      <DependentUpon>MySettings.settings</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <Compile Remove="My\*.cs" />
+    <None Remove="My\MySettings.settings" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WatsonWebsocket" />

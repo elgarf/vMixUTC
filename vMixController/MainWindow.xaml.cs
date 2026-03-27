@@ -83,7 +83,6 @@ namespace vMixController
                 }
             });
 
-            App.SplashScreen.Close();
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -266,13 +265,14 @@ namespace vMixController
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            App.CloseSplash();
             Keyboard.Focus(Layout);
         }
 
         private void LanguageMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is MenuItem menuItem && menuItem.Tag is CultureInfo cultureName)
-                LocalizationManager.Instance.SetCulture(cultureName.ToString());
+                LocalizationManager.Instance.SetCulture(cultureName.Name);
         }
     }
 }

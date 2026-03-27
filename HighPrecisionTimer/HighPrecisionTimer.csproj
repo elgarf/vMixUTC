@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>HighPrecisionTimer</RootNamespace>
     <AssemblyName>HighPrecisionTimer</AssemblyName>
@@ -24,3 +24,4 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 </Project>
+
