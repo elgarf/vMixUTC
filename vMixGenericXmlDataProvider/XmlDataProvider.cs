@@ -1,20 +1,14 @@
-// ��������� �������� ������ �� System.Net.Http
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -23,62 +17,100 @@ using vMixControllerSkin;
 
 namespace XmlDataProviderNs
 {
-    public partial class XmlDataProvider : DependencyObject, IvMixDataProviderTextInput, INotifyPropertyChanged
+    public partial class XmlDataProvider : PollingTextInputDataProviderBase
     {
-        #region Private Fields
-
-        // 1. ���������� HttpClient. ���� ����������� ��������� ������������� ��� �����������������.
-        private static readonly HttpClient _httpClient = new HttpClient();
-        // 2. ConcurrentDictionary ��� ����������������� ���� ��� ������ ����������.
-        private static readonly ConcurrentDictionary<string, CacheEntry> _cache = new ConcurrentDictionary<string, CacheEntry>();
-
-        // 3. SemaphoreSlim ��� �������������� ������������� �������� ������ � ���� �� �������.
-        private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
+        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly ConcurrentDictionary<string, CacheEntry> Cache = new ConcurrentDictionary<string, CacheEntry>();
 
         private List<string> _data = new List<string>();
-        private string[] _valuesCache = Array.Empty<string>();
-        private int _loadScheduled;
-        private readonly DispatcherTimer _refreshTimer;
-        private int _currentTimerPeriodMs;
 
-        #endregion
+        protected override int MinPeriodMs => 250;
 
-        #region Properties & Commands
-
-        public System.Windows.UIElement CustomUI { get; }
-        public bool IsProvidingCustomProperties => true;
-        public int Period { get; set; } = 1000; // �� ��������� 1 �������
-
-
-
-        public string[] Values
+        public XmlDataProvider()
         {
-            get
+            Period = 1000;
+
+            try
             {
-                ScheduleLoadIfNeeded();
-                return _valuesCache;
+                CustomUI = new OnWidgetUI { DataContext = this };
             }
+            catch (Exception e)
+            {
+                CustomUI = new TextBox
+                {
+                    Text = e.ToString(),
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
+                    Height = 256,
+                    FontWeight = FontWeights.Normal,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+            }
+
+            StartPolling(runImmediately: true);
         }
+
+        public override bool IsProvidingCustomProperties => true;
+
+        public string Url
+        {
+            get => (string)GetValue(UrlProperty);
+            set => SetValue(UrlProperty, value);
+        }
+
+        public static readonly DependencyProperty UrlProperty =
+            DependencyProperty.Register(nameof(Url), typeof(string), typeof(XmlDataProvider),
+                new PropertyMetadata(string.Empty, OnSourcePropertyChanged));
+
+        public string XPath
+        {
+            get => (string)GetValue(XPathProperty);
+            set => SetValue(XPathProperty, value);
+        }
+
+        public static readonly DependencyProperty XPathProperty =
+            DependencyProperty.Register(nameof(XPath), typeof(string), typeof(XmlDataProvider),
+                new PropertyMetadata(string.Empty, OnSourcePropertyChanged));
+
+        public string NameSpaces
+        {
+            get => (string)GetValue(NameSpacesProperty);
+            set => SetValue(NameSpacesProperty, value);
+        }
+
+        public static readonly DependencyProperty NameSpacesProperty =
+            DependencyProperty.Register(nameof(NameSpaces), typeof(string), typeof(XmlDataProvider),
+                new PropertyMetadata(string.Empty, OnSourcePropertyChanged));
+
+        public string Error
+        {
+            get => (string)GetValue(ErrorProperty);
+            set => SetValue(ErrorProperty, value);
+        }
+
+        public static readonly DependencyProperty ErrorProperty =
+            DependencyProperty.Register(nameof(Error), typeof(string), typeof(XmlDataProvider), new PropertyMetadata(string.Empty));
+
+        public int GroupBy
+        {
+            get => (int)GetValue(GroupByProperty);
+            set => SetValue(GroupByProperty, value);
+        }
+
+        public static readonly DependencyProperty GroupByProperty =
+            DependencyProperty.Register(nameof(GroupBy), typeof(int), typeof(XmlDataProvider),
+                new PropertyMetadata(1, OnSourcePropertyChanged));
 
         public List<string> Data
         {
             get => _data;
-            private set // ������ ������ ���������, ����� ������ �������� ������ ������ ������
+            private set
             {
-                var newData = value ?? new List<string>();
-                if (!_data.SequenceEqual(newData))
-                {
-                    _data = newData;
-                    _valuesCache = _data.ToArray();
-                    OnPropertyChanged(nameof(Values));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Data)));
-                }
+                _data = value ?? new List<string>();
+                SetValuesCache(_data.ToArray(), skipIfEqual: false);
+                RaisePropertyChanged(nameof(Data));
             }
         }
-
-        public ICommand PreviewKeyUp { get; set; }
-        public ICommand GotFocus { get; set; }
-        public ICommand LostFocus { get; set; }
 
         [RelayCommand]
         private void HandlePreviewKeyUp(KeyEventArgs p)
@@ -158,60 +190,70 @@ namespace XmlDataProviderNs
         [RelayCommand]
         private void Reload()
         {
-            _ = ForceReloadAsync();
-        }
-        #endregion
-
-        #region Async Data Loading
-
-        private async Task LoadDataIfNeededAsync()
-        {
-            try
+            if (!string.IsNullOrWhiteSpace(Url))
             {
-                var url = Url; // �������� �������� �� DependencyProperty
-                if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(XPath))
-                {
-                    Data = new List<string>();
-                    SetError(string.Empty);
-                    return;
-                }
-
-                // �������� ����
-                if (_cache.TryGetValue(url, out var cacheEntry) && (DateTime.UtcNow - cacheEntry.LastUpdated).TotalMilliseconds < Period)
-                {
-                    // ���� ������ � ���� ���������, ������ ������� ������� ��������� �� ���
-                    UpdateDataFromCache(cacheEntry.Document);
-                    return;
-                }
-
-                // ������ � �������, ����� ������ ���� ����� ��� ��������� ������
-                await _asyncLock.WaitAsync();
-                try
-                {
-                    // ��������� �������� ���� ����� ����� � �������.
-                    // ��������, ������ ����� ��� ������� ������, ���� �� �����.
-                    if (_cache.TryGetValue(url, out cacheEntry) && (DateTime.UtcNow - cacheEntry.LastUpdated).TotalMilliseconds < Period)
-                    {
-                        UpdateDataFromCache(cacheEntry.Document);
-                        return;
-                    }
-
-                    // �������� � ��������� ������
-                    var doc = await FetchXmlAsync(url);
-                    if (doc != null)
-                    {
-                        _cache[url] = new CacheEntry { Document = doc, LastUpdated = DateTime.UtcNow };
-                        UpdateDataFromCache(doc);
-                    }
-                }
-                finally
-                {
-                    _asyncLock.Release();
-                }
+                Cache.TryRemove(Url, out _);
             }
-            finally
+
+            ScheduleRefresh();
+        }
+
+        public override List<object> GetProperties()
+        {
+            return new List<object> { Url, XPath, NameSpaces, GroupBy };
+        }
+
+        public override void SetProperties(List<object> props)
+        {
+            if (props == null)
             {
-                Interlocked.Exchange(ref _loadScheduled, 0);
+                return;
+            }
+
+            Url = props.ElementAtOrDefault(0) as string;
+            XPath = props.ElementAtOrDefault(1) as string;
+            NameSpaces = props.ElementAtOrDefault(2) as string;
+            GroupBy = (int)(props.ElementAtOrDefault(3) ?? 1);
+        }
+
+        public override void ShowProperties(Window owner)
+        {
+            var properties = new PropertiesWindow { Owner = owner, DataContext = this };
+            var previous = GetProperties();
+            if (properties.ShowDialog() != true)
+            {
+                SetProperties(previous);
+            }
+        }
+
+        protected override async Task RefreshValuesAsync()
+        {
+            await LoadDataAsync();
+        }
+
+        private async Task LoadDataAsync()
+        {
+            var url = Url;
+            var xPath = XPath;
+
+            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(xPath))
+            {
+                Data = new List<string>();
+                SetError(string.Empty);
+                return;
+            }
+
+            if (Cache.TryGetValue(url, out var cacheEntry) && (DateTime.UtcNow - cacheEntry.LastUpdated).TotalMilliseconds < Period)
+            {
+                UpdateDataFromCache(cacheEntry.Document, xPath);
+                return;
+            }
+
+            var doc = await FetchXmlAsync(url);
+            if (doc != null)
+            {
+                Cache[url] = new CacheEntry { Document = doc, LastUpdated = DateTime.UtcNow };
+                UpdateDataFromCache(doc, xPath);
             }
         }
 
@@ -221,23 +263,26 @@ namespace XmlDataProviderNs
             try
             {
                 if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                {
                     return null;
+                }
 
                 if (uri.Scheme == Uri.UriSchemeFile)
                 {
                     using (var stream = File.Open(uri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        return XDocument.Load(stream, LoadOptions.None);
-                }
-                else
-                    using (var response = await _httpClient.GetAsync(url))
                     {
-                        response.EnsureSuccessStatusCode();
-                        using (var stream = await response.Content.ReadAsStreamAsync())
-                        {
-                            // 5. ����������� �������� � XDocument
-                            return XDocument.Load(stream, LoadOptions.None);
-                        }
+                        return XDocument.Load(stream, LoadOptions.None);
                     }
+                }
+
+                using (var response = await HttpClient.GetAsync(url))
+                {
+                    response.EnsureSuccessStatusCode();
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    {
+                        return XDocument.Load(stream, LoadOptions.None);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -246,14 +291,18 @@ namespace XmlDataProviderNs
             }
         }
 
-        private void UpdateDataFromCache(XDocument doc)
+        private void UpdateDataFromCache(XDocument doc, string xPath)
         {
-            if (doc == null) return;
+            if (doc == null)
+            {
+                return;
+            }
+
             try
             {
                 var nsManager = new XmlNamespaceManager(new NameTable());
-                var namespaces = NameSpaces; // �������� �������� �� DependencyProperty
-                if (!string.IsNullOrEmpty(namespaces))
+                var namespaces = NameSpaces;
+                if (!string.IsNullOrWhiteSpace(namespaces))
                 {
                     foreach (var item in namespaces.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
                     {
@@ -265,10 +314,9 @@ namespace XmlDataProviderNs
                     }
                 }
 
-                // 6. ���������� XPathSelectElements �� LINQ to XML
-                var nodes = (IEnumerable<object>)doc.XPathEvaluate(XPath, nsManager);
-                var groupBy = GroupBy;
-                var maxItems = 100 * (groupBy <= 0 ? 1 : groupBy);
+                var nodes = (IEnumerable<object>)doc.XPathEvaluate(xPath, nsManager);
+                int groupBy = GroupBy <= 0 ? 1 : GroupBy;
+                int maxItems = 100 * groupBy;
                 var extracted = new List<string>(maxItems);
 
                 foreach (var node in nodes.OfType<XObject>())
@@ -295,31 +343,7 @@ namespace XmlDataProviderNs
                     }
                 }
 
-                List<string> newData;
-                if (groupBy > 1)
-                {
-                    newData = new List<string>((extracted.Count + groupBy - 1) / groupBy);
-                    var builder = new StringBuilder();
-                    for (int i = 0; i < extracted.Count; i++)
-                    {
-                        if (i > 0 && i % groupBy == 0)
-                        {
-                            newData.Add(builder.ToString().TrimEnd('|'));
-                            builder.Clear();
-                        }
-
-                        builder.Append(extracted[i]).Append('|');
-                    }
-
-                    if (builder.Length > 0)
-                    {
-                        newData.Add(builder.ToString().TrimEnd('|'));
-                    }
-                }
-                else
-                {
-                    newData = extracted;
-                }
+                List<string> newData = DataProviderTextFormatter.GroupByPipe(extracted, groupBy);
 
                 RunOnUi(() =>
                 {
@@ -337,182 +361,23 @@ namespace XmlDataProviderNs
             }
         }
 
-
-        #endregion
-
-        #region Dependency Properties
-
-        public string Url
+        private void SetError(string error)
         {
-            get => (string)GetValue(UrlProperty);
-            set => SetValue(UrlProperty, value);
-        }
-        public static readonly DependencyProperty UrlProperty =
-            DependencyProperty.Register(nameof(Url), typeof(string), typeof(XmlDataProvider), new PropertyMetadata(""));
-
-        public string XPath
-        {
-            get => (string)GetValue(XPathProperty);
-            set => SetValue(XPathProperty, value);
-        }
-        public static readonly DependencyProperty XPathProperty =
-            DependencyProperty.Register(nameof(XPath), typeof(string), typeof(XmlDataProvider), new PropertyMetadata(""));
-
-        public string NameSpaces
-        {
-            get => (string)GetValue(NameSpacesProperty);
-            set => SetValue(NameSpacesProperty, value);
-        }
-        public static readonly DependencyProperty NameSpacesProperty =
-            DependencyProperty.Register(nameof(NameSpaces), typeof(string), typeof(XmlDataProvider), new PropertyMetadata(""));
-
-        public string Error
-        {
-            get => (string)GetValue(ErrorProperty);
-            set => SetValue(ErrorProperty, value);
-        }
-        public static readonly DependencyProperty ErrorProperty =
-            DependencyProperty.Register(nameof(Error), typeof(string), typeof(XmlDataProvider), new PropertyMetadata(""));
-
-        public int GroupBy
-        {
-            get => (int)GetValue(GroupByProperty);
-            set => SetValue(GroupByProperty, value);
-        }
-        public static readonly DependencyProperty GroupByProperty =
-            DependencyProperty.Register(nameof(GroupBy), typeof(int), typeof(XmlDataProvider), new PropertyMetadata(1));
-
-        #endregion
-
-        #region Interface Implementations & Constructor
-
-        public List<object> GetProperties()
-        {
-            return new List<object> { Url, XPath, NameSpaces, GroupBy };
+            RunOnUi(() => Error = error ?? string.Empty);
         }
 
-        public void SetProperties(List<object> props)
+        private static void OnSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (props == null) return;
-
-            Url = props.ElementAtOrDefault(0) as string;
-            XPath = props.ElementAtOrDefault(1) as string;
-            NameSpaces = props.ElementAtOrDefault(2) as string;
-            GroupBy = (int)(props.ElementAtOrDefault(3) ?? 1);
-        }
-
-        public void ShowProperties(Window owner)
-        {
-            var properties = new PropertiesWindow { Owner = owner, DataContext = this };
-            var previous = GetProperties();
-            if (properties.ShowDialog() != true)
+            if (d is XmlDataProvider provider)
             {
-                SetProperties(previous);
+                provider.ScheduleRefresh();
             }
         }
 
-        public XmlDataProvider()
-        {
-            try
-            {
-                CustomUI = new OnWidgetUI { DataContext = this };
-            }
-            catch (Exception e)
-            {
-                CustomUI = new TextBox { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            }
-
-            _currentTimerPeriodMs = Math.Max(250, Period);
-            _refreshTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(_currentTimerPeriodMs)
-            };
-            _refreshTimer.Tick += RefreshTimer_Tick;
-            _refreshTimer.Start();
-            ScheduleLoadIfNeeded();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // ��������������� ����� ��� ����
-        private class CacheEntry
+        private sealed class CacheEntry
         {
             public XDocument Document { get; set; }
             public DateTime LastUpdated { get; set; }
         }
-
-        #endregion
-
-        // ���������� ���� � ������, ������� ������ �� �����
-        // private static int _maxid = 0;
-        // private readonly int _id = _maxid++;
-        // private bool _retrievingData = false;
-        // private string _url, _xpath, _namespaces;
-        // private int _groupBy;
-        // PropertyChangedCallback ������ �� �����, �.�. �� ������ �������� �������� �� DP.
-
-        private void ScheduleLoadIfNeeded()
-        {
-            if (Interlocked.CompareExchange(ref _loadScheduled, 1, 0) != 0)
-            {
-                return;
-            }
-
-            _ = LoadDataIfNeededAsync();
-        }
-
-        private async Task ForceReloadAsync()
-        {
-            if (!string.IsNullOrWhiteSpace(Url))
-            {
-                _cache.TryRemove(Url, out _);
-            }
-
-            await LoadDataIfNeededAsync();
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void SetError(string error)
-        {
-            if (Application.Current?.Dispatcher?.CheckAccess() ?? true)
-            {
-                Error = error;
-            }
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => Error = error));
-            }
-        }
-
-        private static void RunOnUi(Action action)
-        {
-            if (action == null) return;
-
-            if (Application.Current?.Dispatcher?.CheckAccess() ?? true)
-            {
-                action();
-            }
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(action);
-            }
-        }
-
-        private void RefreshTimer_Tick(object sender, EventArgs e)
-        {
-            var targetPeriod = Math.Max(250, Period);
-            if (targetPeriod != _currentTimerPeriodMs)
-            {
-                _currentTimerPeriodMs = targetPeriod;
-                _refreshTimer.Interval = TimeSpan.FromMilliseconds(_currentTimerPeriodMs);
-            }
-
-            ScheduleLoadIfNeeded();
-        }
     }
 }
-

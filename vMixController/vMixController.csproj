@@ -159,6 +159,7 @@
   <Target Name="CleanupDataProvidersFolder" AfterTargets="Build" Condition="Exists('$(TargetDir)DataProviders')">
     <ItemGroup>
       <_DeleteProviderFiles Include="$(TargetDir)DataProviders\vMixControllerDataProvider.dll" />
+      <_DeleteProviderFiles Include="$(TargetDir)DataProviders\WeatherExternalDataProvider.dll;$(TargetDir)DataProviders\WeatherExternalDataProvider.pdb;$(TargetDir)DataProviders\WeatherExternalDataProvider.deps.json;$(TargetDir)DataProviders\WeatherExternalDataProvider.dll.config" />
     </ItemGroup>
     <Delete Files="@(_DeleteProviderFiles)" TreatErrorsAsWarnings="true" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Get-ChildItem -LiteralPath '$(TargetDir)DataProviders' -Directory -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | ForEach-Object { if (-not (Get-ChildItem -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue } }&quot;" />
@@ -184,6 +185,23 @@
   </Target>
   <Target Name="CleanupPluginDependenciesFromRoot" AfterTargets="Build">
     <Delete Files="$(TargetDir)Json.More.dll;$(TargetDir)JsonPath.Net.dll;$(TargetDir)ExcelDataReader.dll" TreatErrorsAsWarnings="true" />
+  </Target>
+  <Target Name="CleanupEmbeddedProjectReferencesFromRoot" AfterTargets="Build">
+    <ItemGroup>
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)HighPrecisionTimer.dll;$(TargetDir)HighPrecisionTimer.pdb" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)NCalc.dll;$(TargetDir)NCalc.pdb" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)Popcron.Sheets.dll;$(TargetDir)Popcron.Sheets.pdb" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixAPI.dll;$(TargetDir)vMixAPI.pdb;$(TargetDir)vMixAPI.dll.config" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixControllerDataProvider.dll;$(TargetDir)vMixControllerDataProvider.pdb" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixControllerSkin.dll;$(TargetDir)vMixControllerSkin.pdb;$(TargetDir)vMixControllerSkin.dll.config" />
+      <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixStreamDeckLibrary.dll;$(TargetDir)vMixStreamDeckLibrary.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_EmbeddedProjectArtifacts)" TreatErrorsAsWarnings="true" />
+  </Target>
+  <Target Name="CleanupOutputClutter" AfterTargets="Build">
+    <Delete Files="$(TargetDir)fatal.log" TreatErrorsAsWarnings="true" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;if (Test-Path -LiteralPath '$(TargetDir)logs') { Get-ChildItem -LiteralPath '$(TargetDir)logs' -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; if (-not (Get-ChildItem -LiteralPath '$(TargetDir)logs' -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath '$(TargetDir)logs' -Force -ErrorAction SilentlyContinue } }&quot;" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Get-ChildItem -LiteralPath '$(TargetDir)' -Directory -Recurse -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | ForEach-Object { if (-not (Get-ChildItem -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue)) { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue } }&quot;" />
   </Target>
   <Target Name="CopySkinSatelliteResourcesToHost" AfterTargets="Build">
     <ItemGroup>

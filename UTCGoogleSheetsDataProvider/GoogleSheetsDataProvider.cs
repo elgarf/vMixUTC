@@ -5,15 +5,12 @@ using Popcron.Sheets;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using vMixControllerDataProvider;
 using vMixControllerSkin;
 
@@ -33,7 +30,7 @@ namespace UTCGoogleSheetsDataProvider
         }
     }
     // ��������� IDisposable ��� ����������� ������������ �������� (������� � ������ ������)
-    public partial class GoogleSheetsDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDisposable
+    public partial class GoogleSheetsDataProvider : PollingTextInputDataProviderBase
     {
         // ����������� ���� ��� ����������� ������������� ����� ������������ ����������.
         // ��� �������� ������� �� ����������� � ����������� �������� ����� � ��� �� ������.
@@ -41,9 +38,6 @@ namespace UTCGoogleSheetsDataProvider
         private static readonly ConcurrentDictionary<string, Spreadsheet> _spreadsheetCache = new ConcurrentDictionary<string, Spreadsheet>();
         private static readonly ConcurrentDictionary<string, DateTime> _lastModifiedCache = new ConcurrentDictionary<string, DateTime>();
 
-        private readonly DispatcherTimer _webTimer;
-        private string[] _valuesCache = Array.Empty<string>();
-        private int _period = 5000; // ����������� �������� �� ���������
         private string _apiKey = "";
         private string _sheetKey = "";
         private int _startRow = 0;
@@ -52,17 +46,10 @@ namespace UTCGoogleSheetsDataProvider
         private int _endCol = -1;
         private int _sheet = 0;
         private bool _isTable = true;
-        private UIElement _customUI;
 
-        // ������� ��� �������������� �������������� ���������� ���������� �������� �� ���������� ��� ������ ����������.
-        // ���������� SemaphoreSlim(1, 1) ��� ����������� ������ lock.
-        private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        public ICommand PreviewKeyUp { get; set; }
-        public ICommand GotFocus { get; set; }
-        public ICommand LostFocus { get; set; }
-        public bool IsProvidingCustomProperties => false;
+        protected override int MinPeriodMs => 1000;
 
         string _error = string.Empty;
         public string Error
@@ -71,20 +58,10 @@ namespace UTCGoogleSheetsDataProvider
             set => SetPropertyValue(ref _error, value, nameof(Error));
         }
 
-        public int Period
+        public override int Period
         {
-            get => _period;
-            set
-            {
-                var normalized = Math.Max(1000, value);
-                SetPropertyValue(ref _period, normalized, nameof(Period), p =>
-                {
-                    if (_webTimer != null)
-                    {
-                        _webTimer.Interval = TimeSpan.FromMilliseconds(p);
-                    }
-                });
-            }
+            get => base.Period;
+            set => base.Period = value;
         }
 
         [RelayCommand]
@@ -132,104 +109,70 @@ namespace UTCGoogleSheetsDataProvider
             }
         }
 
-        // �������� Values ������ ������ ���������� �������������� ��������.
-        // ��� ������������� ��������� UI, �.�. ������ ����������� ���������.
-        public string[] Values => _valuesCache;
-
-        public UIElement CustomUI => _customUI;
-
         public GoogleSheetsDataProvider()
         {
+            Period = 5000;
             SheetsSerializer.Serializer = new JsonSheetsSerializer();
             try
             {
-                _customUI = new OnWidgetUI() { DataContext = this };
+                CustomUI = new OnWidgetUI() { DataContext = this };
             }
             catch (Exception e)
             {
-                _customUI = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                CustomUI = new TextBox() { Text = e.ToString(), AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Height = 256, FontWeight = FontWeights.Normal, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             }
 
-            _webTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(Period)
-            };
-            _webTimer.Tick += WebTimer_Tick;
-            _webTimer.Start();
-
-            // ��������� �������������� ���������� ������
-            _ = UpdateData();
+            StartPolling(runImmediately: true);
         }
 
-        // ��������� ����������� ���������� ������ ��� ���������� ����������� ������.
-        private async void WebTimer_Tick(object sender, EventArgs e)
-        {
-            await UpdateData();
-        }
-
-        private async Task UpdateData()
+        protected override async Task RefreshValuesAsync()
         {
             if (string.IsNullOrWhiteSpace(APIKey) || string.IsNullOrWhiteSpace(SheetKey))
             {
                 // ���������� ������, ���� ����� �� �����������
-                UpdateValuesCache(Array.Empty<string>());
+                SetValuesCache(Array.Empty<string>(), skipIfEqual: false);
                 return;
             }
 
-            // �������� ��������� ������� ��� ��������. ���� �� ��� �����, ������,
-            // ���������� ��� ����, � �� ������ �������.
-            if (!await _asyncLock.WaitAsync(0))
-            {
-                return;
-            }
+            var token = _cancellationTokenSource.Token;
+            if (token.IsCancellationRequested) return;
 
             try
             {
-                var token = _cancellationTokenSource.Token;
-                if (token.IsCancellationRequested) return;
-
-                try
+                // 1. ����������� (���������� ���)
+                if (!_authCache.TryGetValue(APIKey, out var auth))
                 {
-                    // 1. ����������� (���������� ���)
-                    if (!_authCache.TryGetValue(APIKey, out var auth))
-                    {
-                        auth = await Popcron.Sheets.Authorization.Authorize(APIKey);
-                        _authCache.TryAdd(APIKey, auth);
-                    }
-
-                    token.ThrowIfCancellationRequested();
-
-                    // 2. �������� ������������� ���������� ������
-                    _lastModifiedCache.TryGetValue(SheetKey, out var lastModified);
-                    if ((DateTime.Now - lastModified).TotalMilliseconds > Period)
-                    {
-                        //Error = ($"Loading {SheetKey} at {DateTime.Now}");
-                        var sst = await Popcron.Sheets.Spreadsheet.Get(SheetKey, auth);
-                        _spreadsheetCache[SheetKey] = sst;
-                        _lastModifiedCache[SheetKey] = DateTime.Now;
-                    }
-
-                    token.ThrowIfCancellationRequested();
-
-                    // 3. ��������� ������ � ���������� UI
-                    ProcessAndCacheData();
+                    auth = await Popcron.Sheets.Authorization.Authorize(APIKey);
+                    _authCache.TryAdd(APIKey, auth);
                 }
-                catch (OperationCanceledException)
+
+                token.ThrowIfCancellationRequested();
+
+                // 2. �������� ������������� ���������� ������
+                _lastModifiedCache.TryGetValue(SheetKey, out var lastModified);
+                if ((DateTime.Now - lastModified).TotalMilliseconds > Period)
                 {
-                    // ��� ��������� ���������� ��� ��������, ���������� ���.
-                    Error = ("Data update was canceled.");
+                    //Error = ($"Loading {SheetKey} at {DateTime.Now}");
+                    var sst = await Popcron.Sheets.Spreadsheet.Get(SheetKey, auth);
+                    _spreadsheetCache[SheetKey] = sst;
+                    _lastModifiedCache[SheetKey] = DateTime.Now;
                 }
-                catch (Exception ex)
-                {
-                    Error = ($"Error loading or processing spreadsheet: {ex.Message}");
-                    // � ������ ������ ���������� ���, ����� �������� ������ ��������
-                    UpdateValuesCache(Array.Empty<string>());
-                }
+
+                token.ThrowIfCancellationRequested();
+
+                // 3. ��������� ������ � ���������� UI
+                ProcessAndCacheData();
             }
-            finally
+            catch (OperationCanceledException)
             {
-                // ����������� ������� � ����� ������.
-                _asyncLock.Release();
+                // ��� ��������� ���������� ��� ��������, ���������� ���.
+                Error = ("Data update was canceled.");
+            }
+            catch (Exception ex)
+            {
+                Error = ($"Error loading or processing spreadsheet: {ex.Message}");
+                // � ������ ������ ���������� ���, ����� �������� ������ ��������
+                SetValuesCache(Array.Empty<string>(), skipIfEqual: false);
             }
         }
 
@@ -237,13 +180,13 @@ namespace UTCGoogleSheetsDataProvider
         {
             if (!_spreadsheetCache.TryGetValue(SheetKey, out var sst))
             {
-                UpdateValuesCache(Array.Empty<string>());
+                SetValuesCache(Array.Empty<string>(), skipIfEqual: false);
                 return;
             }
 
             if (sst.Sheets.Count <= SheetIndex)
             {
-                UpdateValuesCache(Array.Empty<string>());
+                SetValuesCache(Array.Empty<string>(), skipIfEqual: false);
                 return;
             }
 
@@ -256,16 +199,16 @@ namespace UTCGoogleSheetsDataProvider
             {
                 if (IsTable)
                 {
-                    var line = new StringBuilder();
+                    var rowValues = new List<string>();
                     for (int x = Math.Max(StartCol, 0); x < maxCols && (EndCol < 0 || x <= EndCol); x++)
                     {
                         string val = sheet.Data[x, y].Value ?? "";
-                        line.Append('|').Append(val);
+                        rowValues.Add(val);
                     }
 
-                    if (line.Length > 0)
+                    if (rowValues.Count > 0)
                     {
-                        results.Add(line.ToString(1, line.Length - 1));
+                        results.Add(DataProviderTextFormatter.JoinWithPipe(rowValues));
                     }
                 }
                 else
@@ -277,18 +220,7 @@ namespace UTCGoogleSheetsDataProvider
                 }
             }
 
-            UpdateValuesCache(results.ToArray());
-        }
-
-        // ����� ��� ����������������� ���������� ���� � �������, ��������� � UI.
-        private void UpdateValuesCache(string[] newValues)
-        {
-            // ���������� ��������� ��� ���������� �������, ����������� � UI.
-            RunOnUi(() =>
-            {
-                _valuesCache = newValues ?? Array.Empty<string>();
-                OnPropertyChanged(nameof(Values)); // ���������� UI, ��� ������ Values ���������
-            });
+            SetValuesCache(results.ToArray(), skipIfEqual: false);
         }
 
 
@@ -297,7 +229,7 @@ namespace UTCGoogleSheetsDataProvider
         public string APIKey
         {
             get => _apiKey;
-            set => SetPropertyValue(ref _apiKey, value?.Trim() ?? string.Empty, nameof(APIKey), __ => { _ = UpdateData(); });
+            set => SetPropertyValue(ref _apiKey, value?.Trim() ?? string.Empty, nameof(APIKey), __ => ScheduleRefresh());
         }
 
         public string SheetKey
@@ -311,7 +243,7 @@ namespace UTCGoogleSheetsDataProvider
                     normalized = ParseSheetKeyFromUri(k);
                 }
 
-                SetPropertyValue(ref _sheetKey, normalized, nameof(SheetKey), __ => { _ = UpdateData(); });
+                SetPropertyValue(ref _sheetKey, normalized, nameof(SheetKey), __ => ScheduleRefresh());
             }
         }
 
@@ -372,19 +304,19 @@ namespace UTCGoogleSheetsDataProvider
                 _cancellationTokenSource.Dispose();
                 _cancellationTokenSource = new CancellationTokenSource();
             }
-            _ = UpdateData();
-                }
+            ScheduleRefresh();
+        }
 
         #endregion
 
         #region Serialization and Disposal
 
-        public List<object> GetProperties()
+        public override List<object> GetProperties()
         {
             return new List<object> { APIKey, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable, SheetKey, Period };
         }
 
-        public void SetProperties(List<object> props)
+        public override void SetProperties(List<object> props)
         {
             if (props == null) return;
 
@@ -399,52 +331,16 @@ namespace UTCGoogleSheetsDataProvider
             Period = (int?)props.ElementAtOrDefault(8) ?? 5000;
         }
 
-        public void ShowProperties(Window owner)
+        public override void ShowProperties(Window owner)
         {
             // Implementation for showing properties window
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            _webTimer.Stop();
-            _webTimer.Tick -= WebTimer_Tick;
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
-            _asyncLock.Dispose();
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            // ����������, ��� ������� ���������� � UI-������
-            if (Application.Current?.Dispatcher?.CheckAccess() ?? true)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))));
-            }
-        }
-
-        #endregion
-
-        private static void RunOnUi(Action action)
-        {
-            if (action == null) return;
-
-            if (Application.Current?.Dispatcher?.CheckAccess() ?? true)
-            {
-                action();
-            }
-            else
-            {
-                Application.Current.Dispatcher.BeginInvoke(action);
-            }
+            base.Dispose();
         }
 
         private static string ParseSheetKeyFromUri(Uri uri)
@@ -475,18 +371,8 @@ namespace UTCGoogleSheetsDataProvider
             return parts[parts.Length - 1];
         }
 
-        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
-                return false;
-            }
+        #endregion
 
-            field = value;
-            onChanged?.Invoke(value);
-            OnPropertyChanged(propertyName);
-            return true;
-        }
     }
 }
 

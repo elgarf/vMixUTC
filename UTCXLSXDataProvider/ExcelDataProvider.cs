@@ -7,31 +7,22 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
+using vMixControllerDataProvider;
 using vMixControllerSkin;
 
 namespace UTCGoogleSheetsDataProvider
 {
-    public partial class ExcelDataProvider : DependencyObject, vMixControllerDataProvider.IvMixDataProviderTextInput, INotifyPropertyChanged, IDataErrorInfo
+    public partial class ExcelDataProvider : PollingTextInputDataProviderBase, IDataErrorInfo
     {
         private static readonly Regex ColumnRegex = new Regex("^[A-Z]+$", RegexOptions.Compiled);
 
-        private readonly DispatcherTimer _refreshTimer;
-        private readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1, 1);
-
         private DateTime _lastModifiedUtc = DateTime.MinValue;
-        private string[] _valuesCache = Array.Empty<string>();
         private bool _hasError;
-        private int _refreshScheduled;
-        private int _period = 1000;
-        private UIElement _customUI;
 
         private string _filePath = "";
         private int _startRow;
@@ -41,27 +32,43 @@ namespace UTCGoogleSheetsDataProvider
         private string _sheet = "0";
         private bool _isTable = true;
 
-        public ICommand PreviewKeyUp { get; set; }
-        public ICommand GotFocus { get; set; }
-        public ICommand LostFocus { get; set; }
+        protected override int MinPeriodMs => 250;
 
-        public bool IsProvidingCustomProperties => false;
         public string Error => null;
-        public UIElement CustomUI => _customUI;
-        public string[] Values => _valuesCache;
 
-        public int Period
+        public override int Period
         {
-            get => _period;
-            set
+            get => base.Period;
+            set => base.Period = value;
+        }
+
+        protected override void OnPeriodChanged(int newPeriodMs)
+        {
+            InvalidateAndScheduleRefresh();
+        }
+
+        public ExcelDataProvider()
+        {
+            Period = 1000;
+
+            try
             {
-                var normalized = Math.Max(250, value);
-                SetPropertyValue(ref _period, normalized, nameof(Period), p =>
-                {
-                    _refreshTimer.Interval = TimeSpan.FromMilliseconds(p);
-                    InvalidateAndScheduleRefresh();
-                });
+                CustomUI = new OnWidgetUI { DataContext = this };
             }
+            catch (Exception e)
+            {
+                CustomUI = new TextBox
+                {
+                    Text = e.ToString(),
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
+                    Height = 256,
+                    FontWeight = FontWeights.Normal,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+            }
+
+            StartPolling(runImmediately: true);
         }
 
         public string FilePath
@@ -104,35 +111,6 @@ namespace UTCGoogleSheetsDataProvider
         {
             get => _isTable;
             set => SetPropertyValue(ref _isTable, value, nameof(IsTable), _ => InvalidateAndScheduleRefresh());
-        }
-
-        public ExcelDataProvider()
-        {
-            try
-            {
-                _customUI = new OnWidgetUI { DataContext = this };
-            }
-            catch (Exception e)
-            {
-                _customUI = new TextBox
-                {
-                    Text = e.ToString(),
-                    AcceptsReturn = true,
-                    TextWrapping = TextWrapping.Wrap,
-                    Height = 256,
-                    FontWeight = FontWeights.Normal,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
-                };
-            }
-
-            _refreshTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(Period)
-            };
-            _refreshTimer.Tick += RefreshTimer_Tick;
-            _refreshTimer.Start();
-
-            ScheduleRefresh();
         }
 
         [RelayCommand]
@@ -186,39 +164,16 @@ namespace UTCGoogleSheetsDataProvider
             new RowsViewer().Bind(this, nameof(Values));
         }
 
-        private void RefreshTimer_Tick(object sender, EventArgs e)
-        {
-            ScheduleRefresh();
-        }
-
         private void InvalidateAndScheduleRefresh()
         {
             _lastModifiedUtc = DateTime.MinValue;
             ScheduleRefresh();
         }
 
-        private void ScheduleRefresh()
+        protected override Task RefreshValuesAsync()
         {
-            if (Interlocked.CompareExchange(ref _refreshScheduled, 1, 0) != 0)
-            {
-                return;
-            }
-
-            _ = RefreshValuesAsync();
-        }
-
-        private async Task RefreshValuesAsync()
-        {
-            try
-            {
-                await _asyncLock.WaitAsync();
-                LoadValuesCore();
-            }
-            finally
-            {
-                _asyncLock.Release();
-                Interlocked.Exchange(ref _refreshScheduled, 0);
-            }
+            LoadValuesCore();
+            return Task.CompletedTask;
         }
 
         private void LoadValuesCore()
@@ -230,7 +185,7 @@ namespace UTCGoogleSheetsDataProvider
                 if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath))
                 {
                     _hasError = true;
-                    UpdateValuesCache(Array.Empty<string>());
+                    SetValuesCache(Array.Empty<string>());
                     return;
                 }
 
@@ -245,19 +200,19 @@ namespace UTCGoogleSheetsDataProvider
                 {
                     var results = ReadRows(reader);
                     _lastModifiedUtc = fileInfo.LastWriteTimeUtc;
-                    UpdateValuesCache(results.ToArray());
+                    SetValuesCache(results.ToArray());
                 }
             }
             catch (ExcelReaderException ex)
             {
                 _hasError = true;
-                UpdateValuesCache(Array.Empty<string>());
+                SetValuesCache(Array.Empty<string>());
                 Debug.Print($"Error reading Excel file: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _hasError = true;
-                UpdateValuesCache(Array.Empty<string>());
+                SetValuesCache(Array.Empty<string>());
                 Debug.Print($"Unexpected error: {ex.Message}");
             }
         }
@@ -288,17 +243,13 @@ namespace UTCGoogleSheetsDataProvider
 
                             if (IsTable)
                             {
-                                var lineBuilder = new StringBuilder();
+                                var rowValues = new List<string>();
                                 for (int i = safeStartCol; i < endExclusive; i++)
                                 {
                                     var value = reader.GetValue(i)?.ToString() ?? string.Empty;
-                                    if (lineBuilder.Length > 0)
-                                    {
-                                        lineBuilder.Append('|');
-                                    }
-                                    lineBuilder.Append(value);
+                                    rowValues.Add(value);
                                 }
-                                results.Add(lineBuilder.ToString());
+                                results.Add(DataProviderTextFormatter.JoinWithPipe(rowValues));
                             }
                             else
                             {
@@ -322,18 +273,6 @@ namespace UTCGoogleSheetsDataProvider
             while (reader.NextResult());
 
             return results;
-        }
-
-        private void UpdateValuesCache(string[] newValues)
-        {
-            var normalized = newValues ?? Array.Empty<string>();
-            if (_valuesCache.SequenceEqual(normalized))
-            {
-                return;
-            }
-
-            _valuesCache = normalized;
-            RaisePropertyChanged(nameof(Values));
         }
 
         private int ParseExcelColumn(string input)
@@ -395,32 +334,12 @@ namespace UTCGoogleSheetsDataProvider
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private bool SetPropertyValue<T>(ref T field, T value, string propertyName, Action<T> onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
-                return false;
-            }
-
-            field = value;
-            onChanged?.Invoke(value);
-            RaisePropertyChanged(propertyName);
-            return true;
-        }
-
-        public List<object> GetProperties()
+        public override List<object> GetProperties()
         {
             return new List<object> { FilePath, StartRow, EndRow, StartCol, EndCol, SheetIndex, IsTable };
         }
 
-        public void SetProperties(List<object> props)
+        public override void SetProperties(List<object> props)
         {
             if (props == null)
             {
@@ -461,7 +380,7 @@ namespace UTCGoogleSheetsDataProvider
             IsTable = (bool?)props.ElementAtOrDefault(6) ?? true;
         }
 
-        public void ShowProperties(Window owner)
+        public override void ShowProperties(Window owner)
         {
         }
     }

@@ -7,12 +7,21 @@
              Startup="Application_Startup">
 
     <Application.Resources>
-        <Style TargetType="MenuItem">
-            <Setter Property="Control.HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Control.VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <FontFamily x:Key="FontAwesome">/vMixControllerSkin;Component/#Font Awesome 7 Free Solid</FontFamily>
+            <FontFamily x:Key="SegoeUI">Segoe UI</FontFamily>
+
+            <Style TargetType="MenuItem">
+                <Setter Property="Control.HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Control.VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 
 </Application>

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Net;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,14 +9,23 @@ namespace Popcron.Sheets
     [Serializable]
     public class SheetsClient
     {
+        private static readonly HttpClient HttpClient = new HttpClient();
+
         private readonly string spreadsheetId;
         private readonly Authorization authorization;
-        private SheetsSerializer serializer;
+        private readonly SheetsSerializer serializer;
 
         public SheetsClient(string spreadsheetId, Authorization authorization, SheetsSerializer serializer = null)
         {
-            if (serializer == null) serializer = SheetsSerializer.Serializer;
-            if (serializer == null) throw new Exception("No serializer was given.");
+            if (serializer == null)
+            {
+                serializer = SheetsSerializer.Serializer;
+            }
+
+            if (serializer == null)
+            {
+                throw new Exception("No serializer was given.");
+            }
 
             this.serializer = serializer;
             this.spreadsheetId = spreadsheetId;
@@ -33,9 +42,6 @@ namespace Popcron.Sheets
             return serializer.SerializeObject(data);
         }
 
-        /// <summary>  
-        /// Returns a high level representation of a spreadsheet.  
-        /// </summary>
         public async Task<Spreadsheet> Get()
         {
             var raw = await GetRaw(true);
@@ -43,12 +49,9 @@ namespace Popcron.Sheets
             return spreadsheet;
         }
 
-        /// <summary>  
-        /// Returns the raw data that is contingent to the Google Sheets API.  
-        /// </summary>
         public async Task<SpreadsheetRaw> GetRaw(bool includeGridData)
         {
-            string address = "https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}?{auth}&includeGridData=" + includeGridData.ToString().ToLower();
+            string address = "https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}?{auth}&includeGridData=" + includeGridData.ToString().ToLowerInvariant();
             address = address.Replace("{spreadsheetId}", spreadsheetId);
 
             string token = authorization.ToString();
@@ -61,17 +64,16 @@ namespace Popcron.Sheets
                 address = address.Replace("{auth}", "accessToken=" + token);
             }
 
-            using (WebClient webClient = new WebClient() { Encoding = Encoding.UTF8 })
+            using (var request = new HttpRequestMessage(HttpMethod.Get, address))
+            using (var response = await HttpClient.SendAsync(request))
             {
-                string data = await webClient.DownloadStringTaskAsync(address);
+                response.EnsureSuccessStatusCode();
+                string data = await response.Content.ReadAsStringAsync();
                 SpreadsheetRaw spreadsheet = DeserializeObject<SpreadsheetRaw>(data);
                 return spreadsheet;
             }
         }
 
-        /// <summary>  
-        /// Creates a spreadsheet, returning the newly created spreadsheet.  
-        /// </summary>
         public async Task<SpreadsheetRaw> Create(SpreadsheetRaw spreadsheet)
         {
             string address = "https://sheets.googleapis.com/v4/spreadsheets?{auth}";
@@ -88,18 +90,18 @@ namespace Popcron.Sheets
 
             string data = SerializeObject(spreadsheet);
 
-            using (WebClient webClient = new WebClient())
+            using (var request = new HttpRequestMessage(HttpMethod.Post, address))
             {
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                string response = await webClient.UploadStringTaskAsync(address, data);
-
-                return DeserializeObject<SpreadsheetRaw>(response);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/json");
+                using (var response = await HttpClient.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    string responseText = await response.Content.ReadAsStringAsync();
+                    return DeserializeObject<SpreadsheetRaw>(responseText);
+                }
             }
         }
 
-        /// <summary>  
-        /// Applies one or more updates to the spreadsheet.  
-        /// </summary>
         public async Task<RequestBatchUpdateResponse> BatchUpdate(RequestBatchUpdate request)
         {
             string address = "https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}:batchUpdate";
@@ -108,22 +110,26 @@ namespace Popcron.Sheets
             string token = authorization.ToString();
             if (authorization.Type == AuthorizationType.Key)
             {
-                token = "?key=" + token;
+                address += "?key=" + token;
             }
 
             string data = SerializeObject(request);
-            using (WebClient webClient = new WebClient())
+            using (var httpRequest = new HttpRequestMessage(HttpMethod.Post, address))
             {
                 if (authorization.Type == AuthorizationType.AccessToken)
                 {
-                    webClient.Headers[HttpRequestHeader.Authorization] = "Bearer " + token;
+                    httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                webClient.Headers[HttpRequestHeader.Accept] = "application/json";
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+                httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpRequest.Content = new StringContent(data, Encoding.UTF8, "application/json");
 
-                string response = await webClient.UploadStringTaskAsync(address, data);
-                return DeserializeObject<RequestBatchUpdateResponse>(response);
+                using (var response = await HttpClient.SendAsync(httpRequest))
+                {
+                    response.EnsureSuccessStatusCode();
+                    string responseText = await response.Content.ReadAsStringAsync();
+                    return DeserializeObject<RequestBatchUpdateResponse>(responseText);
+                }
             }
         }
     }
