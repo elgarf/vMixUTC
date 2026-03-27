@@ -48,7 +48,9 @@ namespace vMixController.Widgets
 
         private static readonly MultimediaTimer _mtimer = new MultimediaTimer();
         private static readonly Stopwatch _sw = new Stopwatch();
-        private static TimeSpan _accum; // для суммирования фактического elapsed
+        private static TimeSpan _oneSecondAccum;
+        private static TimeSpan _highPrecisionAccum;
+        private static bool _isWarmedUp;
         private static readonly TimeSpan HighPrecisionTick = TimeSpan.FromMilliseconds(100);
         private static readonly TimeSpan NormalTick = TimeSpan.FromMilliseconds(1000);
         private static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
@@ -58,6 +60,24 @@ namespace vMixController.Widgets
             _mtimer.Interval = (int)HighPrecisionTick.TotalMilliseconds;
             _mtimer.Resolution = 1;
             _mtimer.Elapsed += OnElapsed;
+        }
+
+        public static void WarmUp()
+        {
+            lock (_sync)
+            {
+                if (_isWarmedUp)
+                    return;
+                _isWarmedUp = true;
+            }
+
+            // Prime JIT and messenger generic paths before first real timer start.
+            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(
+                new ValueChangedMessage<TimeSpan>(TimeSpan.Zero),
+                TimerTokens.HighPrecision);
+            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(
+                new ValueChangedMessage<TimeSpan>(TimeSpan.Zero),
+                TimerTokens.OneSecond);
         }
 
         public static void Increment(bool isHighPrecision)
@@ -70,7 +90,8 @@ namespace vMixController.Widgets
 
                 if (_refCount == 1)
                 {
-                    _accum = TimeSpan.Zero;
+                    _oneSecondAccum = TimeSpan.Zero;
+                    _highPrecisionAccum = TimeSpan.Zero;
                     _sw.Restart();
                 }
 
@@ -98,7 +119,8 @@ namespace vMixController.Widgets
                     _sw.Reset();
                     _refCount = 0;
                     _highPrecisionRefCount = 0;
-                    _accum = TimeSpan.Zero;
+                    _oneSecondAccum = TimeSpan.Zero;
+                    _highPrecisionAccum = TimeSpan.Zero;
                     return;
                 }
 
@@ -148,31 +170,58 @@ namespace vMixController.Widgets
 
         private static void OnElapsed(object sender, EventArgs e)
         {
-            // Фактическая дельта с прошлой итерации
-            var elapsed = _sw.Elapsed;
-            _sw.Restart();
+            TimeSpan elapsed;
             int oneSecondTicks = 0;
-            _accum += elapsed;
-            while (_accum >= OneSecond)
+            int highPrecisionTicks = 0;
+
+            // MultimediaTimer callback can re-enter under load; keep timing math serialized.
+            lock (_sync)
             {
-                oneSecondTicks++;
-                _accum -= OneSecond;
+                if (_refCount <= 0)
+                    return;
+
+                elapsed = _sw.Elapsed;
+                _sw.Restart();
+
+                _oneSecondAccum += elapsed;
+                while (_oneSecondAccum >= OneSecond)
+                {
+                    oneSecondTicks++;
+                    _oneSecondAccum -= OneSecond;
+                }
+
+                if (_highPrecisionRefCount > 0)
+                {
+                    _highPrecisionAccum += elapsed;
+                    while (_highPrecisionAccum >= HighPrecisionTick)
+                    {
+                        highPrecisionTicks++;
+                        _highPrecisionAccum -= HighPrecisionTick;
+                    }
+                }
+                else
+                {
+                    _highPrecisionAccum = TimeSpan.Zero;
+                }
             }
 
             var appDispatcher = Application.Current?.Dispatcher;
             if (appDispatcher == null || appDispatcher.CheckAccess())
             {
-                DispatchTick(elapsed, oneSecondTicks);
+                DispatchTick(highPrecisionTicks, oneSecondTicks);
             }
             else
             {
-                appDispatcher.BeginInvoke(new Action(() => DispatchTick(elapsed, oneSecondTicks)), DispatcherPriority.Background);
+                appDispatcher.BeginInvoke(new Action(() => DispatchTick(highPrecisionTicks, oneSecondTicks)), DispatcherPriority.Send);
             }
         }
 
-        private static void DispatchTick(TimeSpan elapsed, int oneSecondTicks)
+        private static void DispatchTick(int highPrecisionTicks, int oneSecondTicks)
         {
-            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(elapsed), TimerTokens.HighPrecision);
+            for (var i = 0; i < highPrecisionTicks; i++)
+            {
+                Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(HighPrecisionTick), TimerTokens.HighPrecision);
+            }
             for (var i = 0; i < oneSecondTicks; i++)
             {
                 Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(OneSecond), TimerTokens.OneSecond);
@@ -193,6 +242,7 @@ namespace vMixController.Widgets
         }
         public vMixControlTimer()
         {
+            GlobalTimer.WarmUp();
             Messenger.Register<vMixControlTimer, ValueChangedMessage<TimeSpan>, string>(this, TimerTokens.HighPrecision, (r, m) =>
             {
                 if (r.IsHighPrecision) r.RunOnUiThread(() => r.Tick(m.Value), DispatcherPriority.Send);

@@ -178,8 +178,8 @@
     </ItemGroup>
     <Delete Files="@(_ProviderRootArtifacts)" TreatErrorsAsWarnings="true" />
   </Target>
-  <Target Name="CleanupLegacyMelanchallFiles" AfterTargets="Build">
-    <Delete Files="$(TargetDir)Melanchall*.dll;$(TargetDir)Melanchall*.dylib" TreatErrorsAsWarnings="true" />
+  <Target Name="CleanupLegacyMelanchallFiles" AfterTargets="Build;CopyFilesToOutputDirectory">
+    <Delete Files="$(TargetDir)Melanchall*.dll;$(TargetDir)Melanchall*.dylib;$(TargetDir)Melanchall_DryWetMidi_Native32.dll;$(TargetDir)Melanchall_DryWetMidi_Native64.dll;$(TargetDir)Melanchall_DryWetMidi_Native64.dylib" TreatErrorsAsWarnings="true" />
     <RemoveDir Directories="$(TargetDir)net472" Condition="Exists('$(TargetDir)net472')" />
   </Target>
   <Target Name="CleanupPluginDependenciesFromRoot" AfterTargets="Build">
