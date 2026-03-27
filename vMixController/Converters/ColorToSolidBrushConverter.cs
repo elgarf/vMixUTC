@@ -22,12 +22,12 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new SolidColorBrush((Color)value);
+            return value is Color color ? new SolidColorBrush(color) : new SolidColorBrush(Colors.Transparent);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((SolidColorBrush)value).Color;
+            return value is SolidColorBrush brush ? brush.Color : Colors.Transparent;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

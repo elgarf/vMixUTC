@@ -29,7 +29,7 @@ namespace vMixController.Controls
                 _timer = new DispatcherTimer();
                 _timer.Tick += _timer_Tick;
             }
-            _timer.Interval = TimeSpan.FromMilliseconds(Interval / 2);
+            _timer.Interval = TimeSpan.FromMilliseconds((double)Interval / 2);
             if (!_timer.IsEnabled)
             {
                 OnPress?.Execute(null);

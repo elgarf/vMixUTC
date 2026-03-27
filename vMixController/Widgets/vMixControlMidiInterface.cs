@@ -229,7 +229,7 @@ namespace vMixController.Widgets
     {
         new public object Clone()
         {
-            return new MidiInterfaceKey() { A = (int)A.Copy(), B = (int)B.Copy(), C = (string)C.Copy(), D = (Melanchall.DryWetMidi.Core.MidiEventType)D.Copy() };
+            return new MidiInterfaceKey() { A = (int)(A.Copy() ?? 0), B = (int)(B.Copy() ?? 0), C = (string)(C.Copy() ?? string.Empty), D = (Melanchall.DryWetMidi.Core.MidiEventType)(D.Copy() ?? Melanchall.DryWetMidi.Core.MidiEventType.ControlChange) };
         }
     }
 }

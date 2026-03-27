@@ -38,6 +38,7 @@ namespace vMixController.Classes
             set => SetProperty(ref _timeOfDay, value);
         }
 
+        [NonSerialized]
         private string _command;
         public string Command
         {
@@ -45,6 +46,7 @@ namespace vMixController.Classes
             set => SetProperty(ref _command, value);
         }
 
+        [NonSerialized]
         private DaysOfWeek _days;
         public DaysOfWeek Days
         {

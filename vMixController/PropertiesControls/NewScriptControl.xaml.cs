@@ -151,6 +151,7 @@ namespace vMixController.PropertiesControls
             var ident = 0;
             foreach (var icmd in Commands)
             {
+                if (icmd == null) continue;
                 icmd.PropertyChanged -= Icmd_PropertyChanged;
                 icmd.PropertyChanged += Icmd_PropertyChanged;
                 IsInputExist(icmd);
@@ -164,7 +165,6 @@ namespace vMixController.PropertiesControls
                     ident -= 8;
 
                 if (ident < 0) ident = 0;
-
                 icmd.Ident = new Thickness(ident, 0, 0, 0);
 
             }

@@ -61,46 +61,4 @@ namespace vMixAPI
             //Debug.WriteLine("Requesting {0} : {1}", Tag, _requestsCount);
         }
     }
-
-    public static class APIRequestManager
-    {
-        
-        private static ConcurrentDictionary<string, vMixWebClient> _clients = new ConcurrentDictionary<string, vMixWebClient>();
-        public static event EventHandler OnStatusChange;
-
-        public static vMixWebClient GetClient(string url, int timeout) {
-            Debug.WriteLine("WebClients : {0}", _clients.Count);
-            string trimmedUrl = url.TrimEnd('?');
-            OnStatusChange?.Invoke(null, null);
-            if (_clients.ContainsKey(trimmedUrl))
-            {
-                /*vMixWebClient client = null;
-                if (_clients.TryGetValue(trimmedUrl, out client))
-                    return client;*/
-                    
-                //Fallback to old behavior
-                return new vMixWebClient();
-            }
-            else
-            {
-                /*vMixWebClient _webClient = new vMixWebClient();
-                _webClient.Timeout = timeout;
-                _webClient.DownloadStringCompleted += _webClient_DownloadStringCompleted;
-                _webClient.Tag = trimmedUrl;
-                if (_clients.TryAdd(trimmedUrl, _webClient))
-                    return _webClient;
-                else*/
-                    //Fallback to old behavior
-                    return new vMixWebClient();
-            }
-        }
-
-        private static void _webClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-        {
-            vMixWebClient client = null;
-            if (((vMixWebClient)sender).Requests > 5)
-                _clients.TryRemove(((vMixWebClient)sender).Tag, out client);
-            OnStatusChange?.Invoke(null, null);
-        }
-    }
 }

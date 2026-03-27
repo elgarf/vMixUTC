@@ -22,14 +22,17 @@ namespace vMixController.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            try
-            {
-                return new Classes.ControlIntParameter() { A = (vMixController.Widgets.vMixControlTextField)values[0], B = (int)values[1] };
-            }
-            catch (Exception)
+            if (values == null || values.Length < 2)
             {
                 return null;
             }
+
+            if (!(values[0] is vMixController.Widgets.vMixControlTextField textField) || !(values[1] is int index))
+            {
+                return null;
+            }
+
+            return new Classes.ControlIntParameter() { A = textField, B = index };
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

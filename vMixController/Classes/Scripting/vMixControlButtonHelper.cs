@@ -205,7 +205,7 @@ namespace vMixController.Classes.Scripting
         /// </summary>
         private static bool ValuesMatch(string actualValue, string expectedValuePattern)
         {
-            if (expectedValuePattern == null) return false;
+            if (expectedValuePattern == null || actualValue  == null) return false;
 
             char operatorChar = expectedValuePattern.Length > 0 ? expectedValuePattern[0] : ' ';
             bool isNegated = operatorChar == '!';

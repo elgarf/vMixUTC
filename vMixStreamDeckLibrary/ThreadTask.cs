@@ -42,12 +42,9 @@ namespace vMixStreamDeckLibrary
 			}
 			catch (Exception t)
 			{
-				//ThreadTask.ThreadErrorEventHandler threadErrorEvent = this.ThreadErrorEvent;
-				if (this.ThreadError != null)
-				{
-                    this.ThreadError(this, new ThreadExceptionEventArgs(t));
-				}
-			}
+                //ThreadTask.ThreadErrorEventHandler threadErrorEvent = this.ThreadErrorEvent;
+                this.ThreadError?.Invoke(this, new ThreadExceptionEventArgs(t));
+            }
 		}
 
 		// Token: 0x0600003F RID: 63 RVA: 0x000031E8 File Offset: 0x000013E8

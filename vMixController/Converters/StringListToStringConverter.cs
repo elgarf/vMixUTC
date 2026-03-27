@@ -22,13 +22,22 @@ namespace vMixController.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            try
+            if (values == null || values.Length < 2)
             {
-                return ((IList<string>)values[0])[(int)values[1]];
-            } catch (Exception)
-            {
-                return Colors.White;
+                return string.Empty;
             }
+
+            if (!(values[0] is IList<string> list))
+            {
+                return string.Empty;
+            }
+
+            if (!(values[1] is int index) || index < 0 || index >= list.Count)
+            {
+                return string.Empty;
+            }
+
+            return list[index] ?? string.Empty;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

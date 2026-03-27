@@ -436,8 +436,8 @@ namespace vMixController.Widgets
             }
         }
 
-        
-        
+
+
 
         [RelayCommand]
         private void StopScript()
@@ -469,13 +469,10 @@ namespace vMixController.Widgets
             _globalVariablesSnapshot = CaptureGlobalVariablesSnapshot();
 
             var globals = _globalVariablesSnapshot;
-            if (globals != null)
+            foreach (var item in globals)
             {
-                foreach (var item in globals)
-                {
-                    if (!exp.Parameters.ContainsKey(item.Key))
-                        exp.Parameters.Add(item.Key, Utils.NormalizeParameterValue(item.Value));
-                }
+                if (!exp.Parameters.ContainsKey(item.Key))
+                    exp.Parameters.Add(item.Key, Utils.NormalizeParameterValue(item.Value));
             }
             exp.Parameters.Add(parameterName, Utils.NormalizeParameterValue(parameterValue));
         }
@@ -911,7 +908,7 @@ namespace vMixController.Widgets
         private object CalculateObjectParameter(vMixControlNewButtonCommand cmd)
         {
             object result = null;
-            vMixControlButtonHelper.CalculateExpression<object>(string.Format(cmd.Value, Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher))?.ToString() ?? "", PopulateVariables, ExpressionEvaluateFunction, out result);
+            vMixControlButtonHelper.CalculateExpression<object>(string.Format(cmd.Value, Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher))?.ToString(), PopulateVariables, ExpressionEvaluateFunction, out result);
             return result ?? cmd.Value;
         }
 

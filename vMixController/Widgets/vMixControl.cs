@@ -576,9 +576,6 @@ namespace vMixController.Widgets
                 }
             items.Add(path.Substring(start, path.Length - start));
 
-            if (items.Count < 1)
-                return null;
-
             //If path goes to array
             if (items[0].Contains('['))
             {

@@ -15,8 +15,16 @@ namespace vMixController.Converters
 {
     public class ImagePartConverter : MarkupExtension, IMultiValueConverter
     {
+        private sealed class CacheEntry
+        {
+            public long LastWriteTicks { get; set; }
+            public ImageSource Image { get; set; }
+        }
 
         private static IMultiValueConverter _instance;
+        private static readonly Dictionary<string, CacheEntry> Cache = new Dictionary<string, CacheEntry>(StringComparer.OrdinalIgnoreCase);
+        private static readonly object CacheSync = new object();
+        private const int MaxCacheEntries = 256;
 
         /// <summary>
         /// Static instance of this converter.
@@ -35,6 +43,11 @@ namespace vMixController.Converters
             var path = (string)values[0];
             var max = (int)values[1];
             var number = (int)values[2];
+            if (max <= 0 || number < 0)
+            {
+                return null;
+            }
+
             try
             {
                 if (!string.IsNullOrWhiteSpace(path))
@@ -42,6 +55,17 @@ namespace vMixController.Converters
                     var resolvedPath = Classes.Utils.ResolvePortablePath(path);
                     if (!File.Exists(resolvedPath))
                         return null;
+                    var writeTicks = File.GetLastWriteTimeUtc(resolvedPath).Ticks;
+                    var cacheKey = $"{resolvedPath}|{max}|{number}";
+                    lock (CacheSync)
+                    {
+                        if (Cache.TryGetValue(cacheKey, out var cached) &&
+                            cached.LastWriteTicks == writeTicks &&
+                            cached.Image != null)
+                        {
+                            return cached.Image;
+                        }
+                    }
 
                     var bi = new BitmapImage();
                     bi.BeginInit();
@@ -49,7 +73,42 @@ namespace vMixController.Converters
                     bi.UriSource = new Uri(resolvedPath);
 
                     bi.EndInit();
-                    var img = new FormatConvertedBitmap(new CroppedBitmap(bi, new System.Windows.Int32Rect((bi.PixelWidth / max) * number, 0, bi.PixelWidth / max, bi.PixelHeight)), PixelFormats.Bgra32, null, 0);
+                    if (number >= max)
+                    {
+                        return null;
+                    }
+
+                    var partWidth = bi.PixelWidth / max;
+                    if (partWidth <= 0)
+                    {
+                        return null;
+                    }
+
+                    var rect = new System.Windows.Int32Rect(partWidth * number, 0, partWidth, bi.PixelHeight);
+                    var img = new FormatConvertedBitmap(new CroppedBitmap(bi, rect), PixelFormats.Bgra32, null, 0);
+                    if (img.CanFreeze)
+                    {
+                        img.Freeze();
+                    }
+
+                    lock (CacheSync)
+                    {
+                        Cache[cacheKey] = new CacheEntry
+                        {
+                            LastWriteTicks = writeTicks,
+                            Image = img
+                        };
+
+                        if (Cache.Count > MaxCacheEntries)
+                        {
+                            var first = Cache.Keys.FirstOrDefault();
+                            if (!string.IsNullOrEmpty(first))
+                            {
+                                Cache.Remove(first);
+                            }
+                        }
+                    }
+
                     return img;
                 }
             }

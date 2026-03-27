@@ -102,7 +102,7 @@ namespace vMixController.Classes
 
         public static bool GetBit(this byte byt, byte index)
         {
-            if (index < 0 || index > 7)
+            if (index > 7)
                 throw new ArgumentOutOfRangeException();
 
             return (byt & (1 << index)) >> index != 0;
@@ -110,7 +110,7 @@ namespace vMixController.Classes
 
         public static bool GetBit(this short byt, byte index)
         {
-            if (index < 0 || index > sizeof(short) * 8 - 1)
+            if (index > sizeof(short) * 8 - 1)
                 throw new ArgumentOutOfRangeException();
 
             return (byt & (1 << index)) >> index != 0;
@@ -118,14 +118,14 @@ namespace vMixController.Classes
 
         public static byte SetBit(this byte byt, byte index, bool value)
         {
-            if (index < 0 || index > 7)
+            if (index > 7)
                 throw new ArgumentOutOfRangeException();
             return (byte)((byt & ~(1 << index)) + (value ? 1 << index : 0));
         }
 
         public static short SetBit(this short byt, byte index, bool value)
         {
-            if (index < 0 || index > sizeof(short) * 8 - 1)
+            if (index > sizeof(short) * 8 - 1)
                 throw new ArgumentOutOfRangeException();
             return (short)((byt & ~(1 << index)) + (value ? 1 << index : 0));
         }

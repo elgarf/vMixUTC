@@ -31,9 +31,8 @@ namespace vMixController.Converters
             if (value == null)
                 return Brushes.Black;
             
-            if (value is ImageSource)
+            if (value is BitmapSource src)
             {
-                var src = (BitmapSource)value;
                 int stride = (int)src.PixelWidth * (src.Format.BitsPerPixel / 8);
                 byte[] arr = new byte[4];
                 src.CopyPixels(new System.Windows.Int32Rect(src.PixelWidth / 2, src.PixelHeight / 2, 1, 1), arr, stride, 0);
@@ -43,8 +42,14 @@ namespace vMixController.Converters
                 clr = Color.FromRgb(arr[2], arr[1], arr[0]);
                 
             }
+            else if (value is Color color)
+            {
+                clr = color;
+            }
             else
-                clr = ((Color)value);
+            {
+                return Brushes.Black;
+            }
 
             var Y = 0.2126 * (clr.R / 255f) + 0.7152 * (clr.G / 255f) + 0.0722 * (clr.B / 255f);
             if (Y >= 0.5f)

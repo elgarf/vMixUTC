@@ -365,6 +365,11 @@ namespace vMixController.ViewModel
             }
         }
 
+        private List<vMixControl> GetSelectedWidgetsSnapshot()
+        {
+            return Widgets.Where(x => x.Selected).ToList();
+        }
+
 
         private void SaveUndo(string reason = "")
         {
@@ -689,7 +694,8 @@ namespace vMixController.ViewModel
             SaveUndo(string.Format(LocalizationManager.Instance["Undo.WidgetRemoved"], p.Type, p.Name));
 
             int processed = 0;
-            foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var widget in selectedWidgets)
             {
                 Widgets.Remove(widget);
                 widget.Dispose();
@@ -710,7 +716,8 @@ namespace vMixController.ViewModel
                 vMixControl copy = null;
                 int processed = 0;
                 bool undoSaved = false;
-                foreach (var widget in Widgets.Where(x => x.Selected).ToArray())
+                var selectedWidgets = GetSelectedWidgetsSnapshot();
+                foreach (var widget in selectedWidgets)
                 {
                     copy = widget.Copy();
                     if (copy == null) continue;
@@ -764,7 +771,8 @@ namespace vMixController.ViewModel
         private void MoveWidget(ControlIntParameter p)
         {
             SaveUndo(LocalizationManager.Instance["Undo.WidgetPageChanged"]);
-            foreach (var widget in Widgets.Where(x => x.Selected))
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var widget in selectedWidgets)
             {
                 widget.Page = p.B;
                 widget.Selected = false;
@@ -776,7 +784,8 @@ namespace vMixController.ViewModel
         private void ToggleCaption(vMixControl p)
         {
             SaveUndo(LocalizationManager.Instance["Undo.WidgetCaptionShowHidden"]);
-            foreach (var widget in Widgets.Where(x => x.Selected))
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var widget in selectedWidgets)
             {
                 widget.IsCaptionOn = !p.IsCaptionOn;
             }
@@ -786,7 +795,8 @@ namespace vMixController.ViewModel
         [RelayCommand]
         private void ScaleUp(vMixControl p)
         {
-            foreach (var widget in Widgets.Where(x => x.Selected))
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var widget in selectedWidgets)
             {
                 widget.Scale += 0.25f;
             }
@@ -796,7 +806,8 @@ namespace vMixController.ViewModel
         [RelayCommand]
         private void ScaleDown(vMixControl p)
         {
-            foreach (var widget in Widgets.Where(x => x.Selected))
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var widget in selectedWidgets)
             {
                 if (widget.Scale - 0.25f >= 1.0f)
                     widget.Scale -= 0.25f;
@@ -2408,7 +2419,8 @@ namespace vMixController.ViewModel
         private void DuplicateSelected()
         {
             List<vMixControl> dups = new List<vMixControl>();
-            foreach (var item in Widgets.Where(x => x.Selected))
+            var selectedWidgets = GetSelectedWidgetsSnapshot();
+            foreach (var item in selectedWidgets)
             {
                 var copy = item.Copy();
                 if (copy != null)

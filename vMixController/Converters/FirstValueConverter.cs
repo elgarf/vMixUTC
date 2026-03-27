@@ -23,44 +23,90 @@ namespace vMixController.Converters
         private object[] _previousValues;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            //Debug.Print("FVC {0}", (object)values);
-            object val = null;
-            if (_previousValues == null)
+            if (values == null || values.Length == 0)
+            {
+                return _default;
+            }
+
+            object val;
+            if (_previousValues == null || _previousValues.Length != values.Length)
             {
                 _previousValues = new object[values.Length];
-                val = values.Distinct().FirstOrDefault();
+                val = values[0];
             }
             else
-                val = values.Distinct().Except(_previousValues.Distinct()).FirstOrDefault();
-            if (val == null)
-                val = values.Distinct().FirstOrDefault();
-            /*_previousValues = new object[values.Length];
-            for (int i = 0; i < values.Length; i++)
             {
-                _previousValues[i] = val;
-            }*/
+                val = FindFirstNewDistinctValue(values, _previousValues);
+            }
+
+            if (val == null)
+            {
+                val = values[0];
+            }
+
             values.CopyTo(_previousValues, 0);
             if (!(val is string))
                 return _default;
-            else
+
+            var stringValue = val as string;
+            if (_isList)
             {
-                if (_isList)
-                    return Helpers.UnescapeAt((Helpers.EscapeAt((string)val)).Split(Helpers.EscapeSymbol[0])[0]);
-                else
-                    return val ?? _default;
+                return ExtractListValue(stringValue);
             }
+
+            return stringValue ?? _default;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            //Debug.Print("FVC Back {0}", value);
             object[] values = new object[targetTypes.Length];
+            var stringValue = value as string;
             for (int i = 0; i < targetTypes.Length; i++)
                 if (_isList)
-                    values[i] = Helpers.UnescapeAt((Helpers.EscapeAt((string)value)).Split(Helpers.EscapeSymbol[0])[0]);
+                    values[i] = ExtractListValue(stringValue);
                 else
-                    values[i] = value ?? _default;
+                    values[i] = stringValue ?? _default;
             return values;
+        }
+
+        private static object FindFirstNewDistinctValue(object[] current, object[] previous)
+        {
+            var previousSet = new HashSet<object>(previous);
+            var seenCurrent = new HashSet<object>();
+            for (int i = 0; i < current.Length; i++)
+            {
+                var item = current[i];
+                if (!seenCurrent.Add(item))
+                {
+                    continue;
+                }
+
+                if (!previousSet.Contains(item))
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
+        private static string ExtractListValue(string value)
+        {
+            var escaped = Helpers.EscapeAt(value);
+            if (string.IsNullOrEmpty(escaped))
+            {
+                return string.Empty;
+            }
+
+            var separator = Helpers.EscapeSymbol;
+            if (string.IsNullOrEmpty(separator))
+            {
+                return Helpers.UnescapeAt(escaped);
+            }
+
+            var idx = escaped.IndexOf(separator[0]);
+            var part = idx >= 0 ? escaped.Substring(0, idx) : escaped;
+            return Helpers.UnescapeAt(part);
         }
     }
 }

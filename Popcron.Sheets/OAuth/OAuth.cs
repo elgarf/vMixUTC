@@ -20,11 +20,13 @@ namespace Popcron.Sheets
 
         private static int GetRandomUnusedPort()
         {
-            var listener = new TcpListener(IPAddress.Loopback, 0);
-            listener.Start();
-            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-            listener.Stop();
-            return port;
+            using (var listener = new TcpListener(IPAddress.Loopback, 0))
+            {
+                listener.Start();
+                var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+                listener.Stop();
+                return port;
+            }
         }
 
         public static async Task<OAuthToken> DoOAuth(string clientId, string clientSecret, SheetsSerializer serializer)

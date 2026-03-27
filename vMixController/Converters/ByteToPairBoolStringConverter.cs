@@ -25,11 +25,17 @@ namespace vMixController.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var vals = new ObservableCollection<Pair<bool, string>>();
+            if (values == null || values.Length < 2 || !(values[0] is byte flags) || !(values[1] is Hotkey[] hotkeys))
+            {
+                return vals;
+            }
+
+            var source = hotkeys.Skip(1).ToArray();
             for (byte i = 0; i < 7; i++)
             {
-                var e = new Pair<bool, string>(((byte)values[0]).GetBit(i), ((Hotkey[])values[1]).Skip(1).ToArray()[i].Name);
+                var name = i < source.Length ? source[i].Name : string.Empty;
+                var e = new Pair<bool, string>(flags.GetBit(i), name);
                 vals.Add(e);
-                
             }
 
             return vals;
@@ -38,9 +44,19 @@ namespace vMixController.Converters
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             byte result = 0;
-            var vals = (ObservableCollection<Pair<bool, string>>)value;
+            if (!(value is ObservableCollection<Pair<bool, string>> vals))
+            {
+                return new object[] { result, null };
+            }
+
             for (byte i = 0; i < 7; i++)
-                result = result.SetBit(i, vals[i].A);
+            {
+                if (i < vals.Count)
+                {
+                    result = result.SetBit(i, vals[i].A);
+                }
+            }
+
             return new object[] { result, null };
         }
 

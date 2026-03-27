@@ -22,8 +22,19 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
-            return  (Cursor)typeof(Cursors).GetProperty((string)value).GetValue(null);
+            var name = value as string;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Cursors.Arrow;
+            }
+
+            var property = typeof(Cursors).GetProperty(name);
+            if (property == null)
+            {
+                return Cursors.Arrow;
+            }
+
+            return property.GetValue(null) as Cursor ?? Cursors.Arrow;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

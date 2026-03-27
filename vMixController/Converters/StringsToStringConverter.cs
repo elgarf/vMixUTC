@@ -36,7 +36,8 @@ namespace vMixController.Converters
             string separator = "|";
             if (parameter != null)
                 separator = (string)parameter;
-            var separated = ((string)value).Split(new string[] { separator }, StringSplitOptions.None);
+            var input = value as string ?? string.Empty;
+            var separated = input.Split(new string[] { separator }, StringSplitOptions.None);
             for (int i = 0; i < targetTypes.Length; i++)
                 if (i < separated.Length)
                 {

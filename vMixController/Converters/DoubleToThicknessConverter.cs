@@ -22,11 +22,29 @@ namespace vMixController.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return new Thickness(values.Length > 0 ? (double)values[0] : 0,
-                values.Length > 1 ? (double)values[1] : 0,
-                values.Length > 2 ? (double)values[2] : 0,
-                values.Length > 3 ? (double)values[3] : 0);
+            return new Thickness(
+                values.Length > 0 ? ToDouble(values[0]) : 0,
+                values.Length > 1 ? ToDouble(values[1]) : 0,
+                values.Length > 2 ? ToDouble(values[2]) : 0,
+                values.Length > 3 ? ToDouble(values[3]) : 0);
             //throw new NotImplementedException();
+        }
+
+        private static double ToDouble(object value)
+        {
+            if (value == null)
+            {
+                return 0;
+            }
+
+            try
+            {
+                return System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

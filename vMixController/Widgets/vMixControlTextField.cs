@@ -282,9 +282,9 @@ namespace vMixController.Widgets
                         var input = (Input)GetValueByPath(State, string.Format("Inputs[{0}]", item.A));
                         if (input != null)
                         {
-                            var val = input.Elements.Where(x => (x is InputBase) && x.Name == item.B).FirstOrDefault();
+                            var val = input.Elements.Where(x => x.Name == item.B).FirstOrDefault();
 
-                            if (val != null && val is InputBase && !_isTable)
+                            if (val != null && !_isTable)
                             {
                                 if (text == null)
                                     text = val;

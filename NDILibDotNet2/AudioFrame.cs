@@ -30,9 +30,9 @@ namespace NewTek.NDI
         {
             _ndiAudioFrame = new NDIlib.audio_frame_v2_t()
             {
-                sample_rate = 48000,
-                no_channels = 2,
-                no_samples = 1602,
+                sample_rate = sampleRate,
+                no_channels = numChannels,
+                no_samples = numSamples,
                 timecode = NDIlib.send_timecode_synthesize,
                 p_data = bufferPtr,
                 channel_stride_in_bytes = channelStride,

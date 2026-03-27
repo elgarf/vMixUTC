@@ -92,14 +92,9 @@ namespace Popcron.Sheets
             this.raw = raw;
             rows = raw.data[0].rowData.Length;
             //cache columns
-            for (int i = 0; i < raw.data[0].rowData.Length; i++)
+            for (int i = 0; i < raw.data[0]?.rowData?.Length; i++)
             {
-                /*int values = 0;
-                for (int v = 0; v < raw.data[0].rowData[i].values.Length; v++)
-                {
-                    if (!string.IsNullOrEmpty(raw.data[0].rowData[i].values[v].formattedValue)) values++;
-                }*/
-                if ((raw.data[0].rowData[i].values?.Length ?? 0) > columns)
+                if ((raw.data[0]?.rowData[i]?.values?.Length ?? 0) > columns)
                 {
                     columns = raw.data[0].rowData[i].values.Length;
                 }

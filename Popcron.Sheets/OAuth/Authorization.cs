@@ -33,7 +33,7 @@ namespace Popcron.Sheets
             if (accessToken != null) return accessToken;
             if (key != null) return key;
 
-            return null;
+            return String.Empty;
         }
 
         public static async Task<Authorization> Authorize(string clientId, string clientSecret, SheetsSerializer serializer = null)

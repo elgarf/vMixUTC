@@ -21,15 +21,21 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var val = (string)value;
-            var ts = val.Split(Helpers.EscapeSymbol[0]);
+            var val = value as string;
+            if (string.IsNullOrEmpty(val))
+            {
+                return Visibility.Collapsed;
+            }
 
-            if (ts.Length >= 2)
-                val = ts[1];
-            else
-                val = null;
+            var escaped = Helpers.EscapeAt(val);
+            if (string.IsNullOrEmpty(escaped) || string.IsNullOrEmpty(Helpers.EscapeSymbol))
+            {
+                return Visibility.Collapsed;
+            }
 
-            return string.IsNullOrWhiteSpace((string)val) ? Visibility.Collapsed : Visibility.Visible;
+            var ts = escaped.Split(Helpers.EscapeSymbol[0]);
+            var tag = ts.Length >= 2 ? Helpers.UnescapeAt(ts[1]) : null;
+            return string.IsNullOrWhiteSpace(tag) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

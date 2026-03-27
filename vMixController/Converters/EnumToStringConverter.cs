@@ -21,13 +21,29 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
             return Enum.GetName(value.GetType(), value);
             //throw new NotImplementedException();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Enum.Parse(targetType, (string)value);
+            if (targetType == null || !targetType.IsEnum || value == null)
+            {
+                return Binding.DoNothing;
+            }
+
+            var name = value as string;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Binding.DoNothing;
+            }
+
+            return Enum.TryParse(targetType, name, out var parsed) ? parsed : Binding.DoNothing;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

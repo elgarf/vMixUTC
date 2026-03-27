@@ -30,7 +30,7 @@ namespace vMixControllerDataProvider
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public virtual int Period
+        public int Period
         {
             get => _period;
             set

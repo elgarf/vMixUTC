@@ -413,8 +413,8 @@ namespace vMixController.Widgets
             }
         }
 
-        
-        
+
+
 
 
         private bool _potentialLoopWarning = false;
@@ -469,14 +469,13 @@ namespace vMixController.Widgets
             _globalVariablesSnapshot = CaptureGlobalVariablesSnapshot();
 
             var globals = _globalVariablesSnapshot;
-            if (globals != null)
+
+            foreach (var item in globals)
             {
-                foreach (var item in globals)
-                {
-                    if (!exp.Parameters.ContainsKey(item.Key))
-                        exp.Parameters.Add(item.Key, Utils.NormalizeParameterValue(item.Value));
-                }
+                if (!exp.Parameters.ContainsKey(item.Key))
+                    exp.Parameters.Add(item.Key, Utils.NormalizeParameterValue(item.Value));
             }
+
             exp.Parameters.Add(parameterName, Utils.NormalizeParameterValue(parameterValue));
         }
 
@@ -617,8 +616,8 @@ namespace vMixController.Widgets
             if (cmd.AdditionalParameters == null || cmd.AdditionalParameters.Count == 0)
                 return false;
 
-            var part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString() ?? "";
-            var part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString() ?? "";
+            var part1 = string.Format(cmd.AdditionalParameters[1].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString();
+            var part2 = string.Format(cmd.AdditionalParameters[3].A, cmd.InputKey, cmd.AdditionalParameters[0].A)?.ToString();
             Thread.CurrentThread.CurrentCulture = _culture;
             Thread.CurrentThread.CurrentUICulture = _culture;
 
@@ -905,7 +904,7 @@ namespace vMixController.Widgets
         private object CalculateObjectParameter(vMixControlButtonCommand cmd)
         {
             object result = null;
-            vMixControlButtonHelper.CalculateExpression<object>(string.Format(cmd.StringParameter, Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher))?.ToString() ?? "", PopulateVariables, ExpressionEvaluateFunction, out result);
+            vMixControlButtonHelper.CalculateExpression<object>(string.Format(cmd.StringParameter, Utils.FindInputKeyByVariable(cmd.InputKey, Dispatcher))?.ToString(), PopulateVariables, ExpressionEvaluateFunction, out result);
             return result ?? cmd.StringParameter;
         }
 

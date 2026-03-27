@@ -160,43 +160,46 @@ namespace vMixAPI
                 using (var xmlReader = XmlReader.Create(reader, settings))
                 {
                     var state = (State)s.Deserialize(xmlReader);
-                    state._currentStateText = textstate;
-
-                    state.Password = Password;
-                    state.Login = Login;
-                    state.Ip = Ip;
-                    state.Port = Port;
-
-                    state.Inputs = state.Inputs ?? new List<Input>();
-                    state.Outputs = state.Outputs ?? new List<Output>();
-                    state.Overlays = state.Overlays ?? new List<Overlay>();
-                    state.Audio = state.Audio ?? new List<Master>();
-                    state.Transitions = state.Transitions ?? new List<Transition>();
-                    state.Mixes = state.Mixes ?? new List<Mix>();
-
-                    state._changedinputs.Clear();
-                    foreach (var item in state.Inputs)
-                        state._changedinputs.Add(item.Key);
-
-
-                    // Add virtual inputs for referencing current Active/Preview in scripts and UI.
-                    // These are resolved to real inputs by `Utils.FindInputKeyByVariable`.
-                    state.Inputs.Insert(0, new Input() { Number = 0, Key = "0", Title = "[Preview]" });
-                    state.Inputs.Insert(0, new Input() { Number = -1, Key = "-1", Title = "[Active]" });
 
                     if (state != null)
+                    {
+                        state._currentStateText = textstate;
+
+                        state.Password = Password;
+                        state.Login = Login;
+                        state.Ip = Ip;
+                        state.Port = Port;
+
+                        state.Inputs = state.Inputs ?? new List<Input>();
+                        state.Outputs = state.Outputs ?? new List<Output>();
+                        state.Overlays = state.Overlays ?? new List<Overlay>();
+                        state.Audio = state.Audio ?? new List<Master>();
+                        state.Transitions = state.Transitions ?? new List<Transition>();
+                        state.Mixes = state.Mixes ?? new List<Mix>();
+
+                        state._changedinputs.Clear();
+                        foreach (var item in state.Inputs)
+                            state._changedinputs.Add(item.Key);
+
+                        // Add virtual inputs for referencing current Active/Preview in scripts and UI.
+                        // These are resolved to real inputs by `Utils.FindInputKeyByVariable`.
+                        state.Inputs.Insert(0, new Input() { Number = 0, Key = "0", Title = "[Preview]" });
+                        state.Inputs.Insert(0, new Input() { Number = -1, Key = "-1", Title = "[Active]" });
+
                         _logger.Debug("vMix state created.");
+                        foreach (var item in state.Inputs)
+                            item.ControlledState = state;
+                        foreach (var item in state.Overlays)
+                            item.ControlledState = state;
+
+                        OnStateCreated?.Invoke(state, null);
+                        state.Configure(_ip, _port, _login, _password);
+                        return state;
+                    }
                     else
                         _logger.Error("vMix state not created.");
-
-                    foreach (var item in state.Inputs)
-                        item.ControlledState = state;
-                    foreach (var item in state.Overlays)
-                        item.ControlledState = state;
-
-                    OnStateCreated?.Invoke(state, null);
-                    state.Configure(_ip, _port, _login, _password);
-                    return state;
+                    return null;
+                    
                 }
             }
             catch (Exception ex)

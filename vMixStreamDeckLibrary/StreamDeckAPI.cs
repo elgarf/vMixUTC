@@ -76,7 +76,7 @@ namespace vMixStreamDeckLibrary
                                             {
                                                 int rw = 0;
                                                 int col = 0;
-                                                if (int.TryParse(xmlNode4.InnerText, out rw) & int.TryParse(xmlNode5.InnerText, out col))
+                                                if (int.TryParse(xmlNode4.InnerText, out rw) && int.TryParse(xmlNode5.InnerText, out col))
                                                 {
                                                     StreamDeckAPI.RegisterSession session = this.m_Session;
                                                     if (session != null)
@@ -100,10 +100,7 @@ namespace vMixStreamDeckLibrary
                                                             session.Contexts.Add(registerContext);
                                                             this.WriteInfo("AddedContext");
                                                         }
-                                                        if (this.EventReceived != null)
-                                                        {
-                                                            this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.ButtonRegistered, "", registerContext.Button, 0));
-                                                        }
+                                                        this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.ButtonRegistered, "", registerContext.Button, 0));
                                                     }
                                                 }
                                             }
@@ -149,42 +146,27 @@ namespace vMixStreamDeckLibrary
                                             if (Operators.CompareString(innerText2, "keyDown", false) == 0)
                                             {
                                                 //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                if (this.EventReceived != null)
-                                                {
-                                                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.KeyDown, "", context.Button, 127));
-                                                }
+                                                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.KeyDown, "", context.Button, 127));
                                             }
                                             else if (Operators.CompareString(innerText2, "keyUp", false) == 0)
                                             {
                                                 //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                if (this.EventReceived != null)
-                                                {
-                                                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.KeyUp, "", context.Button, 0));
-                                                }
+                                                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.KeyUp, "", context.Button, 0));
                                             }
                                             else if (Operators.CompareString(innerText2, "touchTap", false) == 0)
                                             {
                                                 //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                if (this.EventReceived != null)
-                                                {
-                                                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.TouchTap, "", context.Button, 127));
-                                                }
+                                                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.TouchTap, "", context.Button, 127));
                                             }
                                             else if (Operators.CompareString(innerText2, "dialDown", false) == 0)
                                             {
                                                 //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                if (this.EventReceived != null)
-                                                {
-                                                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.DialDown, "", context.Button, 127));
-                                                }
+                                                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.DialDown, "", context.Button, 127));
                                             }
                                             else if (Operators.CompareString(innerText2, "dialUp", false) == 0)
                                             {
                                                 //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                if (this.EventReceived != null)
-                                                {
-                                                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.DialUp, "", context.Button, 0));
-                                                }
+                                                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.DialUp, "", context.Button, 0));
                                             }
                                             else if (Operators.CompareString(innerText2, "dialRotate", false) == 0)
                                             {
@@ -195,10 +177,7 @@ namespace vMixStreamDeckLibrary
                                                     if (int.TryParse(xmlNode8.InnerText, out v))
                                                     {
                                                         //StreamDeckAPI.EventReceivedEventHandler eventReceivedEvent = this.EventReceivedEvent;
-                                                        if (this.EventReceived != null)
-                                                        {
-                                                            this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.DialRotate, "", context.Button, v));
-                                                        }
+                                                        this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.DialRotate, "", context.Button, v));
                                                     }
                                                 }
                                             }
@@ -445,10 +424,7 @@ namespace vMixStreamDeckLibrary
         {
             try
             {
-                if (this.EventReceived != null)
-                {
-                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.Info, message, null, 0));
-                }
+                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.Info, message, null, 0));
             }
             catch (Exception)
             {
@@ -460,10 +436,7 @@ namespace vMixStreamDeckLibrary
         {
             try
             {
-                if (this.EventReceived != null)
-                {
-                    this.EventReceived(this, new StreamDeckEventArgs(StreamDeckEvent.Error, message, null, 0));
-                }
+                this.EventReceived?.Invoke(this, new StreamDeckEventArgs(StreamDeckEvent.Error, message, null, 0));
             }
             catch (Exception)
             {

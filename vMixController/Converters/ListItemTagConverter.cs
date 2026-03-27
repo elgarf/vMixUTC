@@ -21,7 +21,12 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var val = (string)value;
+            var val = value as string;
+            if (string.IsNullOrEmpty(Helpers.EscapeSymbol))
+            {
+                return string.Empty;
+            }
+
             val = Helpers.EscapeAt(val);
             var ts = val.Split(Helpers.EscapeSymbol[0]);
             if ((string)parameter == "tag")

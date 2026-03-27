@@ -34,7 +34,7 @@ namespace vMixAPI
 
         // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(Input), new PropertyMetadata(""));
+            DependencyProperty.Register("Title", typeof(string), typeof(SampleInput), new PropertyMetadata(""));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

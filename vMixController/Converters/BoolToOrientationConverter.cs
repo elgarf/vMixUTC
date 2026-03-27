@@ -23,7 +23,7 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value) ? Orientation.Horizontal : Orientation.Vertical;
+            return value is bool flag && flag ? Orientation.Horizontal : Orientation.Vertical;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

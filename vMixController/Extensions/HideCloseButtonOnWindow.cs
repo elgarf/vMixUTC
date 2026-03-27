@@ -82,7 +82,7 @@ namespace vMixController.Extensions
 
             if (menuHandle != IntPtr.Zero)
             {
-                NativeMethods.EnableMenuItem(menuHandle, NativeMethods.SC_CLOSE, NativeMethods.MF_BYCOMMAND | 0);
+                NativeMethods.EnableMenuItem(menuHandle, NativeMethods.SC_CLOSE, NativeMethods.MF_BYCOMMAND);
             }
         }
 

@@ -58,11 +58,11 @@ namespace UTCGoogleSheetsDataProvider
             set => SetPropertyValue(ref _error, value, nameof(Error));
         }
 
-        public override int Period
+        /*public override int Period
         {
             get => base.Period;
             set => base.Period = value;
-        }
+        }*/
 
         [RelayCommand]
         private void HandlePreviewKeyUp(KeyEventArgs p)

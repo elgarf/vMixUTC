@@ -22,16 +22,27 @@ namespace vMixController.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            try
-            {
-                return ((List<Triple<Color, Color, string>>)values[0])
-                    .Select(x=>x.A)
-                    .Where(clr=>(0.2126 * (clr.R / 255f) + 0.7152 * (clr.G / 255f) + 0.0722 * (clr.B / 255f)) >= 0.33f)
-                    .ToArray()[(int)values[1]];
-            } catch (Exception)
+            if (values == null || values.Length < 2)
             {
                 return Colors.White;
             }
+
+            if (!(values[0] is List<Triple<Color, Color, string>> source) || !(values[1] is int index))
+            {
+                return Colors.White;
+            }
+
+            var palette = source
+                .Select(x => x.A)
+                .Where(clr => (0.2126 * (clr.R / 255f) + 0.7152 * (clr.G / 255f) + 0.0722 * (clr.B / 255f)) >= 0.33f)
+                .ToArray();
+
+            if (index < 0 || index >= palette.Length)
+            {
+                return Colors.White;
+            }
+
+            return palette[index];
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

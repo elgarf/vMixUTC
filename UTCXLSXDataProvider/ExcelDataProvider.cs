@@ -36,11 +36,11 @@ namespace UTCGoogleSheetsDataProvider
 
         public string Error => null;
 
-        public override int Period
+        /*public override int Period
         {
             get => base.Period;
             set => base.Period = value;
-        }
+        }*/
 
         protected override void OnPeriodChanged(int newPeriodMs)
         {
@@ -352,7 +352,7 @@ namespace UTCGoogleSheetsDataProvider
 
             if (props.ElementAtOrDefault(3) is int)
             {
-                StartCol = ((int?)props.ElementAtOrDefault(3) ?? 0).ToString();
+                StartCol = ((int?)props.ElementAtOrDefault(3)).ToString();
             }
             else
             {
@@ -361,7 +361,7 @@ namespace UTCGoogleSheetsDataProvider
 
             if (props.ElementAtOrDefault(4) is int)
             {
-                EndCol = ((int?)props.ElementAtOrDefault(4) ?? -1).ToString();
+                EndCol = ((int?)props.ElementAtOrDefault(4)).ToString();
             }
             else
             {
@@ -370,7 +370,7 @@ namespace UTCGoogleSheetsDataProvider
 
             if (props.ElementAtOrDefault(5) is int)
             {
-                SheetIndex = ((int?)props.ElementAtOrDefault(5) ?? 0).ToString();
+                SheetIndex = ((int?)props.ElementAtOrDefault(5)).ToString();
             }
             else
             {

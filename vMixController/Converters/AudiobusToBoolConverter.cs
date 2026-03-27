@@ -21,9 +21,14 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && parameter != null && ((string)value).IndexOf((string)parameter) >= 0)
-                return true;
-            return false;
+            var source = value as string;
+            var needle = parameter as string;
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(needle))
+            {
+                return false;
+            }
+
+            return source.IndexOf(needle, StringComparison.Ordinal) >= 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

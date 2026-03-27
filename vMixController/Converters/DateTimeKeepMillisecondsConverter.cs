@@ -11,7 +11,10 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            date = ((DateTime)(value));
+            if (value is DateTime dateTime)
+            {
+                date = dateTime;
+            }
 
             return value;
         }
@@ -20,9 +23,10 @@ namespace vMixController.Converters
         {
             if (value == null) return date;
 
-            DateTime dateIn;
-            DateTime.TryParse((string)value, out dateIn);
-
+            if (!DateTime.TryParse(value as string ?? value?.ToString(), out DateTime dateIn))
+            {
+                return date;
+            }
             var result = dateIn.AddMilliseconds(date.Millisecond);
 
                 // return, because this event handler will be executed a second time
@@ -32,8 +36,7 @@ namespace vMixController.Converters
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             if (value == null) return new ValidationResult(true, null);
-            DateTime dateIn;
-            return new ValidationResult(DateTime.TryParse((string)value, out dateIn), null);
+            return new ValidationResult(DateTime.TryParse(value as string ?? value.ToString(), out _), null);
         }
     }
 }

@@ -22,7 +22,17 @@ namespace vMixController.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return new ControlIntParameter((vMixControl)values[0], (int)values[1]);
+            if (values == null || values.Length < 2)
+            {
+                return null;
+            }
+
+            if (!(values[0] is vMixControl control) || !(values[1] is int index))
+            {
+                return null;
+            }
+
+            return new ControlIntParameter(control, index);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -22,16 +22,14 @@ namespace vMixController.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var list = vMixWidgetSettingsViewModel.Colors;
-            var c = (Color)value;
-            if (c == null) return null;
+            if (!(value is Color c)) return null;
             return list.Where(x => x.A.A == c.A && x.A.R == c.R && x.A.G == c.G && x.A.B == c.B).FirstOrDefault()?.A;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var list = vMixWidgetSettingsViewModel.Colors;
-            var c = (Color)value;
-            if (c == null) return null;
+            if (!(value is Color c)) return null;
             return list.Where(x => x.A.A == c.A && x.A.R == c.R && x.A.G == c.G && x.A.B == c.B).FirstOrDefault()?.A;
         }
 

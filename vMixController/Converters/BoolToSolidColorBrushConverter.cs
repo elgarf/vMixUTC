@@ -22,7 +22,7 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var t = (bool)value;
+            var t = value is bool flag && flag;
             if (parameter != null)
                 t = !t;
             if (t)

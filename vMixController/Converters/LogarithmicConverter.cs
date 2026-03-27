@@ -32,7 +32,12 @@ namespace vMixController.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var v = (double)value / 100;
+            if (!TryToDouble(value, out var source))
+            {
+                return 0d;
+            }
+
+            var v = source / 100;
             if (v < min)
                 v = min;
             return _in(v) * 100;
@@ -40,8 +45,33 @@ namespace vMixController.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var v = (double)value / 100;
+            if (!TryToDouble(value, out var source))
+            {
+                return 0d;
+            }
+
+            var v = source / 100;
             return _out(v) * 100;
+        }
+
+        private static bool TryToDouble(object value, out double result)
+        {
+            if (value is double d)
+            {
+                result = d;
+                return true;
+            }
+
+            try
+            {
+                result = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                return true;
+            }
+            catch
+            {
+                result = 0;
+                return false;
+            }
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

@@ -10,7 +10,6 @@
         xmlns:props="clr-namespace:vMixController.Properties"
         xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        
         xmlns:e="clr-namespace:vMixController.Extensions"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:this="clr-namespace:vMixController"

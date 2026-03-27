@@ -39,7 +39,7 @@ namespace vMixController.PropertiesControls
         }
 
         public static readonly DependencyProperty DisplayMemberPathProperty =
-            DependencyProperty.Register(nameof(DisplayMemberPath), typeof(object), typeof(ComboBoxControl), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(DisplayMemberPath), typeof(string), typeof(ComboBoxControl), new PropertyMetadata(null));
 
         public string SelectedValuePath
         {
@@ -48,7 +48,7 @@ namespace vMixController.PropertiesControls
         }
 
         public static readonly DependencyProperty SelectedValuePathProperty =
-            DependencyProperty.Register(nameof(SelectedValuePath), typeof(object), typeof(ComboBoxControl), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(SelectedValuePath), typeof(string), typeof(ComboBoxControl), new PropertyMetadata(null));
 
         public IEnumerable Items
         {

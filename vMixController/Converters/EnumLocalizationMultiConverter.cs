@@ -32,11 +32,15 @@ namespace vMixController.Converters
         {
             if (value is string val && parameter is string p)
             {
-                var v = vMixControllerSkin.Localization.LocalizationManager.Instance.GetKey(val, p).Substring(p.Length + 1);
-                object[] result = new object[targetTypes.Length];
-                result[0] = Enum.Parse(targetTypes[0], v);
-                result[1] = null;
-                return result;
+                var key = vMixControllerSkin.Localization.LocalizationManager.Instance.GetKey(val, p);
+                if (key != null)
+                {
+                    var v = key.Substring(p.Length + 1);
+                    object[] result = new object[targetTypes.Length];
+                    result[0] = Enum.Parse(targetTypes[0], v);
+                    result[1] = null;
+                    return result;
+                }
             }
             return null;
         }

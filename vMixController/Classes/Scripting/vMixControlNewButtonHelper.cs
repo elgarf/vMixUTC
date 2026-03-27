@@ -119,7 +119,7 @@ namespace vMixController.Classes.Scripting
                 }
 
                 // Заменяем полный блок условия на вычисленное содержимое
-                result = result.Remove(match.Index, match.Length).Insert(match.Index, evaluatedContent);
+                result = result.Remove(match.Index, match.Length).Insert(match.Index, evaluatedContent ?? string.Empty);
             }
 
             result = PlaceholderRegex.Replace(result, match =>

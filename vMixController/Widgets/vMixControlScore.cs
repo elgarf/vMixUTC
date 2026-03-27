@@ -54,7 +54,7 @@ namespace vMixController.Widgets
             DependencyProperty.Register(
                 nameof(FormatString),
                 typeof(string),
-                typeof(StringControl),
+                typeof(vMixControlScore),
                 new PropertyMetadata("0")); // "0" - ��� �������� �� ���������
 
         /// <summary>
