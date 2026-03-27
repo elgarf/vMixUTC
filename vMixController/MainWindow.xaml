@@ -538,73 +538,18 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>-->
                             <CompositeCollection>
-                                <TextBox TabIndex="1" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.IP}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PreviewKeyUp">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="GotFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="LostFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                <TextBox TabIndex="1" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.IP}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
-                                <TextBox TabIndex="2" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.Port}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PreviewKeyUp">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="GotFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="LostFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                <TextBox TabIndex="2" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.Port}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
 
-                                <TextBox TabIndex="3" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiLogin}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PreviewKeyUp">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="GotFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="LostFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                <TextBox TabIndex="3" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiLogin}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
-                                <TextBox TabIndex="4" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiPassword}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PreviewKeyUp">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="GotFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="LostFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                <TextBox TabIndex="4" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiPassword}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
 
 
-                                <TextBox TabIndex="5" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.PollTime}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PreviewKeyUp">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="GotFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="LostFocus">
-                                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
+                                <TextBox TabIndex="5" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.PollTime}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
 
                                 <Grid KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" Tag="{loc:Loc Key=MainWindow.Settings.Field.Scaling}">
@@ -698,18 +643,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock HorizontalAlignment="Center" Style="{StaticResource CaptionText}" FontWeight="Normal" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}}"></TextBlock>
                                                     <Border Grid.Column="1" Background="{StaticResource Main.Gradient}">
-                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1">
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="PreviewKeyUp">
-                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                                                </i:EventTrigger>
-                                                                <i:EventTrigger EventName="GotFocus">
-                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                                                </i:EventTrigger>
-                                                                <i:EventTrigger EventName="LostFocus">
-                                                                    <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
+                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                                             <TextBox.Style>
                                                                 <Style TargetType="TextBox">
                                                                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -719,18 +653,7 @@
                                                             </TextBox.Style>
                                                         </TextBox>
                                                     </Border>
-                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="2" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" FontWeight="Regular">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="PreviewKeyUp">
-                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxPreviewKeyUpCommand}"/>
-                                                            </i:EventTrigger>
-                                                            <i:EventTrigger EventName="GotFocus">
-                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxGotFocusCommand}"/>
-                                                            </i:EventTrigger>
-                                                            <i:EventTrigger EventName="LostFocus">
-                                                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding Source={StaticResource VmProxy}, Path=Data.TextBoxLostFocusCommand}"/>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
+                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="2" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" FontWeight="Regular" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                                     </TextBox>
                                                     <Button ToolTip="{loc:Loc Key=MainWindow.Settings.GlobalVariables.Tooltip.Remove}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Content="&#xF2ED;" Grid.Column="3"/>
                                                 </Grid>
@@ -1321,6 +1244,7 @@
         </Border>
     </Grid>
 </Window>
+
 
 
 
