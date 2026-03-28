@@ -79,7 +79,7 @@ namespace vMixControllerSkin.Localization
                     return string.Empty;
 
                 var value = _resourceManager.GetString(key, Culture);
-                if (!string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
                     Dictionary<string, string> locale = null;
                     if (_userLocales.TryGetValue(Culture.Name, out locale))
