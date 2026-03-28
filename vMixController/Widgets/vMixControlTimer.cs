@@ -24,6 +24,18 @@ namespace vMixController.Widgets
         public const string OneSecond = nameof(OneSecond);
     }
 
+    public readonly struct TimerTickPayload
+    {
+        public TimerTickPayload(TimeSpan delta, long stampTicks)
+        {
+            Delta = delta;
+            StampTicks = stampTicks;
+        }
+
+        public TimeSpan Delta { get; }
+        public long StampTicks { get; }
+    }
+
     public static class GlobalTimer
     {
         private static IMessenger _messenger;
@@ -44,6 +56,7 @@ namespace vMixController.Widgets
         private static int _refCount = 0;
         private static int _highPrecisionRefCount = 0;
         private static bool _isTimerRunning = false;
+        private static bool _resumePhasePending = false;
         private static readonly object _sync = new object();
 
         private static readonly MultimediaTimer _mtimer = new MultimediaTimer();
@@ -72,11 +85,12 @@ namespace vMixController.Widgets
             }
 
             // Prime JIT and messenger generic paths before first real timer start.
-            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(
-                new ValueChangedMessage<TimeSpan>(TimeSpan.Zero),
+            var stamp = Stopwatch.GetTimestamp();
+            Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
+                new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(TimeSpan.Zero, stamp)),
                 TimerTokens.HighPrecision);
-            Messenger.Send<ValueChangedMessage<TimeSpan>, string>(
-                new ValueChangedMessage<TimeSpan>(TimeSpan.Zero),
+            Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
+                new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(TimeSpan.Zero, stamp)),
                 TimerTokens.OneSecond);
         }
 
@@ -90,8 +104,12 @@ namespace vMixController.Widgets
 
                 if (_refCount == 1)
                 {
-                    _oneSecondAccum = TimeSpan.Zero;
-                    _highPrecisionAccum = TimeSpan.Zero;
+                    if (!_resumePhasePending)
+                    {
+                        _oneSecondAccum = TimeSpan.Zero;
+                        _highPrecisionAccum = TimeSpan.Zero;
+                    }
+                    _resumePhasePending = false;
                     _sw.Restart();
                 }
 
@@ -99,7 +117,7 @@ namespace vMixController.Widgets
             }
         }
 
-        public static void Decrement(bool isHighPrecision)
+        public static void Decrement(bool isHighPrecision, bool preservePhase = false)
         {
             lock (_sync)
             {
@@ -119,12 +137,29 @@ namespace vMixController.Widgets
                     _sw.Reset();
                     _refCount = 0;
                     _highPrecisionRefCount = 0;
-                    _oneSecondAccum = TimeSpan.Zero;
-                    _highPrecisionAccum = TimeSpan.Zero;
+                    _resumePhasePending = preservePhase;
+                    if (!preservePhase)
+                    {
+                        _oneSecondAccum = TimeSpan.Zero;
+                        _highPrecisionAccum = TimeSpan.Zero;
+                    }
                     return;
                 }
 
                 ReconfigureTimerLocked();
+            }
+        }
+
+        public static void ClearPreservedPhase()
+        {
+            lock (_sync)
+            {
+                _resumePhasePending = false;
+                if (_refCount <= 0)
+                {
+                    _oneSecondAccum = TimeSpan.Zero;
+                    _highPrecisionAccum = TimeSpan.Zero;
+                }
             }
         }
 
@@ -208,23 +243,28 @@ namespace vMixController.Widgets
             var appDispatcher = Application.Current?.Dispatcher;
             if (appDispatcher == null || appDispatcher.CheckAccess())
             {
-                DispatchTick(highPrecisionTicks, oneSecondTicks);
+                DispatchTick(highPrecisionTicks, oneSecondTicks, Stopwatch.GetTimestamp());
             }
             else
             {
-                appDispatcher.BeginInvoke(new Action(() => DispatchTick(highPrecisionTicks, oneSecondTicks)), DispatcherPriority.Send);
+                var stamp = Stopwatch.GetTimestamp();
+                appDispatcher.BeginInvoke(new Action(() => DispatchTick(highPrecisionTicks, oneSecondTicks, stamp)), DispatcherPriority.Send);
             }
         }
 
-        private static void DispatchTick(int highPrecisionTicks, int oneSecondTicks)
+        private static void DispatchTick(int highPrecisionTicks, int oneSecondTicks, long stampTicks)
         {
             for (var i = 0; i < highPrecisionTicks; i++)
             {
-                Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(HighPrecisionTick), TimerTokens.HighPrecision);
+                Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
+                    new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(HighPrecisionTick, stampTicks)),
+                    TimerTokens.HighPrecision);
             }
             for (var i = 0; i < oneSecondTicks; i++)
             {
-                Messenger.Send<ValueChangedMessage<TimeSpan>, string>(new ValueChangedMessage<TimeSpan>(OneSecond), TimerTokens.OneSecond);
+                Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
+                    new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(OneSecond, stampTicks)),
+                    TimerTokens.OneSecond);
             }
         }
     }
@@ -233,6 +273,7 @@ namespace vMixController.Widgets
     public partial class vMixControlTimer : vMixControlTextField
     {
         bool _changingTime = false;
+        private long _runSinceTicks = 0;
         public override string Type
         {
             get
@@ -243,13 +284,17 @@ namespace vMixController.Widgets
         public vMixControlTimer()
         {
             GlobalTimer.WarmUp();
-            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimeSpan>, string>(this, TimerTokens.HighPrecision, (r, m) =>
+            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimerTickPayload>, string>(this, TimerTokens.HighPrecision, (r, m) =>
             {
-                if (r.IsHighPrecision) r.RunOnUiThread(() => r.Tick(m.Value), DispatcherPriority.Send);
+                if (!r.IsHighPrecision || m.Value.StampTicks < r._runSinceTicks)
+                    return;
+                r.RunOnUiThread(() => r.Tick(m.Value.Delta), DispatcherPriority.Send);
             });
-            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimeSpan>, string>(this, TimerTokens.OneSecond, (r, m) =>
+            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimerTickPayload>, string>(this, TimerTokens.OneSecond, (r, m) =>
             {
-                if (!r.IsHighPrecision) r.RunOnUiThread(() => r.Tick(m.Value), DispatcherPriority.Send);
+                if (r.IsHighPrecision || m.Value.StampTicks < r._runSinceTicks)
+                    return;
+                r.RunOnUiThread(() => r.Tick(m.Value.Delta), DispatcherPriority.Send);
             });
 
             _width = 256;
@@ -558,6 +603,7 @@ namespace vMixController.Widgets
                         if (!Paused) UpdateTimer();
                         Paused = false;
                         Active = true;
+                        _runSinceTicks = Stopwatch.GetTimestamp();
                         GlobalTimer.Increment(IsHighPrecision);
                         SendLink(0);
                     }
@@ -568,13 +614,14 @@ namespace vMixController.Widgets
                     {
                         Paused = true;
                         Active = false;
-                        GlobalTimer.Decrement(IsHighPrecision);
+                        GlobalTimer.Decrement(IsHighPrecision, preservePhase: true);
                         SendLink(1);
                     }
                     else if (Paused)
                     {
                         Paused = false;
                         Active = true;
+                        _runSinceTicks = Stopwatch.GetTimestamp();
                         GlobalTimer.Increment(IsHighPrecision);
                         SendLink(0);
                     }
@@ -585,6 +632,10 @@ namespace vMixController.Widgets
                     {
                         GlobalTimer.Decrement(IsHighPrecision);
                         Active = false;
+                    }
+                    else
+                    {
+                        GlobalTimer.ClearPreservedPhase();
                     }
                     Paused = false;
                     UpdateTimer();
