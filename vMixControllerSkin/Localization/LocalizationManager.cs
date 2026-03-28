@@ -17,7 +17,20 @@ namespace vMixControllerSkin.Localization
     public class LocalizationManager : INotifyPropertyChanged
     {
         private static readonly Lazy<LocalizationManager> _instance = new Lazy<LocalizationManager>(() => new LocalizationManager());
-        public static CultureInfo[] Locales { get; private set; }
+        private static CultureInfo[] _locales = Array.Empty<CultureInfo>();
+        public static CultureInfo[] Locales
+        {
+            get
+            {
+                if (_locales == null || _locales.Length == 0)
+                {
+                    _ = Instance;
+                }
+
+                return _locales ?? Array.Empty<CultureInfo>();
+            }
+            private set => _locales = value ?? Array.Empty<CultureInfo>();
+        }
 
         private readonly ResourceManager _resourceManager;
         private CultureInfo _culture;
@@ -30,21 +43,31 @@ namespace vMixControllerSkin.Localization
             _resourceManager = new ResourceManager("vMixControllerSkin.Properties.Strings", typeof(LocalizationManager).Assembly);
 
             var culture = new CultureInfo(_defaultLocales[0]);
-
             var resourceSet = _resourceManager.GetResourceSet(culture, true, true);
-
 
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             var userLocales = Path.Combine(baseDir, "UserLocales");
-            if (!Directory.Exists(userLocales))
-                Directory.CreateDirectory(userLocales);
 
-            Dictionary<string, string> enLocale = new Dictionary<string, string>();
-            foreach (DictionaryEntry entry in resourceSet)
+            try
             {
-                enLocale.Add((string)entry.Key, (string)entry.Value);
+                if (!Directory.Exists(userLocales))
+                    Directory.CreateDirectory(userLocales);
+
+                if (resourceSet != null)
+                {
+                    var enLocale = new Dictionary<string, string>();
+                    foreach (DictionaryEntry entry in resourceSet)
+                    {
+                        enLocale[(string)entry.Key] = (string)entry.Value;
+                    }
+
+                    File.WriteAllText(Path.Combine(userLocales, _defaultLocales[0] + ".json"), SerializeDictionary(enLocale));
+                }
             }
-            File.WriteAllText(Path.Combine(userLocales, _defaultLocales[0] + ".json"), SerializeDictionary(enLocale));
+            catch
+            {
+                // Ignore IO/permission issues: built-in resources are still available.
+            }
 
             Locales = GetAvailableCultures().ToArray();
         }
@@ -140,22 +163,36 @@ namespace vMixControllerSkin.Localization
         public static List<CultureInfo> GetAvailableCultures()
         {
             var result = new List<CultureInfo>();
+            _userLocales.Clear();
 
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
             //Default culture
             foreach (var locale in _defaultLocales)
-                result.Add(CultureInfo.GetCultureInfo(locale));
+            {
+                if (!result.Exists(c => string.Equals(c.Name, locale, StringComparison.OrdinalIgnoreCase)))
+                    result.Add(CultureInfo.GetCultureInfo(locale));
+            }
 
             var userLocales = Path.Combine(baseDir, "UserLocales");
             if (Directory.Exists(userLocales))
                 foreach (var file in Directory.GetFiles(userLocales, "*.json"))
                 {
-                    var customLocale = Path.GetFileNameWithoutExtension(file);
-                    if (customLocale != _defaultLocales[0])
+                    try
                     {
-                        result.Add(CultureInfo.GetCultureInfo(customLocale));
-                        _userLocales.Add(customLocale, DeserializeDictionary(File.ReadAllText(file)));
+                        var customLocale = Path.GetFileNameWithoutExtension(file);
+                        if (string.Equals(customLocale, _defaultLocales[0], StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        var culture = CultureInfo.GetCultureInfo(customLocale);
+                        if (!result.Exists(c => string.Equals(c.Name, culture.Name, StringComparison.OrdinalIgnoreCase)))
+                            result.Add(culture);
+
+                        _userLocales[culture.Name] = DeserializeDictionary(File.ReadAllText(file));
+                    }
+                    catch
+                    {
+                        // Skip invalid locale names or malformed json files.
                     }
                 }
 

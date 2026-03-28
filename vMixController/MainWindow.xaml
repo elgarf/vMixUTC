@@ -1142,8 +1142,13 @@
                     <Button Margin="0,0,8,0" Command="{Binding StopAllScriptsCommand}" Content="{loc:Loc Key=MainWindow.StatusBar.StopScripts}"/>
                     <!--<CheckBox IsChecked="{Binding WindowSettings.ShowLinks}" Content="{loc:Loc Key=MainWindow.StatusBar.ShowLinks}" Margin="0,0,8,0"/>-->
                     <TextBlock VerticalAlignment="Center" Margin="0,0,8,0" Text="{loc:Loc Key=MainWindow.StatusBar.LinksStyle}"/>
-                    <ComboBox MinWidth="128" Margin="0,0,8,0" SelectedValue="{Binding WindowSettings.LinksStyle, UpdateSourceTrigger=Default, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static cls:Constants.Links}, Converter={c:StringArrayToLocalizedArrayConverter}, ConverterParameter=MainWindow.StatusBar.LinksType}" DisplayMemberPath="Localized" SelectedValuePath="Original">
-                        
+                    <ComboBox MinWidth="128" Margin="0,0,8,0" SelectedValue="{Binding WindowSettings.LinksStyle, Mode=TwoWay}" DisplayMemberPath="Localized" SelectedValuePath="Original">
+                        <ComboBox.ItemsSource>
+                            <MultiBinding Converter="{c:StringArrayToLocalizedArrayMultiConverter}" ConverterParameter="MainWindow.StatusBar.LinksType">
+                                <Binding Source="{x:Static cls:Constants.Links}"/>
+                                <Binding Source="{x:Static loc:LocalizationManager.Instance}" Path="Culture"/>
+                            </MultiBinding>
+                        </ComboBox.ItemsSource>
                     </ComboBox>
                     <CheckBox Margin="0,0,8,0" IsChecked="{Binding IsGhosted, Mode=TwoWay}" ToolTip="{loc:Loc Key=MainWindow.StatusBar.Ghosted.ToolTip}" IsEnabled="{Binding WindowSettings.Locked, Mode=OneWay, Converter={wpfc:BoolToInverseBoolConverter}}">
                         <CheckBox.Style>

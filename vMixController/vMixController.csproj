@@ -193,7 +193,6 @@
       <_EmbeddedProjectArtifacts Include="$(TargetDir)Popcron.Sheets.dll;$(TargetDir)Popcron.Sheets.pdb" />
       <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixAPI.dll;$(TargetDir)vMixAPI.pdb;$(TargetDir)vMixAPI.dll.config" />
       <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixControllerDataProvider.dll;$(TargetDir)vMixControllerDataProvider.pdb" />
-      <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixControllerSkin.dll;$(TargetDir)vMixControllerSkin.pdb;$(TargetDir)vMixControllerSkin.dll.config" />
       <_EmbeddedProjectArtifacts Include="$(TargetDir)vMixStreamDeckLibrary.dll;$(TargetDir)vMixStreamDeckLibrary.pdb" />
     </ItemGroup>
     <Delete Files="@(_EmbeddedProjectArtifacts)" TreatErrorsAsWarnings="true" />

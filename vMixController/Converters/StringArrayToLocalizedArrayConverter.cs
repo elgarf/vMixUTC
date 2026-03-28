@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,10 +10,12 @@ using System.Windows.Markup;
 
 namespace vMixController.Converters
 {
-    public struct LocalizedItem
+    public partial class LocalizedItem: ObservableObject
     {
-        public string Original { get; set; }
-        public string Localized { get; set; }
+        [ObservableProperty]
+        public string _original;
+        [ObservableProperty]
+        public string _localized;
     }
     public class StringArrayToLocalizedArrayConverter : MarkupExtension, IValueConverter
     {

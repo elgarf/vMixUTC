@@ -271,8 +271,17 @@ namespace vMixController
 
         private void LanguageMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is MenuItem menuItem && menuItem.Tag is CultureInfo cultureName)
+            var owner = sender as MenuItem;
+            var sourceElement = e.OriginalSource as DependencyObject;
+            var menuItem = owner != null && sourceElement != null
+                ? ItemsControl.ContainerFromElement(owner, sourceElement) as MenuItem
+                : e.Source as MenuItem;
+
+            if (menuItem?.Tag is CultureInfo cultureName)
+            {
                 LocalizationManager.Instance.SetCulture(cultureName.Name);
+                e.Handled = true;
+            }
         }
     }
 }
