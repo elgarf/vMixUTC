@@ -325,6 +325,7 @@ namespace vMixController.Widgets
             if (!Reverse)
             {
                 var t = Time + delta;
+                SendLink(Constants.TIMER_EVENT_ONTICK, t.TotalSeconds / DefaultTime.TotalSeconds);
                 if (t < DefaultTime)
                     Time = t;
                 else
@@ -336,6 +337,7 @@ namespace vMixController.Widgets
             else
             {
                 var t = Time - delta;
+                SendLink(Constants.TIMER_EVENT_ONTICK, t.TotalSeconds / DefaultTime.TotalSeconds);
                 if (t > TimeSpan.Zero)
                     Time = t;
                 else
@@ -344,9 +346,6 @@ namespace vMixController.Widgets
                     Finish();
                 }
             }
-
-            if (Links.Length > 4 && !string.IsNullOrWhiteSpace(Links[4]))
-                Messenger.Send(new HotkeyLinkMessage() { Link = Links[4], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
         }
 
         private void Finish()
@@ -357,14 +356,25 @@ namespace vMixController.Widgets
                 Active = false;
                 GlobalTimer.Decrement(IsHighPrecision);
             }
-            SendLink(2); // OnStop/OnComplete?
-            SendLink(3);
+            SendLink(Constants.TIMER_EVENT_ONSTOP); // OnStop/OnComplete?
+            SendLink(Constants.TIMER_EVENT_ONCOMPLETION);
         }
 
-        private void SendLink(int index)
+        private void SendLink(int index, object parameter = null)
         {
-            if (!string.IsNullOrWhiteSpace(Links[index]))
-                Messenger.Send(new HotkeyLinkMessage() { Link = Links[index], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(null) });
+            if (Links.Length > index && !string.IsNullOrWhiteSpace(Links[index]))
+                Messenger.Send(new HotkeyLinkMessage() { Link = Links[index], Parameter = ScriptExecutionDispatchRuntime.CreateOutgoingParameter(parameter) });
+        }
+
+        private void SendLink(string name, object parameter = null)
+        {
+            int index = -1;
+            for (int i = 0; i < Constants.TimerEvents.Length; i++)
+                if (Constants.TimerEvents[i] == name)
+                {
+                    index = i; break;
+                }
+            SendLink(index, parameter);
         }
 
         private void UpdateTimer()
@@ -429,6 +439,8 @@ namespace vMixController.Widgets
             set => SetPropertyValue(ref _format, value, nameof(Format));
         }
 
+
+        //START, PAUSE, STOP, COMPLETION, TICK
         private string[] _links = new string[] { "", "", "", "", "" };
 
         /// <summary>
@@ -605,7 +617,7 @@ namespace vMixController.Widgets
                         Active = true;
                         _runSinceTicks = Stopwatch.GetTimestamp();
                         GlobalTimer.Increment(IsHighPrecision);
-                        SendLink(0);
+                        SendLink(Constants.TIMER_EVENT_ONSTART);
                     }
                     break;
 
@@ -615,7 +627,7 @@ namespace vMixController.Widgets
                         Paused = true;
                         Active = false;
                         GlobalTimer.Decrement(IsHighPrecision, preservePhase: true);
-                        SendLink(1);
+                        SendLink(Constants.TIMER_EVENT_ONPAUSE);
                     }
                     else if (Paused)
                     {
@@ -623,7 +635,7 @@ namespace vMixController.Widgets
                         Active = true;
                         _runSinceTicks = Stopwatch.GetTimestamp();
                         GlobalTimer.Increment(IsHighPrecision);
-                        SendLink(0);
+                        SendLink(Constants.TIMER_EVENT_ONSTART);
                     }
                     break;
 
@@ -639,7 +651,7 @@ namespace vMixController.Widgets
                     }
                     Paused = false;
                     UpdateTimer();
-                    SendLink(2);
+                    SendLink(Constants.TIMER_EVENT_ONSTOP);
                     break;
                 case "+1 Hour":
                     Time = Time.Add(TimeSpan.FromHours(1));

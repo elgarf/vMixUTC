@@ -53,7 +53,6 @@ namespace vMixController.Widgets
     {
 
         protected NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        internal static List<UserControl> ControlsStoreUsage = new List<UserControl>();
         internal static State _internalState;
         internal static Regex _regexInt = new Regex(@"^\d+$");
         private static readonly ConcurrentDictionary<Tuple<Type, string>, PropertyInfo> _propertyCache =
@@ -795,21 +794,26 @@ namespace vMixController.Widgets
             Info.Clear();
             if (Hotkey.Length != 0)
             {
-                var active = Hotkey.Where(x => x.Active).ToArray();
-                if (active.Length != 0)
+                var hasActive = false;
+                for (var i = 0; i < Hotkey.Length; i++)
                 {
-                    foreach (var item in active.Select(x => new Triple<string, string, string>()
+                    var hotkey = Hotkey[i];
+                    if (hotkey == null || !hotkey.Active)
+                        continue;
+
+                    hasActive = true;
+                    Info.Add(new Triple<string, string, string>()
                     {
-                        A = string.IsNullOrWhiteSpace(x.Name) ? "N/A" : x.Name,
-                        B = x.Link,
-                        C = (x.Alt ? "Alt + " : "") +
-                        (x.Ctrl ? "Ctrl + " : "") +
-                        (x.Shift ? "Shift + " : "") +
-                        x.Key.ToString()
-                    }))
-                        Info.Add(item);
+                        A = string.IsNullOrWhiteSpace(hotkey.Name) ? "N/A" : hotkey.Name,
+                        B = hotkey.Link,
+                        C = (hotkey.Alt ? "Alt + " : "") +
+                        (hotkey.Ctrl ? "Ctrl + " : "") +
+                        (hotkey.Shift ? "Shift + " : "") +
+                        hotkey.Key.ToString()
+                    });
                 }
-                else
+
+                if (!hasActive)
                     Info.Add(new Triple<string, string, string>("N/A", "N/A", "N/A"));
             }
             else

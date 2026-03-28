@@ -1,11 +1,8 @@
-using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -18,6 +15,7 @@ namespace vMixController.Converters
         private sealed class CacheEntry
         {
             public long LastWriteTicks { get; set; }
+            public long LastAccessTicks { get; set; }
             public ImageSource Image { get; set; }
         }
 
@@ -25,6 +23,7 @@ namespace vMixController.Converters
         private static readonly Dictionary<string, CacheEntry> Cache = new Dictionary<string, CacheEntry>(StringComparer.OrdinalIgnoreCase);
         private static readonly object CacheSync = new object();
         private const int MaxCacheEntries = 256;
+        private static readonly TimeSpan CacheEntryTtl = TimeSpan.FromMinutes(10);
 
         /// <summary>
         /// Static instance of this converter.
@@ -63,6 +62,7 @@ namespace vMixController.Converters
                             cached.LastWriteTicks == writeTicks &&
                             cached.Image != null)
                         {
+                            cached.LastAccessTicks = DateTime.UtcNow.Ticks;
                             return cached.Image;
                         }
                     }
@@ -93,20 +93,15 @@ namespace vMixController.Converters
 
                     lock (CacheSync)
                     {
+                        var nowTicks = DateTime.UtcNow.Ticks;
                         Cache[cacheKey] = new CacheEntry
                         {
                             LastWriteTicks = writeTicks,
+                            LastAccessTicks = nowTicks,
                             Image = img
                         };
 
-                        if (Cache.Count > MaxCacheEntries)
-                        {
-                            var first = Cache.Keys.FirstOrDefault();
-                            if (!string.IsNullOrEmpty(first))
-                            {
-                                Cache.Remove(first);
-                            }
-                        }
+                        TrimCacheLocked(nowTicks);
                     }
 
                     return img;
@@ -128,6 +123,37 @@ namespace vMixController.Converters
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return Instance;
+        }
+
+        private static void TrimCacheLocked(long nowTicks)
+        {
+            if (Cache.Count == 0)
+                return;
+
+            var ttlBoundary = nowTicks - CacheEntryTtl.Ticks;
+
+            if (Cache.Count > MaxCacheEntries / 2)
+            {
+                var expiredKeys = Cache
+                    .Where(p => p.Value == null || p.Value.Image == null || p.Value.LastAccessTicks < ttlBoundary)
+                    .Select(p => p.Key)
+                    .ToArray();
+                foreach (var key in expiredKeys)
+                    Cache.Remove(key);
+            }
+
+            if (Cache.Count <= MaxCacheEntries)
+                return;
+
+            var toRemoveCount = Cache.Count - MaxCacheEntries;
+            var lruKeys = Cache
+                .OrderBy(p => p.Value?.LastAccessTicks ?? long.MinValue)
+                .Take(toRemoveCount)
+                .Select(p => p.Key)
+                .ToArray();
+
+            foreach (var key in lruKeys)
+                Cache.Remove(key);
         }
     }
 }

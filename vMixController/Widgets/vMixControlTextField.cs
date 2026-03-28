@@ -39,6 +39,41 @@ namespace vMixController.Widgets
             DelayedUpdateTimer.Start();
         }
 
+        private static void CleanupPendingUpdatesFor(DependencyObject owner)
+        {
+            if (owner == null)
+                return;
+
+            lock (_pendingUpdates)
+            {
+                var keysToRemove = _pendingUpdates.Keys
+                    .Where(k => ReferenceEquals(k.Item1, owner))
+                    .ToList();
+
+                if (keysToRemove.Count == 0)
+                    return;
+
+                foreach (var key in keysToRemove)
+                {
+                    _pendingUpdates.Remove(key);
+                    _queuedKeys.Remove(key);
+                }
+
+                if (_updateQueue.Count > 0)
+                {
+                    var rebuilt = new Queue<Tuple<DependencyObject, DependencyProperty>>(_updateQueue.Count);
+                    while (_updateQueue.Count > 0)
+                    {
+                        var item = _updateQueue.Dequeue();
+                        if (!ReferenceEquals(item.Item1, owner))
+                            rebuilt.Enqueue(item);
+                    }
+
+                    _updateQueue = rebuilt;
+                }
+            }
+        }
+
         public override Hotkey[] GetHotkeys()
         {
             return new Classes.Hotkey[] { new Classes.Hotkey() { Name = "Focus" } };
@@ -143,14 +178,7 @@ namespace vMixController.Widgets
                 SetPropertyValue(ref _isLive, value, nameof(IsLive), isLive =>
                 {
                     if (!isLive)
-                    {
-                        lock (_pendingUpdates)
-                        {
-                            _pendingUpdates.Clear(); // ������� �������
-                            _updateQueue.Clear(); // ������� �������
-                            _queuedKeys.Clear();
-                        }
-                    }
+                        CleanupPendingUpdatesFor(this);
 
                     if (isLive)
                         _text = Text;
@@ -377,6 +405,7 @@ namespace vMixController.Widgets
 
         protected override void Dispose(bool managed)
         {
+            CleanupPendingUpdatesFor(this);
             base.Dispose(managed);
         }
 

@@ -66,6 +66,13 @@ namespace vMixController.Classes
         public const string LINKS_HOVER = "Hover";
         public const string LINKS_NONE = "None";
         public static string[] Links { get; } = new string[] { LINKS_ALL, LINKS_HOVER, LINKS_NONE };
+
+        public const string TIMER_EVENT_ONSTART = "On Start";
+        public const string TIMER_EVENT_ONPAUSE = "On Pause";
+        public const string TIMER_EVENT_ONSTOP = "On Stop";
+        public const string TIMER_EVENT_ONCOMPLETION = "On Completion";
+        public const string TIMER_EVENT_ONTICK = "On Tick";
+        public static string[] TimerEvents = new string[] { TIMER_EVENT_ONSTART, TIMER_EVENT_ONPAUSE, TIMER_EVENT_ONSTOP, TIMER_EVENT_ONCOMPLETION, TIMER_EVENT_ONTICK };
         //public static byte[] DESIV = new byte[] { 0x10, 0x33, 0xFA, 0x6E, 0x3F, 0xAA, 0x90, 0x5D };
     }
 }

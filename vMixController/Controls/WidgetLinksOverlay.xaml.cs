@@ -25,6 +25,8 @@ namespace vMixController.Controls
             : WeakReferenceMessenger.Default;
 
         private readonly HashSet<vMixControl> _subscribedWidgets = new HashSet<vMixControl>();
+        private readonly List<vMixControl> _subscriptionRemovedBuffer = new List<vMixControl>();
+        private readonly List<vMixControl> _subscriptionAddedBuffer = new List<vMixControl>();
         private readonly Dictionary<vMixControl, Size> _actualWidgetSizes = new Dictionary<vMixControl, Size>();
         private readonly Popup _legendPopup;
         private INotifyCollectionChanged _itemsCollection;
@@ -239,13 +241,27 @@ namespace vMixController.Controls
         {
             var next = new HashSet<vMixControl>((items ?? Enumerable.Empty<vMixControl>()).Where(x => x != null));
 
-            foreach (var removed in _subscribedWidgets.Where(x => !next.Contains(x)).ToList())
+            _subscriptionRemovedBuffer.Clear();
+            foreach (var existing in _subscribedWidgets)
+            {
+                if (!next.Contains(existing))
+                    _subscriptionRemovedBuffer.Add(existing);
+            }
+
+            foreach (var removed in _subscriptionRemovedBuffer)
             {
                 removed.PropertyChanged -= WidgetPropertyChanged;
                 _subscribedWidgets.Remove(removed);
             }
 
-            foreach (var added in next.Where(x => !_subscribedWidgets.Contains(x)))
+            _subscriptionAddedBuffer.Clear();
+            foreach (var candidate in next)
+            {
+                if (!_subscribedWidgets.Contains(candidate))
+                    _subscriptionAddedBuffer.Add(candidate);
+            }
+
+            foreach (var added in _subscriptionAddedBuffer)
             {
                 added.PropertyChanged += WidgetPropertyChanged;
                 _subscribedWidgets.Add(added);

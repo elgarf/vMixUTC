@@ -61,8 +61,6 @@ namespace vMixController.Widgets
         [NonSerialized]
         int _lastHandledStateRecalcVersion = -1;
 
-        static List<vMixControlButton> _instances = new List<vMixControlButton>();
-
         private bool _hasScriptErrors = false;
 
         /// <summary>
