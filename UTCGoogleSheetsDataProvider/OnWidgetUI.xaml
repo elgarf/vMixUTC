@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              
              xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
              xmlns:local="clr-namespace:UTCGoogleSheetsDataProvider"
@@ -21,7 +20,7 @@
         <StackPanel>
             <skin:PropertiesListView>
                 <CompositeCollection>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.GoogleSheets.APIKey}"/>
                         </TextBox.Tag>
@@ -29,19 +28,8 @@
                             <Binding Path="APIKey" UpdateSourceTrigger="PropertyChanged">
                             </Binding>
                         </TextBox.Text>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.GoogleSheets.SheetKey}"/>
                         </TextBox.Tag>
@@ -51,19 +39,8 @@
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.StartRow}"/>
                         </TextBox.Tag>
@@ -72,19 +49,8 @@
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.EndRow}"/>
                         </TextBox.Tag>
@@ -93,19 +59,8 @@
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.StartCol}"/>
                         </TextBox.Tag>
@@ -114,19 +69,8 @@
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.EndCol}"/>
                         </TextBox.Tag>
@@ -135,19 +79,8 @@
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.SheetNumber}"/>
                         </TextBox.Tag>
@@ -156,17 +89,6 @@
                                 <ExceptionValidationRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Tag>
@@ -191,7 +113,3 @@
         </StackPanel>
     </Grid>
 </UserControl>
-
-
-
-

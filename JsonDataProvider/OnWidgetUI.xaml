@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              
              xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
              xmlns:local="clr-namespace:JsonDataProviderNs"
@@ -21,69 +20,30 @@
     <StackPanel>
         <skin:PropertiesListView>
             <CompositeCollection>
-                <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Url}">
+                <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}" Text="{Binding Url}">
                     <TextBox.Tag>
                         <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.URL}"/>
                     </TextBox.Tag>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyUp">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="GotFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                 </TextBox>
-                <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Headers}" TextWrapping="Wrap" Height="Auto" AcceptsReturn="True">
+                <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}" Text="{Binding Headers}" TextWrapping="Wrap" Height="Auto" AcceptsReturn="True">
                     <TextBox.Tag>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.JSON.Headers}"/>
                             <Control Margin="{StaticResource LeftStdMargin}" Style="{StaticResource HelpBorder}" ToolTip="{loc:Loc Key=DataProvider.JSON.Headers.Help}"/>
                         </StackPanel>
                     </TextBox.Tag>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyUp">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="PreviewKeyDown">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyDownCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="GotFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                 </TextBox>
 
-                <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding JsonPath}" TextWrapping="Wrap" Height="Auto" AcceptsReturn="True">
+                <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}" Text="{Binding JsonPath}" TextWrapping="Wrap" Height="Auto" AcceptsReturn="True">
                     <TextBox.Tag>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.JSON.JSONPath}"/>
                             <Control Margin="{StaticResource LeftStdMargin}" Style="{StaticResource HelpBorder}" ToolTip="{loc:Loc Key=DataProvider.JSON.Headers.Help}"/>
                         </StackPanel>
                     </TextBox.Tag>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyUp">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="PreviewKeyDown">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyDownCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="GotFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                 </TextBox>
 
-                <TextBox Style="{StaticResource WidgetTextBox}">
+                <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}">
                     <TextBox.Tag>
                         <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvider.Shared.GroupBy}"/>
                     </TextBox.Tag>
@@ -94,17 +54,6 @@
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyUp">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="GotFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                 </TextBox>
             </CompositeCollection>
         </skin:PropertiesListView>
@@ -122,7 +71,3 @@
         </Grid>
     </StackPanel>
 </UserControl>
-
-
-
-

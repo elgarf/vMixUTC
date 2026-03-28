@@ -3,6 +3,21 @@
 ###############################################################################
 * text=auto
 
+# Enforce CRLF for .NET and XAML sources
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.props text eol=crlf
+*.targets text eol=crlf
+*.cs text eol=crlf
+*.xaml text eol=crlf
+*.config text eol=crlf
+*.xml text eol=crlf
+*.resx text eol=crlf
+
+# Keep shell-like scripts LF
+*.sh text eol=lf
+*.bash text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

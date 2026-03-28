@@ -1,4 +1,4 @@
-﻿<Window
+<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -538,18 +538,18 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>-->
                             <CompositeCollection>
-                                <TextBox TabIndex="1" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.IP}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                <TextBox TabIndex="1" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.IP}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.IP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
-                                <TextBox TabIndex="2" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.Port}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
-                                </TextBox>
-
-                                <TextBox TabIndex="3" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiLogin}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
-                                </TextBox>
-                                <TextBox TabIndex="4" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiPassword}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                <TextBox TabIndex="2" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.Port}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding IsUrlValid, Converter={c:BoolToSolidColorBrushConverter}, ConverterParameter=1}" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
 
+                                <TextBox TabIndex="3" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiLogin}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                </TextBox>
+                                <TextBox TabIndex="4" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.ApiPassword}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.HttpPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                </TextBox>
 
-                                <TextBox TabIndex="5" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.PollTime}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+
+                                <TextBox TabIndex="5" Style="{StaticResource WidgetTextBox}" Tag="{loc:Loc Key=MainWindow.Settings.Field.PollTime}" IsEnabled="{Binding WindowSettings.Locked, Converter={wpfc:BoolToInverseBoolConverter}}" Text="{Binding WindowSettings.PollTime, Mode=TwoWay}" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                 </TextBox>
 
                                 <Grid KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" Tag="{loc:Loc Key=MainWindow.Settings.Field.Scaling}">
@@ -643,7 +643,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock HorizontalAlignment="Center" Style="{StaticResource CaptionText}" FontWeight="Normal" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}}"></TextBlock>
                                                     <Border Grid.Column="1" Background="{StaticResource Main.Gradient}">
-                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                                        <TextBox CaretBrush="White" FontWeight="Bold" Margin="8,2,2,2" Text="{Binding A, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0,0,0,1" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                                             <TextBox.Style>
                                                                 <Style TargetType="TextBox">
                                                                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -653,7 +653,7 @@
                                                             </TextBox.Style>
                                                         </TextBox>
                                                     </Border>
-                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="2" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" FontWeight="Regular" e:TextBoxCommandBehavior.Enable="True" e:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
+                                                    <TextBox Background="Transparent" Foreground="White" CaretBrush="White" BorderThickness="0,0,0,1" Margin="2" Grid.Column="2" Text="{Binding B, UpdateSourceTrigger=PropertyChanged}" FontWeight="Regular" skin:TextBoxCommandBehavior.Enable="True" skin:TextBoxCommandBehavior.CommandSource="{Binding Source={StaticResource VmProxy}, Path=Data}">
                                                     </TextBox>
                                                     <Button ToolTip="{loc:Loc Key=MainWindow.Settings.GlobalVariables.Tooltip.Remove}" CommandParameter="{Binding}" Margin="2,0" Style="{StaticResource TitleButton}" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" Content="&#xF2ED;" Grid.Column="3"/>
                                                 </Grid>
@@ -1244,14 +1244,3 @@
         </Border>
     </Grid>
 </Window>
-
-
-
-
-
-
-
-
-
-
-

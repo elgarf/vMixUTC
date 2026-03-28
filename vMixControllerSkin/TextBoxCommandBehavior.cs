@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace vMixController.Extensions
+namespace vMixControllerSkin
 {
     public static class TextBoxCommandBehavior
     {
@@ -37,14 +37,24 @@ namespace vMixController.Extensions
             if ((bool)e.NewValue)
             {
                 textBox.PreviewKeyUp += OnPreviewKeyUp;
+                textBox.PreviewKeyDown += OnPreviewKeyDown;
                 textBox.GotFocus += OnGotFocus;
                 textBox.LostFocus += OnLostFocus;
                 return;
             }
 
             textBox.PreviewKeyUp -= OnPreviewKeyUp;
+            textBox.PreviewKeyDown -= OnPreviewKeyDown;
             textBox.GotFocus -= OnGotFocus;
             textBox.LostFocus -= OnLostFocus;
+        }
+
+        private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                TryExecute(textBox, e, "TextBoxPreviewKeyDownCommand", "HandlePreviewKeyDownCommand");
+            }
         }
 
         private static void OnPreviewKeyUp(object sender, KeyEventArgs e)

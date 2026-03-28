@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              
              xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
              xmlns:loc="clr-namespace:vMixControllerSkin.Localization;assembly=vMixControllerSkin"
@@ -21,37 +20,15 @@
         <Grid>
             <skin:PropertiesListView>
                 <CompositeCollection>
-                    <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Path}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}" Text="{Binding Path}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvder.Filesystem.Path}"></TextBlock>
                         </TextBox.Tag>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBox Style="{StaticResource WidgetTextBox}" Text="{Binding Filter}">
+                    <TextBox skin:TextBoxCommandBehavior.Enable="True" Style="{StaticResource WidgetTextBox}" Text="{Binding Filter}">
                         <TextBox.Tag>
                             <TextBlock Style="{StaticResource CaptionText}" Text="{loc:Loc Key=DataProvder.Filesystem.Filter}"/>
                         </TextBox.Tag>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyUp">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandlePreviewKeyUpCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleGotFocusCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="LostFocus">
-                                <i:InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding HandleLostFocusCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </TextBox>
                     <CheckBox IsChecked="{Binding IncludeSubDirectories}">
                         <CheckBox.Tag>
@@ -73,7 +50,3 @@
         </Grid>
     </StackPanel>
 </UserControl>
-
-
-
-
