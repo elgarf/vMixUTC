@@ -68,6 +68,12 @@ namespace vMixController.ViewModel
         //LowLevelInput.Hooks.LowLevelMouseHook mouseHook = new LowLevelInput.Hooks.LowLevelMouseHook(true);
         vMixWidgetSettingsView _settings;
         NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly IStateFactory _stateFactory = AppServices.IsRegistered<IStateFactory>()
+            ? AppServices.GetRequiredService<IStateFactory>()
+            : StateFabriqueAdapter.Instance;
+        private readonly IStateSyncService _stateSyncService = AppServices.IsRegistered<IStateSyncService>()
+            ? AppServices.GetRequiredService<IStateSyncService>()
+            : StateFabriqueAdapter.Instance;
         public GlobalVariablesViewModel GlobalSettings => AppServices.GetRequiredService<GlobalVariablesViewModel>();
 
         private readonly ScriptExecutionLoopGuard _scriptExecutionLoopGuard = new ScriptExecutionLoopGuard(100, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
@@ -158,6 +164,7 @@ namespace vMixController.ViewModel
             }
 
             value.PropertyChanged += WindowSettings_PropertyChanged;
+            UpdateXmlDocumentMessengerSettings();
         }
 
         private void WindowSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -165,9 +172,35 @@ namespace vMixController.ViewModel
             _ = Task.Run(() =>
             {
                 if (e.PropertyName == "IP" || e.PropertyName == "Port" || e.PropertyName == "HttpLogin" || e.PropertyName == "HttpPassword")
+                {
+                    UpdateXmlDocumentMessengerSettings();
                     CheckvMixConnection(null, new EventArgs());
+                }
             });
 
+        }
+
+        private void UpdateXmlDocumentMessengerSettings()
+        {
+            if (WindowSettings == null)
+                return;
+
+            var options = BuildConnectionOptions();
+            _stateFactory.SetConnectionOptions(options);
+            XmlDocumentMessenger.Url = _stateFactory.GetUrl(options.Ip, options.Port);
+            XmlDocumentMessenger.Credentials = _stateFactory.GetCredentials(options.Login, options.Password);
+        }
+
+        private ConnectionOptions BuildConnectionOptions()
+        {
+            if (WindowSettings == null)
+                return new ConnectionOptions();
+
+            return new ConnectionOptions(
+                WindowSettings.IP,
+                WindowSettings.Port,
+                WindowSettings.HttpLogin,
+                WindowSettings.HttpPassword);
         }
 
         private void LocalizationManager_CultureChanged(object sender, EventArgs e)
@@ -582,9 +615,10 @@ namespace vMixController.ViewModel
 
                         CheckvMixConnection(null, new EventArgs());
 
-                        vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port, WindowSettings.HttpLogin, WindowSettings.HttpPassword);
+                        _stateFactory.SetConnectionOptions(BuildConnectionOptions());
 
-                        IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+                        var options = BuildConnectionOptions();
+                        IsUrlValid = _stateFactory.IsUrlValid(options.Ip, options.Port);
 
                         SyncTovMixState();
 
@@ -1218,9 +1252,10 @@ namespace vMixController.ViewModel
 
                 CheckvMixConnection(null, new EventArgs());
 
-                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port, WindowSettings.HttpLogin, WindowSettings.HttpPassword);
+                _stateFactory.SetConnectionOptions(BuildConnectionOptions());
 
-                IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+                var options = BuildConnectionOptions();
+                IsUrlValid = _stateFactory.IsUrlValid(options.Ip, options.Port);
 
                 SyncTovMixState();
                 ScriptLoopAnalyzer.RefreshPotentialLoopWarnings(Widgets);
@@ -1372,8 +1407,8 @@ namespace vMixController.ViewModel
                     if (Model == null || (Model.Ip != WindowSettings.IP || Model.Port != WindowSettings.Port))
                     {
                         Model = null;
-                        vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port, WindowSettings.HttpLogin, WindowSettings.HttpPassword);
-                        vMixAPI.StateFabrique.CreateAsync();
+                        _stateFactory.SetConnectionOptions(BuildConnectionOptions());
+                        _stateSyncService.CreateAsync();
                     }
                     else
                     {
@@ -1788,8 +1823,9 @@ namespace vMixController.ViewModel
             Utils.PortableControllerPath = ControllerPath;
 
             XmlDocumentMessenger.Start();
+            _stateSyncService.Start();
 
-            vMixAPI.StateFabrique.OnStateCreated += State_OnStateCreated;
+            _stateSyncService.OnStateCreated += State_OnStateCreated;
 
             _connectTimer.Interval = TimeSpan.FromSeconds(20);
             _connectTimer.Tick += CheckvMixConnection;
@@ -1929,8 +1965,8 @@ namespace vMixController.ViewModel
 
             if (Model == null)
             {
-                vMixAPI.StateFabrique.Configure(WindowSettings.IP, WindowSettings.Port, WindowSettings.HttpLogin, WindowSettings.HttpPassword);
-                vMixAPI.StateFabrique.CreateAsync();
+                _stateFactory.SetConnectionOptions(BuildConnectionOptions());
+                _stateSyncService.CreateAsync();
             }
 
             Messenger.Register<HotkeyLinkMessage>(this, (r, hk) =>
@@ -2095,7 +2131,8 @@ namespace vMixController.ViewModel
                 //globalEvents.MouseUp += MainViewModel_MouseUp;
             }
 
-            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+            var options = BuildConnectionOptions();
+            IsUrlValid = _stateFactory.IsUrlValid(options.Ip, options.Port);
 
             Properties.Settings.Default.Save();
 
@@ -2214,14 +2251,15 @@ namespace vMixController.ViewModel
         private void CheckvMixConnection(object sender, EventArgs e)
         {
             if (IsInDesignMode) return;
-            IsUrlValid = vMixAPI.StateFabrique.IsUrlValid(WindowSettings.IP, WindowSettings.Port);
+            var options = BuildConnectionOptions();
+            IsUrlValid = _stateFactory.IsUrlValid(options.Ip, options.Port);
             if (!IsUrlValid)
             {
                 Status = Status.Offline;
                 return;
             }
 
-            var url = new Uri(vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port));
+            var url = new Uri(_stateFactory.GetUrl(options.Ip, options.Port));
             vMixAPI.APIRequestManagerV2.GetApiResponseAsync(url.ToString(), new WeakAction((response, exception) =>
             {
                 var dispatcher = Application.Current?.Dispatcher;
@@ -2252,7 +2290,7 @@ namespace vMixController.ViewModel
                     updateAction();
                 else
                     dispatcher.BeginInvoke(updateAction);
-            }), vMixAPI.StateFabrique.GetCredentials(WindowSettings.HttpLogin, WindowSettings.HttpPassword));
+            }), _stateFactory.GetCredentials(options.Login, options.Password));
         }
 
         public override void Cleanup()
@@ -2278,7 +2316,8 @@ namespace vMixController.ViewModel
             _connectTimer.Tick -= CheckvMixConnection;
             _metricsTimer.Stop();
             LocalizationManager.Instance.CultureChanged -= LocalizationManager_CultureChanged;
-            vMixAPI.StateFabrique.OnStateCreated -= State_OnStateCreated;
+            _stateSyncService.OnStateCreated -= State_OnStateCreated;
+            _stateSyncService.Stop();
         }
 
         public void Dispose()

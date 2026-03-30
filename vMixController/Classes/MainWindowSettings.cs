@@ -176,9 +176,6 @@ namespace vMixController.Classes
                 }
 
                 _ip = value;
-                vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
-                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
-                XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
                 OnPropertyChanged(IPPropertyName);
             }
@@ -210,9 +207,6 @@ namespace vMixController.Classes
                 }
 
                 _port = value;
-                vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
-                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
-                XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
                 OnPropertyChanged(PortPropertyName);
             }
@@ -244,10 +238,6 @@ namespace vMixController.Classes
                 }
 
                 _httpLogin = value;
-                // ���������� ����� �������� HttpLogin � HttpPassword ��� ������������
-                vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
-                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
-                XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
                 OnPropertyChanged(HttpLoginPropertyName);
             }
@@ -279,10 +269,6 @@ namespace vMixController.Classes
                 }
 
                 _httpPassword = value;
-                // ���������� ����� �������� HttpLogin � HttpPassword ��� ������������
-                vMixAPI.StateFabrique.Configure(IP, Port, HttpLogin, HttpPassword);
-                XmlDocumentMessenger.Url = vMixAPI.StateFabrique.GetUrl(IP, Port);
-                XmlDocumentMessenger.Credentials = vMixAPI.StateFabrique.GetCredentials(HttpLogin, HttpPassword);
 
                 OnPropertyChanged(HttpPasswordPropertyName);
             }

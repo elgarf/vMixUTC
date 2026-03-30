@@ -21,14 +21,14 @@ namespace vMixController.Widgets
 
         // �������� Queue �� Dictionary ��� ������������ ��������� ����������
         // ����: (DependencyObject, DependencyProperty), ��������: ����� ���������� ����������
-        protected static Dictionary<Tuple<DependencyObject, DependencyProperty>, DateTime> _pendingUpdates =
-            new Dictionary<Tuple<DependencyObject, DependencyProperty>, DateTime>();
+        protected static Dictionary<(DependencyObject Owner, DependencyProperty Property), DateTime> _pendingUpdates =
+            new Dictionary<(DependencyObject Owner, DependencyProperty Property), DateTime>();
 
         // ������� ��� ����������� ���������, ����� ��������� �������, �� ��� ����� ��������� ������ ���������� ��������
-        protected static Queue<Tuple<DependencyObject, DependencyProperty>> _updateQueue =
-            new Queue<Tuple<DependencyObject, DependencyProperty>>();
-        protected static HashSet<Tuple<DependencyObject, DependencyProperty>> _queuedKeys =
-            new HashSet<Tuple<DependencyObject, DependencyProperty>>();
+        protected static Queue<(DependencyObject Owner, DependencyProperty Property)> _updateQueue =
+            new Queue<(DependencyObject Owner, DependencyProperty Property)>();
+        protected static HashSet<(DependencyObject Owner, DependencyProperty Property)> _queuedKeys =
+            new HashSet<(DependencyObject Owner, DependencyProperty Property)>();
 
         private static DispatcherTimer DelayedUpdateTimer = new DispatcherTimer();
 
@@ -47,7 +47,7 @@ namespace vMixController.Widgets
             lock (_pendingUpdates)
             {
                 var keysToRemove = _pendingUpdates.Keys
-                    .Where(k => ReferenceEquals(k.Item1, owner))
+                    .Where(k => ReferenceEquals(k.Owner, owner))
                     .ToList();
 
                 if (keysToRemove.Count == 0)
@@ -61,11 +61,11 @@ namespace vMixController.Widgets
 
                 if (_updateQueue.Count > 0)
                 {
-                    var rebuilt = new Queue<Tuple<DependencyObject, DependencyProperty>>(_updateQueue.Count);
+                    var rebuilt = new Queue<(DependencyObject Owner, DependencyProperty Property)>(_updateQueue.Count);
                     while (_updateQueue.Count > 0)
                     {
                         var item = _updateQueue.Dequeue();
-                        if (!ReferenceEquals(item.Item1, owner))
+                        if (!ReferenceEquals(item.Owner, owner))
                             rebuilt.Enqueue(item);
                     }
 
@@ -94,7 +94,7 @@ namespace vMixController.Widgets
         private static void DelayedUpdateTimer_Tick(object sender, EventArgs e)
         {
             // ������� ��������� ������ ��� ���������, ������� ����� ����������
-            var itemsToProcess = new List<Tuple<DependencyObject, DependencyProperty>>();
+            var itemsToProcess = new List<(DependencyObject Owner, DependencyProperty Property)>();
 
             lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
             {
@@ -124,7 +124,7 @@ namespace vMixController.Widgets
             {
                 try
                 {
-                    var exp = BindingOperations.GetMultiBindingExpression(item.Item1, item.Item2);
+                    var exp = BindingOperations.GetMultiBindingExpression(item.Owner, item.Property);
                     if (exp != null && exp.Status == BindingStatus.Active && exp.BindingExpressions.Count > 0)
                         exp.UpdateSource();
                 }
@@ -251,7 +251,7 @@ namespace vMixController.Widgets
             if (e.Property.Name == nameof(Text))
             {
                 // ���������� Tuple ��� ���� ��� �������
-                var key = Tuple.Create(d, e.Property);
+                var key = (d, e.Property);
 
                 lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
                 {

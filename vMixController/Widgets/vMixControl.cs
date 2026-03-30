@@ -12,7 +12,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -55,8 +54,11 @@ namespace vMixController.Widgets
         protected NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         internal static State _internalState;
         internal static Regex _regexInt = new Regex(@"^\d+$");
-        private static readonly ConcurrentDictionary<Tuple<Type, string>, PropertyInfo> _propertyCache =
-            new ConcurrentDictionary<Tuple<Type, string>, PropertyInfo>();
+        private static readonly ConcurrentDictionary<(Type Type, string Name), PropertyInfo> _propertyCache =
+            new ConcurrentDictionary<(Type Type, string Name), PropertyInfo>();
+        private static readonly ConcurrentDictionary<string, string[]> _pathSegmentsCache =
+            new ConcurrentDictionary<string, string[]>(StringComparer.Ordinal);
+        private const int MaxPathSegmentsCacheEntries = 2048;
         [NonSerialized]
         private IMessenger _messenger;
 
@@ -538,25 +540,24 @@ namespace vMixController.Widgets
             if (type == null || string.IsNullOrEmpty(name))
                 return null;
 
-            var cacheKey = Tuple.Create(type, name);
+            var cacheKey = (type, name);
             return _propertyCache.GetOrAdd(cacheKey, key =>
-                key.Item1.GetProperty(key.Item2, BindingFlags.Instance | BindingFlags.Public));
+                key.Type.GetProperty(key.Name, BindingFlags.Instance | BindingFlags.Public));
         }
 
-        private string[] GetValueAndPropertyInfo(object obj, string path, out PropertyInfo found_prop, out object found)
+        private static string[] SplitPathCached(string path)
         {
-            found_prop = null;
-            found = null;
-            if (obj == null)
-                return null;
-            var type = obj.GetType();
             if (string.IsNullOrWhiteSpace(path))
                 return null;
-            var items = new List<string>();//path.Split('.');
 
-            int intoArray = 0;
-            int start = 0;
-            for (int i = 0; i < path.Length; i++)
+            if (_pathSegmentsCache.TryGetValue(path, out var cached))
+                return cached;
+
+            var items = new List<string>();
+            var intoArray = 0;
+            var start = 0;
+            for (var i = 0; i < path.Length; i++)
+            {
                 switch (path[i])
                 {
                     case '[':
@@ -573,7 +574,39 @@ namespace vMixController.Widgets
                         }
                         break;
                 }
+            }
+
             items.Add(path.Substring(start, path.Length - start));
+            var result = items.ToArray();
+
+            if (_pathSegmentsCache.Count > MaxPathSegmentsCacheEntries)
+                _pathSegmentsCache.Clear();
+
+            _pathSegmentsCache.TryAdd(path, result);
+            return result;
+        }
+
+        private static string JoinPathTail(string[] parts, int startIndex)
+        {
+            if (parts == null || startIndex >= parts.Length)
+                return null;
+
+            if (startIndex == parts.Length - 1)
+                return parts[startIndex];
+
+            return string.Join(".", parts, startIndex, parts.Length - startIndex);
+        }
+
+        private string[] GetValueAndPropertyInfo(object obj, string path, out PropertyInfo found_prop, out object found)
+        {
+            found_prop = null;
+            found = null;
+            if (obj == null)
+                return null;
+            var type = obj.GetType();
+            var items = SplitPathCached(path);
+            if (items == null || items.Length == 0)
+                return null;
 
             //If path goes to array
             if (items[0].Contains('['))
@@ -696,7 +729,7 @@ namespace vMixController.Widgets
         {
             var items = GetValueAndPropertyInfo(obj, path, out PropertyInfo found_prop, out object found);
             if (items != null && items.Length > 1 && found != null)
-                return GetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y));
+                return GetValueByPath(found, JoinPathTail(items, 1));
             return found;
         }
 
@@ -705,7 +738,7 @@ namespace vMixController.Widgets
             var items = GetValueAndPropertyInfo(obj, path, out PropertyInfo found_prop, out object found);
 
             if (items != null && items.Length > 1 && found != null)
-                SetValueByPath(found, items.Skip(1).Aggregate((x, y) => x + "." + y), value);
+                SetValueByPath(found, JoinPathTail(items, 1), value);
             else if (found_prop != null && found_prop.PropertyType == value.GetType())
                 Dispatcher.Invoke(() => found_prop.SetValue(obj, value));
         }

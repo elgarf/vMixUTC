@@ -1,11 +1,11 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using HighPrecisionTimer;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,262 +18,31 @@ using vMixController.ViewModel;
 
 namespace vMixController.Widgets
 {
-    public static class TimerTokens
-    {
-        public const string HighPrecision = nameof(HighPrecision);
-        public const string OneSecond = nameof(OneSecond);
-    }
-
-    public readonly struct TimerTickPayload
-    {
-        public TimerTickPayload(TimeSpan delta, long stampTicks)
-        {
-            Delta = delta;
-            StampTicks = stampTicks;
-        }
-
-        public TimeSpan Delta { get; }
-        public long StampTicks { get; }
-    }
-
-    public static class GlobalTimer
-    {
-        private static IMessenger _messenger;
-        private static IMessenger Messenger
-        {
-            get
-            {
-                if (_messenger != null)
-                    return _messenger;
-
-                _messenger = AppServices.IsRegistered<IMessenger>()
-                    ? AppServices.GetRequiredService<IMessenger>()
-                    : WeakReferenceMessenger.Default;
-                return _messenger;
-            }
-        }
-
-        private static int _refCount = 0;
-        private static int _highPrecisionRefCount = 0;
-        private static bool _isTimerRunning = false;
-        private static bool _resumePhasePending = false;
-        private static readonly object _sync = new object();
-
-        private static readonly MultimediaTimer _mtimer = new MultimediaTimer();
-        private static readonly Stopwatch _sw = new Stopwatch();
-        private static TimeSpan _oneSecondAccum;
-        private static TimeSpan _highPrecisionAccum;
-        private static bool _isWarmedUp;
-        private static readonly TimeSpan HighPrecisionTick = TimeSpan.FromMilliseconds(100);
-        private static readonly TimeSpan NormalTick = TimeSpan.FromMilliseconds(1000);
-        private static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
-
-        static GlobalTimer()
-        {
-            _mtimer.Interval = (int)HighPrecisionTick.TotalMilliseconds;
-            _mtimer.Resolution = 1;
-            _mtimer.Elapsed += OnElapsed;
-        }
-
-        public static void WarmUp()
-        {
-            lock (_sync)
-            {
-                if (_isWarmedUp)
-                    return;
-                _isWarmedUp = true;
-            }
-
-            // Prime JIT and messenger generic paths before first real timer start.
-            var stamp = Stopwatch.GetTimestamp();
-            Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
-                new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(TimeSpan.Zero, stamp)),
-                TimerTokens.HighPrecision);
-            Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
-                new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(TimeSpan.Zero, stamp)),
-                TimerTokens.OneSecond);
-        }
-
-        public static void Increment(bool isHighPrecision)
-        {
-            lock (_sync)
-            {
-                _refCount++;
-                if (isHighPrecision)
-                    _highPrecisionRefCount++;
-
-                if (_refCount == 1)
-                {
-                    if (!_resumePhasePending)
-                    {
-                        _oneSecondAccum = TimeSpan.Zero;
-                        _highPrecisionAccum = TimeSpan.Zero;
-                    }
-                    _resumePhasePending = false;
-                    _sw.Restart();
-                }
-
-                ReconfigureTimerLocked();
-            }
-        }
-
-        public static void Decrement(bool isHighPrecision, bool preservePhase = false)
-        {
-            lock (_sync)
-            {
-                if (_refCount > 0)
-                    _refCount--;
-
-                if (isHighPrecision && _highPrecisionRefCount > 0)
-                    _highPrecisionRefCount--;
-
-                if (_refCount <= 0)
-                {
-                    if (_isTimerRunning)
-                    {
-                        _mtimer.Stop();
-                        _isTimerRunning = false;
-                    }
-                    _sw.Reset();
-                    _refCount = 0;
-                    _highPrecisionRefCount = 0;
-                    _resumePhasePending = preservePhase;
-                    if (!preservePhase)
-                    {
-                        _oneSecondAccum = TimeSpan.Zero;
-                        _highPrecisionAccum = TimeSpan.Zero;
-                    }
-                    return;
-                }
-
-                ReconfigureTimerLocked();
-            }
-        }
-
-        public static void ClearPreservedPhase()
-        {
-            lock (_sync)
-            {
-                _resumePhasePending = false;
-                if (_refCount <= 0)
-                {
-                    _oneSecondAccum = TimeSpan.Zero;
-                    _highPrecisionAccum = TimeSpan.Zero;
-                }
-            }
-        }
-
-        public static void UpdatePrecisionMode(bool oldIsHighPrecision, bool newIsHighPrecision)
-        {
-            if (oldIsHighPrecision == newIsHighPrecision)
-                return;
-
-            lock (_sync)
-            {
-                if (_refCount <= 0)
-                    return;
-
-                if (oldIsHighPrecision && _highPrecisionRefCount > 0)
-                    _highPrecisionRefCount--;
-                if (newIsHighPrecision)
-                    _highPrecisionRefCount++;
-
-                ReconfigureTimerLocked();
-            }
-        }
-
-        private static void ReconfigureTimerLocked()
-        {
-            var tick = _highPrecisionRefCount > 0 ? HighPrecisionTick : NormalTick;
-            var newInterval = (int)tick.TotalMilliseconds;
-            if (_mtimer.Interval != newInterval)
-            {
-                if (_isTimerRunning)
-                {
-                    _mtimer.Stop();
-                    _isTimerRunning = false;
-                }
-                _mtimer.Interval = newInterval;
-            }
-
-            if (!_isTimerRunning)
-            {
-                _mtimer.Start();
-                _isTimerRunning = true;
-            }
-        }
-
-        private static void OnElapsed(object sender, EventArgs e)
-        {
-            TimeSpan elapsed;
-            int oneSecondTicks = 0;
-            int highPrecisionTicks = 0;
-
-            // MultimediaTimer callback can re-enter under load; keep timing math serialized.
-            lock (_sync)
-            {
-                if (_refCount <= 0)
-                    return;
-
-                elapsed = _sw.Elapsed;
-                _sw.Restart();
-
-                _oneSecondAccum += elapsed;
-                while (_oneSecondAccum >= OneSecond)
-                {
-                    oneSecondTicks++;
-                    _oneSecondAccum -= OneSecond;
-                }
-
-                if (_highPrecisionRefCount > 0)
-                {
-                    _highPrecisionAccum += elapsed;
-                    while (_highPrecisionAccum >= HighPrecisionTick)
-                    {
-                        highPrecisionTicks++;
-                        _highPrecisionAccum -= HighPrecisionTick;
-                    }
-                }
-                else
-                {
-                    _highPrecisionAccum = TimeSpan.Zero;
-                }
-            }
-
-            var appDispatcher = Application.Current?.Dispatcher;
-            if (appDispatcher == null || appDispatcher.CheckAccess())
-            {
-                DispatchTick(highPrecisionTicks, oneSecondTicks, Stopwatch.GetTimestamp());
-            }
-            else
-            {
-                var stamp = Stopwatch.GetTimestamp();
-                appDispatcher.BeginInvoke(new Action(() => DispatchTick(highPrecisionTicks, oneSecondTicks, stamp)), DispatcherPriority.Send);
-            }
-        }
-
-        private static void DispatchTick(int highPrecisionTicks, int oneSecondTicks, long stampTicks)
-        {
-            for (var i = 0; i < highPrecisionTicks; i++)
-            {
-                Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
-                    new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(HighPrecisionTick, stampTicks)),
-                    TimerTokens.HighPrecision);
-            }
-            for (var i = 0; i < oneSecondTicks; i++)
-            {
-                Messenger.Send<ValueChangedMessage<TimerTickPayload>, string>(
-                    new ValueChangedMessage<TimerTickPayload>(new TimerTickPayload(OneSecond, stampTicks)),
-                    TimerTokens.OneSecond);
-            }
-        }
-    }
-
     [Serializable]
     public partial class vMixControlTimer : vMixControlTextField
     {
         bool _changingTime = false;
-        private long _runSinceTicks = 0;
+        private static readonly TimeSpan HighPrecisionInterval = TimeSpan.FromMilliseconds(100);
+        private static readonly TimeSpan NormalInterval = TimeSpan.FromSeconds(1);
+        private readonly object _timerSync = new object();
+
+        [NonSerialized]
+        private CancellationTokenSource _timerCts;
+        [NonSerialized]
+        private Task _timerTask;
+        [NonSerialized]
+        private Stopwatch _timerStopwatch;
+        [NonSerialized]
+        private TimeSpan _elapsedApplied;
+        [NonSerialized]
+        private TimeSpan _tickRemainder;
+        [NonSerialized]
+        private int _pendingHighPrecisionTicks;
+        [NonSerialized]
+        private int _pendingNormalTicks;
+        [NonSerialized]
+        private int _pendingFlushScheduled;
+
         public override string Type
         {
             get
@@ -283,19 +52,7 @@ namespace vMixController.Widgets
         }
         public vMixControlTimer()
         {
-            GlobalTimer.WarmUp();
-            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimerTickPayload>, string>(this, TimerTokens.HighPrecision, (r, m) =>
-            {
-                if (!r.IsHighPrecision || m.Value.StampTicks < r._runSinceTicks)
-                    return;
-                r.RunOnUiThread(() => r.Tick(m.Value.Delta), DispatcherPriority.Send);
-            });
-            Messenger.Register<vMixControlTimer, ValueChangedMessage<TimerTickPayload>, string>(this, TimerTokens.OneSecond, (r, m) =>
-            {
-                if (r.IsHighPrecision || m.Value.StampTicks < r._runSinceTicks)
-                    return;
-                r.RunOnUiThread(() => r.Tick(m.Value.Delta), DispatcherPriority.Send);
-            });
+            _timerStopwatch = new Stopwatch();
 
             _width = 256;
         }
@@ -354,7 +111,7 @@ namespace vMixController.Widgets
             if (Active)
             {
                 Active = false;
-                GlobalTimer.Decrement(IsHighPrecision);
+                StopWorker(resetPhase: true);
             }
             SendLink(Constants.TIMER_EVENT_ONSTOP); // OnStop/OnComplete?
             SendLink(Constants.TIMER_EVENT_ONCOMPLETION);
@@ -406,12 +163,15 @@ namespace vMixController.Widgets
             get => _isHighPrecision;
             set
             {
-                var oldValue = _isHighPrecision;
                 if (!SetPropertyValue(ref _isHighPrecision, value, nameof(IsHighPrecision)))
                     return;
 
-                if (Active)
-                    GlobalTimer.UpdatePrecisionMode(oldValue, _isHighPrecision);
+                lock (_timerSync)
+                {
+                    var intervalTicks = GetCurrentInterval().Ticks;
+                    if (intervalTicks > 0)
+                        _tickRemainder = TimeSpan.FromTicks(_tickRemainder.Ticks % intervalTicks);
+                }
             }
         }
 
@@ -612,11 +372,11 @@ namespace vMixController.Widgets
                 case "Start":
                     if (!Active)
                     {
-                        if (!Paused) UpdateTimer();
+                        var wasPaused = Paused;
+                        if (!wasPaused) UpdateTimer();
                         Paused = false;
                         Active = true;
-                        _runSinceTicks = Stopwatch.GetTimestamp();
-                        GlobalTimer.Increment(IsHighPrecision);
+                        StartWorker(resetPhase: !wasPaused);
                         SendLink(Constants.TIMER_EVENT_ONSTART);
                     }
                     break;
@@ -626,15 +386,14 @@ namespace vMixController.Widgets
                     {
                         Paused = true;
                         Active = false;
-                        GlobalTimer.Decrement(IsHighPrecision, preservePhase: true);
+                        StopWorker(resetPhase: false);
                         SendLink(Constants.TIMER_EVENT_ONPAUSE);
                     }
                     else if (Paused)
                     {
                         Paused = false;
                         Active = true;
-                        _runSinceTicks = Stopwatch.GetTimestamp();
-                        GlobalTimer.Increment(IsHighPrecision);
+                        StartWorker(resetPhase: false);
                         SendLink(Constants.TIMER_EVENT_ONSTART);
                     }
                     break;
@@ -642,13 +401,11 @@ namespace vMixController.Widgets
                 case "Stop":
                     if (Active)
                     {
-                        GlobalTimer.Decrement(IsHighPrecision);
+                        StopWorker(resetPhase: true);
                         Active = false;
                     }
                     else
-                    {
-                        GlobalTimer.ClearPreservedPhase();
-                    }
+                        StopWorker(resetPhase: true);
                     Paused = false;
                     UpdateTimer();
                     SendLink(Constants.TIMER_EVENT_ONSTOP);
@@ -684,10 +441,157 @@ namespace vMixController.Widgets
             if (_disposed) return;
             if (managed)
             {
-                Messenger.UnregisterAll(this);
-                if (Active) GlobalTimer.Decrement(IsHighPrecision); // а не безусловный --
+                StopWorker(resetPhase: true);
                 base.Dispose(managed);
                 GC.SuppressFinalize(this);
+            }
+        }
+
+        private TimeSpan GetCurrentInterval() => IsHighPrecision ? HighPrecisionInterval : NormalInterval;
+
+        private void StartWorker(bool resetPhase)
+        {
+            lock (_timerSync)
+            {
+                if (resetPhase)
+                {
+                    _tickRemainder = TimeSpan.Zero;
+                    _pendingHighPrecisionTicks = 0;
+                    _pendingNormalTicks = 0;
+                    _pendingFlushScheduled = 0;
+                }
+
+                _timerCts?.Cancel();
+                _timerCts?.Dispose();
+                _timerCts = new CancellationTokenSource();
+
+                _elapsedApplied = TimeSpan.Zero;
+                _timerStopwatch ??= new Stopwatch();
+                _timerStopwatch.Restart();
+                _timerTask = RunTimerLoopAsync(_timerCts.Token);
+            }
+        }
+
+        private void StopWorker(bool resetPhase)
+        {
+            CancellationTokenSource ctsToCancel = null;
+
+            lock (_timerSync)
+            {
+                ctsToCancel = _timerCts;
+                _timerCts = null;
+                _timerStopwatch?.Stop();
+                _elapsedApplied = TimeSpan.Zero;
+
+                if (resetPhase)
+                {
+                    _tickRemainder = TimeSpan.Zero;
+                    _pendingHighPrecisionTicks = 0;
+                    _pendingNormalTicks = 0;
+                    _pendingFlushScheduled = 0;
+                }
+            }
+
+            ctsToCancel?.Cancel();
+            ctsToCancel?.Dispose();
+        }
+
+        private async Task RunTimerLoopAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                int producedTicks = 0;
+                bool highPrecision;
+
+                lock (_timerSync)
+                {
+                    if (!Active)
+                        break;
+
+                    highPrecision = IsHighPrecision;
+                    var interval = highPrecision ? HighPrecisionInterval : NormalInterval;
+                    var elapsed = _timerStopwatch.Elapsed;
+                    var delta = elapsed - _elapsedApplied;
+                    if (delta < TimeSpan.Zero)
+                        delta = TimeSpan.Zero;
+                    _elapsedApplied = elapsed;
+
+                    _tickRemainder += delta;
+                    if (_tickRemainder >= interval)
+                    {
+                        producedTicks = (int)(_tickRemainder.Ticks / interval.Ticks);
+                        _tickRemainder -= TimeSpan.FromTicks(interval.Ticks * producedTicks);
+                    }
+                }
+
+                if (producedTicks > 0)
+                    EnqueueTicks(highPrecision, producedTicks);
+
+                var sleepMs = highPrecision ? 10 : 25;
+                try
+                {
+                    await Task.Delay(sleepMs, token).ConfigureAwait(false);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+            }
+        }
+
+        private void EnqueueTicks(bool highPrecision, int tickCount)
+        {
+            if (tickCount <= 0)
+                return;
+
+            lock (_timerSync)
+            {
+                if (highPrecision)
+                    _pendingHighPrecisionTicks += tickCount;
+                else
+                    _pendingNormalTicks += tickCount;
+            }
+
+            if (Interlocked.Exchange(ref _pendingFlushScheduled, 1) == 0)
+                RunOnUiThread(FlushPendingTicks, DispatcherPriority.Send);
+        }
+
+        private void FlushPendingTicks()
+        {
+            while (true)
+            {
+                int hpTicks;
+                int normalTicks;
+
+                lock (_timerSync)
+                {
+                    hpTicks = _pendingHighPrecisionTicks;
+                    normalTicks = _pendingNormalTicks;
+                    _pendingHighPrecisionTicks = 0;
+                    _pendingNormalTicks = 0;
+                }
+
+                if (normalTicks > 0)
+                {
+                    for (var i = 0; i < normalTicks; i++)
+                        Tick(NormalInterval);
+                }
+
+                if (hpTicks > 0)
+                {
+                    for (var i = 0; i < hpTicks; i++)
+                        Tick(HighPrecisionInterval);
+                }
+
+                Interlocked.Exchange(ref _pendingFlushScheduled, 0);
+                lock (_timerSync)
+                {
+                    if (_pendingHighPrecisionTicks == 0 && _pendingNormalTicks == 0)
+                        break;
+                }
+
+                if (Interlocked.Exchange(ref _pendingFlushScheduled, 1) != 0)
+                    break;
             }
         }
     }

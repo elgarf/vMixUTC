@@ -111,6 +111,7 @@ namespace vMixController.Widgets
         }
 
         private string _log = "";
+        private const int MaxLogLength = 32768;
 
         /// <summary>
         /// Sets and gets the Log property.
@@ -124,7 +125,11 @@ namespace vMixController.Widgets
 
         private void AddLog(string s, params object[] p)
         {
-            Log += "\r\n" + string.Format(s, p);
+            var message = (p == null || p.Length == 0) ? s : string.Format(s, p);
+            var next = string.Concat(Log, "\r\n", message);
+            if (next.Length > MaxLogLength)
+                next = next.Substring(next.Length - MaxLogLength);
+            Log = next;
         }
 
         private void ClearLog()

@@ -51,7 +51,10 @@ namespace vMixController.Widgets
             set
             {
                 foreach (var item in _controls)
+                {
                     item.State = value;
+                    item.Update();
+                }
                 base.State = value;
             }
         }
@@ -119,5 +122,6 @@ namespace vMixController.Widgets
         {
             base.Dispose(managed);
         }
+
     }
 }

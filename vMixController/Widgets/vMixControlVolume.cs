@@ -257,14 +257,11 @@ namespace vMixController.Widgets
             {
 
                 ((vMixControlVolume)d).UpdateVolume();
-                // ���������� Tuple ��� ���� ��� �������
-                var key = Tuple.Create(d, e.Property);
+                var key = (Owner: d, Property: e.Property);
 
-                lock (_pendingUpdates) // ������ �� �������������� ������� � ������� � �������
+                lock (_pendingUpdates)
                 {
-                    // ��������� ����� ���������� ��������� ��� ���� ���� DO/DP
                     _pendingUpdates[key] = DateTime.Now;
-                    // ���� ����� �������� ��� ��� � �������, ��������� ���
                     if (_queuedKeys.Add(key))
                     {
                         _updateQueue.Enqueue(key);

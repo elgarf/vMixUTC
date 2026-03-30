@@ -275,6 +275,9 @@ namespace vMixController
         private void ConfigureServices()
         {
             var services = new ServiceCollection();
+            services.AddSingleton<StateFabriqueAdapter>();
+            services.AddSingleton<IStateFactory>(sp => sp.GetRequiredService<StateFabriqueAdapter>());
+            services.AddSingleton<IStateSyncService>(sp => sp.GetRequiredService<StateFabriqueAdapter>());
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<vMixWidgetSettingsViewModel>();
             services.AddSingleton<GlobalVariablesViewModel>();

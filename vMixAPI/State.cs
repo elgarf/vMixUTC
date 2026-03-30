@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -16,6 +17,22 @@ using System.Xml.Serialization;
 
 namespace vMixAPI
 {
+    public sealed class ConnectionOptions
+    {
+        public ConnectionOptions(string ip = "127.0.0.1", string port = "8088", string login = "admin", string password = "")
+        {
+            Ip = (ip ?? "127.0.0.1").Trim();
+            Port = (port ?? "8088").Trim();
+            Login = (login ?? "admin").Trim();
+            Password = (password ?? string.Empty).Trim();
+        }
+
+        public string Ip { get; }
+        public string Port { get; }
+        public string Login { get; }
+        public string Password { get; }
+    }
+
     public class NonConfiguredException : Exception
     {
 
@@ -30,10 +47,7 @@ namespace vMixAPI
     public static class StateFabrique
     {
         private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        private static string _ip = "127.0.0.1";
-        private static string _port = "8088";
-        private static string _login = "admin";
-        private static string _password = "";
+        private static ConnectionOptions _options = new ConnectionOptions();
         private static State _base = new State();
 
         public static event EventHandler OnStateCreated;
@@ -51,18 +65,23 @@ namespace vMixAPI
 
         public static void Configure(string ip = "127.0.0.1", string port = "8088", string login = "admin", string password = "")
         {
-            _ip = ip;
-            _port = port;
-            _login = login;
-            _password = password;
-            //_configured = true;
-            _logger.Info("Configuring fabrique to {0}:{1}.", ip, port);
-            _base.Configure(_ip, _port, _login, _password);
+            SetConnectionOptions(new ConnectionOptions(ip, port, login, password));
+        }
+
+        public static void SetConnectionOptions(ConnectionOptions options)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            _options = options;
+            _logger.Info("Configuring fabrique to {0}:{1}.", options.Ip, options.Port);
+            _base.Configure(options.Ip, options.Port, options.Login, options.Password);
         }
 
         public static string GetUrl()
         {
-            return GetUrl(_ip, _port);
+            var options = _options;
+            return GetUrl(options.Ip, options.Port);
         }
 
         public static bool IsUrlValid(string ip, string port)
@@ -86,6 +105,11 @@ namespace vMixAPI
             return string.Format("{0}:{1}", _login, _password);
         }
 
+        public static ConnectionOptions GetConnectionOptions()
+        {
+            return _options;
+        }
+
         public static void CreateAsync()
         {
             _base.CreateAsync();
@@ -107,6 +131,8 @@ namespace vMixAPI
         private string _currentStateText;
         private List<string> _changedinputs = new List<string>();
         private const int _changedCounterConst = 1;
+        private int _updateAsyncInFlight;
+        private int _updateAsyncPending;
 
         public void Configure(string ip = "127.0.0.1", string port = "8088", string login = "admin", string password = "")
         {
@@ -367,6 +393,17 @@ namespace vMixAPI
 
         public void UpdateAsync()
         {
+            if (Interlocked.Exchange(ref _updateAsyncInFlight, 1) == 1)
+            {
+                Interlocked.Exchange(ref _updateAsyncPending, 1);
+                return;
+            }
+
+            RunUpdateAsyncCore();
+        }
+
+        private void RunUpdateAsyncCore()
+        {
             SendFunction("", true, x =>
             {
                 Action updateAction = () =>
@@ -447,6 +484,9 @@ namespace vMixAPI
                     finally
                     {
                         IsInitializing = false;
+                        Volatile.Write(ref _updateAsyncInFlight, 0);
+                        if (Interlocked.Exchange(ref _updateAsyncPending, 0) == 1)
+                            UpdateAsync();
                     }
                 };
 
@@ -612,27 +652,6 @@ namespace vMixAPI
             }
             return null;
         }
-
-        /*private void _webClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-        {
-
-            if (e.Error != null)
-            {
-                string result = "";
-                if (e.Error is WebException && (e.Error as WebException).Response != null)
-                {
-                    using (StreamReader sr = new StreamReader((e.Error as WebException).Response.GetResponseStream()))
-                        result = sr.ReadToEnd();
-                }
-                _logger.Error(e.Error, string.Format("Error while sending async function with result {0}.", result));
-            }
-            else
-                _logger.Debug("Async function sended, result is \"{0}\".", e.Result);
-
-            ((Action<DownloadStringCompletedEventArgs>)e.UserState)?.Invoke(e);
-
-            //(sender as WebClient).Dispose();
-        }*/
 
         public string SendFunction(Dictionary<string, string> parameters = null)
         {
