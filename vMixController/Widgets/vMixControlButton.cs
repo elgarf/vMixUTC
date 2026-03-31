@@ -710,7 +710,7 @@ namespace vMixController.Widgets
                                 Messenger.Send(new PageNavigationMessage() { Mode = PageNavigationMode.SetIndex, PageIndex = int.Parse(cmd.Parameter) });
                                 break;
                             case NativeFunctions.WIN:
-                                Process.Start(cmd.StringParameter);
+                                Process.Start(new ProcessStartInfo(cmd.StringParameter) { UseShellExecute = true });
                                 break;
                             case NativeFunctions.API:
 

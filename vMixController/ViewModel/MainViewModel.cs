@@ -2426,13 +2426,13 @@ namespace vMixController.ViewModel
 
             var btn = td.ShowDialog();
             if (btn == forumbtn)
-                Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468"));
+                Process.Start(new ProcessStartInfo("https://forums.vmix.com/default.aspx?g=posts&t=6468") { UseShellExecute = true });
             else if (btn == donatebtn)
-                Process.Start(new ProcessStartInfo("https://coindrop.to/elgarf"));
+                Process.Start(new ProcessStartInfo("https://coindrop.to/elgarf") { UseShellExecute = true });
             else if (btn == githubbtn)
-                Process.Start(new ProcessStartInfo("https://github.com/elgarf/vMixUTC"));
+                Process.Start(new ProcessStartInfo("https://github.com/elgarf/vMixUTC") { UseShellExecute = true });
             else if (btn == redditbtn)
-                Process.Start(new ProcessStartInfo("https://www.reddit.com/r/vMixUTC/"));
+                Process.Start(new ProcessStartInfo("https://www.reddit.com/r/vMixUTC/") { UseShellExecute = true });
         }
 
         [RelayCommand]
