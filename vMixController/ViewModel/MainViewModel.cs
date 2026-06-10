@@ -2374,6 +2374,10 @@ namespace vMixController.ViewModel
 
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
+            if (Keyboard.FocusedElement is System.Windows.Controls.Primitives.TextBoxBase ||
+                Keyboard.FocusedElement is System.Windows.Controls.PasswordBox)
+                return false;
+
             FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
 
             var result = false;
@@ -2754,7 +2758,7 @@ namespace vMixController.ViewModel
             _metricsTimer.Start();
 
             //For loading NCalc before adding buttons to avoid throttle at button click
-            var _expression = new NCalc.Expression("1+1");
+            var _expression = new NCalc.SafeExpression("1+1");
             _expression.TryEvaluate(out _, out _);
 
             _logger.Info("Loading mapped functions.");

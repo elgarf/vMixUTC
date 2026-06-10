@@ -19,6 +19,8 @@ namespace vMixController.Widgets
     [Serializable]
     public class vMixControlExternalData : vMixControlTextField, IvMixAutoUpdateWidget
     {
+        public override bool IsResizeableVertical => true;
+
         [NonSerialized]
         DispatcherTimer _timer = new DispatcherTimer();
 
