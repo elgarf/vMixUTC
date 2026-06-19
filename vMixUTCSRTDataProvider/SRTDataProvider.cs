@@ -50,7 +50,8 @@ namespace UTCSRTDataProvider
                     try
                     {
                         var dir = Path.GetDirectoryName(typeof(SRTDataProvider).Assembly.Location);
-                        _vlcDir = Path.Combine(dir, "libvlc", "win-x64");
+                        var arch = Environment.Is64BitProcess ? "win-x64" : "win-x86";
+                        _vlcDir = Path.Combine(dir, "libvlc", arch);
                         Core.Initialize(_vlcDir);
                         _coreInitialized = true;
                     }
