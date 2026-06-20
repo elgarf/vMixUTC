@@ -25,11 +25,19 @@ O **SRT Monitor** permite receber e visualizar streams de vídeo via protocolo *
 
 ---
 
+## Enable Auto Sync *(v1.1)*
+
+O vMixUTC não atualiza automaticamente quando algo muda no vMix — é necessário clicar em **Sync** manualmente. A partir da v1.1, o menu do UTC conta com o toggle **Enable Auto Sync**.
+
+Quando ativado, o UTC consulta o vMix a cada segundo (ignorando cache) e detecta qualquer alteração — inputs adicionados, textos modificados, configurações trocadas — atualizando a interface automaticamente.
+
+---
+
 ## Download e Instalação
 
 ### Download pronto para usar
 
-**[⬇ Baixar SrtMonitorDataProvider.zip](https://github.com/rafalau/vMixUTC/releases/download/v1.0.0-srt/SrtMonitorDataProvider.zip)** (~44 MB)
+**[⬇ Baixar SrtMonitorDataProvider.zip](https://github.com/rafalau/vMixUTC/releases/download/v1.1.0-srt/SrtMonitorDataProvider.zip)** (~44 MB)
 
 O ZIP já inclui o plugin **e** as DLLs nativas do VLC. Não é necessário instalar o VLC separadamente.
 
