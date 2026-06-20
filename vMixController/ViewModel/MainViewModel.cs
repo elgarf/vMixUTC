@@ -389,6 +389,7 @@ namespace vMixController.ViewModel
 
                 _windowSettings.PropertyChanged += WindowSettings_PropertyChanged;
                 RaisePropertyChanged(nameof(WindowSettings));
+                UpdateAutoSync();
             }
         }
 
@@ -414,7 +415,10 @@ namespace vMixController.ViewModel
 
         private void AutoSyncTick(object sender, EventArgs e)
         {
-            SyncTovMixState();
+            if (Model != null)
+                Model.UpdateAsync(ignoreCache: true);
+            else
+                SyncTovMixState();
         }
 
         private void LocalizationManager_CultureChanged(object sender, EventArgs e)
