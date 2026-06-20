@@ -96,7 +96,7 @@ namespace UTCSRTDataProvider
             _vlc = Provider?.LibVLCInstance;
             if (_vlc == null)
             {
-                SetStatus("VLC não encontrado na pasta 'libvlc/win-x64'", false);
+                SetStatus(Provider?.VlcInitError ?? "VLC não inicializado", false);
                 return;
             }
 

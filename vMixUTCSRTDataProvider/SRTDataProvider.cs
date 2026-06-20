@@ -25,6 +25,7 @@ namespace UTCSRTDataProvider
         private static string _vlcDir;
 
         internal LibVLC LibVLCInstance { get; private set; }
+        internal string VlcInitError { get; private set; }
 
         private static string GetDefaultIp()
         {
@@ -57,7 +58,7 @@ namespace UTCSRTDataProvider
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[SRTDataProvider] Core.Initialize failed: {ex.Message}");
+                        VlcInitError = $"Core.Initialize falhou em '{_vlcDir}': {ex.GetType().Name}: {ex.Message}";
                         return;
                     }
                 }
@@ -68,7 +69,7 @@ namespace UTCSRTDataProvider
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[SRTDataProvider] LibVLC init failed: {ex.Message}");
+                VlcInitError = $"new LibVLC() falhou: {ex.GetType().Name}: {ex.Message}";
             }
         }
 

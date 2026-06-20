@@ -63,6 +63,7 @@
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<UseVSHostingProcess>false</UseVSHostingProcess>
+		<Prefer32Bit>false</Prefer32Bit>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ApplicationIcon>settings-gears %281%29.ico</ApplicationIcon>

@@ -25,31 +25,31 @@ O **SRT Monitor** permite receber e visualizar streams de vídeo via protocolo *
 
 ---
 
-## Requisitos
+## Download e Instalação
 
-### libvlc (VLC nativo)
+### Download pronto para usar
 
-O widget depende das DLLs nativas do VLC. Elas **não estão incluídas** no repositório (são grandes demais).
+**[⬇ Baixar SrtMonitorDataProvider.zip](https://github.com/rafalau/vMixUTC/releases/download/v1.0.0-srt/SrtMonitorDataProvider.zip)** (~44 MB)
 
-1. Baixe o **VLC 3.x** para Windows 64-bit em [videolan.org](https://www.videolan.org)
-2. Copie as pastas `libvlc` e `plugins` do diretório de instalação do VLC para:
+O ZIP já inclui o plugin **e** as DLLs nativas do VLC. Não é necessário instalar o VLC separadamente.
 
-```
-vMixController/bin/Debug/DataProviders/libvlc/win-x64/
-```
+### Como instalar
 
-A estrutura esperada:
+1. Extraia o ZIP
+2. Copie a pasta `DataProviders` extraída para dentro da pasta de instalação do **vMixUTC**, mesclando com a pasta existente:
 
 ```
-DataProviders/
-├── SrtMonitorDataProvider.dll
-└── libvlc/
-    └── win-x64/
-        ├── libvlc.dll
-        ├── libvlccore.dll
-        └── plugins/
-            └── ...
+vMixUTC/
+└── DataProviders/           ← cole aqui o conteúdo extraído
+    ├── SrtMonitorDataProvider.dll
+    └── libvlc/
+        └── win-x64/
+            ├── libvlc.dll
+            ├── libvlccore.dll
+            └── plugins/
 ```
+
+3. Reinicie o vMixUTC — o widget **SRT Monitor** aparecerá na lista de Data Providers.
 
 ---
 
