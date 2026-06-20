@@ -400,6 +400,29 @@ namespace vMixController.ViewModel
                     CheckvMixConnection(null, new EventArgs());
             });
 
+            if (e.PropertyName == nameof(Classes.MainWindowSettings.AutoSync) ||
+                e.PropertyName == nameof(Classes.MainWindowSettings.IP))
+                UpdateTcpSubscriber();
+        }
+
+        private void UpdateTcpSubscriber()
+        {
+            if (WindowSettings?.AutoSync == true && !string.IsNullOrWhiteSpace(WindowSettings.IP))
+            {
+                _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
+                _tcpSubscriber.ActsReceived += OnVmixActsReceived;
+                _tcpSubscriber.Start(WindowSettings.IP);
+            }
+            else
+            {
+                _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
+                _tcpSubscriber.Stop();
+            }
+        }
+
+        private void OnVmixActsReceived(object sender, EventArgs e)
+        {
+            Application.Current?.Dispatcher.BeginInvoke(new Action(SyncTovMixState));
         }
 
         private void LocalizationManager_CultureChanged(object sender, EventArgs e)
@@ -2664,6 +2687,7 @@ namespace vMixController.ViewModel
 
         DispatcherTimer _connectTimer = new DispatcherTimer();
         DispatcherTimer _metricsTimer = new DispatcherTimer();
+        Classes.VmixTcpSubscriber _tcpSubscriber = new Classes.VmixTcpSubscriber();
 
         string _documentsPath;
 
@@ -3224,6 +3248,8 @@ namespace vMixController.ViewModel
             _connectTimer.Stop();
             _connectTimer.Tick -= CheckvMixConnection;
             _metricsTimer.Stop();
+            _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
+            _tcpSubscriber.Dispose();
             LocalizationManager.Instance.CultureChanged -= LocalizationManager_CultureChanged;
             vMixAPI.StateFabrique.OnStateCreated -= State_OnStateCreated;
         }

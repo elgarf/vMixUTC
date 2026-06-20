@@ -424,6 +424,7 @@
 		<Compile Include="Classes\Utils.cs" />
 		<Compile Include="Classes\Scripting\vMixNewFunctionReference.cs" />
 		<Compile Include="Classes\Scripting\vMixFunctionReference.cs" />
+		<Compile Include="Classes\VmixTcpSubscriber.cs" />
 		<Compile Include="Classes\XmlDocumentMessenger.cs" />
 		<Compile Include="Classes\ScheduledEvent.cs" />
 		<Compile Include="Controls\ComboBox.cs" />
