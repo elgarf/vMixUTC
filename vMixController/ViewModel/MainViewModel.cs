@@ -400,53 +400,21 @@ namespace vMixController.ViewModel
                     CheckvMixConnection(null, new EventArgs());
             });
 
-            if (e.PropertyName == nameof(Classes.MainWindowSettings.AutoSync) ||
-                e.PropertyName == nameof(Classes.MainWindowSettings.IP))
+            if (e.PropertyName == nameof(Classes.MainWindowSettings.AutoSync))
                 UpdateAutoSync();
         }
 
         private void UpdateAutoSync()
         {
-            if (WindowSettings?.AutoSync == true && !string.IsNullOrWhiteSpace(WindowSettings.IP))
-            {
-                // TCP subscriber: catches ACTS events instantly (cuts, transitions, API calls)
-                _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
-                _tcpSubscriber.ActsReceived += OnVmixActsReceived;
-                _tcpSubscriber.Start(WindowSettings.IP);
-
-                // Fast XML poll every 2s: catches text changes, input list changes, anything else
-                _lastXmlHash = null;
+            if (WindowSettings?.AutoSync == true)
                 _autoSyncTimer.Start();
-            }
             else
-            {
-                _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
-                _tcpSubscriber.Stop();
                 _autoSyncTimer.Stop();
-                _lastXmlHash = null;
-            }
-        }
-
-        private void OnVmixActsReceived(object sender, EventArgs e)
-        {
-            Application.Current?.Dispatcher.BeginInvoke(new Action(SyncTovMixState));
         }
 
         private void AutoSyncTick(object sender, EventArgs e)
         {
-            if (!IsUrlValid || WindowSettings?.AutoSync != true) return;
-            var url = vMixAPI.StateFabrique.GetUrl(WindowSettings.IP, WindowSettings.Port);
-            vMixAPI.APIRequestManagerV2.GetApiResponseAsync(url, new WeakAction((response, exception) =>
-            {
-                if (exception != null || string.IsNullOrEmpty(response)) return;
-                var hash = response.GetHashCode().ToString();
-                Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (_lastXmlHash != null && _lastXmlHash != hash)
-                        SyncTovMixState();
-                    _lastXmlHash = hash;
-                }));
-            }), vMixAPI.StateFabrique.GetCredentials(WindowSettings.HttpLogin, WindowSettings.HttpPassword));
+            SyncTovMixState();
         }
 
         private void LocalizationManager_CultureChanged(object sender, EventArgs e)
@@ -2713,7 +2681,6 @@ namespace vMixController.ViewModel
         DispatcherTimer _metricsTimer = new DispatcherTimer();
         DispatcherTimer _autoSyncTimer = new DispatcherTimer();
         Classes.VmixTcpSubscriber _tcpSubscriber = new Classes.VmixTcpSubscriber();
-        private string _lastXmlHash = null;
 
         string _documentsPath;
 
@@ -2798,7 +2765,7 @@ namespace vMixController.ViewModel
             _connectTimer.Tick += CheckvMixConnection;
             _connectTimer.Start();
 
-            _autoSyncTimer.Interval = TimeSpan.FromSeconds(2);
+            _autoSyncTimer.Interval = TimeSpan.FromSeconds(1);
             _autoSyncTimer.Tick += AutoSyncTick;
 
             _metricsTimer.Interval = TimeSpan.FromSeconds(30);
@@ -3279,7 +3246,6 @@ namespace vMixController.ViewModel
             _metricsTimer.Stop();
             _autoSyncTimer.Stop();
             _autoSyncTimer.Tick -= AutoSyncTick;
-            _tcpSubscriber.ActsReceived -= OnVmixActsReceived;
             _tcpSubscriber.Dispose();
             LocalizationManager.Instance.CultureChanged -= LocalizationManager_CultureChanged;
             vMixAPI.StateFabrique.OnStateCreated -= State_OnStateCreated;
