@@ -772,6 +772,19 @@ namespace vMixController.Classes
             RaisePropertyChanged(PagesPropertyName);
         }
 
+        private bool _autoSync = false;
+
+        public bool AutoSync
+        {
+            get { return _autoSync; }
+            set
+            {
+                if (_autoSync == value) return;
+                _autoSync = value;
+                RaisePropertyChanged(nameof(AutoSync));
+            }
+        }
+
         internal void AddRecentFile(string fileName)
         {
             if (RecentFiles == null)

@@ -389,6 +389,7 @@ namespace vMixController.ViewModel
 
                 _windowSettings.PropertyChanged += WindowSettings_PropertyChanged;
                 RaisePropertyChanged(nameof(WindowSettings));
+                UpdateAutoSync();
             }
         }
 
@@ -400,6 +401,24 @@ namespace vMixController.ViewModel
                     CheckvMixConnection(null, new EventArgs());
             });
 
+            if (e.PropertyName == nameof(Classes.MainWindowSettings.AutoSync))
+                UpdateAutoSync();
+        }
+
+        private void UpdateAutoSync()
+        {
+            if (WindowSettings?.AutoSync == true)
+                _autoSyncTimer.Start();
+            else
+                _autoSyncTimer.Stop();
+        }
+
+        private void AutoSyncTick(object sender, EventArgs e)
+        {
+            if (Model != null)
+                Model.UpdateAsync(ignoreCache: true);
+            else
+                SyncTovMixState();
         }
 
         private void LocalizationManager_CultureChanged(object sender, EventArgs e)
@@ -2374,6 +2393,10 @@ namespace vMixController.ViewModel
 
         bool ProcessHotkey(Key key, Key systemKey, ModifierKeys modifiers, bool onPress = true)
         {
+            if (Keyboard.FocusedElement is System.Windows.Controls.Primitives.TextBoxBase ||
+                Keyboard.FocusedElement is System.Windows.Controls.PasswordBox)
+                return false;
+
             FocusManager.SetFocusedElement(App.Current.MainWindow, (IInputElement)App.Current.MainWindow);
 
             var result = false;
@@ -2660,6 +2683,8 @@ namespace vMixController.ViewModel
 
         DispatcherTimer _connectTimer = new DispatcherTimer();
         DispatcherTimer _metricsTimer = new DispatcherTimer();
+        DispatcherTimer _autoSyncTimer = new DispatcherTimer();
+        Classes.VmixTcpSubscriber _tcpSubscriber = new Classes.VmixTcpSubscriber();
 
         string _documentsPath;
 
@@ -2744,6 +2769,9 @@ namespace vMixController.ViewModel
             _connectTimer.Tick += CheckvMixConnection;
             _connectTimer.Start();
 
+            _autoSyncTimer.Interval = TimeSpan.FromSeconds(1);
+            _autoSyncTimer.Tick += AutoSyncTick;
+
             _metricsTimer.Interval = TimeSpan.FromSeconds(30);
             _metricsTimer.Tick += (sender, args) =>
             {
@@ -2754,7 +2782,7 @@ namespace vMixController.ViewModel
             _metricsTimer.Start();
 
             //For loading NCalc before adding buttons to avoid throttle at button click
-            var _expression = new NCalc.Expression("1+1");
+            var _expression = new NCalc.SafeExpression("1+1");
             _expression.TryEvaluate(out _, out _);
 
             _logger.Info("Loading mapped functions.");
@@ -3220,6 +3248,9 @@ namespace vMixController.ViewModel
             _connectTimer.Stop();
             _connectTimer.Tick -= CheckvMixConnection;
             _metricsTimer.Stop();
+            _autoSyncTimer.Stop();
+            _autoSyncTimer.Tick -= AutoSyncTick;
+            _tcpSubscriber.Dispose();
             LocalizationManager.Instance.CultureChanged -= LocalizationManager_CultureChanged;
             vMixAPI.StateFabrique.OnStateCreated -= State_OnStateCreated;
         }

@@ -63,6 +63,7 @@
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
 		<UseVSHostingProcess>false</UseVSHostingProcess>
+		<Prefer32Bit>false</Prefer32Bit>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ApplicationIcon>settings-gears %281%29.ico</ApplicationIcon>
@@ -423,6 +424,7 @@
 		<Compile Include="Classes\Utils.cs" />
 		<Compile Include="Classes\Scripting\vMixNewFunctionReference.cs" />
 		<Compile Include="Classes\Scripting\vMixFunctionReference.cs" />
+		<Compile Include="Classes\VmixTcpSubscriber.cs" />
 		<Compile Include="Classes\XmlDocumentMessenger.cs" />
 		<Compile Include="Classes\ScheduledEvent.cs" />
 		<Compile Include="Controls\ComboBox.cs" />

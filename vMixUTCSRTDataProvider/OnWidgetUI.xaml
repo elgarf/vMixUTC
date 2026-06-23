@@ -1,0 +1,184 @@
+<UserControl x:Class="UTCSRTDataProvider.OnWidgetUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:UTCSRTDataProvider"
+             xmlns:vlc="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:skin="clr-namespace:vMixControllerSkin;assembly=vMixControllerSkin"
+             mc:Ignorable="d"
+             d:DesignHeight="420" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/vMixControllerSkin;component/MainSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="{StaticResource StdMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Modo + Porta -->
+            <RowDefinition Height="Auto"/>  <!-- IP (só Caller) -->
+            <RowDefinition Height="2"/>
+            <RowDefinition/>               <!-- Preview de vídeo -->
+            <RowDefinition Height="Auto"/> <!-- Configurações Avançadas -->
+            <RowDefinition Height="Auto"/> <!-- Barra inferior -->
+        </Grid.RowDefinitions>
+
+        <!-- Linha 0: Modo + Porta -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="90"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox SelectedIndex="{Binding ModeIndex, Mode=TwoWay}"
+                      ToolTip="Listener: aguarda conexão do vMix. Caller: conecta no host remoto.">
+                <ComboBoxItem>Listener (receber)</ComboBoxItem>
+                <ComboBoxItem>Caller (conectar)</ComboBoxItem>
+            </ComboBox>
+            <xctk:IntegerUpDown Grid.Column="2"
+                                Value="{Binding Port, Mode=TwoWay}"
+                                Minimum="1" Maximum="65535"
+                                ToolTip="Porta SRT"/>
+        </Grid>
+
+        <!-- Linha 1: IP — visível apenas no modo Caller -->
+        <Grid Grid.Row="1"
+              Visibility="{Binding IsCallerMode, Converter={StaticResource BoolToVis}}"
+              Margin="0,3,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="22"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="IP:" Foreground="White" VerticalAlignment="Center" FontSize="12"/>
+            <TextBox Grid.Column="1"
+                     Text="{Binding IP, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                     ToolTip="IP do host SRT remoto (ex: 192.168.1.100)"/>
+        </Grid>
+
+        <!-- Linha 3: Preview de vídeo -->
+        <Grid Grid.Row="3" MinHeight="80">
+            <Border Background="#FF1A1A1A">
+                <TextBlock x:Name="VideoPlaceholder"
+                           Text="Aguardando conexão..."
+                           Foreground="Gray"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="11"/>
+            </Border>
+            <vlc:VideoView x:Name="VideoView" Background="Black" Visibility="Collapsed"/>
+        </Grid>
+
+        <!-- Linha 4: Configurações Avançadas (Expander) -->
+        <Expander Grid.Row="4" Margin="0,2,0,0">
+            <Expander.Header>
+                <TextBlock Text="Configurações Avançadas" Foreground="White" FontSize="11"/>
+            </Expander.Header>
+            <Grid Margin="4,4,0,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Latência -->
+                <TextBlock Text="Latência (ms):" Foreground="White" FontSize="11"
+                           VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,2"/>
+                <xctk:IntegerUpDown Grid.Column="1"
+                                     Value="{Binding Latency, Mode=TwoWay}"
+                                     Minimum="0" Maximum="8000"
+                                     Margin="0,2"
+                                     ToolTip="Latência em milissegundos. Padrão: 200ms. Aumente em redes com maior perda de pacotes."/>
+
+                <!-- Key Length -->
+                <TextBlock Grid.Row="1" Text="Key Length:" Foreground="White" FontSize="11"
+                           VerticalAlignment="Center" Margin="0,2"
+                           ToolTip="Tamanho da chave AES para criptografia. Só tem efeito quando Passphrase está preenchida."/>
+                <ComboBox Grid.Row="1" Grid.Column="1"
+                          SelectedIndex="{Binding KeyLengthIndex, Mode=TwoWay}"
+                          Margin="0,2">
+                    <ComboBoxItem>16 bytes  (AES-128)</ComboBoxItem>
+                    <ComboBoxItem>24 bytes  (AES-192)</ComboBoxItem>
+                    <ComboBoxItem>32 bytes  (AES-256)</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Passphrase -->
+                <TextBlock Grid.Row="2" Text="Passphrase:" Foreground="White" FontSize="11"
+                           VerticalAlignment="Center" Margin="0,2"/>
+                <TextBox Grid.Row="2" Grid.Column="1"
+                         Text="{Binding Passphrase, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Margin="0,2"
+                         ToolTip="Senha para criptografia AES (opcional). Deixe em branco para sem criptografia."/>
+
+                <!-- Stream ID -->
+                <TextBlock Grid.Row="3" Text="Stream ID:" Foreground="White" FontSize="11"
+                           VerticalAlignment="Center" Margin="0,2"/>
+                <TextBox Grid.Row="3" Grid.Column="1"
+                         Text="{Binding StreamId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                         Margin="0,2"
+                         ToolTip="Identificador de stream para roteamento (opcional, ex: publish/live/stream1)"/>
+            </Grid>
+        </Expander>
+
+        <!-- Linha 5: Barra inferior -->
+        <Border Background="{StaticResource Main.Background}" Grid.Row="5">
+            <Grid Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status: bolinha + texto -->
+                <Ellipse x:Name="StatusIndicator"
+                         Width="10" Height="10"
+                         Fill="Gray"
+                         VerticalAlignment="Center"
+                         Margin="0,0,4,0"/>
+                <TextBlock x:Name="StatusText"
+                           Grid.Column="1"
+                           Text="Desconectado"
+                           Foreground="Gray"
+                           FontSize="10"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"/>
+
+                <!-- Áudio -->
+                <CheckBox x:Name="AudioCheckBox"
+                          Grid.Column="2"
+                          Checked="AudioCheckBox_Checked"
+                          Unchecked="AudioCheckBox_Unchecked"
+                          Foreground="White"
+                          FontSize="12"
+                          Content="Áudio"
+                          VerticalAlignment="Center"/>
+
+                <!-- Botões Conectar / Parar -->
+                <Button Grid.Column="3"
+                        x:Name="ConnectButton"
+                        Click="ConnectButton_Click"
+                        Style="{StaticResource TitleButton}"
+                        Margin="4,0,0,0"
+                        ToolTip="Iniciar conexão SRT">&#xF04B;</Button>
+
+                <Button Grid.Column="4"
+                        x:Name="DisconnectButton"
+                        Click="DisconnectButton_Click"
+                        Style="{StaticResource TitleButton}"
+                        Margin="2,0,0,0"
+                        ToolTip="Parar conexão">&#xF04D;</Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
