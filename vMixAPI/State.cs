@@ -550,6 +550,7 @@ namespace vMixAPI
             OnFunctionSend?.Invoke(this, new FunctionSendArgs() { Function = textParameters });
 
             string address = string.Format("http://{0}:{1}/api?", _ip, _port);
+            textParameters = textParameters.Replace("#", "%23");
             var url = address + textParameters;
 
             if (!StateFabrique.IsUrlValid(_ip, _port))

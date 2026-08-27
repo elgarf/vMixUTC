@@ -42,6 +42,27 @@ namespace vMixController.Widgets
             DependencyProperty.Register("Items", typeof(ObservableCollection<string>), typeof(vMixControlList), new PropertyMetadata(new ObservableCollection<string>()));
 
 
+        /// <summary>
+        /// Sets and gets the SelectedIndex property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public int SelectedIndex
+        {
+            get
+            {
+                return (int)GetValue(SelectedIndexProperty);
+            }
+
+            set
+            {
+                SetValue(SelectedIndexProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedIndexProperty =
+            DependencyProperty.Register("SelectedIndex", typeof(int), typeof(vMixControlList), new PropertyMetadata(-1));
+
         public Triple<string, string, bool> DataSource { get; set; }
 
         public override void BeforePropertiesChanged()

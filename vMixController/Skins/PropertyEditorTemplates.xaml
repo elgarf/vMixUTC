@@ -119,6 +119,7 @@
             <prop:IntControl Value="{Binding Period, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Title="{loc:Loc Key=PropertyEditor.ExternalData.UpdatePeriod}"/>
             <prop:FilePathControl Title="{loc:Loc Key=PropertyEditor.FileDialog.Title}" Filter="{loc:Loc Key=PropertyEditor.FileDialog.ExternalDataFilter}" Value="{Binding DataProviderPath, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
             <prop:BoolControl Value="{Binding RestartData, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Title="{loc:Loc Key=PropertyEditor.ExternalData.LoopData}"/>
+            <prop:StringControl Value="{Binding SelectionSourceName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Title="{loc:Loc Key=PropertyEditor.ExternalData.SelectionSource}"/>
             <prop:TitleMappingControl Titles="{Binding Paths, UpdateSourceTrigger=Explicit, Mode=TwoWay}"/>
         </StackPanel>
     </DataTemplate>
@@ -192,6 +193,7 @@
                 <prop:BoolControl Grouped="True" Grid.Column="1" Title="{loc:Loc Key=PropertyEditor.Timer.HighPrecision}" Help="{loc:Loc Key=PropertyEditor.Timer.HighPrecision.Help}" Value="{Binding IsHighPrecision, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
                 <prop:BoolControl Grouped="True" Grid.Column="2" Title="{loc:Loc Key=PropertyEditor.Timer.RecoverOnSync}" Help="{loc:Loc Key=PropertyEditor.Timer.RecoverOnSync.Help}" Value="{Binding RecoverOnSync, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
             </Grid>
+            <prop:BoolControl Value="{Binding DisplayZeroWhenStopped, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Title="{loc:Loc Key=PropertyEditor.Timer.DisplayZeroWhenStopped}" Help="{loc:Loc Key=PropertyEditor.Timer.DisplayZeroWhenStopped.Help}"/>
             <prop:LabelControl Title="{loc:Loc Key=PropertyEditor.Timer.Events}" Help="{loc:Loc Key=PropertyEditor.Timer.Events.Help}"/>
             <prop:StringControl Title="{loc:Loc Key=PropertyEditor.Timer.OnStart}" Value="{Binding Links[0], Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
             <prop:StringControl Title="{loc:Loc Key=PropertyEditor.Timer.OnPause}" Value="{Binding Links[1], Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>

@@ -172,6 +172,9 @@
                                                                 </Button>
                                                             </Grid>
 
+                                                            <Label x:Name="NameLabel" Content="{loc:Loc Key=ScriptEditor.Field.Name}"/>
+                                                            <TextBox x:Name="Name" TextWrapping="Wrap" Style="{StaticResource WidgetTextBox}" Text="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                                                             <Label x:Name="DurationLabel" Content="{loc:Loc Key=ScriptEditor.Field.Duration}"/>
                                                             <TextBox x:Name="Duration" TextWrapping="Wrap" Style="{StaticResource WidgetTextBox}" Text="{Binding Duration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -190,6 +193,10 @@
                                                             <DataTrigger Binding="{Binding SelectedValue.HasIndex, ElementName=Func, FallbackValue=False}" Value="False">
                                                                 <Setter TargetName="IndexLabel" Property="Visibility" Value="Collapsed"/>
                                                                 <Setter TargetName="Index" Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding SelectedValue.HasSelectedName, ElementName=Func, FallbackValue=False}" Value="False">
+                                                                <Setter TargetName="NameLabel" Property="Visibility" Value="Collapsed"/>
+                                                                <Setter TargetName="Name" Property="Visibility" Value="Collapsed"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding SelectedValue.HasInput, ElementName=Func, FallbackValue=False}" Value="False">
                                                                 <Setter TargetName="InputLabel" Property="Visibility" Value="Collapsed"/>

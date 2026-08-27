@@ -207,6 +207,31 @@ namespace vMixController.Widgets
             set => SetPropertyValue(ref _recoverOnSync, value, nameof(RecoverOnSync));
         }
 
+        private bool _displayZeroWhenStopped = true;
+
+        /// <summary>
+        /// Sets and gets the DisplayZeroWhenStopped property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool DisplayZeroWhenStopped
+        {
+            get
+            {
+                return _displayZeroWhenStopped;
+            }
+
+            set
+            {
+                if (_displayZeroWhenStopped == value)
+                {
+                    return;
+                }
+
+                _displayZeroWhenStopped = value;
+                RaisePropertyChanged(nameof(DisplayZeroWhenStopped));
+            }
+        }
+
         private string _format = @"hh\:mm\:ss";
 
         /// <summary>
@@ -327,7 +352,8 @@ namespace vMixController.Widgets
                 if (!_changingTime && _recoverOnSync)
                 {
                     TimeSpan parsed = TimeSpan.Zero;
-                    if (TimeSpan.TryParseExact((string)e.NewValue, _format, CultureInfo.InvariantCulture, out parsed))
+                    if (TimeSpan.TryParseExact((string)e.NewValue, _format, CultureInfo.InvariantCulture, out parsed)
+                        || TimeSpan.TryParseExact((string)e.NewValue, @"mm\:ss", CultureInfo.InvariantCulture, out parsed))
                     //if (TimeSpan.TryParse((string)e.NewValue, out parsed))
                     {
                         _time = parsed;
@@ -434,7 +460,8 @@ namespace vMixController.Widgets
                     else
                         StopWorker(resetPhase: true);
                     Paused = false;
-                    UpdateTimer();
+                    if (DisplayZeroWhenStopped)
+                        UpdateTimer();
                     SendLink(Constants.TIMER_EVENT_ONSTOP);
                     break;
                 case "+1 Hour":

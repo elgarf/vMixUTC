@@ -64,7 +64,8 @@ namespace vMixController.Widgets
             lock (_pendingUpdates) // Защита от одновременного доступа к словарю и очереди
             {
                 // Проходим по элементам в очереди для обработки
-                while (_updateQueue.Count > 0)
+                var skipped = 0;
+                while (_updateQueue.Count > 0 && skipped < _updateQueue.Count)
                 {
                     var key = _updateQueue.Peek(); // Смотрим на первый элемент, не удаляя его
 
@@ -75,11 +76,13 @@ namespace vMixController.Widgets
                         _queuedKeys.Remove(key);
                         _pendingUpdates.Remove(key); // Удаляем из словаря
                         itemsToProcess.Add(key); // Добавляем в список для обработки
+                        skipped = 0;
                     }
                     else
                     {
-                        // Если еще не пришло время для первого элемента, то и для последующих тоже
-                        break;
+                        // Если еще не пришло время, перемещаем в конец очереди, не блокируя остальные
+                        _updateQueue.Enqueue(_updateQueue.Dequeue());
+                        skipped++;
                     }
                 }
             }

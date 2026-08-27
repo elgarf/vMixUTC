@@ -84,11 +84,11 @@ namespace vMixController.Widgets
 
         private void UpdateSortedEvents()
         {
-            _sortedEvents = Events.OrderBy(x => x.TimeOfDay).ToList();
+            _sortedEvents = Events.OrderBy(x => x.TimeOfDay.TimeOfDay).ToList();
             _firedEventsToday.Clear(); // Сброс сработавших событий при любом изменении расписания
             foreach (var ev in _sortedEvents)
             {
-                if (ev.Days.HasFlag(ToDaysOfWeek(DateTime.Now.DayOfWeek)) && ev.TimeOfDay <= DateTime.Now)
+                if (ev.Days.HasFlag(ToDaysOfWeek(DateTime.Now.DayOfWeek)) && ev.TimeOfDay.TimeOfDay <= DateTime.Now.TimeOfDay)
                 {
                     _firedEventsToday.Add(ev); // Помечаем все события, которые уже должны были сработать сегодня
                     Debug.Print($"Event '{ev.Command}' at {ev.TimeOfDay} marked as fired on update.");
@@ -166,7 +166,7 @@ namespace vMixController.Widgets
             // Ищем событие сегодня, но позже текущего времени
             foreach (var ev in _sortedEvents)
             {
-                if (ev.Days.HasFlag(ToDaysOfWeek(now.DayOfWeek)) && ev.TimeOfDay > now)
+                if (ev.Days.HasFlag(ToDaysOfWeek(now.DayOfWeek)) && ev.TimeOfDay.TimeOfDay > now.TimeOfDay)
                     return (ev, now);
             }
 

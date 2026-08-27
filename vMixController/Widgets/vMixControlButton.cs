@@ -923,13 +923,16 @@ namespace vMixController.Widgets
             var inputNumberByKey = state?.Inputs?.GroupBy(x => x.Key)
                 .ToDictionary(g => g.Key, g => (int?)g.First().Number)
                 ?? new Dictionary<string, int?>();
-            for (int _pointer = 0; _pointer < _commands.Count; _pointer++)
+            // Снимок коллекции команд, чтобы её изменение пользователем во время выполнения
+            // не приводило к InvalidOperationException при обращении к ObservableCollection.
+            var commands = _commands.ToList();
+            for (int _pointer = 0; _pointer < commands.Count; _pointer++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 int parameter = 0;
                 string strparameter = "";
                 bool? conditionResult = null;
-                var cmd = _commands[_pointer];
+                var cmd = commands[_pointer];
                 object cachedObjectParameter = null;
                 bool cachedObjectParameterSet = false;
                 object GetObjectParameter()

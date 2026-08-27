@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -25,6 +27,7 @@ namespace UTCGoogleSheetsDataProvider
         private static readonly Regex ColumnRegex = new Regex("^[A-Z]+$", RegexOptions.Compiled);
         private readonly DispatcherTimer _refreshTimer;
         private int _period = 1000;
+        private readonly SemaphoreSlim _reloadLock = new SemaphoreSlim(1, 1);
 
         public object PreviewKeyUp { get; set; }
         public object GotFocus { get; set; }
@@ -86,116 +89,151 @@ namespace UTCGoogleSheetsDataProvider
         {
             get
             {
-                _hasError = false;
+                return Cached;
+            }
+        }
+
+        private void ReloadInBackground()
+        {
+            if (string.IsNullOrWhiteSpace(FilePath))
+                return;
+
+            if (!File.Exists(FilePath))
+            {
+                _hasError = true;
+                Cached = Array.Empty<string>();
+                RowsCount = 0;
+                RaisePropertyChanged(nameof(Values));
+                return;
+            }
+
+            var fileInfo = new FileInfo(FilePath);
+            if (fileInfo.LastWriteTimeUtc <= _lastModified)
+                return;
+
+            if (!_reloadLock.Wait(0))
+                return;
+
+            var timestamp = fileInfo.LastWriteTimeUtc;
+            Task.Run(() =>
+            {
+                string[] result = null;
                 try
                 {
+                    result = ReloadValues();
+                }
+                catch
+                {
+                    result = null;
+                }
+                finally
+                {
+                    _reloadLock.Release();
+                }
 
-                    if (File.Exists(FilePath))
+                var dispatcher = Application.Current?.Dispatcher;
+                if (dispatcher == null)
+                    return;
+
+                Action apply = () =>
+                {
+                    if (result != null)
                     {
-                        var fileInfo = new FileInfo(FilePath);
-                        if (fileInfo.LastWriteTimeUtc > _lastModified)
-                        {
-                            _lastModified = fileInfo.LastWriteTimeUtc;
-
-                            using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            {
-                                try
-                                {
-                                    using (var reader = ExcelReaderFactory.CreateReader(xls))
-                                    {
-                                        List<string> results = new List<string>();
-                                        int sheet = 0;
-                                        int startColIndex = ParseExcelColumn(StartCol);
-                                        int endColIndex = ParseExcelColumn(EndCol);
-                                        do
-                                        {
-                                            int row = 0;
-                                            int sheetIndex = 0;
-                                            if ((int.TryParse(SheetIndex, out sheetIndex) && sheet == sheetIndex) || reader.Name == SheetIndex)
-                                                while (reader.Read())
-                                                {
-                                                    if (row >= StartRow)
-                                                    {
-                                                        var safeStartCol = Math.Max(0, startColIndex);
-                                                        var endExclusive = endColIndex >= 0
-                                                            ? Math.Min(reader.FieldCount, endColIndex + 1)
-                                                            : reader.FieldCount;
-                                                        StringBuilder lineBuilder = IsTable ? new StringBuilder() : null;
-                                                        for (int i = safeStartCol; i < endExclusive; i++)
-                                                        {
-                                                            var value = reader.GetValue(i)?.ToString() ?? "";
-                                                            if (IsTable)
-                                                            {
-                                                                if (lineBuilder.Length > 0)
-                                                                {
-                                                                    lineBuilder.Append('|');
-                                                                }
-                                                                lineBuilder.Append(value);
-                                                            }
-                                                            else
-                                                            {
-                                                                results.Add(value);
-                                                            }
-                                                        }
-                                                        if (IsTable)
-                                                            results.Add(lineBuilder?.ToString() ?? string.Empty);
-                                                    }
-                                                    row++;
-                                                    if (EndRow >= 0 && row > EndRow)
-                                                        break;
-                                                }
-                                            sheet++;
-                                        }
-                                        while (reader.NextResult());
-
-                                        Cached = results.ToArray();
-                                        RowsCount = Cached.Length;
-                                        RaisePropertyChanged(nameof(Values));
-                                        return Cached;
-                                    }
-                                }
-                                catch (ExcelReaderException ex)
-                                {
-                                    _hasError = true;
-                                    RowsCount = 0;
-                                    Cached = Array.Empty<string>();
-                                    RaisePropertyChanged(nameof(Values));
-                                    Debug.Print($"Error reading Excel file: {ex.Message}");
-                                    return Array.Empty<string>();
-                                }
-                                catch (Exception ex)
-                                {
-                                    _hasError = true;
-                                    RowsCount = 0;
-                                    Cached = Array.Empty<string>();
-                                    RaisePropertyChanged(nameof(Values));
-                                    Debug.Print($"Unexpected error: {ex.Message}");
-                                    return Array.Empty<string>();
-                                }
-                            }
-                        }
-                        else
-                            return Cached;
+                        _lastModified = timestamp;
+                        _hasError = false;
+                        Cached = result;
+                        RowsCount = result.Length;
                     }
                     else
                     {
                         _hasError = true;
-                        RowsCount = 0;
                         Cached = Array.Empty<string>();
-                        RaisePropertyChanged(nameof(Values));
-                        Debug.Print("File not found.");
-                        return Array.Empty<string>();
+                        RowsCount = 0;
+                    }
+                    RaisePropertyChanged(nameof(Values));
+                };
+
+                if (dispatcher.CheckAccess())
+                    apply();
+                else
+                    dispatcher.BeginInvoke(apply);
+            });
+        }
+
+        private string[] ReloadValues()
+        {
+            try
+            {
+                using (var xls = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    try
+                    {
+                        using (var reader = ExcelReaderFactory.CreateReader(xls))
+                        {
+                            List<string> results = new List<string>();
+                            int sheet = 0;
+                            int startColIndex = ParseExcelColumn(StartCol);
+                            int endColIndex = ParseExcelColumn(EndCol);
+                            do
+                            {
+                                int row = 0;
+                                int sheetIndex = 0;
+                                if ((int.TryParse(SheetIndex, out sheetIndex) && sheet == sheetIndex) || reader.Name == SheetIndex)
+                                    while (reader.Read())
+                                    {
+                                        if (row >= StartRow)
+                                        {
+                                            var safeStartCol = Math.Max(0, startColIndex);
+                                            var endExclusive = endColIndex >= 0
+                                                ? Math.Min(reader.FieldCount, endColIndex + 1)
+                                                : reader.FieldCount;
+                                            StringBuilder lineBuilder = IsTable ? new StringBuilder() : null;
+                                            for (int i = safeStartCol; i < endExclusive; i++)
+                                            {
+                                                var value = reader.GetValue(i)?.ToString() ?? "";
+                                                if (IsTable)
+                                                {
+                                                    if (lineBuilder.Length > 0)
+                                                    {
+                                                        lineBuilder.Append('|');
+                                                    }
+                                                    lineBuilder.Append(value);
+                                                }
+                                                else
+                                                {
+                                                    results.Add(value);
+                                                }
+                                            }
+                                            if (IsTable)
+                                                results.Add(lineBuilder?.ToString() ?? string.Empty);
+                                        }
+                                        row++;
+                                        if (EndRow >= 0 && row > EndRow)
+                                            break;
+                                    }
+                                sheet++;
+                            }
+                            while (reader.NextResult());
+
+                            return results.ToArray();
+                        }
+                    }
+                    catch (ExcelReaderException ex)
+                    {
+                        Debug.Print($"Error reading Excel file: {ex.Message}");
+                        return null;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Print($"Unexpected error: {ex.Message}");
+                        return null;
                     }
                 }
-                catch (Exception ex)
-                {
-                    _hasError = true;
-                    RowsCount = 0;
-                    Cached = Array.Empty<string>();
-                    RaisePropertyChanged(nameof(Values));
-                    Debug.Print($"An error occurred: {ex.Message}");
-                    return Array.Empty<string>();
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"An error occurred: {ex.Message}");
+                return null;
             }
         }
 
@@ -440,7 +478,7 @@ namespace UTCGoogleSheetsDataProvider
 
         private void RefreshTimer_Tick(object sender, EventArgs e)
         {
-            _ = Values;
+            ReloadInBackground();
         }
     }
 }

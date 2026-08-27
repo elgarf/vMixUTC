@@ -34,6 +34,7 @@ namespace JsonDataProviderNs
         private int _retrievingData = 0;
         private readonly object _pathLock = new object();
         private readonly object _ctsLock = new object();
+        private const int MaxRows = 10000; // Maximum number of source rows processed (grouping limit)
         private Json.Path.JsonPath _compiledPath;
         private string _compiledPathSource = string.Empty;
 
@@ -246,7 +247,7 @@ namespace JsonDataProviderNs
                     Data = new List<string>();
                     return;
                 }
-                var results = path.Evaluate(_document.RootElement.AsNode()).Matches.Take(100 * (_groupBy <= 0 ? 1 : _groupBy)).Select(x => x.Value.ToString()).ToList();
+                var results = path.Evaluate(_document.RootElement.AsNode()).Matches.Take(MaxRows * (_groupBy <= 0 ? 1 : _groupBy)).Select(x => x.Value.ToString()).ToList();
 
                 if (_groupBy > 1)
                 {

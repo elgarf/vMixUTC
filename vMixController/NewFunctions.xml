@@ -55,7 +55,7 @@
 	<vMixNewFunctionReference>
 		<Description></Description>
 		<Function>HasVariable</Function>
-		<FormatString>Function=HasVariable&amp;$SelectedIndex</FormatString>
+		<FormatString>Function=HasVariable&amp;Value=$SelectedIndex</FormatString>
 		<Category>Native</Category>
 		<Native>true</Native>
 	</vMixNewFunctionReference>
@@ -63,7 +63,7 @@
 	<vMixNewFunctionReference>
 		<Description></Description>
 		<Function>ValueChanged</Function>
-		<FormatString>Function=ValueChanged&amp;$Value$InputKey</FormatString>
+		<FormatString>Function=ValueChanged&amp;Value=$Value&amp;Input=$InputKey</FormatString>
 		<Category>Native</Category>
 		<Native>true</Native>
 	</vMixNewFunctionReference>
@@ -315,7 +315,7 @@
 		</Description>
 		<Function>SetText</Function>
 		<ValueName>Text</ValueName>
-		<FormatString>Function=SetText&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetText&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 		<DirectPath>Inputs[$InputKey].Elements[InputText/Index/$SelectedIndex].Text</DirectPath>
 		<DirectValueType>String</DirectValueType>
@@ -1985,7 +1985,7 @@ SelectedIndex or SelectedName can be used to select image.
 		</Description>
 		<Function>SetImage</Function>
 		<ValueName>Filename</ValueName>
-		<FormatString>Function=SetImage&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetImage&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 		<DirectPath>Inputs[$InputKey].Elements[InputImage/Index/$SelectedIndex].Image</DirectPath>
 		<DirectValueType>String</DirectValueType>
@@ -1998,7 +1998,7 @@ SelectedIndex or SelectedName can be used to select image.
 SelectedIndex or SelectedName can be used to select image.
 		</Description>
 		<Function>SetImageVisible</Function>
-		<FormatString>Function=SetImageVisible&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetImageVisible&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2007,7 +2007,7 @@ SelectedIndex or SelectedName can be used to select image.
 SelectedIndex or SelectedName can be used to select image.
 		</Description>
 		<Function>SetImageVisibleOn</Function>
-		<FormatString>Function=SetImageVisibleOn&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetImageVisibleOn&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2016,7 +2016,7 @@ SelectedIndex or SelectedName can be used to select image.
 SelectedIndex or SelectedName can be used to select image.
 		</Description>
 		<Function>SetImageVisibleOff</Function>
-		<FormatString>Function=SetImageVisibleOff&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetImageVisibleOff&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2024,7 +2024,7 @@ SelectedIndex or SelectedName can be used to select image.
 		<Description>Change Colour of Text in Title in HTML format (#xxxxxx)</Description>
 		<Function>SetTextColour</Function>
 		<ValueName>Colour</ValueName>
-		<FormatString>Function=SetTextColour&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetTextColour&amp;Input=$InputKey&amp;Value=$Value</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2033,7 +2033,7 @@ SelectedIndex or SelectedName can be used to select image.
 SelectedIndex or SelectedName can be used to select text field.
 		</Description>
 		<Function>SetTextVisible</Function>
-		<FormatString>Function=SetTextVisible&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetTextVisible&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2042,7 +2042,7 @@ SelectedIndex or SelectedName can be used to select text field.
 SelectedIndex or SelectedName can be used to select text field.
 		</Description>
 		<Function>SetTextVisibleOn</Function>
-		<FormatString>Function=SetTextVisibleOn&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetTextVisibleOn&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2051,7 +2051,7 @@ SelectedIndex or SelectedName can be used to select text field.
 SelectedIndex or SelectedName can be used to select text field.
 		</Description>
 		<Function>SetTextVisibleOff</Function>
-		<FormatString>Function=SetTextVisibleOff&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetTextVisibleOff&amp;Input=$InputKey&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 
@@ -2061,7 +2061,7 @@ SelectedIndex or SelectedName can be used to select ticker field.
 		</Description>
 		<Function>SetTickerSpeed</Function>
 		<ValueName>Speed 0-1000</ValueName>
-		<FormatString>Function=SetTickerSpeed&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetTickerSpeed&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 		<NumericValue>Float</NumericValue>
 	</vMixNewFunctionReference>
@@ -2072,7 +2072,7 @@ SelectedIndex or SelectedName can be used to select object.
 		</Description>
 		<Function>SetColor</Function>
 		<ValueName>Color</ValueName>
-		<FormatString>Function=SetColor&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex</FormatString>
+		<FormatString>Function=SetColor&amp;Input=$InputKey&amp;Value=$Value&amp;SelectedIndex=$SelectedIndex&amp;SelectedName=$SelectedName</FormatString>
 		<Category>Title</Category>
 	</vMixNewFunctionReference>
 

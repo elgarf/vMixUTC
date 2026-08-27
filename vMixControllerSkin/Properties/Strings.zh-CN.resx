@@ -518,6 +518,9 @@
   <data name="PropertyEditor.ExternalData.LoopData" xml:space="preserve">
     <value>循环数据</value>
   </data>
+  <data name="PropertyEditor.ExternalData.SelectionSource" xml:space="preserve">
+    <value>选择来源（列表控件名称）</value>
+  </data>
   <data name="PropertyEditor.Timer.SplitText" xml:space="preserve">
     <value>拆分文本</value>
   </data>
@@ -535,6 +538,12 @@
   </data>
   <data name="PropertyEditor.Timer.RecoverOnSync.Help" xml:space="preserve">
     <value>同步时从 vMix 状态恢复计时器值，某些格式字符串下可能无法工作。</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped" xml:space="preserve">
+    <value>停止时显示 00:00:00</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped.Help" xml:space="preserve">
+    <value>关闭后，停止时保留当前时间显示。</value>
   </data>
   <data name="PropertyEditor.Timer.Events" xml:space="preserve">
     <value>事件</value>
@@ -676,6 +685,9 @@
   </data>
   <data name="ScriptEditor.Field.Index" xml:space="preserve">
     <value>索引</value>
+  </data>
+  <data name="ScriptEditor.Field.Name" xml:space="preserve">
+    <value>名称</value>
   </data>
   <data name="ScriptEditor.Field.Duration" xml:space="preserve">
     <value>时长</value>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -23,9 +24,10 @@ namespace vMixController.Classes.Scripting
         public string Channel { get; }
         public string Duration { get; }
         public string SelectedIndex { get; }
+        public string SelectedName { get; }
 
         public Func<string, string, string> Resolve { get; }
-        public XPathNewFormattingArgs(string inputKey, int inputNumber, string value, string index, string mix, string channel, string duration, Func<string, string, string> resolve = null)
+        public XPathNewFormattingArgs(string inputKey, int inputNumber, string value, string index, string selectedName, string mix, string channel, string duration, Func<string, string, string> resolve = null)
         {
             InputKey = inputKey;
             InputNumber = inputNumber;
@@ -34,6 +36,7 @@ namespace vMixController.Classes.Scripting
             Channel = channel;
             Duration = duration;
             SelectedIndex = index;
+            SelectedName = selectedName;
             Resolve = resolve;
         }
     }
@@ -77,7 +80,8 @@ namespace vMixController.Classes.Scripting
                 [nameof(XPathNewFormattingArgs.Mix)] = dataObject.Mix ?? string.Empty,
                 [nameof(XPathNewFormattingArgs.Channel)] = dataObject.Channel ?? string.Empty,
                 [nameof(XPathNewFormattingArgs.Duration)] = dataObject.Duration ?? string.Empty,
-                [nameof(XPathNewFormattingArgs.SelectedIndex)] = dataObject.SelectedIndex ?? string.Empty
+                [nameof(XPathNewFormattingArgs.SelectedIndex)] = dataObject.SelectedIndex ?? string.Empty,
+                [nameof(XPathNewFormattingArgs.SelectedName)] = dataObject.SelectedName ?? string.Empty
             };
 
             // 1. Обработка условий (if/else if/else)
@@ -248,7 +252,7 @@ namespace vMixController.Classes.Scripting
             bool hasErrors = false;
             vMixControlExpressionHelper.BuildInputMaps(doc, out var inputNumberByKey, out var inputKeyByNumber);
 
-            foreach (var command in _commands)
+            foreach (var command in _commands.ToList())
             {
                 if (!command.UseInActiveState)
                 {
@@ -324,7 +328,10 @@ namespace vMixController.Classes.Scripting
                         break;
                 }
                 CalculateExpression<string>(item.SelectedIndex, PopulateVariables, Exp_EvaluateFunction, out string index);
-                var args = new XPathNewFormattingArgs(expandedInputKey, inputNumber, value, index, item.Mix, item.Channel, item.Duration, (function, parameter) =>
+                CalculateExpression<string>(item.SelectedName, PopulateVariables, Exp_EvaluateFunction, out string selectedName);
+                if (string.IsNullOrEmpty(selectedName))
+                    selectedName = item.SelectedName;
+                var args = new XPathNewFormattingArgs(expandedInputKey, inputNumber, value, index, selectedName, item.Mix, item.Channel, item.Duration, (function, parameter) =>
                 {
                     switch (function)
                     {

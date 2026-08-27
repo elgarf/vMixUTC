@@ -518,6 +518,9 @@ Use Momentary buttons for this type of scripts.</value>
   <data name="PropertyEditor.ExternalData.LoopData" xml:space="preserve">
     <value>Loop Data</value>
   </data>
+  <data name="PropertyEditor.ExternalData.SelectionSource" xml:space="preserve">
+    <value>Selection source (List widget name)</value>
+  </data>
   <data name="PropertyEditor.Timer.SplitText" xml:space="preserve">
     <value>Split Text</value>
   </data>
@@ -535,6 +538,12 @@ Use Momentary buttons for this type of scripts.</value>
   </data>
   <data name="PropertyEditor.Timer.RecoverOnSync.Help" xml:space="preserve">
     <value>Recover timer value from vMix state on sync, it can not work with some format strings</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped" xml:space="preserve">
+    <value>Display 00:00:00 when stopped</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped.Help" xml:space="preserve">
+    <value>When disabled, timer keeps showing current time after stop</value>
   </data>
   <data name="PropertyEditor.Timer.Events" xml:space="preserve">
     <value>Events</value>
@@ -676,6 +685,9 @@ Use Momentary buttons for this type of scripts.</value>
   </data>
   <data name="ScriptEditor.Field.Index" xml:space="preserve">
     <value>Index</value>
+  </data>
+  <data name="ScriptEditor.Field.Name" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="ScriptEditor.Field.Duration" xml:space="preserve">
     <value>Duration</value>

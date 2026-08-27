@@ -35,6 +35,7 @@ namespace vMixController.Classes.Scripting
         public bool HasDuration { get; set; }
         public bool HasChannel { get; set; }
         public bool HasIndex { get; set; }
+        public bool HasSelectedName { get; set; }
         public bool IsBlock { get; set; }
 
         private string _formatString;
@@ -50,6 +51,7 @@ namespace vMixController.Classes.Scripting
                 HasMix = value.Contains("$Mix");
                 HasDuration = value.Contains("$Duration");
                 HasIndex = value.Contains("$SelectedIndex");
+                HasSelectedName = value.Contains("$SelectedName");
                 _formatString = value;
             }
         }
@@ -76,7 +78,22 @@ namespace vMixController.Classes.Scripting
 
         public string GetSignature()
         {
-            return "";
+            var parameters = new List<string>();
+            if (HasInput)
+                parameters.Add("Input");
+            if (HasValue)
+                parameters.Add("Value");
+            if (HasChannel)
+                parameters.Add("Channel");
+            if (HasMix)
+                parameters.Add("Mix");
+            if (HasDuration)
+                parameters.Add("Duration");
+            if (HasIndex)
+                parameters.Add("SelectedIndex");
+            if (HasSelectedName)
+                parameters.Add("SelectedName");
+            return parameters.Count > 0 ? Function + "(" + string.Join(", ", parameters) + ")" : Function;
         }
 
     }

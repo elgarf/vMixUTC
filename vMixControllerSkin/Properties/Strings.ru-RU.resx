@@ -518,6 +518,9 @@
   <data name="PropertyEditor.ExternalData.LoopData" xml:space="preserve">
     <value>Зациклить данные</value>
   </data>
+  <data name="PropertyEditor.ExternalData.SelectionSource" xml:space="preserve">
+    <value>Источник выбора (имя виджета списка)</value>
+  </data>
   <data name="PropertyEditor.Timer.SplitText" xml:space="preserve">
     <value>Разделить текст</value>
   </data>
@@ -535,6 +538,12 @@
   </data>
   <data name="PropertyEditor.Timer.RecoverOnSync.Help" xml:space="preserve">
     <value>Восстановить значение таймера из состояния vMix при синхронизации, может работать не со всеми строками форматирования</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped" xml:space="preserve">
+    <value>Показывать 00:00:00 при остановке</value>
+  </data>
+  <data name="PropertyEditor.Timer.DisplayZeroWhenStopped.Help" xml:space="preserve">
+    <value>Если выключено, таймер сохраняет текущее время после остановки</value>
   </data>
   <data name="PropertyEditor.Timer.Events" xml:space="preserve">
     <value>События</value>
@@ -676,6 +685,9 @@
   </data>
   <data name="ScriptEditor.Field.Index" xml:space="preserve">
     <value>Индекс</value>
+  </data>
+  <data name="ScriptEditor.Field.Name" xml:space="preserve">
+    <value>Имя</value>
   </data>
   <data name="ScriptEditor.Field.Duration" xml:space="preserve">
     <value>Продолжительность</value>

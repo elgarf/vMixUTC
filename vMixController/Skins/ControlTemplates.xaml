@@ -735,7 +735,7 @@
         </ContentPresenter>
     </Grid>
 
-    <ctrls:ComboBox VirtualizingStackPanel.IsVirtualizing="True"  Style="{DynamicResource {x:Type ComboBox}}" IsEditable="{Binding IsEditable}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl" Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:FocusExtension.IsFocused="{Binding IsFocused}" d:DataContext="{d:DesignInstance widget:vMixControlList}">
+    <ctrls:ComboBox VirtualizingStackPanel.IsVirtualizing="True"  Style="{DynamicResource {x:Type ComboBox}}" IsEditable="{Binding IsEditable}" HorizontalContentAlignment="Stretch" x:Shared="false" x:Key="ListWidgetControl" Margin="{StaticResource StdMargin}" ItemsSource="{Binding Items}" Grid.Column="1" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" e:FocusExtension.IsFocused="{Binding IsFocused}" d:DataContext="{d:DesignInstance widget:vMixControlList}">
         <ComboBox.ItemsPanel>
             <ItemsPanelTemplate>
                 <VirtualizingStackPanel />

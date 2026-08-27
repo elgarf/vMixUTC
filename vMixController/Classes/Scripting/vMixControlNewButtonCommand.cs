@@ -91,6 +91,31 @@ namespace vMixController.Classes.Scripting
             }
         }
 
+        private string _selectedName = "";
+
+        /// <summary>
+        /// Sets and gets the SelectedName property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string SelectedName
+        {
+            get
+            {
+                return _selectedName;
+            }
+
+            set
+            {
+                if (_selectedName == value)
+                {
+                    return;
+                }
+
+                _selectedName = value;
+                RaisePropertyChanged(nameof(SelectedName));
+            }
+        }
+
         private int _inputNumber = -1;
 
         /// <summary>
@@ -355,6 +380,11 @@ namespace vMixController.Classes.Scripting
                 parameters.Add(Escape(SelectedIndex));
             }
 
+            if (Action.HasSelectedName)
+            {
+                parameters.Add(Escape(SelectedName));
+            }
+
             if (Action.HasDuration)
             {
                 parameters.Add(Escape(Duration));
@@ -451,6 +481,11 @@ namespace vMixController.Classes.Scripting
             {
                 if (currentParamIndex < parameters.Count)
                     cmd.SelectedIndex = Unescape(parameters[currentParamIndex++]);
+            }
+            if (cmd.Action.HasSelectedName)
+            {
+                if (currentParamIndex < parameters.Count)
+                    cmd.SelectedName = Unescape(parameters[currentParamIndex++]);
             }
             if (cmd.Action.HasDuration)
             {

@@ -386,6 +386,8 @@ namespace UTCGoogleSheetsDataProvider
                 _cancellationTokenSource.Dispose();
                 _cancellationTokenSource = new CancellationTokenSource();
             }
+            _lastModifiedCache.TryRemove(SheetKey, out _);
+            _spreadsheetCache.TryRemove(SheetKey, out _);
             _ = UpdateData();
         }));
 

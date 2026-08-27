@@ -582,8 +582,7 @@ namespace vMixController.Widgets
 
             try
             {
-                //await Task.Run(() => ExecutionThread((object)state, cancellationToken), cancellationToken);
-                await ExecutionThread((object)state, cancellationToken);
+                await Task.Run(() => ExecutionThread((object)state, cancellationToken), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -898,13 +897,16 @@ namespace vMixController.Widgets
             var inputNumberByKey = state?.Inputs?.GroupBy(x => x.Key)
                 .ToDictionary(g => g.Key, g => (int?)g.First().Number)
                 ?? new Dictionary<string, int?>();
-            for (int _pointer = 0; _pointer < _commands.Count; _pointer++)
+            // Снимок коллекции команд, чтобы её изменение пользователем во время выполнения
+            // не приводило к InvalidOperationException при обращении к ObservableCollection.
+            var commands = _commands.ToList();
+            for (int _pointer = 0; _pointer < commands.Count; _pointer++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 int parameter = 0;
                 string strparameter = "";
                 bool? conditionResult = null;
-                var cmd = _commands[_pointer];
+                var cmd = commands[_pointer];
                 object cachedObjectParameter = null;
                 bool cachedObjectParameterSet = false;
                 object GetObjectParameter()
@@ -1110,23 +1112,26 @@ namespace vMixController.Widgets
                         }
 
                         vMixControlButtonHelper.CalculateExpression(cmd.SelectedIndex, PopulateVariables, ExpressionEvaluateFunction, out string index);
+                        vMixControlButtonHelper.CalculateExpression(cmd.SelectedName, PopulateVariables, ExpressionEvaluateFunction, out string selectedName);
+                        if (string.IsNullOrEmpty(selectedName))
+                            selectedName = cmd.SelectedName;
 
                         var formatter = new XPathNewFormattingArgs(key, input.HasValue ? input.Value : -2,
                             cmd.Action.NumericValue == NumericValueType.Integer ? ((int)calculatedParameter).ToString(CultureInfo.InvariantCulture) :
                             (cmd.Action.NumericValue == NumericValueType.Float ? ((float)calculatedParameter).ToString(CultureInfo.InvariantCulture) : (string)calculatedParameter),
-                            index,
+                            index, selectedName,
                             cmd.Mix, cmd.Channel, cmd.Duration);
 
-                        var command = cmd.Action.FormatString.ReplacePlaceholdersFromObject(formatter);
+                        var command = (cmd.Action.FormatString ?? string.Empty).ReplacePlaceholdersFromObject(formatter);
 
-                        if (string.IsNullOrWhiteSpace(cmd.Action.DirectPath))
+                        if (string.IsNullOrWhiteSpace(cmd.Action.DirectPath) || !string.IsNullOrWhiteSpace(cmd.SelectedName))
                             AddLog("{2}) SEND {0} WITH RESULT {1}", command, state.SendFunction(command, false, timeout: cmd.Action.Timeout), _pointer + 1);
                         else
                         {
                             vMixControlButtonHelper.CalculateExpression(cmd.Value, PopulateVariables, ExpressionEvaluateFunction, out int p1);
 
 
-                            var path = cmd.Action.DirectPath.ReplacePlaceholdersFromObject(formatter);//string.Format(cmd.Action.DirectPath, key, p1, Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), p1 - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
+                            var path = (cmd.Action.DirectPath ?? string.Empty).ReplacePlaceholdersFromObject(formatter);//string.Format(cmd.Action.DirectPath, key, p1, Dispatcher.Invoke(() => CalculateObjectParameter(cmd)), p1 - 1, input ?? 0, string.IsNullOrWhiteSpace(key) ? "" : "Input=");
                             object value;
                             switch (cmd.Action.DirectValueType)
                             {

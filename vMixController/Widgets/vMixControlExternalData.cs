@@ -83,6 +83,31 @@ namespace vMixController.Widgets
             }
         }
 
+        private string _selectionSourceName = "";
+
+        /// <summary>
+        /// Sets and gets the SelectionSourceName property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string SelectionSourceName
+        {
+            get
+            {
+                return _selectionSourceName;
+            }
+
+            set
+            {
+                if (_selectionSourceName == value)
+                {
+                    return;
+                }
+
+                _selectionSourceName = value;
+                RaisePropertyChanged(nameof(SelectionSourceName));
+            }
+        }
+
         public vMixControlExternalData()
         {
             Data = new ObservableCollection<string>();
@@ -342,11 +367,19 @@ namespace vMixController.Widgets
                         if (State == null)
                             return;
 
+                        int offset = 0;
+                        if (!string.IsNullOrWhiteSpace(SelectionSourceName))
+                        {
+                            var listWidget = Singleton<SharedData>.Instance.GetDataSource(SelectionSourceName) as vMixControlList;
+                            if (listWidget != null && listWidget.SelectedIndex >= 0)
+                                offset = listWidget.SelectedIndex;
+                        }
+
                         for (int i = 0; i < pathsSnapshot.Length; i++)
                         {
                             var item = pathsSnapshot[i];
-                            var value = values[i % values.Length];
-                            if (!_restartData && i >= values.Length)
+                            var value = values[(offset + i) % values.Length];
+                            if (!_restartData && offset + i >= values.Length)
                                 value = "";
 
                             if (value.StartsWith("@[cmd]"))
