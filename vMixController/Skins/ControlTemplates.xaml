@@ -915,8 +915,8 @@
     </Grid>
 
     <StackPanel x:Shared="false" x:Key="ExternalDataWidgetControl" d:DataContext="{d:DesignInstance widget:vMixControlExternalData}">
-        <ContentControl Content="{Binding DataProvider.CustomUI}"/>
-        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Visibility="{Binding DataProvider.IsProvidingCustomProperties, Converter={wpfc:BoolToVisibilityConverter}}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{loc:Loc Key=Widget.ExternalData.Properties}"></Button>
+        <ContentControl Height="{Binding Height}" Content="{Binding DataProvider.CustomUI}"/>
+        <Button IsEnabled="{Binding DataProvider.IsProvidingCustomProperties}" Visibility="{Binding DataProvider.IsProvidingCustomProperties, Converter={wpfc:BoolToVisibilityConverter}}" Margin="{StaticResource StdMargin}" Command="{Binding OpenPropertiesCommand}" Content="{loc:Loc Key=Widget.ExternalData.Properties}"/>
     </StackPanel>
 
     <Grid x:Shared="false"  x:Key="TimerWidgetControl" Margin="{StaticResource StdMargin}" d:DataContext="{d:DesignInstance widget:vMixControlTimer}">

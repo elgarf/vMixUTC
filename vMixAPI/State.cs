@@ -363,7 +363,7 @@ namespace vMixAPI
             }
         }
 
-        public void UpdateAsync()
+        public void UpdateAsync(bool ignoreCache = false)
         {
             SendFunction("", true, x =>
             {
@@ -453,7 +453,7 @@ namespace vMixAPI
                 else
                     Dispatcher.BeginInvoke(updateAction);
 
-            });
+            }, ignoreCache: ignoreCache);
         }
 
         // Hold callback state strongly until async response is received and callback is dispatched.
